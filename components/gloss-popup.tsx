@@ -62,9 +62,20 @@ export function GlossPopup({ record, onClose, onSpeak, speechAvailable }: GlossP
       </div>
       <div className="gloss-field">
         <p className="field-label">Morphemes</p>
-        <p className="morpheme-line">
+        <p
+          className={`morpheme-line${analysis.morphemes.length > 1 ? " is-expanded" : ""}`}
+          aria-label={
+            analysis.morphemes.length > 1
+              ? `${analysis.morphemes.length} morphemes`
+              : "One morpheme"
+          }
+        >
           {analysis.morphemes.map((morpheme, index) => (
-            <span key={`${morpheme.form}-${index}`} title={explainGloss(morpheme.gloss)}>
+            <span
+              className="morpheme-chip"
+              key={`${morpheme.form}-${index}`}
+              title={explainGloss(morpheme.gloss)}
+            >
               {index > 0 && " · "}
               {morpheme.form} = {morpheme.gloss}
             </span>

@@ -157,6 +157,12 @@ h2 {
   cursor: pointer;
 }
 
+.gloss-trigger.is-multi-morpheme {
+  border-bottom-style: solid;
+  border-bottom-width: 3px;
+  background: linear-gradient(transparent 70%, rgba(123, 63, 42, 0.1) 70%);
+}
+
 .gloss-trigger:hover,
 .gloss-trigger:focus-visible,
 .gloss-trigger.is-selected {
@@ -262,7 +268,30 @@ h2 {
 }
 
 .morpheme-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
   overflow-wrap: anywhere;
+}
+
+.morpheme-chip {
+  display: inline-block;
+  padding: 0.18rem 0.35rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+
+.morpheme-line.is-expanded {
+  gap: 0.45rem;
+  padding: 0.45rem;
+  border-left: 3px solid var(--accent);
+  background: rgba(255, 253, 248, 0.55);
+}
+
+.morpheme-line.is-expanded .morpheme-chip {
+  border-color: #cdbba4;
+  background: rgba(255, 253, 248, 0.75);
 }
 
 .reference-link {

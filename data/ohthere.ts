@@ -1,4 +1,5 @@
 import type { GlossRecord, Passage } from "../lib/types";
+import { toBrowserSpeechText } from "../lib/speech";
 
 const sourceFile = "references/Voyages_of_Ohthere_Wulfstan.tex";
 const sourceLocator = "paragraph.1 / exercises 1-3";
@@ -23,6 +24,7 @@ function simpleGloss(
       features: {},
       morphemes: [{ form: surface.replaceAll("-", ""), gloss: definition, kind: "stem" }],
       definition,
+      speechText: toBrowserSpeechText(surface),
     },
     review: {
       status: "source-checked",

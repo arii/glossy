@@ -184,6 +184,8 @@ There are no runtime external services. The only external destination is the use
 - **Wiktionary link** — each record may contain a direct `https://en.wiktionary.org/wiki/...` URL. No API call or credential is used. The link opens as a normal external reference.
 - **Browser speech** — word and passage controls use the local Web Speech API only. No endpoint, credential, or audio asset is required. Voice availability varies by browser and operating system.
 - **Pronunciation references** — IPA is curated from Old English lexical/inflection entries and general Old English phonology references. `speechText` is a browser-friendly respelling used only for audible assistance; it is not presented as a recording of reconstructed pronunciation.
+- **Browser character handling** — speech fallback transliterates thorn/eth to `th`, `ċ` to `ch`, `ġ` to `y`, and long vowels to readable doubled-vowel hints so browsers do not silently discard Old English characters.
+- **Morpheme emphasis** — records with multiple morphemes receive a stronger passage affordance and segmented popup chips; simple one-morpheme glosses remain visually lighter.
 - **Fonts** — the first implementation should use a local CSS fallback stack so the demo works offline. If a packaged or hosted scholarly font is later chosen, verify licensing, loading behavior, and offline fallback before adding it.
 
 ## Important Failure Modes

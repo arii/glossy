@@ -39,9 +39,9 @@ export function AnnotatedPassage({
         return (
           <button
             key={`${segment.glossId}-${index}`}
-            className={`gloss-trigger${selectedId === record.id ? " is-selected" : ""}${selectedId && selectedId !== record.id ? " is-dimmed" : ""}`}
+            className={`gloss-trigger${record.analysis.morphemes.length > 1 ? " is-multi-morpheme" : ""}${selectedId === record.id ? " is-selected" : ""}${selectedId && selectedId !== record.id ? " is-dimmed" : ""}`}
             type="button"
-            aria-label={`Show gloss for ${record.surface}`}
+            aria-label={`Show ${record.analysis.morphemes.length > 1 ? "multi-morpheme " : ""}gloss for ${record.surface}`}
             aria-pressed={selectedId === record.id}
             aria-expanded={selectedId === record.id}
             aria-controls="gloss-popup"

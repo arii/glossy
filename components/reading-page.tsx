@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { glossRecords, readingPassage } from "../data/ohthere";
+import { toBrowserSpeechText } from "../lib/speech";
 import { AnnotatedPassage } from "./annotated-passage";
 import { GlossPopup } from "./gloss-popup";
 import { SpeechButton } from "./speech-button";
@@ -20,9 +21,9 @@ export function ReadingPage() {
       block.segments
         .map((segment) => {
           if (segment.type === "gloss") {
-            return glossRecords[segment.glossId]?.analysis.speechText ?? segment.value;
+            return glossRecords[segment.glossId]?.analysis.speechText ?? toBrowserSpeechText(segment.value);
           }
-          return segment.value.replaceAll("-", "");
+          return toBrowserSpeechText(segment.value);
         })
         .join(""),
     )
@@ -169,7 +170,10 @@ export function ReadingPage() {
                 record={selectedRecord}
                 onClose={closeGloss}
                 onSpeak={() =>
-                  speak(selectedRecord.analysis.speechText ?? selectedRecord.surface.replaceAll("-", ""))
+                  speak(
+                    selectedRecord.analysis.speechText ??
+                      toBrowserSpeechText(selectedRecord.surface),
+                  )
                 }
                 speechAvailable={speechAvailable}
               />
