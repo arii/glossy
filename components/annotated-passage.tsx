@@ -32,8 +32,10 @@ export function AnnotatedPassage({
             type="button"
             aria-label={`Show gloss for ${record.surface}`}
             aria-pressed={selectedId === record.id}
-            onPointerEnter={() => onSelect(record.id)}
-            onMouseEnter={() => onSelect(record.id)}
+            title={`Show gloss for ${record.surface}`}
+            onPointerOver={() => onSelect(record.id)}
+            onMouseOver={() => onSelect(record.id)}
+            onTouchStart={() => onSelect(record.id)}
             onFocus={() => onSelect(record.id)}
             onClick={() => onSelect(record.id)}
           >

@@ -29,7 +29,7 @@ Build mode: fast
   Learner check: Select an annotated word on desktop, then another word, and try the same at a narrow mobile width. Confirm the popup clearly belongs to the selected word and contains useful vocabulary or grammar information.
   Commit: `Add interactive visual glosses`
 
-- [ ] **3. You can use the gloss comfortably across devices**
+- [x] **3. You can use the gloss comfortably across devices**
   Becomes usable: The complete reading-and-gloss journey is legible, keyboard/touch usable, and resilient when optional data or popup space is limited.
   Why now: Once the kernel works, the remaining risk is whether the scholarly notation and interaction remain usable in the actual responsive demo.
   PRD ref: `prd.md > Look and Feel`, `prd.md > Reading and Visual Glossing`, `prd.md > States and Boundaries`, `prd.md > Understanding the Source`
