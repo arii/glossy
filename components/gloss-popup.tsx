@@ -6,52 +6,65 @@ type GlossPopupProps = {
 };
 
 export function GlossPopup({ record, onClose }: GlossPopupProps) {
+  const { analysis } = record;
+
   return (
-    <aside className="gloss-popup" aria-live="polite" aria-label={`Gloss for ${record.headword}`}>
+    <aside className="gloss-popup" aria-live="polite" aria-label={`Gloss for ${record.surface}`}>
       <div className="popup-heading">
         <div>
           <p className="field-label">Selected word</p>
-          <h2>{record.headword}</h2>
+          <h2>{record.surface}</h2>
+          <p className="lemma-line">
+            {analysis.lemma} · {analysis.partOfSpeech}
+          </p>
         </div>
         <button className="close-button" type="button" onClick={onClose} aria-label="Close gloss">
           ×
         </button>
       </div>
-      {record.phonetic && (
+      {analysis.phonetic && (
         <p className="phonetic">
           <span className="field-label">Pronunciation</span>
-          {record.phonetic}
+          {analysis.phonetic}
         </p>
       )}
-      {record.definition && (
+      <div className="gloss-field">
+        <p className="field-label">Source gloss</p>
+        <p>{record.sourceGloss}</p>
+      </div>
+      <div className="gloss-field">
+        <p className="field-label">Morphemes</p>
+        <p className="morpheme-line">
+          {analysis.morphemes.map((morpheme) => `${morpheme.form} = ${morpheme.gloss}`).join(" · ")}
+        </p>
+      </div>
+      <div className="gloss-field">
+        <p className="field-label">Inflection</p>
+        <p>{formatFeatures(analysis.features)}</p>
+      </div>
+      {analysis.definition && (
         <div className="gloss-field">
           <p className="field-label">Definition</p>
-          <p>{record.definition}</p>
+          <p>{analysis.definition}</p>
         </div>
       )}
-      {record.grammar && (
-        <div className="gloss-field">
-          <p className="field-label">Grammar</p>
-          <p>{record.grammar}</p>
-        </div>
-      )}
-      {record.conjugation && (
-        <div className="gloss-field">
-          <p className="field-label">Conjugation</p>
-          <p>{record.conjugation}</p>
-        </div>
-      )}
-      {record.historicalNote && (
+      {analysis.historicalNote && (
         <div className="gloss-field">
           <p className="field-label">Language note</p>
-          <p>{record.historicalNote}</p>
+          <p>{analysis.historicalNote}</p>
         </div>
       )}
-      {record.wiktionaryUrl && (
-        <a className="reference-link" href={record.wiktionaryUrl} target="_blank" rel="noreferrer">
+      {analysis.wiktionaryUrl && (
+        <a className="reference-link" href={analysis.wiktionaryUrl} target="_blank" rel="noreferrer">
           Open in Wiktionary <span aria-hidden="true">↗</span>
         </a>
       )}
     </aside>
   );
+}
+
+function formatFeatures(features: GlossRecord["analysis"]["features"]) {
+  return Object.entries(features)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join(" · ");
 }

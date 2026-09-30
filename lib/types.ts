@@ -1,12 +1,58 @@
-export type GlossRecord = {
-  id: string;
-  headword: string;
-  definition?: string;
+export type PartOfSpeech =
+  | "adjective"
+  | "adverb"
+  | "noun"
+  | "verb"
+  | "pronoun"
+  | "determiner"
+  | "preposition"
+  | "conjunction";
+
+export type InflectionFeatures = {
+  case?: "nominative" | "accusative" | "genitive" | "dative";
+  number?: "singular" | "plural";
+  gender?: "masculine" | "feminine" | "neuter";
+  person?: 1 | 2 | 3;
+  tense?: "present" | "past";
+  mood?: "indicative" | "subjunctive" | "imperative" | "infinitive";
+  degree?: "positive" | "comparative" | "superlative";
+};
+
+export type Morpheme = {
+  form: string;
+  gloss: string;
+  kind?: "stem" | "prefix" | "suffix" | "ending";
+};
+
+export type SourceReference = {
+  file: string;
+  locator: string;
+};
+
+export type ReviewMetadata = {
+  status: "source-checked" | "needs-review";
+  source: SourceReference;
+  notes?: string;
+};
+
+export type LinguisticAnalysis = {
+  lemma: string;
+  partOfSpeech: PartOfSpeech;
+  features: InflectionFeatures;
+  morphemes: Morpheme[];
+  definition: string;
   phonetic?: string;
-  grammar?: string;
-  conjugation?: string;
   historicalNote?: string;
   wiktionaryUrl?: string;
+};
+
+export type GlossRecord = {
+  id: string;
+  surface: string;
+  sourceGloss: string;
+  sourceGlossTex: string;
+  analysis: LinguisticAnalysis;
+  review: ReviewMetadata;
 };
 
 export type PassageSegment =

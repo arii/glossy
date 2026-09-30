@@ -30,8 +30,9 @@ export function AnnotatedPassage({
             key={`${segment.glossId}-${index}`}
             className={`gloss-trigger${selectedId === record.id ? " is-selected" : ""}`}
             type="button"
-            aria-label={`Show gloss for ${record.headword}`}
+            aria-label={`Show gloss for ${record.surface}`}
             aria-pressed={selectedId === record.id}
+            onPointerEnter={() => onSelect(record.id)}
             onMouseEnter={() => onSelect(record.id)}
             onFocus={() => onSelect(record.id)}
             onClick={() => onSelect(record.id)}

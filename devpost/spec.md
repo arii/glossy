@@ -94,33 +94,51 @@ PRD ref: `prd.md > Look and Feel`, `prd.md > Reading and Visual Glossing`.
 
 ## Data Model
 
-The POC uses two local typed structures.
+The POC uses local typed structures that distinguish the text being read from the linguistic analysis attached to it. This avoids treating every word as if it had a verb conjugation: verbs have tense/mood/person/number, while nouns have case/number/gender and adjectives or adverbs may have degree.
 
 ```ts
-type GlossRecord = {
-  id: string
-  headword: string
-  definition?: string
-  phonetic?: string
-  grammar?: string
-  conjugation?: string
-  historicalNote?: string
-  wiktionaryUrl?: string
+type InflectionFeatures = {
+  case?: "nominative" | "accusative" | "genitive" | "dative"
+  number?: "singular" | "plural"
+  gender?: "masculine" | "feminine" | "neuter"
+  person?: 1 | 2 | 3
+  tense?: "present" | "past"
+  mood?: "indicative" | "subjunctive" | "imperative" | "infinitive"
+  degree?: "positive" | "comparative" | "superlative"
 }
 
-type PassageSegment =
-  | { type: "text"; value: string }
-  | { type: "gloss"; value: string; glossId: string }
+type Morpheme = {
+  form: string
+  gloss: string
+  kind?: "stem" | "prefix" | "suffix" | "ending"
+}
 
-type Passage = {
-  title: string
-  source: string
-  translation?: string
-  segments: PassageSegment[]
+type GlossRecord = {
+  id: string
+  surface: string
+  sourceGloss: string
+  sourceGlossTex: string
+  analysis: {
+    lemma: string
+    partOfSpeech: PartOfSpeech
+    features: InflectionFeatures
+    morphemes: Morpheme[]
+    definition: string
+    phonetic?: string
+    historicalNote?: string
+    wiktionaryUrl?: string
+  }
+  review: {
+    status: "source-checked" | "needs-review"
+    source: { file: string; locator: string }
+    notes?: string
+  }
 }
 ```
 
-The source is the LaTeX/PDF reference material. During the build, the relevant one-passage subset is transcribed into a local TypeScript or JSON data file, with the source spelling and diacritics preserved. The page imports that data; selecting a segment changes only in-memory UI state. Nothing persists when the reader leaves or reloads the page.
+`surface` preserves exactly what appears in the source text, including morpheme boundaries and diacritics. `sourceGlossTex` preserves the manuscript's literal `\textsc{...}` markup, while `sourceGloss` is a readable display form. `analysis` stores normalized linguistic metadata for display and future review, while `review.source` identifies the manuscript entry and `review.status` says only that the transcription was checked against that source—not that the entry has received a new scholarly edition. A future editor can update a record and move it to `needs-review` without changing the reader's rendering contract.
+
+The source is the LaTeX/PDF reference material. The current passage uses the first three `\gll`/`\glt` entries from `references/Voyages_of_Ohthere_Wulfstan.tex`; the source file and entry context are recorded in each review record. `npm run validate:source` checks the displayed surface tokens and literal TeX gloss snippets against the manuscript. Selecting a segment changes only in-memory UI state. Nothing persists when the reader leaves or reloads the page.
 
 ## File Structure
 
@@ -138,6 +156,8 @@ glossy/
 │   └── ohthere.ts               # Curated passage segments and gloss records
 ├── lib/
 │   └── types.ts                 # Shared Passage, PassageSegment, and GlossRecord types
+├── scripts/
+│   └── validate-source.mjs      # Checks displayed data against the TeX manuscript
 ├── public/                      # Only local static assets if the build needs them
 ├── devpost/                     # Approved learning and planning documents
 ├── references/                  # Existing PDF, LaTeX, and bibliography source material
@@ -172,6 +192,9 @@ There are no runtime external services. The only external destination is the use
 
 - **Learner choice: local-first runtime** — enough for the current proof of concept; it avoids services and keeps the demo easy to run.
 - **Learner choice: static setup for linguistic data** — the source-backed phonetic and conjugation records are prepared ahead of time, while their display is interactive.
+- **Learner choice: model-only review/editing support** — the data is structured for source checking and a future editor, but the current POC does not add an editing screen.
+- **Implementation decision: linguistic feature model** — the popup uses lemma, part of speech, explicit inflectional features, and morphemes instead of a universal `conjugation` field, because different parts of speech inflect differently.
+- **Implementation decision: source traceability** — each record carries the source gloss and review metadata so future corrections can be checked against the LaTeX rather than silently normalizing away the source form.
 - **Implementation decision derived from the PRD: typed local records** — a small explicit data shape makes every visible gloss field inspectable and keeps missing information honest.
 - **Useful uncertainty clarified: “dynamic generation”** — it means dynamically revealing the selected static record, not generating linguistic analysis at runtime. This preserves the static-gloss POC and avoids an accuracy-critical language engine.
 - **Open issue: exact popup dismissal and positioning** — implement and verify with desktop hover, keyboard focus, mobile tap, click-away, and narrow viewport checks during the build.

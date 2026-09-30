@@ -61,3 +61,5 @@ Reflection: not started
 Activity mode: not started
 
 ## Revisions
+
+- The initial gloss record used a generic `conjugation` field and a shortened paraphrase of the source text. It was replaced with source-faithful surface tokens, source glosses, lemma/part-of-speech/inflection features, morphemes, and review metadata; the current POC still defers an editing interface.

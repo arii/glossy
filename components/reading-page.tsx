@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { glossRecords, readingPassage } from "../data/ohthere";
 import { AnnotatedPassage } from "./annotated-passage";
 import { GlossPopup } from "./gloss-popup";
@@ -8,6 +8,21 @@ import { GlossPopup } from "./gloss-popup";
 export function ReadingPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selectedRecord = selectedId ? glossRecords[selectedId] : undefined;
+
+  useEffect(() => {
+    if (!selectedId) {
+      return;
+    }
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setSelectedId(null);
+      }
+    };
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [selectedId]);
 
   return (
     <main className="page-shell">
