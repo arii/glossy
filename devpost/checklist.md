@@ -9,7 +9,7 @@ Build mode: fast
 
 ## Slices
 
-- [ ] **1. You can open and read the Old English passage**
+- [x] **1. You can open and read the Old English passage**
   Becomes usable: A running local Next.js app displays one curated Old English passage with its source context and readable translation.
   Why now: Bootstrapping and real source-backed content must work before interaction is added; this creates the smallest visible reading surface and validates the Unicode text early.
   PRD ref: `prd.md > The Core Journey`, `prd.md > Screens and Layout`, `prd.md > Understanding the Source`
