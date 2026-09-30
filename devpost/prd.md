@@ -49,6 +49,7 @@ The student can read the selected Old English passage and identify annotated wor
 - [ ] The popup offers a control to hear the selected word or lemma using the browser's available speech support.
 - [ ] The reading surface offers a control to read the selected passage aloud and stop playback.
 - [ ] Text without a gloss remains readable as ordinary passage text.
+- [ ] Words with simple one-morpheme source glosses can be selected just like internally segmented words.
 - [ ] Phonetic notation, conjugation syntax, and Old English diacritics remain visually distinguishable and correctly readable.
 - [ ] A selected word has a clear visual state, and the popup does not hide the word or make the surrounding passage unreadable.
 - [ ] The popup and its external link are usable with keyboard focus and touch as well as pointer interaction.

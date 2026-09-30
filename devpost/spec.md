@@ -102,7 +102,7 @@ PRD ref: `prd.md > Look and Feel`, `prd.md > Reading and Visual Glossing`.
 
 ## Data Model
 
-The POC uses local typed structures that distinguish the text being read from the linguistic analysis attached to it. This avoids treating every word as if it had a verb conjugation: verbs have tense/mood/person/number, while nouns have case/number/gender and adjectives or adverbs may have degree.
+The POC uses local typed structures that distinguish the text being read from the linguistic analysis attached to it. Every word in the three displayed source entries can now have a record, including simple one-morpheme glosses such as `on → in` and `his → 3sg.m.gen`. This avoids treating every word as if it had a verb conjugation: verbs have tense/mood/person/number, while nouns have case/number/gender and adjectives or adverbs may have degree.
 
 ```ts
 type InflectionFeatures = {
@@ -146,7 +146,7 @@ type GlossRecord = {
 }
 ```
 
-`surface` preserves exactly what appears in the source text, including morpheme boundaries and diacritics. `sourceGlossTex` preserves the manuscript's literal `\textsc{...}` markup, while `sourceGloss` is a readable display form. `analysis` stores normalized linguistic metadata for display and future review, while `review.source` identifies the manuscript entry and `review.status` says only that the transcription was checked against that source—not that the entry has received a new scholarly edition. A future editor can update a record and move it to `needs-review` without changing the reader's rendering contract.
+`surface` preserves exactly what appears in the source text, including morpheme boundaries and diacritics. `sourceGlossTex` preserves the manuscript's literal `\textsc{...}` markup, while `sourceGloss` is a readable display form. `analysis.morphemes` contains one item for simple lexical/grammatical glosses and multiple items where the source exposes internal morphology. `analysis` stores normalized linguistic metadata for display and future review, while `review.source` identifies the manuscript entry and `review.status` says only that the transcription was checked against that source—not that the entry has received a new scholarly edition. A future editor can update a record and move it to `needs-review` without changing the reader's rendering contract.
 
 The source is the LaTeX/PDF reference material. The current passage uses the first three `\gll`/`\glt` entries from `references/Voyages_of_Ohthere_Wulfstan.tex`; the source file and entry context are recorded in each review record. `npm run validate:source` checks the displayed surface tokens and literal TeX gloss snippets against the manuscript. Selecting a segment changes only in-memory UI state. Speech playback stays in the browser and does not create audio files or send text to an external service. Nothing persists when the reader leaves or reloads the page.
 
