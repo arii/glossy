@@ -5,29 +5,14 @@ import { glossRecords, readingPassage } from "../data/ohthere";
 import { toBrowserSpeechText } from "../lib/speech";
 import { AnnotatedPassage } from "./annotated-passage";
 import { GlossPopup } from "./gloss-popup";
-import { SpeechButton } from "./speech-button";
 
 export function ReadingPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [pinnedId, setPinnedId] = useState<string | null>(null);
   const [speechAvailable, setSpeechAvailable] = useState(false);
-  const [speechActive, setSpeechActive] = useState(false);
   const lastTriggerId = useRef<string | null>(null);
   const glossAreaRef = useRef<HTMLElement | null>(null);
   const selectedRecord = selectedId ? glossRecords[selectedId] : undefined;
-
-  const passageSpeech = readingPassage.blocks
-    .map((block) =>
-      block.segments
-        .map((segment) => {
-          if (segment.type === "gloss") {
-            return glossRecords[segment.glossId]?.analysis.speechText ?? toBrowserSpeechText(segment.value);
-          }
-          return toBrowserSpeechText(segment.value);
-        })
-        .join(""),
-    )
-    .join(" ");
 
   const selectOnHover = (id: string) => {
     if (!pinnedId) {
@@ -105,7 +90,6 @@ export function ReadingPage() {
 
   const stopSpeech = () => {
     window.speechSynthesis.cancel();
-    setSpeechActive(false);
   };
 
   const speak = (text: string) => {
@@ -117,9 +101,6 @@ export function ReadingPage() {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "ang";
     utterance.rate = 0.85;
-    utterance.onend = () => setSpeechActive(false);
-    utterance.onerror = () => setSpeechActive(false);
-    setSpeechActive(true);
     window.speechSynthesis.speak(utterance);
   };
 
@@ -130,17 +111,6 @@ export function ReadingPage() {
           <p className="eyebrow">Old English visual gloss</p>
           <h1>{readingPassage.title}</h1>
           <p className="source-line">{readingPassage.source}</p>
-          <div className="speech-toolbar">
-            <SpeechButton
-              disabled={!speechAvailable}
-              onClick={() => (speechActive ? stopSpeech() : speak(passageSpeech))}
-            >
-              {speechActive ? "Stop reading" : "Read passage aloud"}
-            </SpeechButton>
-            {!speechAvailable && (
-              <span className="speech-note">Browser speech is unavailable.</span>
-            )}
-          </div>
         </header>
 
         <div className="reading-layout">

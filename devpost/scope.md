@@ -27,7 +27,7 @@ A student opens one Old English passage and reads it in the browser. When they h
 
 ## The POC Boundary
 Build a Next.js website for one selected Old English text, using static glossed information derived from the referenced PDF/LaTeX example. Support reading the passage and revealing or hiding glosses through hover or click. Prioritize legibility and the connection between source text and gloss.
-Include optional browser speech for hearing the selected word and reading the passage aloud when the local browser provides speech synthesis. This is an audible aid, not a claim of authoritative reconstructed Old English pronunciation.
+Include optional browser speech for hearing the selected word when the local browser provides speech synthesis. Passage-level read-aloud is deferred because the current browser voices do not preserve Old English pronunciation reliably; revisit it with recorded audio or an IPA-capable backend.
 
 ## Later
 - Additional Old English texts and a broader content library.

@@ -90,7 +90,7 @@ PRD ref: `prd.md > States and Boundaries`.
 
 ### Speech Controls
 
-Provides a word-level “Hear word” action in the gloss popup and a passage-level “Read aloud”/“Stop” action on the reading surface. It uses `window.speechSynthesis` when available, sets the utterance language hint to `ang`, and reports unavailable browser support without pretending that a generic browser voice is an authoritative reconstruction of Old English pronunciation.
+Provides a word-level “Hear word” action in the gloss popup. Passage-level “Read aloud”/“Stop” is deferred until recorded audio or an IPA-compatible backend is available. The word control uses `window.speechSynthesis` when available, sets the utterance language hint to `ang`, and reports unavailable browser support without pretending that a generic browser voice is an authoritative reconstruction of Old English pronunciation.
 
 PRD ref: `prd.md > Reading and Visual Glossing`, `prd.md > States and Boundaries`.
 
@@ -182,7 +182,7 @@ glossy/
 There are no runtime external services. The only external destination is the user's browser navigation to Wiktionary from a curated record.
 
 - **Wiktionary link** — each record may contain a direct `https://en.wiktionary.org/wiki/...` URL. No API call or credential is used. The link opens as a normal external reference.
-- **Browser speech** — word and passage controls use the local Web Speech API only. No endpoint, credential, or audio asset is required. Voice availability varies by browser and operating system.
+- **Browser speech** — the current POC uses the local Web Speech API for selected-word assistance only. No endpoint, credential, or audio asset is required. Voice availability varies by browser and operating system.
 - **Pronunciation references** — IPA is curated from Old English lexical/inflection entries and general Old English phonology references. `speechText` is a browser-friendly respelling used only for audible assistance; it is not presented as a recording of reconstructed pronunciation.
 - **Browser character handling** — speech fallback transliterates thorn/eth to `th`, `ċ` to `ch`, `ġ` to `y`, and long vowels to readable doubled-vowel hints so browsers do not silently discard Old English characters.
 - **Morpheme emphasis** — records with multiple morphemes receive a stronger passage affordance and segmented popup chips; simple one-morpheme glosses remain visually lighter.
@@ -204,6 +204,7 @@ There are no runtime external services. The only external destination is the use
 - **Curated phonetic and conjugation records** instead of runtime linguistic generation — protects accuracy and keeps the POC aligned with the approved static-gloss boundary.
 - **Browser speech synthesis** instead of recorded or generated Old English audio — keeps the feature local and demonstrable, while explicitly not claiming authoritative reconstructed pronunciation.
 - **Accessibility light dismiss** — the gloss is a non-modal region with outside-pointer dismissal and focus restoration, preserving access to the reading surface while it is open.
+- **Deferred passage audio** — passage read-aloud is intentionally hidden until the project can use recorded readings or an IPA-compatible backend rather than a poor browser approximation.
 - **One popup** instead of multiple simultaneous annotations — keeps the reading surface legible and demonstrates the core interaction clearly.
 - **Local browser demo** instead of deployment — the required submission video and repository do not require a hosted URL.
 

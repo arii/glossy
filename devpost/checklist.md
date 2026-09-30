@@ -36,7 +36,7 @@ Build mode: fast
   Spec ref: `spec.md > Look and Feel`, `spec.md > Typography and Linguistic Fields`, `spec.md > Important Failure Modes`, `spec.md > Where It Runs and How Someone Tries It`
   Build: Refine responsive CSS, selected/focus states, popup positioning and dismissal, keyboard semantics, external-link behavior, narrow viewport fallbacks, and optional browser speech controls for a selected word and the passage. Validate representative IPA/phonetic notation, conjugation syntax, Old English diacritics, and source typography. Keep unannotated text readable and omit absent optional fields.
   Verify (mechanical): Run lint/type check/build and `npm run validate:source`; exercise the page at desktop and narrow viewport sizes with keyboard focus and touch/click interactions; confirm no horizontal overflow, no console errors from the app, correct representative glyphs, popup replacement/close behavior, working Wiktionary link markup, and speech controls that either start/stop playback or report unavailable support.
-  Learner check: Try the one-minute demo flow: open the passage, select a word, inspect its definition and inflection, click to pin the popup, follow its Wiktionary search/reference, use Hear word, use Read passage aloud, stop playback, and repeat in a narrow viewport. Note anything confusing or visually wrong.
+  Learner check: Try the one-minute demo flow: open the passage, select a word, inspect its definition and inflection, click to pin the popup, follow its Wiktionary search/reference, use Hear word, and repeat in a narrow viewport. Note anything confusing or visually wrong.
   Commit: `Polish responsive gloss experience`
 
 ## Hands-on Checkpoints

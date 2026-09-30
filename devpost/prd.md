@@ -47,7 +47,7 @@ The student can read the selected Old English passage and identify annotated wor
 - [ ] The popup includes phonetic translation when present.
 - [ ] The popup includes a Wiktionary link when present, and that link can be followed.
 - [ ] The popup offers a control to hear the selected word or lemma using the browser's available speech support.
-- [ ] The reading surface offers a control to read the selected passage aloud and stop playback.
+- [ ] The reading surface offers a control to read the selected passage aloud and stop playback. *(Deferred until a reliable IPA-compatible or recorded-audio solution is available.)*
 - [ ] Text without a gloss remains readable as ordinary passage text.
 - [ ] Words with simple one-morpheme source glosses can be selected just like internally segmented words.
 - [ ] Multi-morpheme words have a stronger visual affordance and visibly separated morpheme details so they are rewarding to inspect.
@@ -85,7 +85,7 @@ The presentation should help the student connect the original text with its anal
 - Static glossed information — dynamic question answering and generated explanations are deferred.
 - Desktop hover and mobile tap — both interaction modes are needed for a responsive web layout.
 - Popup gloss box — the student should see the definition, conjugation, phonetic translation, and Wiktionary link in one focused explanation.
-- Optional browser speech — word pronunciation and passage read-aloud extend the reading experience without requiring an external service.
+- Optional browser speech — selected-word pronunciation remains available as an approximation; passage read-aloud is deferred until a reliable IPA-compatible or recorded-audio solution is available.
 - Accurate Old English typography and diacritics — scholarly correctness is central to the reading experience.
 - Accurate phonetic and grammatical notation — appropriate linguistic rendering support must be identified and validated in the technical specification; this is part of correctness, not optional polish.
 - UX best practices — the reading flow stays primary, glosses are scannable, and the interaction works for desktop, mobile, keyboard, and touch users.
@@ -99,7 +99,7 @@ The presentation should help the student connect the original text with its anal
 - Annotated words or phrases that reveal static gloss information.
 - Hover behavior for desktop and tap behavior for mobile.
 - Popup glosses containing available definitions, conjugations or grammatical information, phonetic translations, and Wiktionary links.
-- Word-level pronunciation and passage-level read-aloud controls using browser speech synthesis when available.
+- Word-level pronunciation using browser speech synthesis when available.
 - Correctly rendered phonetic notation, conjugation syntax, linguistic typography, and Old English diacritics.
 - Clear visual association between selected text and its gloss.
 
@@ -108,6 +108,7 @@ The presentation should help the student connect the original text with its anal
 - Selecting among multiple Old English texts — not needed to prove the core loop.
 - Dynamic gloss generation or asking questions — the first version uses curated static information.
 - User accounts, annotation editing, and a complete language-learning system — outside the proof-of-concept boundary.
+- Passage-level read-aloud — deferred because the current browser voice does not preserve Old English pronunciation reliably; revisit with recorded audio or an IPA-capable backend.
 
 ## Possible Later Enhancements
 
