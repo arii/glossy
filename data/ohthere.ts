@@ -19,8 +19,10 @@ export const glossRecords: Record<string, GlossRecord> = {
       ],
       definition: "said, spoke",
       phonetic: "/ˈsæː.de/",
+      speechText: "sah-deh",
+      pronunciationSource: "https://en.wiktionary.org/wiki/s%C3%A6de",
       historicalNote: "The long front vowel ǣ is characteristic of Old English spelling.",
-      wiktionaryUrl: "https://en.wiktionary.org/wiki/s%C7%A3gan",
+      wiktionaryUrl: "https://en.wiktionary.org/w/index.php?search=saegan",
     },
     review: {
       status: "source-checked",
@@ -42,8 +44,10 @@ export const glossRecords: Record<string, GlossRecord> = {
         { form: "e", gloss: "DAT.SG", kind: "ending" },
       ],
       definition: "lord, master",
-      phonetic: "/ˈhlɑː.vord/",
-      wiktionaryUrl: "https://en.wiktionary.org/wiki/hl%C4%81ford",
+      phonetic: "/ˈxlɑː.for.de/",
+      speechText: "hlah-vor-deh",
+      pronunciationSource: "https://en.wiktionary.org/wiki/hlaforde",
+      wiktionaryUrl: "https://en.wiktionary.org/w/index.php?search=hlaford",
     },
     review: {
       status: "source-checked",
@@ -66,8 +70,10 @@ export const glossRecords: Record<string, GlossRecord> = {
       ],
       definition: "furthest north, northernmost",
       phonetic: "/ˈnorθ.mest/",
+      speechText: "north-mest",
+      pronunciationSource: "https://en.wiktionary.org/wiki/nor%C3%BEmest",
       historicalNote: "þ represents the thorn letter, pronounced like modern English th.",
-      wiktionaryUrl: "https://en.wiktionary.org/wiki/nor%C3%BEmest",
+      wiktionaryUrl: "https://en.wiktionary.org/w/index.php?search=north",
     },
     review: {
       status: "source-checked",
@@ -91,7 +97,9 @@ export const glossRecords: Record<string, GlossRecord> = {
       ],
       definition: "dwelt, lived",
       phonetic: "/ˈbuː.de/",
-      wiktionaryUrl: "https://en.wiktionary.org/wiki/b%C5%ABan",
+      speechText: "boo-deh",
+      pronunciationSource: "https://en.wiktionary.org/wiki/bude",
+      wiktionaryUrl: "https://en.wiktionary.org/w/index.php?search=buan",
     },
     review: {
       status: "source-checked",
@@ -115,8 +123,10 @@ export const glossRecords: Record<string, GlossRecord> = {
       ],
       definition: "piece-meal, here and there",
       phonetic: "/ˈstyt.t͡ʃeˌmæː.lum/",
+      speechText: "stue-cheh-mae-lum",
+      pronunciationSource: "https://en.wiktionary.org/wiki/styccem%C3%A6lum",
       historicalNote: "The source uses morpheme boundaries to show the word's structure.",
-      wiktionaryUrl: "https://en.wiktionary.org/wiki/styċċemǣl",
+      wiktionaryUrl: "https://en.wiktionary.org/w/index.php?search=styccemael",
     },
     review: {
       status: "source-checked",
@@ -138,8 +148,11 @@ export const glossRecords: Record<string, GlossRecord> = {
         { form: "að", gloss: "PRS.IND.PL", kind: "ending" },
       ],
       definition: "camp, dwell temporarily",
-      phonetic: "/ˈwiː.t͡ʃi.ɑːθ/",
-      wiktionaryUrl: "https://en.wiktionary.org/wiki/w%C4%ABcian",
+      phonetic: "/ˈwiː.ki.ɑθ/",
+      speechText: "wee-kee-ath",
+      pronunciationSource: "https://en.wiktionary.org/wiki/wicia%C3%BE",
+      historicalNote: "The source spells c, so this form is /k/ rather than the /t͡ʃ/ represented by ċ.",
+      wiktionaryUrl: "https://en.wiktionary.org/wiki/wician",
     },
     review: {
       status: "source-checked",
@@ -155,35 +168,52 @@ for (const record of Object.values(glossRecords)) {
 export const readingPassage: Passage = {
   title: "The voyages of Ohthere and Wulfstan",
   source: "Translated and glossed by Tyler Lemon · September 30, 2026",
-  segments: [
-    { type: "text", value: "Ōhthere " },
-    { type: "gloss", value: "sǣ-d-e", glossId: "saede" },
-    { type: "text", value: " his " },
-    { type: "gloss", value: "hlāford-e", glossId: "hlaforde" },
-    { type: "text", value: ", Ælfrēd-e cyning-e, þæt hē eal-ra Norð-monn-a " },
-    { type: "gloss", value: "norþ-mest", glossId: "northmest" },
-    { type: "text", value: " " },
-    { type: "gloss", value: "bū-d-e", glossId: "bude" },
+  blocks: [
     {
-      type: "text",
-      value:
-        ".\nHē cwæð þæt hē bū-d-e on þǣm land-e norþ-weard-um wiþ þā West-sǣ.\n\nHē ",
+      id: "paragraph-1-sentence-1",
+      segments: [
+        { type: "text", value: "Ōhthere " },
+        { type: "gloss", value: "sǣ-d-e", glossId: "saede" },
+        { type: "text", value: " his " },
+        { type: "gloss", value: "hlāford-e", glossId: "hlaforde" },
+        { type: "text", value: ", Ælfrēd-e cyning-e, þæt hē eal-ra Norð-monn-a " },
+        { type: "gloss", value: "norþ-mest", glossId: "northmest" },
+        { type: "text", value: " " },
+        { type: "gloss", value: "bū-d-e", glossId: "bude" },
+        { type: "text", value: "." },
+      ],
+      translation:
+        "Ohthere said to his lord, King Alfred, that he lived the furthest north of all Norwegians.",
     },
-    { type: "gloss", value: "sǣ-d-e", glossId: "saede" },
     {
-      type: "text",
-      value:
-        " þēah þæt þæt land sīe swīþ-e lang norþ þonan, ac hit is eal wēst-e, būton on fēaw-um stōw-um ",
+      id: "paragraph-1-sentence-2",
+      segments: [
+        { type: "text", value: "Hē cwæð þæt hē bū-d-e on þǣm land-e norþ-weard-um wiþ þā West-sǣ." },
+      ],
+      translation:
+        "He said that he lived in the northern part of the land by the West Sea (ocean west of Norway).",
     },
-    { type: "gloss", value: "styċċe-mǣl-um", glossId: "styccemaelum" },
-    { type: "text", value: " " },
-    { type: "gloss", value: "wīc-i-að", glossId: "wiciad" },
     {
-      type: "text",
-      value:
-        " Finn-as on hunt-oð-e on wintr-a and on sumer-a on fisc-aþ-e be þǣre sǣ.",
+      id: "paragraph-1-sentence-3",
+      segments: [
+        { type: "text", value: "Hē " },
+        { type: "gloss", value: "sǣ-d-e", glossId: "saede" },
+        {
+          type: "text",
+          value:
+            " þēah þæt þæt land sīe swīþ-e lang norþ þonan, ac hit is eal wēst-e, būton on fēaw-um stōw-um ",
+        },
+        { type: "gloss", value: "styċċe-mǣl-um", glossId: "styccemaelum" },
+        { type: "text", value: " " },
+        { type: "gloss", value: "wīc-i-að", glossId: "wiciad" },
+        {
+          type: "text",
+          value:
+            " Finn-as on hunt-oð-e on wintr-a and on sumer-a on fisc-aþ-e be þǣre sǣ.",
+        },
+      ],
+      translation:
+        "He said though that the land continues very long to the north from there, but it is all uninhabited, except in a few places here and there Finns (i.e. Sami) camp, hunting in winter and in summer fishing by the sea.",
     },
   ],
-  translation:
-    "Ohthere said to his lord, King Alfred, that he lived the furthest north of all Norwegians. He said that he lived in the northern part of the land by the West Sea (ocean west of Norway). He said though that the land continues very long to the north from there, but it is all uninhabited, except in a few places here and there Finns (i.e. Sami) camp, hunting in winter and in summer fishing by the sea.",
 };

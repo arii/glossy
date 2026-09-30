@@ -27,14 +27,13 @@ A student opens one Old English passage and reads it in the browser. When they h
 
 ## The POC Boundary
 Build a Next.js website for one selected Old English text, using static glossed information derived from the referenced PDF/LaTeX example. Support reading the passage and revealing or hiding glosses through hover or click. Prioritize legibility and the connection between source text and gloss.
+Include optional browser speech for hearing the selected word and reading the passage aloud when the local browser provides speech synthesis. This is an audible aid, not a claim of authoritative reconstructed Old English pronunciation.
 
 ## Later
 - Additional Old English texts and a broader content library.
 - Dynamic glossing or generated explanations.
 - Asking questions about the passage.
-- Read-aloud support.
 
 ## Explicitly Cut
 - Dynamic question answering and generated glosses: these are intentionally deferred until the static interaction is proven.
-- Read-aloud functionality: useful later, but not needed to demonstrate visual glossing.
 - User accounts, annotation editing, and a full language-learning system: outside the first proof of concept and not required for the core reading loop.

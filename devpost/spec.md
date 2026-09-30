@@ -28,6 +28,7 @@ PRD refs: `prd.md > The Core Journey`, `prd.md > Reading and Visual Glossing`.
 - **TypeScript** — typed passage and gloss data and safer component contracts. Docs: https://www.typescriptlang.org/docs/
 - **Next.js** — the requested web framework and local browser runtime. Docs: https://nextjs.org/docs
 - **React** — interactive components and the selected-gloss state. Docs: https://react.dev/
+- **Web Speech API** — optional local browser speech for word and passage playback. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API
 - **CSS Modules or component stylesheet** — responsive layout, popup positioning, focus styles, and scholarly typography without adding a UI framework. Docs: https://nextjs.org/docs/app/building-your-application/styling
 - **Unicode text with a scholarly font fallback stack** — static IPA, Old English characters, accents, combining diacritics, and conjugation syntax are stored accurately and rendered directly. Unicode reference: https://www.unicode.org/standard/standard.html
 
@@ -55,6 +56,7 @@ Implement `prd.md > Look and Feel` as a focused scholarly reading surface:
 - Preserve source text accents such as `Ō`, `þ`, `ð`, `ċ`, `ġ`, and macrons exactly.
 - Give annotated words a subtle, consistent affordance and a strong selected state.
 - Keep the popup compact, readable, keyboard-focusable, and positioned so it does not cover the selected word or make nearby text impossible to read.
+- Treat the popup as a non-modal region: support outside-pointer dismissal, Escape, close-button dismissal, and focus restoration to the opening trigger without trapping focus away from the reading text.
 - Use responsive spacing and popup layout for desktop and touch-width screens.
 - Label linguistic fields clearly: definition, grammar/conjugation, pronunciation, historical note, and external reference.
 
@@ -82,9 +84,15 @@ PRD ref: `prd.md > Reading and Visual Glossing`.
 
 ### Gloss Popup
 
-Displays the selected record's available definition, conjugation or grammatical information, phonetic notation, historical context, and Wiktionary link. It must not render empty invented values; absent optional fields are omitted. It supports closing, replacement by another selection, keyboard focus, and touch use.
+Displays the selected record's available definition, conjugation or grammatical information, phonetic notation, historical context, pronunciation source, and Wiktionary link. It must not render empty invented values; absent optional fields are omitted. It supports closing, replacement by another selection, outside-pointer dismissal, Escape, focus restoration, keyboard focus, and touch use. It is a non-modal region, so focus is not trapped inside it.
 
 PRD ref: `prd.md > States and Boundaries`.
+
+### Speech Controls
+
+Provides a word-level “Hear word” action in the gloss popup and a passage-level “Read aloud”/“Stop” action on the reading surface. It uses `window.speechSynthesis` when available, sets the utterance language hint to `ang`, and reports unavailable browser support without pretending that a generic browser voice is an authoritative reconstruction of Old English pronunciation.
+
+PRD ref: `prd.md > Reading and Visual Glossing`, `prd.md > States and Boundaries`.
 
 ### Typography and Linguistic Fields
 
@@ -125,6 +133,8 @@ type GlossRecord = {
     morphemes: Morpheme[]
     definition: string
     phonetic?: string
+    speechText?: string
+    pronunciationSource?: string
     historicalNote?: string
     wiktionaryUrl?: string
   }
@@ -138,7 +148,7 @@ type GlossRecord = {
 
 `surface` preserves exactly what appears in the source text, including morpheme boundaries and diacritics. `sourceGlossTex` preserves the manuscript's literal `\textsc{...}` markup, while `sourceGloss` is a readable display form. `analysis` stores normalized linguistic metadata for display and future review, while `review.source` identifies the manuscript entry and `review.status` says only that the transcription was checked against that source—not that the entry has received a new scholarly edition. A future editor can update a record and move it to `needs-review` without changing the reader's rendering contract.
 
-The source is the LaTeX/PDF reference material. The current passage uses the first three `\gll`/`\glt` entries from `references/Voyages_of_Ohthere_Wulfstan.tex`; the source file and entry context are recorded in each review record. `npm run validate:source` checks the displayed surface tokens and literal TeX gloss snippets against the manuscript. Selecting a segment changes only in-memory UI state. Nothing persists when the reader leaves or reloads the page.
+The source is the LaTeX/PDF reference material. The current passage uses the first three `\gll`/`\glt` entries from `references/Voyages_of_Ohthere_Wulfstan.tex`; the source file and entry context are recorded in each review record. `npm run validate:source` checks the displayed surface tokens and literal TeX gloss snippets against the manuscript. Selecting a segment changes only in-memory UI state. Speech playback stays in the browser and does not create audio files or send text to an external service. Nothing persists when the reader leaves or reloads the page.
 
 ## File Structure
 
@@ -151,7 +161,8 @@ glossy/
 ├── components/
 │   ├── annotated-passage.tsx    # Passage segments and interactive gloss triggers
 │   ├── gloss-popup.tsx          # Selected gloss content and external link
-│   └── reading-page.tsx         # Reading surface and selected-record coordination
+│   ├── reading-page.tsx         # Reading surface and selected-record coordination
+│   └── speech-button.tsx        # Reusable browser speech control
 ├── data/
 │   └── ohthere.ts               # Curated passage segments and gloss records
 ├── lib/
@@ -171,6 +182,8 @@ glossy/
 There are no runtime external services. The only external destination is the user's browser navigation to Wiktionary from a curated record.
 
 - **Wiktionary link** — each record may contain a direct `https://en.wiktionary.org/wiki/...` URL. No API call or credential is used. The link opens as a normal external reference.
+- **Browser speech** — word and passage controls use the local Web Speech API only. No endpoint, credential, or audio asset is required. Voice availability varies by browser and operating system.
+- **Pronunciation references** — IPA is curated from Old English lexical/inflection entries and general Old English phonology references. `speechText` is a browser-friendly respelling used only for audible assistance; it is not presented as a recording of reconstructed pronunciation.
 - **Fonts** — the first implementation should use a local CSS fallback stack so the demo works offline. If a packaged or hosted scholarly font is later chosen, verify licensing, loading behavior, and offline fallback before adding it.
 
 ## Important Failure Modes
@@ -179,12 +192,16 @@ There are no runtime external services. The only external destination is the use
 - **Optional field is unavailable** → omit that field from the popup rather than displaying invented or misleading content.
 - **A glyph or combining mark renders poorly** → preserve the source Unicode, show a safe serif fallback, and validate representative strings early in the build before transcribing the full demo passage.
 - **Popup would leave the viewport** → reposition or constrain it within the reading surface; on narrow screens, use a readable anchored panel that does not hide the selected text.
+- **Speech synthesis is unavailable** → keep the gloss and reading experience usable, and show a concise support message or disabled control.
+- **Speech is already active** → cancel the previous utterance before starting the next word or passage, and expose a stop control.
 
 ## What Was Simplified and Why
 
 - **One curated passage** instead of a text library — proves the visual gloss kernel without navigation and content-management work.
 - **Local typed data** instead of a database or API — keeps the demo reliable, offline-capable, and easy to inspect.
 - **Curated phonetic and conjugation records** instead of runtime linguistic generation — protects accuracy and keeps the POC aligned with the approved static-gloss boundary.
+- **Browser speech synthesis** instead of recorded or generated Old English audio — keeps the feature local and demonstrable, while explicitly not claiming authoritative reconstructed pronunciation.
+- **Accessibility light dismiss** — the gloss is a non-modal region with outside-pointer dismissal and focus restoration, preserving access to the reading surface while it is open.
 - **One popup** instead of multiple simultaneous annotations — keeps the reading surface legible and demonstrates the core interaction clearly.
 - **Local browser demo** instead of deployment — the required submission video and repository do not require a hosted URL.
 
@@ -199,3 +216,4 @@ There are no runtime external services. The only external destination is the use
 - **Useful uncertainty clarified: “dynamic generation”** — it means dynamically revealing the selected static record, not generating linguistic analysis at runtime. This preserves the static-gloss POC and avoids an accuracy-critical language engine.
 - **Open issue: exact popup dismissal and positioning** — implement and verify with desktop hover, keyboard focus, mobile tap, click-away, and narrow viewport checks during the build.
 - **Open issue: scholarly font availability** — validate the chosen local fallback stack with representative IPA and Old English strings before finalizing the demo passage.
+- **Open issue: voice quality** — verify the browser's available voice behavior and label it as an audible aid rather than a scholarly pronunciation authority.

@@ -42,6 +42,8 @@ export type LinguisticAnalysis = {
   morphemes: Morpheme[];
   definition: string;
   phonetic?: string;
+  speechText?: string;
+  pronunciationSource?: string;
   historicalNote?: string;
   wiktionaryUrl?: string;
 };
@@ -59,9 +61,14 @@ export type PassageSegment =
   | { type: "text"; value: string }
   | { type: "gloss"; value: string; glossId: string };
 
+export type PassageBlock = {
+  id: string;
+  segments: PassageSegment[];
+  translation: string;
+};
+
 export type Passage = {
   title: string;
   source: string;
-  translation: string;
-  segments: PassageSegment[];
+  blocks: PassageBlock[];
 };

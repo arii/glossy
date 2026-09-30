@@ -1,13 +1,61 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { glossRecords, readingPassage } from "../data/ohthere";
 import { AnnotatedPassage } from "./annotated-passage";
 import { GlossPopup } from "./gloss-popup";
+import { SpeechButton } from "./speech-button";
 
 export function ReadingPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [pinnedId, setPinnedId] = useState<string | null>(null);
+  const [speechAvailable, setSpeechAvailable] = useState(false);
+  const [speechActive, setSpeechActive] = useState(false);
+  const lastTriggerId = useRef<string | null>(null);
+  const glossAreaRef = useRef<HTMLElement | null>(null);
   const selectedRecord = selectedId ? glossRecords[selectedId] : undefined;
+
+  const passageSpeech = readingPassage.blocks
+    .map((block) =>
+      block.segments
+        .map((segment) => {
+          if (segment.type === "gloss") {
+            return glossRecords[segment.glossId]?.analysis.speechText ?? segment.value;
+          }
+          return segment.value.replaceAll("-", "");
+        })
+        .join(""),
+    )
+    .join(" ");
+
+  const selectOnHover = (id: string) => {
+    if (!pinnedId) {
+      setSelectedId(id);
+    }
+  };
+
+  const pinSelection = (id: string) => {
+    lastTriggerId.current = id;
+    setSelectedId(id);
+    setPinnedId(id);
+  };
+
+  const rememberTrigger = (id: string) => {
+    lastTriggerId.current = id;
+  };
+
+  const closeGloss = () => {
+    setSelectedId(null);
+    setPinnedId(null);
+    const triggerId = lastTriggerId.current;
+    if (triggerId) {
+      window.requestAnimationFrame(() => {
+        document
+          .querySelector<HTMLElement>(`[data-gloss-trigger="${triggerId}"]`)
+          ?.focus();
+      });
+    }
+  };
 
   useEffect(() => {
     if (!selectedId) {
@@ -16,13 +64,63 @@ export function ReadingPage() {
 
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setSelectedId(null);
+        closeGloss();
       }
     };
 
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [selectedId]);
+
+  useEffect(() => {
+    if (!selectedId) {
+      return;
+    }
+
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) {
+        return;
+      }
+
+      if (glossAreaRef.current?.contains(target)) {
+        return;
+      }
+
+      if (target instanceof Element && target.closest("[data-gloss-trigger]")) {
+        return;
+      }
+
+      closeGloss();
+    };
+
+    document.addEventListener("pointerdown", closeOnOutsidePointer);
+    return () => document.removeEventListener("pointerdown", closeOnOutsidePointer);
+  }, [selectedId]);
+
+  useEffect(() => {
+    setSpeechAvailable("speechSynthesis" in window && "SpeechSynthesisUtterance" in window);
+  }, []);
+
+  const stopSpeech = () => {
+    window.speechSynthesis.cancel();
+    setSpeechActive(false);
+  };
+
+  const speak = (text: string) => {
+    if (!speechAvailable) {
+      return;
+    }
+
+    stopSpeech();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "ang";
+    utterance.rate = 0.85;
+    utterance.onend = () => setSpeechActive(false);
+    utterance.onerror = () => setSpeechActive(false);
+    setSpeechActive(true);
+    window.speechSynthesis.speak(utterance);
+  };
 
   return (
     <main className="page-shell">
@@ -31,24 +129,52 @@ export function ReadingPage() {
           <p className="eyebrow">Old English visual gloss</p>
           <h1>{readingPassage.title}</h1>
           <p className="source-line">{readingPassage.source}</p>
+          <div className="speech-toolbar">
+            <SpeechButton
+              disabled={!speechAvailable}
+              onClick={() => (speechActive ? stopSpeech() : speak(passageSpeech))}
+            >
+              {speechActive ? "Stop reading" : "Read passage aloud"}
+            </SpeechButton>
+            {!speechAvailable && (
+              <span className="speech-note">Browser speech is unavailable.</span>
+            )}
+          </div>
         </header>
 
         <div className="reading-layout">
           <section className="passage" aria-labelledby="passage-heading">
             <h2 id="passage-heading">Text</h2>
-            <AnnotatedPassage
-              segments={readingPassage.segments}
-              records={glossRecords}
-              selectedId={selectedId}
-              onSelect={setSelectedId}
-            />
-            <p className="translation">{readingPassage.translation}</p>
+            {readingPassage.blocks.map((block) => (
+              <div className="passage-block" key={block.id}>
+                <AnnotatedPassage
+                  segments={block.segments}
+                  records={glossRecords}
+                  selectedId={selectedId}
+                  onHover={selectOnHover}
+                  onSelect={pinSelection}
+                  onTriggerFocus={rememberTrigger}
+                />
+                <p className="translation">{block.translation}</p>
+              </div>
+            ))}
           </section>
-          <section className="gloss-area" aria-label="Visual gloss">
+          <section
+            ref={glossAreaRef}
+            className={`gloss-area${selectedRecord ? " has-selection" : ""}`}
+            aria-label="Visual gloss"
+          >
             {selectedRecord ? (
-              <GlossPopup record={selectedRecord} onClose={() => setSelectedId(null)} />
+              <GlossPopup
+                record={selectedRecord}
+                onClose={closeGloss}
+                onSpeak={() =>
+                  speak(selectedRecord.analysis.speechText ?? selectedRecord.surface.replaceAll("-", ""))
+                }
+                speechAvailable={speechAvailable}
+              />
             ) : (
-              <p className="empty-gloss">Hover over or select an underlined word to explore its gloss.</p>
+              <p className="empty-gloss">Hover over a word to preview its gloss. Click or tap to keep it open while you follow a reference.</p>
             )}
           </section>
         </div>

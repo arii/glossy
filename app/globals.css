@@ -80,14 +80,60 @@ h2 {
   font-size: 0.95rem;
 }
 
+.speech-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1.25rem;
+}
+
+.speech-button {
+  padding: 0.55rem 0.8rem;
+  color: var(--accent);
+  border: 1px solid #cdbba4;
+  border-radius: 999px;
+  background: #f3eadb;
+  font: 700 0.78rem/1.2 Arial, sans-serif;
+  cursor: pointer;
+}
+
+.speech-button:hover,
+.speech-button:focus-visible {
+  background: #eadbc5;
+}
+
+.speech-button:focus-visible,
+.close-button:focus-visible,
+.reference-link:focus-visible {
+  outline: 3px solid rgba(123, 63, 42, 0.45);
+  outline-offset: 3px;
+}
+
+.speech-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.speech-note {
+  color: var(--muted-ink);
+  font: 0.75rem/1.4 Arial, sans-serif;
+}
+
 .passage {
   padding-top: 2.5rem;
 }
 
+.passage-block + .passage-block {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--rule);
+}
+
 .reading-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(15rem, 18rem);
-  gap: 3rem;
+  grid-template-columns: minmax(0, 1.35fr) minmax(15rem, 17rem);
+  gap: 2.5rem;
   align-items: flex-start;
 }
 
@@ -200,6 +246,11 @@ h2 {
   display: block;
 }
 
+.pronunciation-source {
+  color: var(--muted-ink);
+  font: 0.72rem/1.3 Arial, sans-serif;
+}
+
 .gloss-field {
   margin-top: 1rem;
 }
@@ -225,11 +276,24 @@ h2 {
 
 .translation {
   max-width: 44rem;
-  margin-bottom: 0;
+  margin: 1rem 0 0;
+  padding: 0.7rem 0 0.7rem 1rem;
   color: var(--muted-ink);
+  border-left: 2px solid var(--rule);
   font-style: italic;
   font-size: 1.1rem;
+  font-weight: 400;
   line-height: 1.7;
+}
+
+.passage-text,
+.gloss-trigger {
+  transition: color 160ms ease, background-color 160ms ease, opacity 160ms ease;
+}
+
+.passage-text.is-dimmed,
+.gloss-trigger.is-dimmed {
+  opacity: 0.58;
 }
 
 @media (max-width: 42rem) {
@@ -249,5 +313,32 @@ h2 {
     position: static;
     min-height: 0;
     margin-top: 2rem;
+  }
+
+  .gloss-area.has-selection {
+    position: fixed;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    left: 0.75rem;
+    z-index: 10;
+    margin-top: 0;
+    animation: sheet-in 180ms ease-out;
+  }
+
+  .gloss-area.has-selection .gloss-popup {
+    max-height: min(70vh, 34rem);
+    overflow-y: auto;
+    border-radius: 0.75rem;
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

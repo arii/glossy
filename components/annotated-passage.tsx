@@ -4,20 +4,31 @@ type AnnotatedPassageProps = {
   segments: PassageSegment[];
   records: Record<string, GlossRecord>;
   selectedId: string | null;
+  onHover: (id: string) => void;
   onSelect: (id: string) => void;
+  onTriggerFocus: (id: string) => void;
 };
 
 export function AnnotatedPassage({
   segments,
   records,
   selectedId,
+  onHover,
   onSelect,
+  onTriggerFocus,
 }: AnnotatedPassageProps) {
   return (
     <p className="old-english">
       {segments.map((segment, index) => {
         if (segment.type === "text") {
-          return <span key={`${segment.value}-${index}`}>{segment.value}</span>;
+          return (
+            <span
+              className={selectedId ? "passage-text is-dimmed" : "passage-text"}
+              key={`${segment.value}-${index}`}
+            >
+              {segment.value}
+            </span>
+          );
         }
 
         const record = records[segment.glossId];
@@ -28,16 +39,28 @@ export function AnnotatedPassage({
         return (
           <button
             key={`${segment.glossId}-${index}`}
-            className={`gloss-trigger${selectedId === record.id ? " is-selected" : ""}`}
+            className={`gloss-trigger${selectedId === record.id ? " is-selected" : ""}${selectedId && selectedId !== record.id ? " is-dimmed" : ""}`}
             type="button"
             aria-label={`Show gloss for ${record.surface}`}
             aria-pressed={selectedId === record.id}
+            aria-expanded={selectedId === record.id}
+            aria-controls="gloss-popup"
             title={`Show gloss for ${record.surface}`}
-            onPointerOver={() => onSelect(record.id)}
-            onMouseOver={() => onSelect(record.id)}
-            onTouchStart={() => onSelect(record.id)}
-            onFocus={() => onSelect(record.id)}
-            onClick={() => onSelect(record.id)}
+            data-selected={selectedId === record.id}
+            onPointerOver={() => onHover(record.id)}
+            onMouseOver={() => onHover(record.id)}
+            onTouchStart={() => {
+              onTriggerFocus(record.id);
+              onSelect(record.id);
+            }}
+            onFocus={() => {
+              onTriggerFocus(record.id);
+              onHover(record.id);
+            }}
+            onClick={() => {
+              onTriggerFocus(record.id);
+              onSelect(record.id);
+            }}
           >
             {segment.value}
           </button>

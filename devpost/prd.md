@@ -46,10 +46,16 @@ The student can read the selected Old English passage and identify annotated wor
 - [ ] The popup includes the word definition and conjugation or grammatical information when present.
 - [ ] The popup includes phonetic translation when present.
 - [ ] The popup includes a Wiktionary link when present, and that link can be followed.
+- [ ] The popup offers a control to hear the selected word or lemma using the browser's available speech support.
+- [ ] The reading surface offers a control to read the selected passage aloud and stop playback.
 - [ ] Text without a gloss remains readable as ordinary passage text.
 - [ ] Phonetic notation, conjugation syntax, and Old English diacritics remain visually distinguishable and correctly readable.
 - [ ] A selected word has a clear visual state, and the popup does not hide the word or make the surrounding passage unreadable.
 - [ ] The popup and its external link are usable with keyboard focus and touch as well as pointer interaction.
+- [ ] The popup closes when the reader clicks or taps outside it.
+- [ ] Escape, the close control, and outside dismissal restore focus to the word that opened the popup.
+- [ ] Gloss triggers expose whether their popup is expanded, and the popup has an accessible name tied to the selected word.
+- [ ] The popup's IPA includes a pronunciation source, while audible playback is clearly labeled as a browser pronunciation aid rather than an authoritative reconstruction.
 
 ### Understanding the Source
 
@@ -68,6 +74,8 @@ The presentation should help the student connect the original text with its anal
 - **Missing optional information** — If a word has no phonetic translation, conjugation detail, or Wiktionary link, the popup shows the information that exists without inventing a placeholder.
 - **Responsive state** — The same reading and glossing experience remains usable on desktop and mobile; mobile uses tapping rather than relying on hover.
 - **External link** — A Wiktionary link takes the student to the referenced external page.
+- **Speech unavailable** — The controls are disabled or show a concise availability message when the browser does not expose speech synthesis.
+- **Speech active** — Starting another utterance stops the previous one; the student can stop playback without changing the selected gloss.
 
 ## Product Decisions
 
@@ -75,6 +83,7 @@ The presentation should help the student connect the original text with its anal
 - Static glossed information — dynamic question answering and generated explanations are deferred.
 - Desktop hover and mobile tap — both interaction modes are needed for a responsive web layout.
 - Popup gloss box — the student should see the definition, conjugation, phonetic translation, and Wiktionary link in one focused explanation.
+- Optional browser speech — word pronunciation and passage read-aloud extend the reading experience without requiring an external service.
 - Accurate Old English typography and diacritics — scholarly correctness is central to the reading experience.
 - Accurate phonetic and grammatical notation — appropriate linguistic rendering support must be identified and validated in the technical specification; this is part of correctness, not optional polish.
 - UX best practices — the reading flow stays primary, glosses are scannable, and the interaction works for desktop, mobile, keyboard, and touch users.
@@ -88,6 +97,7 @@ The presentation should help the student connect the original text with its anal
 - Annotated words or phrases that reveal static gloss information.
 - Hover behavior for desktop and tap behavior for mobile.
 - Popup glosses containing available definitions, conjugations or grammatical information, phonetic translations, and Wiktionary links.
+- Word-level pronunciation and passage-level read-aloud controls using browser speech synthesis when available.
 - Correctly rendered phonetic notation, conjugation syntax, linguistic typography, and Old English diacritics.
 - Clear visual association between selected text and its gloss.
 
@@ -95,14 +105,12 @@ The presentation should help the student connect the original text with its anal
 
 - Selecting among multiple Old English texts — not needed to prove the core loop.
 - Dynamic gloss generation or asking questions — the first version uses curated static information.
-- Read-aloud support — useful later but not required for visual glossing.
 - User accounts, annotation editing, and a complete language-learning system — outside the proof-of-concept boundary.
 
 ## Possible Later Enhancements
 
 - Add a library or selector for additional texts.
 - Add generated explanations and question answering.
-- Add read-aloud support.
 - Expand glosses with richer historical context and learning features.
 
 ## Non-Goals
@@ -115,3 +123,4 @@ The presentation should help the student connect the original text with its anal
 
 - **Popup closing behavior** — The intended direction is for the popup to behave as an intuitive hover/tap box and update when another word is selected. Exact pointer-leave and mobile dismissal behavior can be finalized during `4-spec` because it does not change the product’s core promise.
 - **Notation support** — `4-spec` must identify and validate the appropriate phonetic or linguistic rendering support and confirm that the source’s conjugation syntax and typography can be represented accurately. This is required before implementation, not an optional polish item.
+- **Speech accuracy** — browser speech synthesis can provide an audible aid, but available voices may not represent reconstructed Old English pronunciation accurately. The POC must label the control as browser speech and avoid presenting it as an authoritative phonetic recording.

@@ -29,14 +29,14 @@ Build mode: fast
   Learner check: Select an annotated word on desktop, then another word, and try the same at a narrow mobile width. Confirm the popup clearly belongs to the selected word and contains useful vocabulary or grammar information.
   Commit: `Add interactive visual glosses`
 
-- [x] **3. You can use the gloss comfortably across devices**
+- [ ] **3. You can use the gloss comfortably across devices and hear the text**
   Becomes usable: The complete reading-and-gloss journey is legible, keyboard/touch usable, and resilient when optional data or popup space is limited.
   Why now: Once the kernel works, the remaining risk is whether the scholarly notation and interaction remain usable in the actual responsive demo.
   PRD ref: `prd.md > Look and Feel`, `prd.md > Reading and Visual Glossing`, `prd.md > States and Boundaries`, `prd.md > Understanding the Source`
   Spec ref: `spec.md > Look and Feel`, `spec.md > Typography and Linguistic Fields`, `spec.md > Important Failure Modes`, `spec.md > Where It Runs and How Someone Tries It`
-  Build: Refine responsive CSS, selected/focus states, popup positioning and dismissal, keyboard semantics, external-link behavior, and narrow viewport fallbacks. Validate representative IPA/phonetic notation, conjugation syntax, Old English diacritics, and source typography. Keep unannotated text readable and omit absent optional fields.
-  Verify (mechanical): Run lint/type check/build; exercise the page at desktop and narrow viewport sizes with keyboard focus and touch/click interactions; confirm no horizontal overflow, no console errors from the app, correct representative glyphs, popup replacement/close behavior, and working Wiktionary link markup.
-  Learner check: Try the one-minute demo flow: open the passage, select a word, inspect its definition and conjugation, select another word, close the popup, and repeat in a narrow viewport using keyboard or touch. Note anything confusing or visually wrong.
+  Build: Refine responsive CSS, selected/focus states, popup positioning and dismissal, keyboard semantics, external-link behavior, narrow viewport fallbacks, and optional browser speech controls for a selected word and the passage. Validate representative IPA/phonetic notation, conjugation syntax, Old English diacritics, and source typography. Keep unannotated text readable and omit absent optional fields.
+  Verify (mechanical): Run lint/type check/build and `npm run validate:source`; exercise the page at desktop and narrow viewport sizes with keyboard focus and touch/click interactions; confirm no horizontal overflow, no console errors from the app, correct representative glyphs, popup replacement/close behavior, working Wiktionary link markup, and speech controls that either start/stop playback or report unavailable support.
+  Learner check: Try the one-minute demo flow: open the passage, select a word, inspect its definition and inflection, click to pin the popup, follow its Wiktionary search/reference, use Hear word, use Read passage aloud, stop playback, and repeat in a narrow viewport. Note anything confusing or visually wrong.
   Commit: `Polish responsive gloss experience`
 
 ## Hands-on Checkpoints
@@ -63,3 +63,4 @@ Activity mode: not started
 ## Revisions
 
 - The initial gloss record used a generic `conjugation` field and a shortened paraphrase of the source text. It was replaced with source-faithful surface tokens, source glosses, lemma/part-of-speech/inflection features, morphemes, and review metadata; the current POC still defers an editing interface.
+- The final review moved translations beside their source blocks, added click-to-pin behavior, replaced fragile diacritic Wiktionary slugs with lemma searches where needed, and added optional local browser speech for words and the passage.
