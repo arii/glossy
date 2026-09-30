@@ -19,7 +19,7 @@ Build mode: fast
   Learner check: Open the local page and read the passage at desktop width and a narrow mobile width. Confirm the Old English characters and overall reading layout look correct.
   Commit: `Build readable Old English passage`
 
-- [ ] **2. You can reveal a word's visual gloss**
+- [x] **2. You can reveal a word's visual gloss**
   Becomes usable: Selecting an annotated word or phrase displays its matching static gloss in one popup, and selecting another replaces it.
   Why now: This is Glossy's unique kernel and core loop; proving it early prevents building a generic reading page around an unverified interaction.
   PRD ref: `prd.md > Reading and Visual Glossing`, `prd.md > States and Boundaries`
@@ -41,7 +41,7 @@ Build mode: fast
 
 ## Hands-on Checkpoints
 
-- [ ] Early usable behavior explored — after slice 1, inspect the reading surface and typography before interaction work.
+- [x] Early usable behavior explored — after slice 1, inspect the reading surface and typography before interaction work; learner reported inconsistent glyph sizing and missing interactions, which shaped slice 2.
 - [ ] Final kick-the-tires exploration and feedback completed — after slice 3, run the full one-minute demo and report any revisions.
 
 ## Final Review
