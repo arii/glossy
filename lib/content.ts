@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import matter from "gray-matter";
 import { parseMDX } from "@tinacms/mdx";
 import type { DictionaryEntry, ManuscriptDocument, TextDocument } from "./types";
 
@@ -48,27 +49,33 @@ export function loadManuscripts(): ManuscriptDocument[] {
 
   return fs.readdirSync(mDir).filter((f) => f.endsWith(".mdx")).map((file) => {
     const raw = fs.readFileSync(path.join(mDir, file), "utf8");
-    const match = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
-    const frontmatter: Record<string, string> = {};
-    if (match) {
-      match[1].split("\n").forEach((line) => {
-        const colon = line.indexOf(":");
-        if (colon > 0 && !line.startsWith(" ")) {
-          const k = line.slice(0, colon).trim();
-          const v = line.slice(colon + 1).trim().replace(/^["']|["']$/g, "");
-          frontmatter[k] = v;
-        }
-      });
-    }
-    const bodyText = match ? match[2] : raw;
+    const parsed = matter(raw);
+    const frontmatter = parsed.data as Record<string, unknown>;
+    const bodyText = parsed.content;
     const bodyAst = parseMDX(bodyText, glossWordTemplate, (val: string) => val);
     const slug = path.basename(file, ".mdx");
+    const rawTranslation = typeof frontmatter.translation === "string" ? frontmatter.translation.trim() : undefined;
+
+    // Split paragraphs into individual sentence blocks with their matching translations
+    const rawParagraphs = bodyText.trim().split(/\n\s*\n/).filter(Boolean);
+    const translationParagraphs = rawTranslation ? rawTranslation.split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean) : [];
+
+    const blocks = rawParagraphs.map((para, index) => {
+      const paraAst = parseMDX(para, glossWordTemplate, (val: string) => val);
+      return {
+        id: `${slug}-block-${index + 1}`,
+        body: paraAst,
+        translation: translationParagraphs[index],
+      };
+    });
+
     return {
       slug,
-      title: frontmatter.title || slug,
-      author: frontmatter.author,
-      source: frontmatter.source,
-      translation: frontmatter.translation,
+      title: typeof frontmatter.title === "string" ? frontmatter.title : slug,
+      author: typeof frontmatter.author === "string" ? frontmatter.author : undefined,
+      source: typeof frontmatter.source === "string" ? frontmatter.source : undefined,
+      translation: rawTranslation,
+      blocks: blocks.length > 0 ? blocks : undefined,
       body: bodyAst,
       rawBody: bodyText,
     };

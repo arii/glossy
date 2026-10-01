@@ -22,10 +22,12 @@ Source: `scope.md > Who It's For`, `scope.md > The POC Boundary`.
 
 ### Reading Surface
 
-The proof of concept has one responsive reading surface rather than multiple screens. The Old English text remains primary; its source glosses appear on a separate line beneath it, and hover, focus, or tap opens the associated expanded details. The layout must work on desktop and mobile.
+The proof of concept has one responsive reading surface rather than multiple screens. The Old English text remains primary; its source glosses appear on a separate line beneath each word/line, accompanied by the full translated English sentence for each passage block, and hover, focus, or tap opens the associated expanded details. The layout must work on desktop and mobile.
 
-The web presentation should preserve the important structure of the source PDF: an Old English line, its gloss line, and an understandable translation. Readers can select among complete texts in the library.
-Content should be editable through TinaCMS so adding a text, correcting a translation, or revising a gloss does not require changing React components or hand-editing JSON. The editable model must keep source forms, literal TeX glosses, linguistic analysis, and review provenance connected.
+The student-facing visualizer is intentionally decoupled from CMS authoring tools. The reading interface provides a pure, scholarly reading environment without editor buttons or administrative distractions. Content management and dictionary editing workflows are accessible via dedicated administrative routes (`/admin`) or unobtrusive footer links.
+
+The web presentation preserves the essential structure of the source PDF: an Old English line, its gloss line, and an understandable translation for every sentence block. Readers can select among complete texts in the library.
+Content is editable through TinaCMS (using centralized dictionary entries and manuscript documents) so adding a text, correcting a translation, or revising a gloss does not require changing React components.
 
 ## Content Schema and Editing Requirements
 
@@ -54,6 +56,8 @@ The student can read the selected Old English passage and identify annotated wor
 - [ ] The passage is legible on desktop and mobile layouts.
 - [ ] Old English characters, accents, and diacritics render correctly.
 - [ ] Each annotated Old English line has its source gloss on a separate line immediately beneath it; glosses are not interspersed with the source text.
+- [ ] Each passage block includes its corresponding translated English sentence clearly rendered.
+- [ ] The reading visualizer is clean and distraction-free, with editing tools cleanly separated to `/admin` or unobtrusive footer navigation.
 - [ ] The source gloss line preserves the token order of the Old English line, and both remain readable when they wrap on narrow screens.
 - [ ] Hovering over an annotated word or phrase on desktop reveals its gloss popup.
 - [ ] Tapping an annotated word or phrase on mobile reveals its gloss popup.

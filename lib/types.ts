@@ -121,12 +121,19 @@ export type DictionaryEntry = {
   relativePath?: string;
 };
 
+export type ManuscriptSentenceBlock = {
+  id: string;
+  body: unknown;
+  translation?: string;
+};
+
 export type ManuscriptDocument = {
   slug: string;
   title: string;
   author?: string;
   source?: string;
   translation?: string;
+  blocks?: ManuscriptSentenceBlock[];
   body: unknown;
   rawBody?: string;
   _tina_metadata?: Record<string, string>;

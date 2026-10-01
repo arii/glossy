@@ -46,7 +46,7 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:3000` for the reader. Use the **Edit text and glosses** link or `http://localhost:3000/admin/index.html` to open TinaCMS. A document preview uses `/texts/<slug>` and displays the same reader for that text. For the required demo recording, show the Old English line, its separate gloss line, open expanded details with hover or tap, and repeat in a narrow viewport.
+Open `http://localhost:3000` for the reader visualizer. The visualizer is focused on learning and text analysis; editing tools are cleanly segregated and accessible at `http://localhost:3000/admin/index.html` (or via an unobtrusive footer utility link). A document preview uses `/texts/<slug>` and displays the same reader for that text. For the required demo recording, show the Old English line, its separate gloss line, the accompanying English translation sentence, open expanded details with hover or tap, and repeat in a narrow viewport.
 
 ## Look and Feel
 

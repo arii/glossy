@@ -26,8 +26,10 @@ The learner wants to build a web visualizer for Old English annotations using Ne
 A student selects a complete text, reads the Old English with its source gloss on a separate line, and hovers over or clicks a word to open expanded details. The compelling moment is seeing the source manuscript's interlinear glossing and its deeper analysis made readable and interactive.
 
 ## The POC Boundary
-Build a Next.js website for a small library of complete Old English texts, using static glossed information derived from the referenced PDF/LaTeX example. Keep each source gloss directly beneath its Old English form, and let hover, focus, or tap open the expanded linguistic details. Prioritize legibility and the connection between source text and gloss.
-Use TinaCMS as a form-based editing surface for complete text documents and gloss records so editors can add texts and correct translations, source glosses, morphemes, IPA, and review metadata without manually editing JSON or component code. The TeX manuscript remains the source of truth for source verification; TinaCMS is the authoring and review workflow, not an automatic linguistic authority.
+Build a Next.js website for a small library of complete Old English texts, using static glossed information derived from the referenced PDF/LaTeX example. Keep each source gloss directly beneath its Old English form, preserve the translated English sentence for each passage block, and let hover, focus, or tap open the expanded linguistic details. Prioritize legibility and the connection between source text and gloss.
+
+Cleanly separate the student-facing reading visualizer from the editing tools: the visualizer presents a focused, scholarly reading surface free of distracting CMS chrome, while editing tools and dictionary management are isolated in dedicated authoring routes (`/admin`).
+Use TinaCMS as an authoring and dictionary curation surface (with centralized dictionary terms and MDX/JSON text documents) so editors can add texts and correct translations, source glosses, morphemes, IPA, and review metadata without modifying application code. The TeX manuscript remains the source of truth for source verification; TinaCMS is the authoring and review workflow, not an automatic linguistic authority.
 Audible pronunciation is deferred until a reliable recorded or IPA-compatible solution is available; do not expose browser-generated speech that mispronounces the language.
 
 ## Later

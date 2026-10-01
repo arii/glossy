@@ -29,9 +29,9 @@ if (!clientId) {
 
 const reader = await check("/", [
   "Old English visual gloss",
-  "Edit text and glosses",
   "Source gloss line",
   "Ohthere.nom",
+  "Ohthere said to his lord, King Alfred",
 ]);
 if (!reader.includes("/admin/index.html#/collections/manuscript/~") && !reader.includes("/admin/index.html#/collections/text/~")) {
   throw new Error("The reader's edit link does not open the Tina collection.");

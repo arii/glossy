@@ -205,9 +205,6 @@ function ReadingPageInner({
               </select>
             </div>
           )}
-          <a className="editor-link" href="/admin/index.html#/collections/manuscript/~">
-            Edit text and glosses
-          </a>
           <h1 data-tina-field={activeManuscript?._tina_metadata?.title}>{currentTitle}</h1>
           <p className="source-line" data-tina-field={activeManuscript?._tina_metadata?.source}>{currentSource}</p>
         </header>
@@ -215,7 +212,26 @@ function ReadingPageInner({
         <div className="reading-layout">
           <section className="passage" aria-labelledby="passage-heading">
             <h2 id="passage-heading">Text</h2>
-            {activeManuscript?.body ? (
+            {activeManuscript?.blocks && activeManuscript.blocks.length > 0 ? (
+              activeManuscript.blocks.map((block) => (
+                <div className="passage-block" key={block.id}>
+                  <div
+                    className="old-english"
+                    aria-label="Source gloss line"
+                  >
+                    <TinaMarkdown
+                      content={block.body as Parameters<typeof TinaMarkdown>[0]["content"]}
+                      components={markdownComponents}
+                    />
+                  </div>
+                  {block.translation && (
+                    <p className="translation">
+                      {block.translation}
+                    </p>
+                  )}
+                </div>
+              ))
+            ) : activeManuscript?.body ? (
               <div className="passage-block">
                 <div
                   className="old-english"
@@ -276,6 +292,19 @@ function ReadingPageInner({
             )}
           </section>
         </div>
+
+        <footer className="reader-footer">
+          <p className="reader-footer-note">
+            Glossy — Interactive Old English Reader &amp; Linguistic Visualizer
+          </p>
+          <a
+            className="reader-admin-link"
+            href="/admin/index.html#/collections/manuscript/~"
+            title="Open TinaCMS dictionary and manuscript authoring tools"
+          >
+            Editorial &amp; CMS Tools →
+          </a>
+        </footer>
       </article>
     </main>
   );
