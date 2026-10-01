@@ -5,3 +5,5 @@
 node_modules/
 .next/
 *.tsbuildinfo
+/public/admin/
+/tina/__generated__/

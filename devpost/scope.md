@@ -14,7 +14,7 @@ Glossy makes glosses appear and disappear directly around the Old English text a
 A college student studying Old English for linguistic or literary analysis. They are trying to understand what is happening in the language while reading, improve their vocabulary and grammar, and currently rely on static PDFs or other separate reference material.
 
 ## The Core Loop
-The student opens a selected Old English passage, begins reading, and hovers over or clicks text that needs explanation. Glossy reveals the relevant static gloss, and the student dismisses it or moves on when it is no longer needed.
+The student opens a complete Old English text, reads each original line with its source gloss on the next line, and hovers over or clicks an annotated form for expanded details. They use the two-level glossing to understand the passage and continue reading.
 
 ## Inspiration & Identity
 The first content is based on the referenced annotated PDF, `references/Voyages_of_Ohthere_Wulfstan.pdf`, with source material in the accompanying LaTeX file. The project is inspired by the annotated *Alice in Wonderland* example from [Old English Aerobics](https://oldenglishaerobics.net/). It should feel like a clear, readable digital marginal gloss: focused on the text, with supporting information available without overwhelming the reading experience.
@@ -23,16 +23,17 @@ The first content is based on the referenced annotated PDF, `references/Voyages_
 The learner wants to build a web visualizer for Old English annotations using Next.js and explore how the existing glossy PDF experience can become interactive.
 
 ## What "Working" Looks Like
-A student opens one Old English passage and reads it in the browser. When they hover over or click a word or phrase, the associated gloss appears in a clear visual relationship to the text, helping them understand the language. The compelling moment is seeing the static glossing concept become an easy-to-read, on-demand interaction.
+A student selects a complete text, reads the Old English with its source gloss on a separate line, and hovers over or clicks a word to open expanded details. The compelling moment is seeing the source manuscript's interlinear glossing and its deeper analysis made readable and interactive.
 
 ## The POC Boundary
-Build a Next.js website for one selected Old English text, using static glossed information derived from the referenced PDF/LaTeX example. Support reading the passage and revealing or hiding glosses through hover or click. Prioritize legibility and the connection between source text and gloss.
-Include optional browser speech for hearing the selected word when the local browser provides speech synthesis. Passage-level read-aloud is deferred because the current browser voices do not preserve Old English pronunciation reliably; revisit it with recorded audio or an IPA-capable backend.
+Build a Next.js website for a small library of complete Old English texts, using static glossed information derived from the referenced PDF/LaTeX example. Keep each source gloss directly beneath its Old English form, and let hover, focus, or tap open the expanded linguistic details. Prioritize legibility and the connection between source text and gloss.
+Use TinaCMS as a form-based editing surface for complete text documents and gloss records so editors can add texts and correct translations, source glosses, morphemes, IPA, and review metadata without manually editing JSON or component code. The TeX manuscript remains the source of truth for source verification; TinaCMS is the authoring and review workflow, not an automatic linguistic authority.
+Audible pronunciation is deferred until a reliable recorded or IPA-compatible solution is available; do not expose browser-generated speech that mispronounces the language.
 
 ## Later
-- Additional Old English texts and a broader content library.
 - Dynamic glossing or generated explanations.
 - Asking questions about the passage.
+- Reliable recorded or IPA-compatible pronunciation audio.
 
 ## Explicitly Cut
 - Dynamic question answering and generated glosses: these are intentionally deferred until the static interaction is proven.

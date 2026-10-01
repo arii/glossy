@@ -42,19 +42,25 @@ export type LinguisticAnalysis = {
   morphemes: Morpheme[];
   definition: string;
   phonetic?: string;
-  speechText?: string;
   pronunciationSource?: string;
   historicalNote?: string;
   wiktionaryUrl?: string;
 };
 
-export type GlossRecord = {
+export type InterlinearWord = {
   id: string;
-  surface: string;
-  sourceGloss: string;
-  sourceGlossTex: string;
-  analysis: LinguisticAnalysis;
-  review: ReviewMetadata;
+  originalWord: string;
+  morphologicalGloss?: string;
+  trailingPunctuation?: string;
+  sourceGlossTex?: string;
+  analysis?: LinguisticAnalysis;
+  review?: ReviewMetadata;
+};
+
+export type ReadingSentence = {
+  id: string;
+  translation: string;
+  words: InterlinearWord[];
 };
 
 export type PassageSegment =
@@ -72,3 +78,29 @@ export type Passage = {
   source: string;
   blocks: PassageBlock[];
 };
+
+export type TextDocument = Passage & {
+  textId: string;
+  slug: string;
+  language: "Old English";
+  author?: string;
+  title: string;
+  source: string;
+  sourceFile: string;
+  sourceEdition?: string;
+  status: "draft" | "review" | "published";
+  sentences?: ReadingSentence[];
+  blocks?: PassageBlock[];
+  glossRecords?: GlossRecord[];
+};
+
+export type GlossRecord = {
+  id: string;
+  surface: string;
+  sourceGloss: string;
+  sourceGlossTex: string;
+  analysis: LinguisticAnalysis;
+  review: ReviewMetadata;
+};
+
+export type PassageDocument = TextDocument;

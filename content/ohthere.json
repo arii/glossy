@@ -1,0 +1,1816 @@
+{
+  "textId": "ohthere",
+  "slug": "ohthere-wulfstan",
+  "language": "Old English",
+  "author": "Ohthere and Wulfstan",
+  "title": "The voyages of Ohthere and Wulfstan",
+  "source": "Translated and glossed by Tyler Lemon · September 30, 2026",
+  "sourceFile": "references/Voyages_of_Ohthere_Wulfstan.tex",
+  "sourceEdition": "First three source entries from the accompanying TeX manuscript",
+  "status": "published",
+  "sentences": [
+    {
+      "id": "paragraph-1-sentence-1",
+      "translation": "Ohthere said to his lord, King Alfred, that he lived the furthest north of all Norwegians.",
+      "words": [
+        {
+          "id": "paragraph-1-sentence-1-word-1",
+          "originalWord": "Ōhthere",
+          "morphologicalGloss": "Ohthere.nom",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "Ohthere.\\textsc{nom}",
+          "analysis": {
+            "lemma": "Ōhthere",
+            "partOfSpeech": "noun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "Ōhthere",
+                "gloss": "Ohthere",
+                "kind": "stem"
+              }
+            ],
+            "definition": "Ohthere"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-1-word-2",
+          "originalWord": "sǣ-d-e",
+          "morphologicalGloss": "say-PST-IND.3SG",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "say-\\textsc{pst}-\\textsc{ind.3sg}",
+          "analysis": {
+            "lemma": "sǣgan",
+            "partOfSpeech": "verb",
+            "features": {
+              "tense": "past",
+              "mood": "indicative",
+              "person": 3,
+              "number": "singular"
+            },
+            "morphemes": [
+              {
+                "form": "sǣ",
+                "gloss": "say",
+                "kind": "stem"
+              },
+              {
+                "form": "d",
+                "gloss": "PST",
+                "kind": "suffix"
+              },
+              {
+                "form": "e",
+                "gloss": "IND.3SG",
+                "kind": "ending"
+              }
+            ],
+            "definition": "said, spoke",
+            "phonetic": "/ˈsæː.de/",
+            "pronunciationSource": "https://en.wiktionary.org/wiki/s%C3%A6de",
+            "historicalNote": "The long front vowel ǣ is characteristic of Old English spelling.",
+            "wiktionaryUrl": "https://en.wiktionary.org/w/index.php?search=saegan"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercise 1"
+            },
+            "notes": "Segmentation and source gloss follow the first \\gll entry. Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-1-word-3",
+          "originalWord": "his",
+          "morphologicalGloss": "3sg.m.gen",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "\\textsc{3sg.m.gen}",
+          "analysis": {
+            "lemma": "hē",
+            "partOfSpeech": "pronoun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "his",
+                "gloss": "his",
+                "kind": "stem"
+              }
+            ],
+            "definition": "his"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-1-word-4",
+          "originalWord": "hlāford-e",
+          "morphologicalGloss": "lord-DAT.SG",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "lord-\\textsc{dat.sg}",
+          "analysis": {
+            "lemma": "hlāford",
+            "partOfSpeech": "noun",
+            "features": {
+              "case": "dative",
+              "number": "singular",
+              "gender": "masculine"
+            },
+            "morphemes": [
+              {
+                "form": "hlāford",
+                "gloss": "lord",
+                "kind": "stem"
+              },
+              {
+                "form": "e",
+                "gloss": "DAT.SG",
+                "kind": "ending"
+              }
+            ],
+            "definition": "lord, master",
+            "phonetic": "/ˈxlɑː.for.de/",
+            "pronunciationSource": "https://en.wiktionary.org/wiki/hlaforde",
+            "wiktionaryUrl": "https://en.wiktionary.org/w/index.php?search=hlaford"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercise 1"
+            },
+            "notes": "The dative singular is represented as an inflection, not a verb conjugation. Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-1-word-5",
+          "originalWord": "Ælfrēd-e",
+          "morphologicalGloss": "Alfred-dat.sg",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "Alfred-\\textsc{dat.sg}",
+          "analysis": {
+            "lemma": "Ælfrēd",
+            "partOfSpeech": "noun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "Ælfrēde",
+                "gloss": "Alfred",
+                "kind": "stem"
+              }
+            ],
+            "definition": "Alfred"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-1-word-6",
+          "originalWord": "cyning-e",
+          "morphologicalGloss": "king-dat.sg",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "king-\\textsc{dat.sg}",
+          "analysis": {
+            "lemma": "cyning",
+            "partOfSpeech": "noun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "cyninge",
+                "gloss": "king",
+                "kind": "stem"
+              }
+            ],
+            "definition": "king"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-1-word-7",
+          "originalWord": "þæt",
+          "morphologicalGloss": "comp",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "\\textsc{comp}",
+          "analysis": {
+            "lemma": "þæt",
+            "partOfSpeech": "conjunction",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "þæt",
+                "gloss": "that",
+                "kind": "stem"
+              }
+            ],
+            "definition": "that"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-1-word-8",
+          "originalWord": "hē",
+          "morphologicalGloss": "3sg.m.nom",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "\\textsc{3sg.m.nom}",
+          "analysis": {
+            "lemma": "hē",
+            "partOfSpeech": "pronoun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "hē",
+                "gloss": "he",
+                "kind": "stem"
+              }
+            ],
+            "definition": "he"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-1-word-9",
+          "originalWord": "eal-ra",
+          "morphologicalGloss": "all-gen.pl.str",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "all-\\textsc{gen.pl.str}",
+          "analysis": {
+            "lemma": "eall",
+            "partOfSpeech": "adjective",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "ealra",
+                "gloss": "all",
+                "kind": "stem"
+              }
+            ],
+            "definition": "all"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-1-word-10",
+          "originalWord": "Norð-monn-a",
+          "morphologicalGloss": "north-man-gen.pl",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "north-man-\\textsc{gen.pl}",
+          "analysis": {
+            "lemma": "Norðmann",
+            "partOfSpeech": "noun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "Norðmonna",
+                "gloss": "Norwegians",
+                "kind": "stem"
+              }
+            ],
+            "definition": "Norwegians"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-1-word-11",
+          "originalWord": "norþ-mest",
+          "morphologicalGloss": "north-most.ADV",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "north-most.\\textsc{adv}",
+          "analysis": {
+            "lemma": "norþ",
+            "partOfSpeech": "adverb",
+            "features": {
+              "degree": "superlative"
+            },
+            "morphemes": [
+              {
+                "form": "norþ",
+                "gloss": "north",
+                "kind": "stem"
+              },
+              {
+                "form": "mest",
+                "gloss": "most",
+                "kind": "suffix"
+              }
+            ],
+            "definition": "furthest north, northernmost",
+            "phonetic": "/ˈnorθ.mest/",
+            "pronunciationSource": "https://en.wiktionary.org/wiki/nor%C3%BEmest",
+            "historicalNote": "þ represents the thorn letter, pronounced like modern English th.",
+            "wiktionaryUrl": "https://en.wiktionary.org/w/index.php?search=north"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercise 1"
+            },
+            "notes": "The source labels this token as north-most.adverb. Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-1-word-12",
+          "originalWord": "bū-d-e",
+          "morphologicalGloss": "dwell-PST-SJV.SG",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "dwell-\\textsc{pst}-\\textsc{sjv.sg}",
+          "analysis": {
+            "lemma": "būan",
+            "partOfSpeech": "verb",
+            "features": {
+              "tense": "past",
+              "mood": "subjunctive",
+              "person": 3,
+              "number": "singular"
+            },
+            "morphemes": [
+              {
+                "form": "bū",
+                "gloss": "dwell",
+                "kind": "stem"
+              },
+              {
+                "form": "d",
+                "gloss": "PST",
+                "kind": "suffix"
+              },
+              {
+                "form": "e",
+                "gloss": "SJV.SG",
+                "kind": "ending"
+              }
+            ],
+            "definition": "dwelt, lived",
+            "phonetic": "/ˈbuː.de/",
+            "pronunciationSource": "https://en.wiktionary.org/wiki/bude",
+            "wiktionaryUrl": "https://en.wiktionary.org/w/index.php?search=buan"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercise 1"
+            },
+            "notes": "The source gloss uses sjv.sg; the model expands this to subjunctive singular. Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        }
+      ]
+    },
+    {
+      "id": "paragraph-1-sentence-2",
+      "translation": "He said that he lived in the northern part of the land by the West Sea (ocean west of Norway).",
+      "words": [
+        {
+          "id": "paragraph-1-sentence-2-word-1",
+          "originalWord": "Hē",
+          "morphologicalGloss": "3sg.m.nom",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "\\textsc{3sg.m.nom}",
+          "analysis": {
+            "lemma": "hē",
+            "partOfSpeech": "pronoun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "hē",
+                "gloss": "he",
+                "kind": "stem"
+              }
+            ],
+            "definition": "he"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-2-word-2",
+          "originalWord": "cwæð",
+          "morphologicalGloss": "say.pst.ind.3sg",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "say.\\textsc{pst.ind.3sg}",
+          "analysis": {
+            "lemma": "cweðan",
+            "partOfSpeech": "verb",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "cwæð",
+                "gloss": "said",
+                "kind": "stem"
+              }
+            ],
+            "definition": "said"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-2-word-3",
+          "originalWord": "þæt",
+          "morphologicalGloss": "comp",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "\\textsc{comp}",
+          "analysis": {
+            "lemma": "þæt",
+            "partOfSpeech": "conjunction",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "þæt",
+                "gloss": "that",
+                "kind": "stem"
+              }
+            ],
+            "definition": "that"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-2-word-4",
+          "originalWord": "hē",
+          "morphologicalGloss": "3sg.m.nom",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "\\textsc{3sg.m.nom}",
+          "analysis": {
+            "lemma": "hē",
+            "partOfSpeech": "pronoun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "hē",
+                "gloss": "he",
+                "kind": "stem"
+              }
+            ],
+            "definition": "he"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-2-word-5",
+          "originalWord": "bū-d-e",
+          "morphologicalGloss": "dwell-PST-SJV.SG",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "dwell-\\textsc{pst}-\\textsc{sjv.sg}",
+          "analysis": {
+            "lemma": "būan",
+            "partOfSpeech": "verb",
+            "features": {
+              "tense": "past",
+              "mood": "subjunctive",
+              "person": 3,
+              "number": "singular"
+            },
+            "morphemes": [
+              {
+                "form": "bū",
+                "gloss": "dwell",
+                "kind": "stem"
+              },
+              {
+                "form": "d",
+                "gloss": "PST",
+                "kind": "suffix"
+              },
+              {
+                "form": "e",
+                "gloss": "SJV.SG",
+                "kind": "ending"
+              }
+            ],
+            "definition": "dwelt, lived",
+            "phonetic": "/ˈbuː.de/",
+            "pronunciationSource": "https://en.wiktionary.org/wiki/bude",
+            "wiktionaryUrl": "https://en.wiktionary.org/w/index.php?search=buan"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercise 1"
+            },
+            "notes": "The source gloss uses sjv.sg; the model expands this to subjunctive singular. Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-2-word-6",
+          "originalWord": "on",
+          "morphologicalGloss": "in",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "in",
+          "analysis": {
+            "lemma": "on",
+            "partOfSpeech": "preposition",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "on",
+                "gloss": "in",
+                "kind": "stem"
+              }
+            ],
+            "definition": "in"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-2-word-7",
+          "originalWord": "þǣm",
+          "morphologicalGloss": "det.def.dat.sg.n",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "\\textsc{det.def}.\\textsc{dat.sg.n}",
+          "analysis": {
+            "lemma": "se",
+            "partOfSpeech": "determiner",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "þǣm",
+                "gloss": "the",
+                "kind": "stem"
+              }
+            ],
+            "definition": "the"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-2-word-8",
+          "originalWord": "land-e",
+          "morphologicalGloss": "land-dat.sg",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "land-\\textsc{dat.sg}",
+          "analysis": {
+            "lemma": "land",
+            "partOfSpeech": "noun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "lande",
+                "gloss": "land",
+                "kind": "stem"
+              }
+            ],
+            "definition": "land"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-2-word-9",
+          "originalWord": "norþ-weard-um",
+          "morphologicalGloss": "north-ward-dat.sg.n.str",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "north-ward-\\textsc{dat.sg.n.str}",
+          "analysis": {
+            "lemma": "norþweard",
+            "partOfSpeech": "adjective",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "norþweardum",
+                "gloss": "northern",
+                "kind": "stem"
+              }
+            ],
+            "definition": "northern"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-2-word-10",
+          "originalWord": "wiþ",
+          "morphologicalGloss": "against",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "against",
+          "analysis": {
+            "lemma": "wiþ",
+            "partOfSpeech": "preposition",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "wiþ",
+                "gloss": "against",
+                "kind": "stem"
+              }
+            ],
+            "definition": "against"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-2-word-11",
+          "originalWord": "þā",
+          "morphologicalGloss": "det.def.acc.sg.f",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "\\textsc{det.def}.\\textsc{acc.sg.f}",
+          "analysis": {
+            "lemma": "se",
+            "partOfSpeech": "determiner",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "þā",
+                "gloss": "the",
+                "kind": "stem"
+              }
+            ],
+            "definition": "the"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-2-word-12",
+          "originalWord": "West-sǣ",
+          "morphologicalGloss": "west-sea.acc.sg",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "west-sea.\\textsc{acc.sg}",
+          "analysis": {
+            "lemma": "westsǣ",
+            "partOfSpeech": "noun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "Westsǣ",
+                "gloss": "West Sea",
+                "kind": "stem"
+              }
+            ],
+            "definition": "West Sea"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        }
+      ]
+    },
+    {
+      "id": "paragraph-1-sentence-3",
+      "translation": "He said though that the land continues very long to the north from there, but it is all uninhabited, except in a few places here and there Finns (i.e. Sami) camp, hunting in winter and in summer fishing by the sea.",
+      "words": [
+        {
+          "id": "paragraph-1-sentence-3-word-1",
+          "originalWord": "Hē",
+          "morphologicalGloss": "3sg.m.nom",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "\\textsc{3sg.m.nom}",
+          "analysis": {
+            "lemma": "hē",
+            "partOfSpeech": "pronoun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "hē",
+                "gloss": "he",
+                "kind": "stem"
+              }
+            ],
+            "definition": "he"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-2",
+          "originalWord": "sǣ-d-e",
+          "morphologicalGloss": "say-PST-IND.3SG",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "say-\\textsc{pst}-\\textsc{ind.3sg}",
+          "analysis": {
+            "lemma": "sǣgan",
+            "partOfSpeech": "verb",
+            "features": {
+              "tense": "past",
+              "mood": "indicative",
+              "person": 3,
+              "number": "singular"
+            },
+            "morphemes": [
+              {
+                "form": "sǣ",
+                "gloss": "say",
+                "kind": "stem"
+              },
+              {
+                "form": "d",
+                "gloss": "PST",
+                "kind": "suffix"
+              },
+              {
+                "form": "e",
+                "gloss": "IND.3SG",
+                "kind": "ending"
+              }
+            ],
+            "definition": "said, spoke",
+            "phonetic": "/ˈsæː.de/",
+            "pronunciationSource": "https://en.wiktionary.org/wiki/s%C3%A6de",
+            "historicalNote": "The long front vowel ǣ is characteristic of Old English spelling.",
+            "wiktionaryUrl": "https://en.wiktionary.org/w/index.php?search=saegan"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercise 1"
+            },
+            "notes": "Segmentation and source gloss follow the first \\gll entry. Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-3",
+          "originalWord": "þēah",
+          "morphologicalGloss": "though",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "though",
+          "analysis": {
+            "lemma": "þēah",
+            "partOfSpeech": "conjunction",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "þēah",
+                "gloss": "though",
+                "kind": "stem"
+              }
+            ],
+            "definition": "though"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-4",
+          "originalWord": "þæt",
+          "morphologicalGloss": "comp",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "\\textsc{comp}",
+          "analysis": {
+            "lemma": "þæt",
+            "partOfSpeech": "conjunction",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "þæt",
+                "gloss": "that",
+                "kind": "stem"
+              }
+            ],
+            "definition": "that"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-5",
+          "originalWord": "þæt",
+          "morphologicalGloss": "comp",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "\\textsc{comp}",
+          "analysis": {
+            "lemma": "þæt",
+            "partOfSpeech": "conjunction",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "þæt",
+                "gloss": "that",
+                "kind": "stem"
+              }
+            ],
+            "definition": "that"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-6",
+          "originalWord": "land",
+          "morphologicalGloss": "land.nom.sg",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "land.\\textsc{nom.sg}",
+          "analysis": {
+            "lemma": "land",
+            "partOfSpeech": "noun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "land",
+                "gloss": "land",
+                "kind": "stem"
+              }
+            ],
+            "definition": "land"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-7",
+          "originalWord": "sīe",
+          "morphologicalGloss": "be.prs.sjv.sg",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "be.\\textsc{prs.sjv.sg}",
+          "analysis": {
+            "lemma": "wesan",
+            "partOfSpeech": "verb",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "sīe",
+                "gloss": "be",
+                "kind": "stem"
+              }
+            ],
+            "definition": "be"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-8",
+          "originalWord": "swīþ-e",
+          "morphologicalGloss": "strong-adv",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "strong-\\textsc{adv}",
+          "analysis": {
+            "lemma": "swīþ",
+            "partOfSpeech": "adverb",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "swīþe",
+                "gloss": "very",
+                "kind": "stem"
+              }
+            ],
+            "definition": "very"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-9",
+          "originalWord": "lang",
+          "morphologicalGloss": "long.nom.sg.n.str",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "long.\\textsc{nom.sg.n.str}",
+          "analysis": {
+            "lemma": "lang",
+            "partOfSpeech": "adjective",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "lang",
+                "gloss": "long",
+                "kind": "stem"
+              }
+            ],
+            "definition": "long"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-10",
+          "originalWord": "norþ",
+          "morphologicalGloss": "north.adv",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "north.\\textsc{adv}",
+          "analysis": {
+            "lemma": "norþ",
+            "partOfSpeech": "adverb",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "norþ",
+                "gloss": "north",
+                "kind": "stem"
+              }
+            ],
+            "definition": "north"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-11",
+          "originalWord": "þonan",
+          "morphologicalGloss": "thence",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "thence",
+          "analysis": {
+            "lemma": "þonan",
+            "partOfSpeech": "adverb",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "þonan",
+                "gloss": "from there",
+                "kind": "stem"
+              }
+            ],
+            "definition": "from there"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-12",
+          "originalWord": "ac",
+          "morphologicalGloss": "but",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "but",
+          "analysis": {
+            "lemma": "ac",
+            "partOfSpeech": "conjunction",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "ac",
+                "gloss": "but",
+                "kind": "stem"
+              }
+            ],
+            "definition": "but"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-13",
+          "originalWord": "hit",
+          "morphologicalGloss": "3sg.n.nom",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "\\textsc{3sg.n.nom}",
+          "analysis": {
+            "lemma": "hit",
+            "partOfSpeech": "pronoun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "hit",
+                "gloss": "it",
+                "kind": "stem"
+              }
+            ],
+            "definition": "it"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-14",
+          "originalWord": "is",
+          "morphologicalGloss": "be.prs.ind.3sg",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "be.\\textsc{prs.ind.3sg}",
+          "analysis": {
+            "lemma": "wesan",
+            "partOfSpeech": "verb",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "is",
+                "gloss": "is",
+                "kind": "stem"
+              }
+            ],
+            "definition": "is"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-15",
+          "originalWord": "eal",
+          "morphologicalGloss": "all.nom.sg.n",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "all.\\textsc{nom.sg.n}",
+          "analysis": {
+            "lemma": "eall",
+            "partOfSpeech": "adjective",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "eal",
+                "gloss": "all",
+                "kind": "stem"
+              }
+            ],
+            "definition": "all"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-16",
+          "originalWord": "wēst-e",
+          "morphologicalGloss": "waste.nom.sg.n.str",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "waste-\\textsc{nom.sg.n.str}",
+          "analysis": {
+            "lemma": "wēste",
+            "partOfSpeech": "adjective",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "wēste",
+                "gloss": "waste, uninhabited",
+                "kind": "stem"
+              }
+            ],
+            "definition": "waste, uninhabited"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-17",
+          "originalWord": "būton",
+          "morphologicalGloss": "except",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "except",
+          "analysis": {
+            "lemma": "būton",
+            "partOfSpeech": "preposition",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "būton",
+                "gloss": "except",
+                "kind": "stem"
+              }
+            ],
+            "definition": "except"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-18",
+          "originalWord": "on",
+          "morphologicalGloss": "in",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "in",
+          "analysis": {
+            "lemma": "on",
+            "partOfSpeech": "preposition",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "on",
+                "gloss": "in",
+                "kind": "stem"
+              }
+            ],
+            "definition": "in"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-19",
+          "originalWord": "fēaw-um",
+          "morphologicalGloss": "few-dat.pl.str",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "few-\\textsc{dat.pl.str}",
+          "analysis": {
+            "lemma": "fēaw",
+            "partOfSpeech": "adjective",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "fēawum",
+                "gloss": "few",
+                "kind": "stem"
+              }
+            ],
+            "definition": "few"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-20",
+          "originalWord": "stōw-um",
+          "morphologicalGloss": "place-dat.pl",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "place-\\textsc{dat.pl}",
+          "analysis": {
+            "lemma": "stōw",
+            "partOfSpeech": "noun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "stōwum",
+                "gloss": "places",
+                "kind": "stem"
+              }
+            ],
+            "definition": "places"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-21",
+          "originalWord": "styċċe-mǣl-um",
+          "morphologicalGloss": "piece-meal-DAT.PL",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "piece-meal-\\textsc{dat.pl}",
+          "analysis": {
+            "lemma": "styċċemǣl",
+            "partOfSpeech": "noun",
+            "features": {
+              "case": "dative",
+              "number": "plural"
+            },
+            "morphemes": [
+              {
+                "form": "styċċe",
+                "gloss": "piece",
+                "kind": "stem"
+              },
+              {
+                "form": "mǣl",
+                "gloss": "meal",
+                "kind": "stem"
+              },
+              {
+                "form": "um",
+                "gloss": "DAT.PL",
+                "kind": "ending"
+              }
+            ],
+            "definition": "piece-meal, here and there",
+            "phonetic": "/ˈstyt.t͡ʃeˌmæː.lum/",
+            "pronunciationSource": "https://en.wiktionary.org/wiki/styccem%C3%A6lum",
+            "historicalNote": "The source uses morpheme boundaries to show the word's structure.",
+            "wiktionaryUrl": "https://en.wiktionary.org/w/index.php?search=styccemael"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercise 1"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-22",
+          "originalWord": "wīc-i-að",
+          "morphologicalGloss": "camp-THM-PRS.IND.PL",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "camp-\\textsc{thm}-\\textsc{prs.ind.pl}",
+          "analysis": {
+            "lemma": "wīcian",
+            "partOfSpeech": "verb",
+            "features": {
+              "tense": "present",
+              "mood": "indicative",
+              "person": 3,
+              "number": "plural"
+            },
+            "morphemes": [
+              {
+                "form": "wīc",
+                "gloss": "camp",
+                "kind": "stem"
+              },
+              {
+                "form": "i",
+                "gloss": "THM",
+                "kind": "suffix"
+              },
+              {
+                "form": "að",
+                "gloss": "PRS.IND.PL",
+                "kind": "ending"
+              }
+            ],
+            "definition": "camp, dwell temporarily",
+            "phonetic": "/ˈwiː.ki.ɑθ/",
+            "pronunciationSource": "https://en.wiktionary.org/wiki/wicia%C3%BE",
+            "historicalNote": "The source spells c, so this form is /k/ rather than the /t͡ʃ/ represented by ċ.",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/wician"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercise 1"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-23",
+          "originalWord": "Finn-as",
+          "morphologicalGloss": "Finn-nom.pl",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "Finn-\\textsc{nom.pl}",
+          "analysis": {
+            "lemma": "Finn",
+            "partOfSpeech": "noun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "Finnas",
+                "gloss": "Finns",
+                "kind": "stem"
+              }
+            ],
+            "definition": "Finns"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-24",
+          "originalWord": "on",
+          "morphologicalGloss": "in",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "in",
+          "analysis": {
+            "lemma": "on",
+            "partOfSpeech": "preposition",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "on",
+                "gloss": "in",
+                "kind": "stem"
+              }
+            ],
+            "definition": "in"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-25",
+          "originalWord": "hunt-oð-e",
+          "morphologicalGloss": "hunt-nmlz-dat.sg",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "hunt-\\textsc{nmlz}-\\textsc{dat.sg}",
+          "analysis": {
+            "lemma": "hunt",
+            "partOfSpeech": "noun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "huntoðe",
+                "gloss": "hunting",
+                "kind": "stem"
+              }
+            ],
+            "definition": "hunting"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-26",
+          "originalWord": "on",
+          "morphologicalGloss": "in",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "in",
+          "analysis": {
+            "lemma": "on",
+            "partOfSpeech": "preposition",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "on",
+                "gloss": "in",
+                "kind": "stem"
+              }
+            ],
+            "definition": "in"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-27",
+          "originalWord": "wintr-a",
+          "morphologicalGloss": "winter-dat.sg",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "winter-\\textsc{dat.sg}",
+          "analysis": {
+            "lemma": "winter",
+            "partOfSpeech": "noun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "wintra",
+                "gloss": "winter",
+                "kind": "stem"
+              }
+            ],
+            "definition": "winter"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-28",
+          "originalWord": "and",
+          "morphologicalGloss": "and",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "and",
+          "analysis": {
+            "lemma": "and",
+            "partOfSpeech": "conjunction",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "and",
+                "gloss": "and",
+                "kind": "stem"
+              }
+            ],
+            "definition": "and"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-29",
+          "originalWord": "on",
+          "morphologicalGloss": "in",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "in",
+          "analysis": {
+            "lemma": "on",
+            "partOfSpeech": "preposition",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "on",
+                "gloss": "in",
+                "kind": "stem"
+              }
+            ],
+            "definition": "in"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-30",
+          "originalWord": "sumer-a",
+          "morphologicalGloss": "summer-dat.sg",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "summer-\\textsc{dat.sg}",
+          "analysis": {
+            "lemma": "summer",
+            "partOfSpeech": "noun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "sumera",
+                "gloss": "summer",
+                "kind": "stem"
+              }
+            ],
+            "definition": "summer"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-31",
+          "originalWord": "on",
+          "morphologicalGloss": "in",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "in",
+          "analysis": {
+            "lemma": "on",
+            "partOfSpeech": "preposition",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "on",
+                "gloss": "in",
+                "kind": "stem"
+              }
+            ],
+            "definition": "in"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-32",
+          "originalWord": "fisc-aþ-e",
+          "morphologicalGloss": "fish-nmlz-dat.sg",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "fish-\\textsc{nmlz}-\\textsc{dat.sg}",
+          "analysis": {
+            "lemma": "fisc",
+            "partOfSpeech": "noun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "fiscaþe",
+                "gloss": "fishing",
+                "kind": "stem"
+              }
+            ],
+            "definition": "fishing"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-33",
+          "originalWord": "be",
+          "morphologicalGloss": "by",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "by",
+          "analysis": {
+            "lemma": "be",
+            "partOfSpeech": "preposition",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "be",
+                "gloss": "by",
+                "kind": "stem"
+              }
+            ],
+            "definition": "by"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-34",
+          "originalWord": "þǣre",
+          "morphologicalGloss": "det.def.dat.sg.f",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "\\textsc{det.def}.\\textsc{dat.sg.f}",
+          "analysis": {
+            "lemma": "se",
+            "partOfSpeech": "determiner",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "þǣre",
+                "gloss": "the",
+                "kind": "stem"
+              }
+            ],
+            "definition": "the"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        },
+        {
+          "id": "paragraph-1-sentence-3-word-35",
+          "originalWord": "sǣ",
+          "morphologicalGloss": "sea.dat.sg",
+          "trailingPunctuation": null,
+          "sourceGlossTex": "sea.\\textsc{dat.sg}",
+          "analysis": {
+            "lemma": "sǣ",
+            "partOfSpeech": "noun",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "sǣ",
+                "gloss": "sea",
+                "kind": "stem"
+              }
+            ],
+            "definition": "sea"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Voyages_of_Ohthere_Wulfstan.tex",
+              "locator": "paragraph.1 / exercises 1-3"
+            },
+            "notes": "Source: references/Voyages_of_Ohthere_Wulfstan.tex."
+          }
+        }
+      ]
+    }
+  ]
+}

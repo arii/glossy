@@ -1,387 +1,68 @@
-import type { GlossRecord, Passage } from "../lib/types";
-import { toBrowserSpeechText } from "../lib/speech";
+import type { GlossRecord, Passage, TextDocument } from "../lib/types";
 
-const sourceFile = "references/Voyages_of_Ohthere_Wulfstan.tex";
-const sourceLocator = "paragraph.1 / exercises 1-3";
+export function getGlossRecords(document: TextDocument): Record<string, GlossRecord> {
+  if (document.glossRecords && document.glossRecords.length > 0) {
+    return Object.fromEntries(
+      document.glossRecords.map((record) => [record.id, record]),
+    );
+  }
 
-function simpleGloss(
-  id: string,
-  surface: string,
-  sourceGloss: string,
-  sourceGlossTex: string,
-  lemma: string,
-  partOfSpeech: GlossRecord["analysis"]["partOfSpeech"],
-  definition: string,
-): GlossRecord {
+  const records: Record<string, GlossRecord> = {};
+  for (const sentence of document.sentences ?? []) {
+    for (const [index, word] of sentence.words.entries()) {
+      records[word.id] = {
+        id: word.id,
+        surface: `${word.originalWord}${word.trailingPunctuation ?? ""}`,
+        sourceGloss: word.morphologicalGloss ?? word.originalWord,
+        sourceGlossTex: word.sourceGlossTex ?? word.morphologicalGloss ?? word.originalWord,
+        analysis:
+          word.analysis ?? {
+            lemma: word.originalWord,
+            partOfSpeech: "noun",
+            features: {},
+            morphemes: [
+              {
+                form: word.originalWord,
+                gloss: word.morphologicalGloss ?? word.originalWord,
+              },
+            ],
+            definition: word.morphologicalGloss ?? word.originalWord,
+          },
+        review:
+          word.review ?? {
+            status: "needs-review",
+            source: {
+              file: document.sourceFile,
+              locator: `${sentence.id}:${index + 1}`,
+            },
+          },
+      };
+    }
+  }
+
+  return records;
+}
+
+export function getReadingPassage(document: TextDocument): Passage {
+  if (document.blocks && document.blocks.length > 0) {
+    return {
+      title: document.title,
+      source: document.source,
+      blocks: document.blocks,
+    };
+  }
+
   return {
-    id,
-    surface,
-    sourceGloss,
-    sourceGlossTex,
-    analysis: {
-      lemma,
-      partOfSpeech,
-      features: {},
-      morphemes: [{ form: surface.replaceAll("-", ""), gloss: definition, kind: "stem" }],
-      definition,
-      speechText: toBrowserSpeechText(surface),
-    },
-    review: {
-      status: "source-checked",
-      source: { file: sourceFile, locator: sourceLocator },
-    },
+    title: document.title,
+    source: document.source,
+    blocks: (document.sentences ?? []).map((sentence) => ({
+      id: sentence.id,
+      translation: sentence.translation,
+      segments: sentence.words.map((word) => ({
+        type: "gloss",
+        value: `${word.originalWord}${word.trailingPunctuation ?? ""}`,
+        glossId: word.id,
+      })),
+    })),
   };
 }
-
-export const glossRecords: Record<string, GlossRecord> = {
-  saede: {
-    id: "saede",
-    surface: "sǣ-d-e",
-    sourceGloss: "say-PST-IND.3SG",
-    sourceGlossTex: "say-\\textsc{pst}-\\textsc{ind.3sg}",
-    analysis: {
-      lemma: "sǣgan",
-      partOfSpeech: "verb",
-      features: { tense: "past", mood: "indicative", person: 3, number: "singular" },
-      morphemes: [
-        { form: "sǣ", gloss: "say", kind: "stem" },
-        { form: "d", gloss: "PST", kind: "suffix" },
-        { form: "e", gloss: "IND.3SG", kind: "ending" },
-      ],
-      definition: "said, spoke",
-      phonetic: "/ˈsæː.de/",
-      speechText: "sah-deh",
-      pronunciationSource: "https://en.wiktionary.org/wiki/s%C3%A6de",
-      historicalNote: "The long front vowel ǣ is characteristic of Old English spelling.",
-      wiktionaryUrl: "https://en.wiktionary.org/w/index.php?search=saegan",
-    },
-    review: {
-      status: "source-checked",
-      source: { file: sourceFile, locator: "paragraph.1 / exercise 1" },
-      notes: "Segmentation and source gloss follow the first \\gll entry.",
-    },
-  },
-  hlaforde: {
-    id: "hlaforde",
-    surface: "hlāford-e",
-    sourceGloss: "lord-DAT.SG",
-    sourceGlossTex: "lord-\\textsc{dat.sg}",
-    analysis: {
-      lemma: "hlāford",
-      partOfSpeech: "noun",
-      features: { case: "dative", number: "singular", gender: "masculine" },
-      morphemes: [
-        { form: "hlāford", gloss: "lord", kind: "stem" },
-        { form: "e", gloss: "DAT.SG", kind: "ending" },
-      ],
-      definition: "lord, master",
-      phonetic: "/ˈxlɑː.for.de/",
-      speechText: "hlah-vor-deh",
-      pronunciationSource: "https://en.wiktionary.org/wiki/hlaforde",
-      wiktionaryUrl: "https://en.wiktionary.org/w/index.php?search=hlaford",
-    },
-    review: {
-      status: "source-checked",
-      source: { file: sourceFile, locator: "paragraph.1 / exercise 1" },
-      notes: "The dative singular is represented as an inflection, not a verb conjugation.",
-    },
-  },
-  northmest: {
-    id: "northmest",
-    surface: "norþ-mest",
-    sourceGloss: "north-most.ADV",
-    sourceGlossTex: "north-most.\\textsc{adv}",
-    analysis: {
-      lemma: "norþ",
-      partOfSpeech: "adverb",
-      features: { degree: "superlative" },
-      morphemes: [
-        { form: "norþ", gloss: "north", kind: "stem" },
-        { form: "mest", gloss: "most", kind: "suffix" },
-      ],
-      definition: "furthest north, northernmost",
-      phonetic: "/ˈnorθ.mest/",
-      speechText: "north-mest",
-      pronunciationSource: "https://en.wiktionary.org/wiki/nor%C3%BEmest",
-      historicalNote: "þ represents the thorn letter, pronounced like modern English th.",
-      wiktionaryUrl: "https://en.wiktionary.org/w/index.php?search=north",
-    },
-    review: {
-      status: "source-checked",
-      source: { file: sourceFile, locator: "paragraph.1 / exercise 1" },
-      notes: "The source labels this token as north-most.adverb.",
-    },
-  },
-  bude: {
-    id: "bude",
-    surface: "bū-d-e",
-    sourceGloss: "dwell-PST-SJV.SG",
-    sourceGlossTex: "dwell-\\textsc{pst}-\\textsc{sjv.sg}",
-    analysis: {
-      lemma: "būan",
-      partOfSpeech: "verb",
-      features: { tense: "past", mood: "subjunctive", person: 3, number: "singular" },
-      morphemes: [
-        { form: "bū", gloss: "dwell", kind: "stem" },
-        { form: "d", gloss: "PST", kind: "suffix" },
-        { form: "e", gloss: "SJV.SG", kind: "ending" },
-      ],
-      definition: "dwelt, lived",
-      phonetic: "/ˈbuː.de/",
-      speechText: "boo-deh",
-      pronunciationSource: "https://en.wiktionary.org/wiki/bude",
-      wiktionaryUrl: "https://en.wiktionary.org/w/index.php?search=buan",
-    },
-    review: {
-      status: "source-checked",
-      source: { file: sourceFile, locator: "paragraph.1 / exercise 1" },
-      notes: "The source gloss uses sjv.sg; the model expands this to subjunctive singular.",
-    },
-  },
-  styccemaelum: {
-    id: "styccemaelum",
-    surface: "styċċe-mǣl-um",
-    sourceGloss: "piece-meal-DAT.PL",
-    sourceGlossTex: "piece-meal-\\textsc{dat.pl}",
-    analysis: {
-      lemma: "styċċemǣl",
-      partOfSpeech: "noun",
-      features: { case: "dative", number: "plural" },
-      morphemes: [
-        { form: "styċċe", gloss: "piece", kind: "stem" },
-        { form: "mǣl", gloss: "meal", kind: "stem" },
-        { form: "um", gloss: "DAT.PL", kind: "ending" },
-      ],
-      definition: "piece-meal, here and there",
-      phonetic: "/ˈstyt.t͡ʃeˌmæː.lum/",
-      speechText: "stue-cheh-mae-lum",
-      pronunciationSource: "https://en.wiktionary.org/wiki/styccem%C3%A6lum",
-      historicalNote: "The source uses morpheme boundaries to show the word's structure.",
-      wiktionaryUrl: "https://en.wiktionary.org/w/index.php?search=styccemael",
-    },
-    review: {
-      status: "source-checked",
-      source: { file: sourceFile, locator: "paragraph.1 / exercise 1" },
-    },
-  },
-  wiciad: {
-    id: "wiciad",
-    surface: "wīc-i-að",
-    sourceGloss: "camp-THM-PRS.IND.PL",
-    sourceGlossTex: "camp-\\textsc{thm}-\\textsc{prs.ind.pl}",
-    analysis: {
-      lemma: "wīcian",
-      partOfSpeech: "verb",
-      features: { tense: "present", mood: "indicative", person: 3, number: "plural" },
-      morphemes: [
-        { form: "wīc", gloss: "camp", kind: "stem" },
-        { form: "i", gloss: "THM", kind: "suffix" },
-        { form: "að", gloss: "PRS.IND.PL", kind: "ending" },
-      ],
-      definition: "camp, dwell temporarily",
-      phonetic: "/ˈwiː.ki.ɑθ/",
-      speechText: "wee-kee-ath",
-      pronunciationSource: "https://en.wiktionary.org/wiki/wicia%C3%BE",
-      historicalNote: "The source spells c, so this form is /k/ rather than the /t͡ʃ/ represented by ċ.",
-      wiktionaryUrl: "https://en.wiktionary.org/wiki/wician",
-    },
-    review: {
-      status: "source-checked",
-      source: { file: sourceFile, locator: "paragraph.1 / exercise 1" },
-    },
-  },
-};
-
-Object.assign(glossRecords, {
-  ohthere: simpleGloss("ohthere", "Ōhthere", "Ohthere.nom", "Ohthere.\\textsc{nom}", "Ōhthere", "noun", "Ohthere"),
-  his: simpleGloss("his", "his", "3sg.m.gen", "\\textsc{3sg.m.gen}", "hē", "pronoun", "his"),
-  alfrede: simpleGloss("alfrede", "Ælfrēd-e", "Alfred-dat.sg", "Alfred-\\textsc{dat.sg}", "Ælfrēd", "noun", "Alfred"),
-  cyninge: simpleGloss("cyninge", "cyning-e", "king-dat.sg", "king-\\textsc{dat.sg}", "cyning", "noun", "king"),
-  thaet: simpleGloss("thaet", "þæt", "comp", "\\textsc{comp}", "þæt", "conjunction", "that"),
-  he: simpleGloss("he", "hē", "3sg.m.nom", "\\textsc{3sg.m.nom}", "hē", "pronoun", "he"),
-  ealra: simpleGloss("ealra", "eal-ra", "all-gen.pl.str", "all-\\textsc{gen.pl.str}", "eall", "adjective", "all"),
-  nordmanna: simpleGloss("nordmanna", "Norð-monn-a", "north-man-gen.pl", "north-man-\\textsc{gen.pl}", "Norðmann", "noun", "Norwegians"),
-  cwaeth: simpleGloss("cwaeth", "cwæð", "say.pst.ind.3sg", "say.\\textsc{pst.ind.3sg}", "cweðan", "verb", "said"),
-  on: simpleGloss("on", "on", "in", "in", "on", "preposition", "in"),
-  thaem: simpleGloss("thaem", "þǣm", "det.def.dat.sg.n", "\\textsc{det.def}.\\textsc{dat.sg.n}", "se", "determiner", "the"),
-  lande: simpleGloss("lande", "land-e", "land-dat.sg", "land-\\textsc{dat.sg}", "land", "noun", "land"),
-  northweardum: simpleGloss("northweardum", "norþ-weard-um", "north-ward-dat.sg.n.str", "north-ward-\\textsc{dat.sg.n.str}", "norþweard", "adjective", "northern"),
-  with: simpleGloss("with", "wiþ", "against", "against", "wiþ", "preposition", "against"),
-  tha: simpleGloss("tha", "þā", "det.def.acc.sg.f", "\\textsc{det.def}.\\textsc{acc.sg.f}", "se", "determiner", "the"),
-  westsæ: simpleGloss("westsæ", "West-sǣ", "west-sea.acc.sg", "west-sea.\\textsc{acc.sg}", "westsǣ", "noun", "West Sea"),
-  theah: simpleGloss("theah", "þēah", "though", "though", "þēah", "conjunction", "though"),
-  land: simpleGloss("land", "land", "land.nom.sg", "land.\\textsc{nom.sg}", "land", "noun", "land"),
-  sie: simpleGloss("sie", "sīe", "be.prs.sjv.sg", "be.\\textsc{prs.sjv.sg}", "wesan", "verb", "be"),
-  swithe: simpleGloss("swithe", "swīþ-e", "strong-adv", "strong-\\textsc{adv}", "swīþ", "adverb", "very"),
-  lang: simpleGloss("lang", "lang", "long.nom.sg.n.str", "long.\\textsc{nom.sg.n.str}", "lang", "adjective", "long"),
-  north: simpleGloss("north", "norþ", "north.adv", "north.\\textsc{adv}", "norþ", "adverb", "north"),
-  thonan: simpleGloss("thonan", "þonan", "thence", "thence", "þonan", "adverb", "from there"),
-  ac: simpleGloss("ac", "ac", "but", "but", "ac", "conjunction", "but"),
-  hit: simpleGloss("hit", "hit", "3sg.n.nom", "\\textsc{3sg.n.nom}", "hit", "pronoun", "it"),
-  is: simpleGloss("is", "is", "be.prs.ind.3sg", "be.\\textsc{prs.ind.3sg}", "wesan", "verb", "is"),
-  eal: simpleGloss("eal", "eal", "all.nom.sg.n", "all.\\textsc{nom.sg.n}", "eall", "adjective", "all"),
-  weste: simpleGloss("weste", "wēst-e", "waste.nom.sg.n.str", "waste-\\textsc{nom.sg.n.str}", "wēste", "adjective", "waste, uninhabited"),
-  buton: simpleGloss("buton", "būton", "except", "except", "būton", "preposition", "except"),
-  feawum: simpleGloss("feawum", "fēaw-um", "few-dat.pl.str", "few-\\textsc{dat.pl.str}", "fēaw", "adjective", "few"),
-  stowum: simpleGloss("stowum", "stōw-um", "place-dat.pl", "place-\\textsc{dat.pl}", "stōw", "noun", "places"),
-  finnas: simpleGloss("finnas", "Finn-as", "Finn-nom.pl", "Finn-\\textsc{nom.pl}", "Finn", "noun", "Finns"),
-  huntode: simpleGloss("huntode", "hunt-oð-e", "hunt-nmlz-dat.sg", "hunt-\\textsc{nmlz}-\\textsc{dat.sg}", "hunt", "noun", "hunting"),
-  wintra: simpleGloss("wintra", "wintr-a", "winter-dat.sg", "winter-\\textsc{dat.sg}", "winter", "noun", "winter"),
-  and: simpleGloss("and", "and", "and", "and", "and", "conjunction", "and"),
-  sumera: simpleGloss("sumera", "sumer-a", "summer-dat.sg", "summer-\\textsc{dat.sg}", "summer", "noun", "summer"),
-  fiscathe: simpleGloss("fiscathe", "fisc-aþ-e", "fish-nmlz-dat.sg", "fish-\\textsc{nmlz}-\\textsc{dat.sg}", "fisc", "noun", "fishing"),
-  be: simpleGloss("be", "be", "by", "by", "be", "preposition", "by"),
-  thaere: simpleGloss("thaere", "þǣre", "det.def.dat.sg.f", "\\textsc{det.def}.\\textsc{dat.sg.f}", "se", "determiner", "the"),
-  sae: simpleGloss("sae", "sǣ", "sea.dat.sg", "sea.\\textsc{dat.sg}", "sǣ", "noun", "sea"),
-});
-
-for (const record of Object.values(glossRecords)) {
-  record.review.notes = `${record.review.notes ?? ""} Source: ${sourceFile}.`.trim();
-}
-
-export const readingPassage: Passage = {
-  title: "The voyages of Ohthere and Wulfstan",
-  source: "Translated and glossed by Tyler Lemon · September 30, 2026",
-  blocks: [
-    {
-      id: "paragraph-1-sentence-1",
-      segments: [
-        { type: "gloss", value: "Ōhthere", glossId: "ohthere" },
-        { type: "gloss", value: "sǣ-d-e", glossId: "saede" },
-        { type: "gloss", value: "his", glossId: "his" },
-        { type: "gloss", value: "hlāford-e", glossId: "hlaforde" },
-        { type: "text", value: ", " },
-        { type: "gloss", value: "Ælfrēd-e", glossId: "alfrede" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "cyning-e", glossId: "cyninge" },
-        { type: "text", value: ", " },
-        { type: "gloss", value: "þæt", glossId: "thaet" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "hē", glossId: "he" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "eal-ra", glossId: "ealra" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "Norð-monn-a", glossId: "nordmanna" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "norþ-mest", glossId: "northmest" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "bū-d-e", glossId: "bude" },
-        { type: "text", value: "." },
-      ],
-      translation:
-        "Ohthere said to his lord, King Alfred, that he lived the furthest north of all Norwegians.",
-    },
-    {
-      id: "paragraph-1-sentence-2",
-      segments: [
-        { type: "gloss", value: "Hē", glossId: "he" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "cwæð", glossId: "cwaeth" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "þæt", glossId: "thaet" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "hē", glossId: "he" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "bū-d-e", glossId: "bude" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "on", glossId: "on" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "þǣm", glossId: "thaem" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "land-e", glossId: "lande" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "norþ-weard-um", glossId: "northweardum" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "wiþ", glossId: "with" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "þā", glossId: "tha" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "West-sǣ", glossId: "westsæ" },
-        { type: "text", value: "." },
-      ],
-      translation:
-        "He said that he lived in the northern part of the land by the West Sea (ocean west of Norway).",
-    },
-    {
-      id: "paragraph-1-sentence-3",
-      segments: [
-        { type: "gloss", value: "Hē", glossId: "he" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "sǣ-d-e", glossId: "saede" },
-        {
-          type: "text", value: " ",
-        },
-        { type: "gloss", value: "þēah", glossId: "theah" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "þæt", glossId: "thaet" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "þæt", glossId: "thaet" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "land", glossId: "land" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "sīe", glossId: "sie" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "swīþ-e", glossId: "swithe" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "lang", glossId: "lang" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "norþ", glossId: "north" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "þonan", glossId: "thonan" },
-        { type: "text", value: ", " },
-        { type: "gloss", value: "ac", glossId: "ac" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "hit", glossId: "hit" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "is", glossId: "is" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "eal", glossId: "eal" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "wēst-e", glossId: "weste" },
-        { type: "text", value: ", " },
-        { type: "gloss", value: "būton", glossId: "buton" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "on", glossId: "on" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "fēaw-um", glossId: "feawum" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "stōw-um", glossId: "stowum" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "styċċe-mǣl-um", glossId: "styccemaelum" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "wīc-i-að", glossId: "wiciad" },
-        {
-          type: "text", value: " ",
-        },
-        { type: "gloss", value: "Finn-as", glossId: "finnas" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "on", glossId: "on" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "hunt-oð-e", glossId: "huntode" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "on", glossId: "on" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "wintr-a", glossId: "wintra" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "and", glossId: "and" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "on", glossId: "on" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "sumer-a", glossId: "sumera" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "on", glossId: "on" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "fisc-aþ-e", glossId: "fiscathe" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "be", glossId: "be" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "þǣre", glossId: "thaere" },
-        { type: "text", value: " " },
-        { type: "gloss", value: "sǣ", glossId: "sae" },
-        { type: "text", value: "." },
-      ],
-      translation:
-        "He said though that the land continues very long to the north from there, but it is all uninhabited, except in a few places here and there Finns (i.e. Sami) camp, hunting in winter and in summer fishing by the sea.",
-    },
-  ],
-};

@@ -1,14 +1,11 @@
 import type { GlossRecord } from "../lib/types";
-import { SpeechButton } from "./speech-button";
 
 type GlossPopupProps = {
   record: GlossRecord;
   onClose: () => void;
-  onSpeak: () => void;
-  speechAvailable: boolean;
 };
 
-export function GlossPopup({ record, onClose, onSpeak, speechAvailable }: GlossPopupProps) {
+export function GlossPopup({ record, onClose }: GlossPopupProps) {
   const { analysis } = record;
 
   return (
@@ -48,14 +45,6 @@ export function GlossPopup({ record, onClose, onSpeak, speechAvailable }: GlossP
           )}
         </p>
       )}
-      <SpeechButton disabled={!speechAvailable} onClick={onSpeak}>
-        Hear word
-      </SpeechButton>
-      <p className="speech-note">
-        Browser speech uses a pronunciation hint; it is not an authoritative reconstructed
-        recording.
-      </p>
-      {!speechAvailable && <p className="speech-note">Speech is not available in this browser.</p>}
       <div className="gloss-field">
         <p className="field-label">Source gloss</p>
         <p>{record.sourceGloss}</p>
@@ -103,6 +92,9 @@ export function GlossPopup({ record, onClose, onSpeak, speechAvailable }: GlossP
           Open in Wiktionary <span aria-hidden="true">↗</span>
         </a>
       )}
+      <a className="edit-gloss-link" href="/admin/index.html#/collections/text/~">
+        Edit this text&apos;s glosses
+      </a>
     </aside>
   );
 }
