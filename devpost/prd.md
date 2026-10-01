@@ -5,41 +5,46 @@ status: approved
 
 # Glossy — Product Requirements
 
-Glossy is a responsive Old English reading page for college students doing linguistic or literary analysis.
+Glossy is a local-first interlinear glossing editor with a separate responsive reader for students and researchers.
 Source: `scope.md > Who It's For`, `scope.md > The POC Boundary`.
 
 ## The Core Journey
 
-1. The student opens Glossy on a desktop or mobile browser.
-2. The page presents a selected complete Old English text from the text library as the primary reading surface.
-3. The student reads the passage and identifies a word or phrase they want to understand.
-4. A source-faithful gloss appears directly beneath the Old English line, preserving the original interlinear reading order.
-5. The student hovers over or focuses an annotated form on desktop, or taps it on mobile.
-6. Glossy displays an expanded details panel connected to that form, with available lexical, morphological, grammatical, phonetic, historical, and dictionary-reference information.
-7. The student uses the inline gloss and expanded details to understand the word and continue reading.
+1. The editor opens the authoring workspace for a Git-backed text or starts a new text using the shared model.
+2. The editor selects a sentence/example and sees its surface line, source-gloss line, translation, and word details in an interactive live preview.
+3. Selecting a token opens an inspector where the editor can update its exact surface, source gloss, lexical link, morphology, pronunciation, and explanation; changes appear in the preview immediately.
+4. Changes are autosaved as a text-scoped browser-local draft, not written to TinaCMS or the source files while the editor is working.
+5. The editor reloads or returns later and can recover, continue, or discard the draft.
+6. After reviewing the rendered text and export, the editor explicitly confirms publication. TinaCMS writes the confirmed JSON document(s) to the Git-backed content repository; Git commit/push remains a separate version-control action.
+7. The editor can export a normalized LaTeX document that preserves the supported source structure and content.
+8. A student or researcher opens the separate reader route, reads the published text, and hovers, focuses, or taps a glossed form to inspect its linked explanation.
 
 ## Screens and Layout
 
+### Editing Workspace
+
+The editor is a dedicated route, separate from the reader and TinaCMS administration. It presents the sentence structure and an immediately updated interlinear preview alongside a token inspector. The editor can add or edit text examples, source forms and glosses, free translations, footnotes, lexical/grammatical analysis, document metadata, resources, and abbreviations. An unobtrusive link opens the corresponding reader preview; the reader does not contain editor controls.
+
+Draft state is local to the browser and scoped by text and schema version. The editor sees whether a draft is dirty, saved locally, or ready to publish. It can recover or discard a draft. Publishing requires a deliberate confirmation and writes through TinaCMS to Git-backed JSON; a failed or partial multi-document write must be reported, never presented as success. Local Tina writes modify the working tree; Git commit and push are not implicit.
+
 ### Reading Surface
 
-The proof of concept has one responsive reading surface rather than multiple screens. The Old English text remains primary; its source glosses appear on a separate line beneath each word/line, accompanied by the full translated English sentence for each passage block, and hover, focus, or tap opens the associated expanded details. The layout must work on desktop and mobile.
-
-The student-facing visualizer is intentionally decoupled from CMS authoring tools. The reading interface provides a pure, scholarly reading environment without editor buttons or administrative distractions. Content management and dictionary editing workflows are accessible via dedicated administrative routes (`/admin`) or unobtrusive footer links.
-
-The web presentation preserves the essential structure of the source PDF: an Old English line, its gloss line, and an understandable translation for every sentence block. Readers can select among complete texts in the library.
-Content is editable through TinaCMS (using centralized dictionary entries and manuscript documents) so adding a text, correcting a translation, or revising a gloss does not require changing React components.
+The separate reader preserves the source document's structure: paragraph/exercise grouping, Old English surface line, source gloss line, and free translation for every example. Hover, keyboard focus, or tap opens a linked explanation. It has no footer or administrative/editorial chrome. The layout works on desktop and mobile.
 
 ## Content Schema and Editing Requirements
 
-TinaCMS manages complete text documents through labeled form fields. Routine editing must not require an editor to manipulate raw JSON.
+The canonical text content is structured JSON in Git, not a database. TinaCMS provides the permanent content write path after confirmation; the dedicated Glossy editor provides live editing and browser-local drafts. Routine editing must not require an editor to manipulate raw JSON.
 
-- A **text document** has a stable text ID and slug, title, language, source attribution and manuscript path, publication/review status, ordered reading blocks, and gloss records.
-- A **reading block** has a stable block ID, ordered text/gloss segments, and its translation. A gloss segment stores the exact Old English form and a stable reference to one gloss record.
-- A **gloss record** has a stable ID, exact source surface, readable source gloss, literal TeX source gloss, lemma, part of speech, part-of-speech-appropriate inflection features, one or more morphemes, definition, optional IPA and historical/reference fields, and source-review metadata.
+- A **text document** has a stable text ID and slug, title, language, author/date/source attribution, bibliography resource, ordered source/resources, glossing abbreviations, paragraphs, and ordered examples.
+- An **example** has a stable ID and paragraph membership, ordered tokens, a free translation, and any attached footnotes or source notes. Paragraph and example order/labels map to the original `exe`/`xlist` structure.
+- A **token** preserves exact source surface, literal TeX gloss, readable gloss, punctuation, and a stable optional lexical-entry reference. Its analysis includes lemma, part of speech, inflection features, morpheme segmentation, definition, optional IPA/history, and source-review provenance.
+- A **lexical entry** has a stable reusable ID and canonical lemma/part of speech/definition/notes. Text tokens can link to shared entries while retaining their text-specific surface and source gloss.
+- A **local draft** contains a schema version, text-scoped working copy, and any changed lexical entries. It is never sent to Tina until explicit confirmation.
+- The **LaTeX export** derives from the same data and preserves paragraph/example grouping, `\gll` surface/gloss alignment, `\glt` translations, footnotes, resource citations, abbreviations, metadata, and bibliography configuration using a normalized template.
 - **Source-review metadata** identifies the manuscript file and entry locator, records `source-checked` or `needs-review`, and does not imply that the linguistic analysis has been independently certified.
 - Form labels and list summaries make text blocks, gloss records, and morphemes distinguishable without opening raw JSON or every list item. Stable IDs are clearly identified as references that should not be casually changed.
-- Validation checks required fields, uniqueness of text/slugs/block/gloss IDs, segment-to-record references, exact agreement between a segment's source form and its linked record, and alignment of each surface/TeX-gloss pair in the same source manuscript entry.
-- The content model supports adding a complete text through TinaCMS and then selecting it in the reader without changing application components.
+- Validation checks required fields, uniqueness of text/paragraph/example/token/lexical IDs, lexical references, exact source surface/gloss pairing, footnote placement, and alignment of each token pair in its source manuscript example.
+- The content model supports adding a complete text through the Glossy editor and selecting it in the reader without changing application components.
 
 ## Look and Feel
 
@@ -54,10 +59,11 @@ The reading experience should follow practical UX best practices: the text remai
 The student can read the selected Old English passage and identify annotated words or phrases.
 
 - [ ] The passage is legible on desktop and mobile layouts.
+- [ ] The reader is a separate page from the authoring workspace and contains no editing footer or CMS controls.
 - [ ] Old English characters, accents, and diacritics render correctly.
 - [ ] Each annotated Old English line has its source gloss on a separate line immediately beneath it; glosses are not interspersed with the source text.
 - [ ] Each passage block includes its corresponding translated English sentence clearly rendered.
-- [ ] The reading visualizer is clean and distraction-free, with editing tools cleanly separated to `/admin` or unobtrusive footer navigation.
+- [ ] The reading visualizer is clean and distraction-free; editing tools exist only on their separate authoring route.
 - [ ] The source gloss line preserves the token order of the Old English line, and both remain readable when they wrap on narrow screens.
 - [ ] Hovering over an annotated word or phrase on desktop reveals its gloss popup.
 - [ ] Tapping an annotated word or phrase on mobile reveals its gloss popup.
@@ -76,16 +82,27 @@ The student can read the selected Old English passage and identify annotated wor
 - [ ] The popup closes when the reader clicks or taps outside it.
 - [ ] Escape, the close control, and outside dismissal restore focus to the word that opened the popup.
 - [ ] Gloss triggers expose whether their popup is expanded, and the popup has an accessible name tied to the selected word.
-- [ ] The popup's IPA includes a pronunciation source, while audible playback is clearly labeled as a browser pronunciation aid rather than an authoritative reconstruction.
-- [ ] An editor can update passage text, translations, simple glosses, multi-morpheme glosses, pronunciation fields, and source-review metadata in TinaCMS.
-- [ ] A content edit preserves stable gloss IDs so existing passage segments continue to resolve to the intended popup.
-- [ ] TinaCMS provides labeled form fields for editing text and gloss data; routine editing does not require raw JSON editing.
-- [ ] An editor can create a complete text in TinaCMS and make it available in the text selector without changing application components.
-- [ ] Gloss record forms expose source form, readable source gloss, literal TeX gloss, linguistic analysis, morphemes, and source-review metadata as separate fields.
-- [ ] Gloss record and morpheme list items have human-readable labels so editors can locate an entry without opening every item.
-- [ ] Validation rejects duplicate text IDs, slugs, block IDs, and gloss IDs; missing gloss references; and segment text that differs from its linked gloss record's source form.
+- [ ] The popup's IPA includes a pronunciation source when available; no browser-generated speech is offered.
+- [ ] An editor can update passage text, translations, gloss tokens, lexical analysis, pronunciation fields, and source-review metadata in the dedicated Glossy workspace.
+- [ ] A content edit preserves stable token and lexical-entry IDs so existing token-to-explanation links continue to resolve.
+- [ ] The live editor exposes source form, readable source gloss, literal TeX gloss, linguistic analysis, morphemes, and review metadata without requiring raw JSON.
+- [ ] An editor can create a text in the shared text-agnostic model and make it available to the reader without changing application components.
+- [ ] Validation rejects duplicate text, paragraph, example, token, or lexical-entry IDs; missing lexical references; and imported surface/gloss token mismatches.
 - [ ] Source validation checks that each record's surface and literal TeX gloss are aligned in the same source gloss entry, rather than merely appearing somewhere in the manuscript.
 - [ ] Review metadata distinguishes source transcription checked against the manuscript from linguistic analysis that still needs scholarly review.
+
+### Live Gloss Editing, Drafts, and Export
+
+- [ ] The editor can select an example and token and edit its source form, source gloss, translation, and available lexical analysis in an inspector.
+- [ ] Editing a token updates the interlinear preview and its linked reader-style explanation immediately.
+- [ ] Edits are stored in versioned, text-scoped localStorage drafts; a refresh restores a valid draft, and the editor can explicitly discard it.
+- [ ] Draft changes do not update TinaCMS or canonical content until the editor confirms publication.
+- [ ] Publish confirmation names the content being written; success is shown only after Tina confirms every requested document write, and errors or partial writes are reported clearly with retry/recovery guidance.
+- [ ] Confirmed Tina local writes update JSON files in the Git working tree; the UI does not imply that files were committed or pushed.
+- [ ] A LaTeX export downloads a valid `.tex` document from the current draft without publishing it.
+- [ ] Export retains the supported source document structure and all 75 current examples across 13 paragraphs, translations, two footnotes, resource citations/list, abbreviations, title/author/date, and bibliography reference.
+- [ ] Source validation checks token/gloss pair alignment, unique stable IDs, paragraph/example ordering, footnote references, and the expected imported example count.
+- [ ] The text model can represent additional texts without Old English-specific assumptions in the editor or renderer; arbitrary unknown TeX package/macro import is not required.
 
 ### Understanding the Source
 
@@ -105,14 +122,22 @@ The presentation should help the student connect the original text with its anal
 - **Responsive state** — The same reading and glossing experience remains usable on desktop and mobile; mobile uses tapping rather than relying on hover.
 - **External link** — A Wiktionary link takes the student to the referenced external page.
 - **Audible pronunciation deferred** — There is no browser speech control; IPA remains visible as curated text where available.
+- **Draft not saved** — edits are visible in live preview and remain browser-local until an explicit publish confirmation.
+- **Recovered draft** — a valid local draft is offered/loaded for the matching text and schema version; invalid data is reported and does not silently replace canonical content.
+- **Discarded draft** — the browser-local copy is removed only after the editor confirms discard; the published content remains unchanged.
+- **Publishing** — the editor waits for Tina's result, reports errors per document, and does not clear the draft if any requested write fails.
+- **Exported draft** — LaTeX export uses the current working draft and does not implicitly publish it.
 
 ## Product Decisions
 
-- Static glossed information — dynamic question answering and generated explanations are deferred.
+- Curated gloss and explanation content — runtime linguistic analysis and generated explanations are deferred.
 - Desktop hover and mobile tap — both interaction modes are needed for a responsive web layout.
 - Interlinear gloss line plus expanded panel — the student sees the source gloss beneath the text and can open richer detail for any annotated form.
 - No browser-generated speech — audible pronunciation is deferred because available voices mispronounce Old English.
-- TinaCMS editing — complete text documents live in versioned JSON behind labeled forms, while the reading UI consumes the same typed document shape.
+- Git-backed JSON — text and lexical content are inspectable, versioned, and portable without a SQL database or paid runtime store.
+- Separate reader and editor routes — editing controls do not intrude on the published reading experience.
+- Local-first drafts — frequent keystrokes stay in React/localStorage; only an explicit publish action sends content through TinaCMS.
+- LaTeX export — the original `gb4e`/`\gll`/`\glt` document structure remains a first-class output of the source data.
 - Source-backed verification — source forms and literal TeX glosses remain traceable and are checked for alignment; linguistic interpretation is not automatically certified.
 - Accurate Old English typography and diacritics — scholarly correctness is central to the reading experience.
 - Accurate phonetic and grammatical notation — appropriate linguistic rendering support must be identified and validated in the technical specification; this is part of correctness, not optional polish.
@@ -121,32 +146,34 @@ The presentation should help the student connect the original text with its anal
 
 ## What We're Building
 
-- One responsive Glossy reading page with a selector for complete source-backed texts.
+- A dedicated live editing workspace and a separate responsive reading page with a selector for complete texts.
 - Old English reading lines with source glosses on a separate line beneath them.
 - Accurate Old English text rendering with diacritics.
-- Annotated words or phrases that reveal static gloss information.
+- Annotated words or phrases that reveal curated gloss/explanation information.
 - Hover behavior for desktop and tap behavior for mobile.
 - Expanded gloss panels containing available definitions, inflection, morphemes, phonetic notation, and references.
 - Correctly rendered phonetic notation, conjugation syntax, linguistic typography, and Old English diacritics.
 - Clear visual association between selected text and its gloss.
-- TinaCMS form-based editing for complete texts and gloss records.
+- Browser-local drafts, explicit confirmed TinaCMS writes, and normalized LaTeX export.
 - Content/source validation for stable references, aligned source forms, and literal TeX gloss provenance.
 
 ## Deferred From the POC
-- Dynamic gloss generation or asking questions — the first version uses curated static information.
+- Dynamic gloss generation or asking questions - The first version uses curated gloss/explanation information; interpretation is not generated automatically.
 - User accounts and a complete language-learning system — outside the proof-of-concept boundary.
 - Audible pronunciation — deferred until recorded audio or an IPA-compatible backend can preserve Old English pronunciation reliably.
 
 ## Possible Later Enhancements
 
+- Paste/import arbitrary TeX and recover unknown source macros automatically.
 - Add generated explanations and question answering.
+- Add collaborative editing and remote publishing integrations.
 - Expand glosses with richer historical context and learning features.
 
 ## Non-Goals
 
 - Glossy will not replace expert linguistic analysis or guarantee that an external Wiktionary entry is authoritative.
 - Glossy will not provide a full Old English course or vocabulary-progress system.
-- Glossy will not require authentication or save personal annotations in this proof of concept.
+- Glossy will not require authentication, use a SQL database, or save personal annotations in this proof of concept.
 
 ## Open Questions
 

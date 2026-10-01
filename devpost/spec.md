@@ -7,19 +7,19 @@ status: approved
 
 ## How This Works, In Plain Language
 
-Glossy is a small Next.js website that runs locally in a browser. The page discovers complete Old English text documents from `content/`; each document contains ordered reading blocks and linked gloss records. The reader sees the source text on one line and its glosses on a separate line below. Hovering, focusing, or tapping an annotated source form opens its expanded detail panel.
+Glossy is a local-first Next.js editing workbench and a separate reader. A source-backed text lives in versioned JSON files, and the editor changes its examples, aligned tokens, and linguistic explanations while an interlinear preview updates immediately. Unpublished changes are stored in a text-scoped browser draft; only an explicit publish confirmation writes them through TinaCMS to the Git working tree. The separate reader renders published content with linked hover/focus/tap explanations.
 
-TinaCMS provides labeled forms over versioned repository JSON, so editors can revise texts and individual gloss records without hand-editing JSON. TinaCloud credentials are optional for local editing and required for remote publishing. Phonetic and grammatical information is curated in advance rather than generated at runtime.
+The same structured text model exports to normalized LaTeX using the source's `gb4e`/`\gll`/`\glt` organization. No SQL database or paid runtime content service is required. Tina local writes modify repository files; Git commit/push remains a separate operation.
 
 ## The Core Journey Through the System
 
-1. The reader starts the local Next.js development server and opens the browser page.
-2. The route renders the reading surface from the curated passage data.
-3. The passage renderer outputs Old English Unicode characters, diacritics, and annotated word spans.
-4. The reader sees the corresponding source glosses on a distinct line beneath the Old English line.
-5. The reader hovers over or focuses an annotated span on desktop, or taps it on mobile.
-6. The selected span's stable ID looks up the expanded details, including available definition, inflection, morphemes, IPA, historical context, and Wiktionary link.
-7. Selecting another span updates the expanded panel. Closing it or clicking away returns the reader to the interlinear reading state.
+1. The editor opens a text at `/edit/<slug>` and selects an example/token.
+2. The inspector edits source form, literal/readable gloss, translation, and available analysis while the interlinear preview and explanation panel update from the same draft state.
+3. A versioned localStorage draft is restored after reload; the editor can continue or discard it.
+4. The editor reviews the current draft and LaTeX export, then explicitly confirms writing it through TinaCMS.
+5. Tina local GraphQL updates the relevant JSON document(s) in the Git working tree; publishing errors retain the draft and identify affected documents.
+6. The editor downloads a `.tex` export from either a draft or published content without implicitly publishing it.
+7. A reader opens `/read/<slug>`; no editor controls appear on that page. Hover/focus/tap opens the linked lexical explanation.
 
 PRD refs: `prd.md > The Core Journey`, `prd.md > Reading and Visual Glossing`.
 
@@ -37,7 +37,7 @@ No phonetic-generation library is required for this POC. The source already supp
 
 ## Where It Runs and How Someone Tries It
 
-Glossy runs as a local Node.js development process and opens in a desktop or mobile browser. TinaCMS local editing runs alongside Next.js; TinaCloud credentials are optional for remote branch-backed content. No credentials are required for the reading page itself.
+Glossy runs as a local Node.js development process and opens in a desktop or mobile browser. TinaCMS local editing runs alongside Next.js; local draft editing, reader routes, LaTeX export, and confirmed writes to the local Git working tree require no TinaCloud account or paid service. Remote TinaCloud publishing is optional and outside this local POC.
 
 Planned commands after the app is scaffolded:
 
@@ -46,7 +46,7 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:3000` for the reader visualizer. The visualizer is focused on learning and text analysis; editing tools are cleanly segregated and accessible at `http://localhost:3000/admin/index.html` (or via an unobtrusive footer utility link). A document preview uses `/texts/<slug>` and displays the same reader for that text. For the required demo recording, show the Old English line, its separate gloss line, the accompanying English translation sentence, open expanded details with hover or tap, and repeat in a narrow viewport.
+Open `http://localhost:3000/read/<slug>` for the clean reader and `/edit/<slug>` for live gloss editing. The root route is a simple landing/route choice, not a combined reader/editor. Tina's administrative interface is at `/admin/index.html`; the editor's explicit publish action uses the local Tina GraphQL API started by `npm run dev`. A document preview uses `/texts/<slug>` as a reader alias. For the demo, edit a token, observe the live preview, reload and recover the local draft, inspect the LaTeX export, confirm a Tina save, then open the separate reader.
 
 ## Look and Feel
 
@@ -69,9 +69,25 @@ Reference: `scope.md > Inspiration & Identity`, especially the annotated PDF and
 
 ### Reading Page
 
-Owns the single reading surface, page heading, source attribution, passage content, and selected gloss state.
+Owns the separate reading route's page heading, source attribution, passage content, and selected gloss state. It contains no editing footer or CMS controls.
 
 PRD ref: `prd.md > Screens and Layout`.
+
+### Gloss Editing Workspace
+
+Lives on `/edit/<slug>` and owns the selected example/token, text-scoped draft, editor inspector, and live interlinear preview. It can navigate to the separate reader but does not render as part of the reader page.
+
+### Draft Controller
+
+Loads the canonical document, validates and hydrates a versioned localStorage draft, saves changes with a debounce, offers explicit discard, and tracks pending text/lexicon writes. Local storage errors and invalid drafts are surfaced; canonical files are never silently substituted or overwritten.
+
+### Confirmed Tina Publisher
+
+After an explicit review/confirmation, submits only changed documents to Tina's GraphQL `updateDocument`/`createDocument` mutations. It reports per-document results. Multiple documents are not assumed to be atomic; failed writes keep the draft and permit idempotent retry. A successful local Tina write means the repository working tree changed, not that Git committed or pushed it.
+
+### LaTeX Exporter
+
+Serializes the current draft or published text into a downloadable `.tex` file. It formats aligned surface/gloss lines, translations, paragraph/example groupings, footnotes, resources/citations, abbreviation lists, metadata, and bibliography configuration through a defined template. Export is independent from publishing.
 
 ### Annotated Passage
 
@@ -105,13 +121,13 @@ PRD ref: `prd.md > Look and Feel`, `prd.md > Reading and Visual Glossing`.
 
 ### TinaCMS Content Editor
 
-Provides labeled form fields for all complete text documents in `content/`. Editors can create a text and revise its ordered passage blocks, exact source forms, readable and literal TeX glosses, one or more morphemes, inflection features, definitions, IPA, and source-review metadata. List entries display human-readable labels; stable IDs and source-verification rules are explained in the editor.
+Provides the permanent write path for complete Git-backed text and lexical JSON documents. The Glossy editor is the live authoring UI; Tina's admin remains available for direct repository-backed document maintenance. Collection schemas match the typed model and keep stable IDs, source literals, and nested arrays editable.
 
 PRD ref: `prd.md > Reading and Visual Glossing`, `prd.md > Understanding the Source`.
 
 ## Data Model
 
-The model supports one or many TinaCMS-editable JSON documents with typed structures that distinguish the text being read from the linguistic analysis attached to it. A complete text can contain as many reading blocks and gloss records as needed, while a new text is added by creating another JSON document in `content/`. Every word in the current source entries can have a record, including simple one-morpheme glosses such as `on → in` and `his → 3sg.m.gen`. This avoids treating every word as if it had a verb conjugation: verbs have tense/mood/person/number, while nouns have case/number/gender and adjectives or adverbs may have degree.
+The model is text-agnostic and file-backed. Each text is a Tina JSON document under `content/texts/`; reusable lexical entries are separate JSON documents under `content/dictionaries/`. There is no relational database. One publish operation may update a text and one or more changed lexical documents; because Tina mutations may commit separately, the draft controller tracks individual results and preserves retry data. The exact TeX source literal remains separate from its human-readable display gloss.
 
 ```ts
 type InflectionFeatures = {
@@ -130,33 +146,53 @@ type Morpheme = {
   kind?: "stem" | "prefix" | "suffix" | "ending"
 }
 
-type GlossRecord = {
-  id: string
-  surface: string
-  sourceGloss: string
-  sourceGlossTex: string
-  analysis: {
-    lemma: string
-    partOfSpeech: PartOfSpeech
-    features: InflectionFeatures
-    morphemes: Morpheme[]
-    definition: string
-    phonetic?: string
-    pronunciationSource?: string
-    historicalNote?: string
-    wiktionaryUrl?: string
+type CorpusDocument = {
+  schemaVersion: 1
+  meta: {
+    id: string; slug: string; title: string; author?: string; date?: string
+    language: string; sourceFile: string; sourceEdition?: string; bibResource?: string
+    resources: Resource[]; abbreviations: Abbreviation[]
   }
-  review: {
-    status: "source-checked" | "needs-review"
-    source: { file: string; locator: string }
-    notes?: string
-  }
+  paragraphs: Array<{
+    id: string; label?: string
+    examples: Array<{
+      id: string; tokens: Token[]; freeTranslation: TranslationPart[]
+    }>
+  }>
+}
+
+type Token = {
+  id: string; surface: string; sourceGlossTex: string; sourceGloss: string
+  punctuation?: string; lexicalEntryId?: string; review?: ReviewMetadata
+}
+
+type LexicalEntry = {
+  id: string; lemma: string; language: string; partOfSpeech?: string
+  features?: InflectionFeatures; morphemes?: Morpheme[]
+  definition?: string; phonetic?: string; notes?: string; wiktionaryUrl?: string
+}
+
+type TranslationPart =
+  | { type: "text"; value: string; sourceTex?: string }
+  | { type: "footnote"; id: string; content: TranslationPart[] }
+
+type ResourcePart =
+  | { type: "text"; value: string }
+  | { type: "citation"; key: string; display?: string }
+  | { type: "link"; href: string; label: string }
+
+type Resource = { id: string; parts: ResourcePart[] }
+type Abbreviation = { id: string; tag: string; expansion: string; operator: "=" | "-"; active: boolean }
+
+type GlossyDraft = {
+  schemaVersion: 1; textId: string; baseVersion: string
+  document: CorpusDocument; changedLexicalEntries: LexicalEntry[]
 }
 ```
 
-`surface` preserves exactly what appears in the source text, including morpheme boundaries and diacritics. `sourceGlossTex` preserves the manuscript's literal `\textsc{...}` markup, while `sourceGloss` is the readable form shown on the separate gloss line. `analysis.morphemes` contains one item for simple lexical/grammatical glosses and multiple items where the source exposes internal morphology. `analysis` stores normalized linguistic metadata for display and review, while `review.source` identifies the manuscript entry and `review.status` says only that the transcription was checked against that source—not that the linguistic analysis is authoritative.
+`surface` and `sourceGlossTex` preserve the aligned source token pair; `sourceGloss` is the reader-friendly display. Paragraph/example arrays preserve source order and `label` maps to the original exercise grouping. Translation parts retain inline footnote positions. Lexical entries are reused by stable IDs, while token surface/gloss remain text-specific. Browser drafts are schema-versioned and keyed by text ID; `baseVersion` detects a draft based on older canonical content. The editor never claims automatic linguistic certification.
 
-The source is the LaTeX/PDF reference material. The current passage uses the first three `\gll`/`\glt` entries from `references/Voyages_of_Ohthere_Wulfstan.tex`; the source file and entry context are recorded in each review record. `npm run validate:source` checks unique identifiers, segment-to-record form consistency, and that each source surface and literal TeX gloss occur together in one aligned manuscript gloss entry. The Tina schema requires the document structure and provides labeled forms; runtime loading rejects duplicate IDs, missing references, and source-form mismatches. Selecting a segment changes only in-memory UI state; content edits persist through versioned JSON and the Tina workflow.
+The imported source is `references/Voyages_of_Ohthere_Wulfstan.tex`: 13 labeled paragraph groups, 75 aligned `\gll` examples and 75 `\glt` translations. The document also has two inline footnotes, seven resource list items with citations/links, 42 active abbreviation entries, and a bibliography resource. Validation checks every imported surface/gloss token pair in sequence, text/example IDs and ordering, footnote placement, and document-level content. The export is structurally faithful through a normalized template; comments, arbitrary preamble macros, and byte-for-byte whitespace are not promised.
 
 ## File Structure
 
@@ -165,22 +201,29 @@ glossy/
 ├── app/
 │   ├── globals.css              # Responsive scholarly typography and layout tokens
 │   ├── layout.tsx               # Root document metadata and global shell
-│   ├── page.tsx                 # Glossy reading page
-│   └── texts/[slug]/page.tsx    # Tina document preview route
+│   ├── page.tsx                 # Reader/editor route choice
+│   ├── read/[slug]/page.tsx     # Separate clean reader
+│   ├── edit/[slug]/page.tsx     # Live gloss editing workspace
+│   └── texts/[slug]/page.tsx    # Reader preview alias
 ├── components/
-│   ├── annotated-passage.tsx    # Passage segments and interactive gloss triggers
-│   ├── gloss-popup.tsx          # Selected gloss content and external link
-│   ├── reading-page.tsx         # Reading surface and selected-record coordination
+│   ├── annotated-passage.tsx    # Passage/example rendering and gloss triggers
+│   ├── gloss-popup.tsx          # Selected lexical explanation
+│   ├── reading-page.tsx         # Clean reading surface
+│   ├── gloss-editor.tsx         # Live preview and token inspector
+│   └── draft-status.tsx         # Local draft/publish state
 ├── data/
-│   └── ohthere.ts               # Typed adapters for text documents and gloss lookup
+│   └── latex-export.ts          # Normalized gb4e document exporter
 ├── content/
-│   └── ohthere.json             # TinaCMS-editable passage, segments, and gloss records
+│   ├── texts/<slug>.json        # Text metadata, paragraphs, examples and token links
+│   └── dictionaries/<id>.json   # Reusable lexical entries
 ├── tina/
 │   └── config.ts                # Tina collection schema and local admin configuration
 ├── lib/
-│   └── types.ts                 # Shared Passage, PassageSegment, and GlossRecord types
+│   ├── types.ts                 # Shared corpus/token/lexicon types
+│   └── draft-storage.ts         # Versioned local draft persistence
 ├── scripts/
-│   └── validate-source.mjs      # Checks every content document and source-backed record
+│   ├── import-latex.mjs         # One-time structured import of the supplied TeX text
+│   └── validate-source.mjs      # Checks corpus alignment and export invariants
 ├── public/                      # Only local static assets if the build needs them
 ├── devpost/                     # Approved learning and planning documents
 ├── references/                  # Existing PDF, LaTeX, and bibliography source material
@@ -194,7 +237,7 @@ glossy/
 There are no runtime external services. The only external destination is the user's browser navigation to Wiktionary from a curated record.
 
 - **Wiktionary link** — each record may contain a direct `https://en.wiktionary.org/wiki/...` URL. No API call or credential is used. The link opens as a normal external reference.
-- **TinaCMS** — local editing uses `tinacms dev -c "next dev"` and the schema in `tina/config.ts`; local admin validation uses `npm run build:tina`. Cloud publishing uses `npm run build:tina:cloud` with `NEXT_PUBLIC_TINA_CLIENT_ID`, `TINA_TOKEN`, and `TINA_BRANCH`.
+- **TinaCMS** — local editing and confirmed writes use `tinacms dev -c "next dev"` and the schema in `tina/config.ts`; local GraphQL saves update repository files. TinaCloud is optional and not required for the local POC.
 - **Pronunciation references** — IPA is curated from Old English lexical/inflection entries and general Old English phonology references; it is displayed as notation only, not synthesized audio.
 - **Morpheme emphasis** — records with multiple morphemes receive a stronger passage affordance and segmented popup chips; simple one-morpheme glosses remain visually lighter.
 - **Fonts** — the first implementation should use a local CSS fallback stack so the demo works offline. If a packaged or hosted scholarly font is later chosen, verify licensing, loading behavior, and offline fallback before adding it.
@@ -205,7 +248,10 @@ There are no runtime external services. The only external destination is the use
 - **Optional field is unavailable** → omit that field from the popup rather than displaying invented or misleading content.
 - **A glyph or combining mark renders poorly** → preserve the source Unicode, show a safe serif fallback, and validate representative strings early in the build before transcribing the full demo passage.
 - **Popup would leave the viewport** → reposition or constrain it within the reading surface; on narrow screens, use a readable anchored panel that does not hide the selected text.
-- **A CMS edit breaks a segment lookup** → stable `glossRecords[].id` values are required, and source validation plus type checking must run before publishing.
+- **A draft is malformed or based on old content** → validate schema version and base version; report invalid/conflicting drafts and keep canonical repository data unchanged.
+- **Local storage is unavailable or full** → report the persistence error; keep the current in-memory edit visible and warn that it is not recoverable after leaving.
+- **A confirmed Tina save partially fails** → show per-document results, retain the complete draft, and allow retry without claiming all-or-nothing rollback.
+- **A lexical edit breaks a token lookup** → validate stable lexical IDs and references before publish and before reader rendering.
 - **A segment's text and linked gloss record diverge** → runtime and source validation reject the mismatch before the text is served.
 - **A source surface or TeX gloss was copied from another source entry** → source validation requires the pair to occur at the same aligned token position in one `\gll` entry.
 - **A Tina document preview route is missing** → the generated `/texts/<slug>` route renders the matching text or returns not found for an unknown document.
@@ -214,7 +260,10 @@ There are no runtime external services. The only external destination is the use
 
 ## What Was Simplified and Why
 
-- **TinaCMS-backed JSON with labeled forms** instead of a database or bespoke editor — keeps content versioned and inspectable without requiring routine raw JSON edits.
+- **Git-backed JSON** instead of a SQL database — keeps corpus data portable, diffable, and versioned without recurring storage fees.
+- **Local draft followed by explicit Tina write** — keeps keystrokes out of permanent repository content and makes publication an intentional action.
+- **Dedicated editor and reader routes** — keeps authoring tools separate from the student-facing visualizer.
+- **Normalized LaTeX export** — preserves the supported `gb4e` structure and content without promising byte-for-byte recreation of comments or arbitrary macros.
 - **Interlinear source gloss line plus one expanded panel** — preserves the source's line-by-line reading structure while keeping detailed explanations on demand.
 - **Curated phonetic and conjugation records** instead of runtime linguistic generation — protects accuracy and keeps the POC aligned with the approved static-gloss boundary.
 - **No browser speech synthesis** — current voices mispronounce Old English; audio remains deferred until a reliable source is available.
@@ -227,13 +276,15 @@ There are no runtime external services. The only external destination is the use
 ## Decisions and Open Issues
 
 - **Learner choice: local-first runtime** — enough for the current proof of concept; it avoids services and keeps the demo easy to run.
-- **Implementation decision: TinaCMS content boundary** — the editable boundary is one JSON document per complete text; React components consume typed adapters and do not own linguistic content.
-- **Learner choice: static setup for linguistic data** — the source-backed phonetic and conjugation records are prepared ahead of time, while their display is interactive.
-- **Learner choice: source-traceable editing** — TinaCMS forms expose source text, gloss data, and review metadata; automated checks verify references and source alignment without claiming to prove linguistic interpretation.
+- **Implementation decision: Git file boundary** — each text is one complete nested JSON document; reusable lexical entries are separate documents linked by stable IDs.
+- **Implementation decision: local-first edit boundary** — React draft state and versioned localStorage are the only write destinations before confirmation; Tina mutations happen only after an explicit user action.
+- **Implementation decision: TeX fidelity boundary** — preserve source tokens, gloss literals, paragraph/example structure, translations, footnotes, resources, abbreviations, and bibliography settings; normalize formatting and exclude arbitrary TeX preamble/comments.
+- **Learner choice: interactive editing** — gloss data and explanations are edited live rather than being static content revealed only by the reader.
+- **Learner choice: source-traceable editing** — the editor exposes source text, gloss data, and review metadata; automated checks verify references and source alignment without claiming to prove linguistic interpretation.
 - **Implementation decision: linguistic feature model** — the popup uses lemma, part of speech, explicit inflectional features, and morphemes instead of a universal `conjugation` field, because different parts of speech inflect differently.
 - **Implementation decision: source traceability** — each record carries the source gloss and review metadata so future corrections can be checked against the LaTeX rather than silently normalizing away the source form.
 - **Implementation decision derived from the PRD: typed local records** — a small explicit data shape makes every visible gloss field inspectable and keeps missing information honest.
 - **Useful uncertainty clarified: “dynamic generation”** — it means dynamically revealing the selected static record, not generating linguistic analysis at runtime. This preserves the static-gloss POC and avoids an accuracy-critical language engine.
 - **Open issue: exact popup dismissal and positioning** — implement and verify with desktop hover, keyboard focus, mobile tap, click-away, and narrow viewport checks during the build.
 - **Open issue: scholarly font availability** — validate the chosen local fallback stack with representative IPA and Old English strings before finalizing the demo passage.
-- **Open issue: TinaCloud publishing** — local Tina editing works without cloud credentials; remote branch-backed editing requires configuring a Tina client ID, token, and branch before deployment.
+- **Open issue: confirmed Tina mutations** — verify the exact local GraphQL `createDocument`/`updateDocument` mutation inputs and multi-document failure behavior before wiring publish; local saves must never claim to commit or push Git.
