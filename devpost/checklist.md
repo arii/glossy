@@ -29,7 +29,7 @@ Build mode: fast
   Learner check: Select an annotated word on desktop, then another word, and try the same at a narrow mobile width. Confirm the popup clearly belongs to the selected word and contains useful vocabulary or grammar information.
   Commit: `Add interactive visual glosses`
 
-- [ ] **3. You can read source glosses and edit the expanded word details**
+- [x] **3. You can read source glosses and edit the expanded word details**
   Becomes usable: Each text block presents an Old English line, a separate source-gloss line, and its corresponding translated English sentence; hover, keyboard focus, or tap still opens the detailed word panel. The reading visualizer is cleanly separated from editing tools, while TinaCMS provides an admin interface at `/admin` for dictionary and manuscript editing.
   Why now: The core interaction works; this slice restores the source manuscript's interlinear layout with English translations, separates the reading visualizer from authoring tools, and addresses the verified Tina preview-route failure before the learner's final review.
   PRD ref: `prd.md > The Core Journey`, `prd.md > Reading Surface`, `prd.md > Content Schema and Editing Requirements`, `prd.md > Reading and Visual Glossing`
