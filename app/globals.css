@@ -150,6 +150,28 @@ h2 {
   white-space: pre-wrap;
 }
 
+.inline-gloss-unit {
+  display: inline-flex;
+  flex-direction: column;
+  vertical-align: top;
+  margin-right: 0.45em;
+  margin-bottom: 0.6rem;
+  line-height: 1.2;
+}
+
+.inline-gloss-unit .gloss-trigger {
+  font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+  text-align: left;
+}
+
+.inline-gloss-unit .source-gloss-token {
+  font-size: 0.78rem;
+  color: var(--accent);
+  font-variant: small-caps;
+  line-height: 1.2;
+  margin-top: 0.25rem;
+}
+
 .source-gloss-token {
   font-variant: small-caps;
 }

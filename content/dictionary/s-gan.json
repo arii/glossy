@@ -1,0 +1,21 @@
+{
+  "word": "sǣ-d-e",
+  "pronunciation": "/ˈsæː.de/",
+  "sourceGloss": "say-PST-IND.3SG",
+  "morphemes": [
+    {
+      "part": "sǣ",
+      "meaning": "say"
+    },
+    {
+      "part": "d",
+      "meaning": "PST"
+    },
+    {
+      "part": "e",
+      "meaning": "IND.3SG"
+    }
+  ],
+  "inflection": "tense: past, mood: indicative, person: 3, number: singular",
+  "definition": "said, spoke"
+}

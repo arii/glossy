@@ -1,0 +1,17 @@
+{
+  "word": "norþ-mest",
+  "pronunciation": "/ˈnorθ.mest/",
+  "sourceGloss": "north-most.ADV",
+  "morphemes": [
+    {
+      "part": "norþ",
+      "meaning": "north"
+    },
+    {
+      "part": "mest",
+      "meaning": "most"
+    }
+  ],
+  "inflection": "degree: superlative",
+  "definition": "furthest north, northernmost"
+}

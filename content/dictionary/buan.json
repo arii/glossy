@@ -1,0 +1,21 @@
+{
+  "word": "bū-d-e",
+  "pronunciation": "/ˈbuː.de/",
+  "sourceGloss": "dwell-PST-SJV.SG",
+  "morphemes": [
+    {
+      "part": "bū",
+      "meaning": "dwell"
+    },
+    {
+      "part": "d",
+      "meaning": "PST"
+    },
+    {
+      "part": "e",
+      "meaning": "SJV.SG"
+    }
+  ],
+  "inflection": "tense: past, mood: subjunctive, person: 3, number: singular",
+  "definition": "dwelt, lived"
+}

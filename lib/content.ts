@@ -1,8 +1,79 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { TextDocument } from "./types";
+import { parseMDX } from "@tinacms/mdx";
+import type { DictionaryEntry, ManuscriptDocument, TextDocument } from "./types";
 
 const contentDirectory = path.join(process.cwd(), "content");
+
+const glossWordTemplate = {
+  name: "body",
+  type: "rich-text" as const,
+  templates: [
+    {
+      name: "GlossWord",
+      label: "Gloss Word",
+      inline: true,
+      fields: [
+        { type: "string" as const, name: "text" },
+        { type: "reference" as const, name: "dictEntry", collections: ["dictionary"] },
+      ],
+    },
+  ],
+};
+
+export function loadDictionary(): Record<string, DictionaryEntry> {
+  const dictDir = path.join(process.cwd(), "content", "dictionary");
+  const dictMap: Record<string, DictionaryEntry> = {};
+  if (!fs.existsSync(dictDir)) return dictMap;
+
+  for (const file of fs.readdirSync(dictDir)) {
+    if (file.endsWith(".json")) {
+      const data = JSON.parse(fs.readFileSync(path.join(dictDir, file), "utf8")) as DictionaryEntry;
+      const base = path.basename(file, ".json");
+      const entry: DictionaryEntry = { ...data, id: base, relativePath: file };
+      dictMap[file] = entry;
+      dictMap[base] = entry;
+      dictMap[`content/dictionary/${file}`] = entry;
+      if (data.word) {
+        dictMap[data.word] = entry;
+      }
+    }
+  }
+  return dictMap;
+}
+
+export function loadManuscripts(): ManuscriptDocument[] {
+  const mDir = path.join(process.cwd(), "content", "manuscripts");
+  if (!fs.existsSync(mDir)) return [];
+
+  return fs.readdirSync(mDir).filter((f) => f.endsWith(".mdx")).map((file) => {
+    const raw = fs.readFileSync(path.join(mDir, file), "utf8");
+    const match = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+    const frontmatter: Record<string, string> = {};
+    if (match) {
+      match[1].split("\n").forEach((line) => {
+        const colon = line.indexOf(":");
+        if (colon > 0 && !line.startsWith(" ")) {
+          const k = line.slice(0, colon).trim();
+          const v = line.slice(colon + 1).trim().replace(/^["']|["']$/g, "");
+          frontmatter[k] = v;
+        }
+      });
+    }
+    const bodyText = match ? match[2] : raw;
+    const bodyAst = parseMDX(bodyText, glossWordTemplate, (val: string) => val);
+    const slug = path.basename(file, ".mdx");
+    return {
+      slug,
+      title: frontmatter.title || slug,
+      author: frontmatter.author,
+      source: frontmatter.source,
+      translation: frontmatter.translation,
+      body: bodyAst,
+      rawBody: bodyText,
+    };
+  });
+}
 
 export type LoadedTextDocument = TextDocument & { fileName: string };
 

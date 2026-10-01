@@ -1,0 +1,21 @@
+{
+  "word": "styċċe-mǣl-um",
+  "pronunciation": "/ˈstyt.t͡ʃeˌmæː.lum/",
+  "sourceGloss": "piece-meal-DAT.PL",
+  "morphemes": [
+    {
+      "part": "styċċe",
+      "meaning": "piece"
+    },
+    {
+      "part": "mǣl",
+      "meaning": "meal"
+    },
+    {
+      "part": "um",
+      "meaning": "DAT.PL"
+    }
+  ],
+  "inflection": "case: dative, number: plural",
+  "definition": "piece-meal, here and there"
+}

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { ReadingPage } from "../../../components/reading-page";
-import { assertTextDocuments, loadTextDocuments } from "../../../lib/content";
+import { assertTextDocuments, loadDictionary, loadManuscripts, loadTextDocuments } from "../../../lib/content";
 
 type TextPageProps = {
   params: Promise<{ slug: string }>;
@@ -9,18 +9,33 @@ type TextPageProps = {
 export function generateStaticParams() {
   const texts = loadTextDocuments();
   assertTextDocuments(texts);
-  return texts.flatMap(({ slug, textId }) => [{ slug }, { slug: textId }]);
+  const manuscripts = loadManuscripts();
+  const textParams = texts.flatMap(({ slug, textId }) => [{ slug }, { slug: textId }]);
+  const manuscriptParams = manuscripts.map(({ slug }) => ({ slug }));
+  return [...textParams, ...manuscriptParams];
 }
 
 export default async function TextPreviewPage({ params }: TextPageProps) {
   const { slug } = await params;
   const texts = loadTextDocuments();
   assertTextDocuments(texts);
-  const text = texts.find((document) => document.slug === slug || document.textId === slug);
+  const manuscripts = loadManuscripts();
+  const dictionary = loadDictionary();
 
-  if (!text) {
+  const text = texts.find((document) => document.slug === slug || document.textId === slug);
+  const manuscript = manuscripts.find((doc) => doc.slug === slug);
+
+  if (!text && !manuscript) {
     notFound();
   }
 
-  return <ReadingPage texts={texts} initialSlug={text.slug} />;
+  return (
+    <ReadingPage
+      texts={texts}
+      manuscripts={manuscripts}
+      dictionary={dictionary}
+      initialSlug={manuscript?.slug ?? text?.slug}
+    />
+  );
 }
+

@@ -33,8 +33,8 @@ const reader = await check("/", [
   "Source gloss line",
   "Ohthere.nom",
 ]);
-if (!reader.includes("/admin/index.html#/collections/text/~")) {
-  throw new Error("The reader's edit link does not open the Tina text collection.");
+if (!reader.includes("/admin/index.html#/collections/manuscript/~") && !reader.includes("/admin/index.html#/collections/text/~")) {
+  throw new Error("The reader's edit link does not open the Tina collection.");
 }
 if (reader.includes("Hear word")) {
   throw new Error("The unreliable browser speech control should not appear in the reader.");

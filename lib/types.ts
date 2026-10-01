@@ -104,3 +104,31 @@ export type GlossRecord = {
 };
 
 export type PassageDocument = TextDocument;
+
+export type DictionaryMorpheme = {
+  part: string;
+  meaning: string;
+};
+
+export type DictionaryEntry = {
+  id?: string;
+  word: string;
+  pronunciation?: string;
+  sourceGloss?: string;
+  morphemes?: DictionaryMorpheme[];
+  inflection?: string;
+  definition?: string;
+  relativePath?: string;
+};
+
+export type ManuscriptDocument = {
+  slug: string;
+  title: string;
+  author?: string;
+  source?: string;
+  translation?: string;
+  body: unknown;
+  rawBody?: string;
+  _tina_metadata?: Record<string, string>;
+};
+

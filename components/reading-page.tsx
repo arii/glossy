@@ -1,26 +1,102 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useTina } from "tinacms/dist/react";
+import { TinaMarkdown, type Components } from "tinacms/dist/rich-text";
 import { getGlossRecords, getReadingPassage } from "../data/ohthere";
-import type { TextDocument } from "../lib/types";
+import type { DictionaryEntry, ManuscriptDocument, TextDocument } from "../lib/types";
 import { AnnotatedPassage } from "./annotated-passage";
 import { GlossPopup } from "./gloss-popup";
+import { GlossaryPanel, GlossWord, GlossaryProvider, useGlossary } from "./glossary";
 
 type ReadingPageProps = {
   texts: TextDocument[];
+  manuscripts?: ManuscriptDocument[];
+  dictionary?: Record<string, DictionaryEntry>;
   initialSlug?: string;
+  query?: string;
+  variables?: object;
+  data?: Record<string, unknown>;
 };
 
-export function ReadingPage({ texts, initialSlug }: ReadingPageProps) {
-  const [selectedSlug, setSelectedSlug] = useState(initialSlug ?? texts[0]?.slug ?? "");
+export function ReadingPage({
+  texts,
+  manuscripts = [],
+  dictionary = {},
+  initialSlug,
+  query,
+  variables,
+  data,
+}: ReadingPageProps) {
+  return (
+    <GlossaryProvider dictionaryMap={dictionary}>
+      <ReadingPageInner
+        texts={texts}
+        manuscripts={manuscripts}
+        dictionary={dictionary}
+        initialSlug={initialSlug}
+        query={query}
+        variables={variables}
+        data={data}
+      />
+    </GlossaryProvider>
+  );
+}
+
+function ReadingPageInner({
+  texts,
+  manuscripts = [],
+  initialSlug,
+  query,
+  variables,
+  data,
+}: ReadingPageProps) {
+  const { data: tinaData } = useTina({
+    query: query ?? "",
+    variables: variables ?? {},
+    data: data ?? {},
+  });
+  const { activeTerm, setActiveTerm } = useGlossary();
+
+  const allItems = [
+    ...manuscripts.map((m) => ({
+      type: "manuscript" as const,
+      slug: m.slug,
+      title: m.title,
+      item: m,
+    })),
+    ...texts.map((t) => ({
+      type: "text" as const,
+      slug: t.slug,
+      title: t.title,
+      item: t,
+    })),
+  ];
+
+  const defaultSlug =
+    initialSlug ??
+    manuscripts[0]?.slug ??
+    texts[0]?.slug ??
+    "";
+
+  const [selectedSlug, setSelectedSlug] = useState(defaultSlug);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [pinnedId, setPinnedId] = useState<string | null>(null);
   const lastTriggerId = useRef<string | null>(null);
   const glossAreaRef = useRef<HTMLElement | null>(null);
+
+  const activeManuscript =
+    (tinaData as { manuscript?: ManuscriptDocument })?.manuscript ??
+    manuscripts.find((m) => m.slug === selectedSlug) ??
+    (manuscripts.length > 0 ? manuscripts[0] : null);
+
   const selectedText = texts.find((text) => text.slug === selectedSlug) ?? texts[0];
   const glossRecords = selectedText ? getGlossRecords(selectedText) : {};
   const readingPassage = selectedText ? getReadingPassage(selectedText) : undefined;
   const selectedRecord = selectedId ? glossRecords[selectedId] : undefined;
+
+  const currentTitle = activeManuscript?.title ?? readingPassage?.title;
+  const currentSource = activeManuscript?.source ?? readingPassage?.source;
 
   const selectOnHover = (id: string) => {
     if (!pinnedId) {
@@ -38,15 +114,17 @@ export function ReadingPage({ texts, initialSlug }: ReadingPageProps) {
     setSelectedSlug(slug);
     setSelectedId(null);
     setPinnedId(null);
+    setActiveTerm(null);
   };
 
   const rememberTrigger = (id: string) => {
     lastTriggerId.current = id;
   };
 
-  const closeGloss = () => {
+  const closeGloss = useCallback(() => {
     setSelectedId(null);
     setPinnedId(null);
+    setActiveTerm(null);
     const triggerId = lastTriggerId.current;
     if (triggerId) {
       window.requestAnimationFrame(() => {
@@ -55,10 +133,10 @@ export function ReadingPage({ texts, initialSlug }: ReadingPageProps) {
           ?.focus();
       });
     }
-  };
+  }, [setActiveTerm]);
 
   useEffect(() => {
-    if (!selectedId) {
+    if (!selectedId && !activeTerm) {
       return;
     }
 
@@ -70,10 +148,10 @@ export function ReadingPage({ texts, initialSlug }: ReadingPageProps) {
 
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [selectedId]);
+  }, [selectedId, activeTerm, closeGloss]);
 
   useEffect(() => {
-    if (!selectedId) {
+    if (!selectedId && !activeTerm) {
       return;
     }
 
@@ -87,7 +165,7 @@ export function ReadingPage({ texts, initialSlug }: ReadingPageProps) {
         return;
       }
 
-      if (target instanceof Element && target.closest("[data-gloss-trigger]")) {
+      if (target instanceof Element && target.closest("[data-gloss-trigger], .gloss-trigger")) {
         return;
       }
 
@@ -96,63 +174,105 @@ export function ReadingPage({ texts, initialSlug }: ReadingPageProps) {
 
     document.addEventListener("pointerdown", closeOnOutsidePointer);
     return () => document.removeEventListener("pointerdown", closeOnOutsidePointer);
-  }, [selectedId]);
+  }, [selectedId, activeTerm, closeGloss]);
+
+  const markdownComponents: Components<{
+    GlossWord: { text?: string; dictEntry?: string | DictionaryEntry };
+  }> = {
+    GlossWord: (props) => (
+      <GlossWord text={String(props?.text ?? "")} dictEntry={props?.dictEntry} />
+    ),
+  };
 
   return (
     <main className="page-shell">
       <article className="reading-surface">
         <header className="page-header">
           <p className="eyebrow">Old English visual gloss</p>
-          <div className="text-picker">
-            <label htmlFor="text-select">Text</label>
-            <select
-              id="text-select"
-              value={selectedText?.slug}
-              onChange={(event) => changeText(event.target.value)}
-            >
-              {texts.map((text) => (
-                <option key={text.slug} value={text.slug}>
-                  {text.title}
-                </option>
-              ))}
-            </select>
-          </div>
-          <a className="editor-link" href="/admin/index.html#/collections/text/~">
+          {allItems.length > 1 && (
+            <div className="text-picker">
+              <label htmlFor="text-select">Text</label>
+              <select
+                id="text-select"
+                value={selectedSlug}
+                onChange={(event) => changeText(event.target.value)}
+              >
+                {allItems.map((entry) => (
+                  <option key={entry.slug} value={entry.slug}>
+                    {entry.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          <a className="editor-link" href="/admin/index.html#/collections/manuscript/~">
             Edit text and glosses
           </a>
-          <h1>{readingPassage?.title}</h1>
-          <p className="source-line">{readingPassage?.source}</p>
+          <h1 data-tina-field={activeManuscript?._tina_metadata?.title}>{currentTitle}</h1>
+          <p className="source-line" data-tina-field={activeManuscript?._tina_metadata?.source}>{currentSource}</p>
         </header>
 
         <div className="reading-layout">
           <section className="passage" aria-labelledby="passage-heading">
             <h2 id="passage-heading">Text</h2>
-            {readingPassage?.blocks.map((block) => (
-              <div className="passage-block" key={block.id}>
-                <AnnotatedPassage
-                  segments={block.segments}
-                  records={glossRecords}
-                  selectedId={selectedId}
-                  onHover={selectOnHover}
-                  onSelect={pinSelection}
-                  onTriggerFocus={rememberTrigger}
-                />
-                <p className="translation">{block.translation}</p>
+            {activeManuscript?.body ? (
+              <div className="passage-block">
+                <div
+                  className="old-english"
+                  data-tina-field={activeManuscript?._tina_metadata?.body}
+                  aria-label="Source gloss line"
+                >
+                  <TinaMarkdown
+                    content={activeManuscript.body as Parameters<typeof TinaMarkdown>[0]["content"]}
+                    components={markdownComponents}
+                  />
+                </div>
+                {activeManuscript.translation && (
+                  <p
+                    className="translation"
+                    data-tina-field={activeManuscript?._tina_metadata?.translation}
+                    style={{ whiteSpace: "pre-line" }}
+                  >
+                    {activeManuscript.translation}
+                  </p>
+                )}
               </div>
-            ))}
+            ) : readingPassage?.blocks ? (
+              readingPassage.blocks.map((block) => (
+                <div className="passage-block" key={block.id}>
+                  <AnnotatedPassage
+                    segments={block.segments}
+                    records={glossRecords}
+                    selectedId={selectedId}
+                    onHover={selectOnHover}
+                    onSelect={pinSelection}
+                    onTriggerFocus={rememberTrigger}
+                  />
+                  <p className="translation">{block.translation}</p>
+                </div>
+              ))
+            ) : null}
           </section>
+
           <section
             ref={glossAreaRef}
-            className={`gloss-area${selectedRecord ? " has-selection" : ""}`}
-            aria-label="Visual gloss"
+            className="gloss-sidebar-container"
           >
-            {selectedRecord ? (
+            {activeTerm ? (
+              <GlossaryPanel
+                activeTerm={activeTerm}
+                onClose={() => setActiveTerm(null)}
+              />
+            ) : selectedRecord ? (
               <GlossPopup
                 record={selectedRecord}
                 onClose={closeGloss}
               />
             ) : (
-              <p className="empty-gloss">Hover over a word to preview its gloss. Click or tap to keep it open while you follow a reference.</p>
+              <GlossaryPanel
+                activeTerm={null}
+                onClose={() => {}}
+              />
             )}
           </section>
         </div>
@@ -160,3 +280,4 @@ export function ReadingPage({ texts, initialSlug }: ReadingPageProps) {
     </main>
   );
 }
+

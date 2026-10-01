@@ -1,0 +1,17 @@
+{
+  "word": "hlāford-e",
+  "pronunciation": "/ˈxlɑː.for.de/",
+  "sourceGloss": "lord-DAT.SG",
+  "morphemes": [
+    {
+      "part": "hlāford",
+      "meaning": "lord"
+    },
+    {
+      "part": "e",
+      "meaning": "DAT.SG"
+    }
+  ],
+  "inflection": "case: dative, number: singular, gender: masculine",
+  "definition": "lord, master"
+}
