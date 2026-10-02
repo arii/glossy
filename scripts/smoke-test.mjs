@@ -27,20 +27,37 @@ if (!clientId) {
   );
 }
 
-const reader = await check("/", [
+const landing = await check("/", [
+  "Read a text or work on its glosses.",
+  "/read/ohthere-wulfstan",
+  "/edit/ohthere-wulfstan",
+]);
+const cardCount = [...landing.matchAll(/class="workspace-choice-card"/gu)].length;
+if (cardCount !== 1) {
+  throw new Error(`Expected one unique text on the landing page, found ${cardCount}.`);
+}
+const reader = await check("/read/ohthere-wulfstan", [
   "Old English visual gloss",
   "Source gloss line",
   "Ohthere.nom",
   "Ohthere said to his lord, King Alfred",
 ]);
-if (!reader.includes("/admin/index.html#/collections/manuscript/~") && !reader.includes("/admin/index.html#/collections/text/~")) {
-  throw new Error("The reader's edit link does not open the Tina collection.");
+if (reader.includes("Edit this text") || reader.includes("Editorial &amp; CMS Tools")) {
+  throw new Error("The reader must not contain editing or CMS controls.");
 }
 if (reader.includes("Hear word")) {
   throw new Error("The unreliable browser speech control should not appear in the reader.");
 }
 
+await check("/edit/ohthere-wulfstan", [
+  "Glossy · Editing workspace",
+  "Live preview",
+  "Source form",
+  "Explanation",
+  "Open reader",
+  "Save to TinaCMS",
+]);
 await check("/texts/ohthere-wulfstan", ["The voyages of Ohthere and Wulfstan"]);
 await check("/texts/ohthere", ["The voyages of Ohthere and Wulfstan"]);
 await check("/admin/index.html", ["Tina"]);
-console.log(`Smoke test passed for reader, text preview, and Tina admin at ${baseUrl}.`);
+console.log(`Smoke test passed for route choice, separate reader/editor, previews, and Tina admin at ${baseUrl}.`);

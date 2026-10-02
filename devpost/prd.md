@@ -10,7 +10,7 @@ Source: `scope.md > Who It's For`, `scope.md > The POC Boundary`.
 
 ## The Core Journey
 
-1. The editor opens the authoring workspace for a Git-backed text or starts a new text using the shared model.
+1. The editor opens the authoring workspace for a Git-backed text, starts a new text using the shared model, or pastes supported `gb4e` LaTeX to import it as a structured text.
 2. The editor selects a sentence/example and sees its surface line, source-gloss line, translation, and word details in an interactive live preview.
 3. Selecting a token opens an inspector where the editor can update its exact surface, source gloss, lexical link, morphology, pronunciation, and explanation; changes appear in the preview immediately.
 4. Changes are autosaved as a text-scoped browser-local draft, not written to TinaCMS or the source files while the editor is working.
@@ -26,6 +26,8 @@ Source: `scope.md > Who It's For`, `scope.md > The POC Boundary`.
 The editor is a dedicated route, separate from the reader and TinaCMS administration. It presents the sentence structure and an immediately updated interlinear preview alongside a token inspector. The editor can add or edit text examples, source forms and glosses, free translations, footnotes, lexical/grammatical analysis, document metadata, resources, and abbreviations. An unobtrusive link opens the corresponding reader preview; the reader does not contain editor controls.
 
 Draft state is local to the browser and scoped by text and schema version. The editor sees whether a draft is dirty, saved locally, or ready to publish. It can recover or discard a draft. Publishing requires a deliberate confirmation and writes through TinaCMS to Git-backed JSON; a failed or partial multi-document write must be reported, never presented as success. Local Tina writes modify the working tree; Git commit and push are not implicit.
+
+The editor accepts pasted LaTeX in the supported `gb4e` shape: labeled paragraph groups containing aligned `\gll` surface/gloss lines and `\glt` translations, plus the supplied document's footnotes, resource list, abbreviations, and bibliography metadata. A successful import opens as a live interlinear preview before it replaces or creates editor content. Unsupported or malformed structures produce a specific error and do not discard the editor's current work. Arbitrary preamble package recovery and unknown macros are out of scope.
 
 ### Reading Surface
 
@@ -100,6 +102,8 @@ The student can read the selected Old English passage and identify annotated wor
 - [ ] Publish confirmation names the content being written; success is shown only after Tina confirms every requested document write, and errors or partial writes are reported clearly with retry/recovery guidance.
 - [ ] Confirmed Tina local writes update JSON files in the Git working tree; the UI does not imply that files were committed or pushed.
 - [ ] A LaTeX export downloads a valid `.tex` document from the current draft without publishing it.
+- [ ] An editor can paste a supported `gb4e` manuscript and preview its structured paragraphs, aligned surface/gloss tokens, translations, footnotes, resources, abbreviations, and bibliography metadata before accepting the import.
+- [ ] Unsupported LaTeX structures are reported without replacing current editor data; the importer does not claim to parse arbitrary packages or macros.
 - [ ] Export retains the supported source document structure and all 75 current examples across 13 paragraphs, translations, two footnotes, resource citations/list, abbreviations, title/author/date, and bibliography reference.
 - [ ] Source validation checks token/gloss pair alignment, unique stable IDs, paragraph/example ordering, footnote references, and the expected imported example count.
 - [ ] The text model can represent additional texts without Old English-specific assumptions in the editor or renderer; arbitrary unknown TeX package/macro import is not required.

@@ -4,7 +4,7 @@ import matter from "gray-matter";
 import { parseMDX } from "@tinacms/mdx";
 import type { DictionaryEntry, ManuscriptDocument, TextDocument } from "./types";
 
-const contentDirectory = path.join(process.cwd(), "content");
+const contentDirectory = path.join(process.cwd(), "content", "texts");
 
 const glossWordTemplate = {
   name: "body",

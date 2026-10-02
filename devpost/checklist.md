@@ -1,6 +1,6 @@
 ---
 doc: checklist
-status: draft
+status: approved
 ---
 
 # Build Checklist
@@ -39,14 +39,14 @@ Build mode: fast
   Learner check: Open `http://localhost:3000`, confirm each passage block reads as Old English line → separate gloss line → translation, then hover/click or tap a word and verify its expanded values. Confirm the visualizer has no intrusive edit chrome. Navigate to `http://localhost:3000/admin/index.html` to verify the separated editing tools.
   Commit: `Add interlinear glosses and improve editing`
 
-- [ ] **4. You can edit a gloss and see it update live**
-  Becomes usable: A dedicated editing route lets the editor select a token, change its source form/gloss or explanation, and immediately see the interlinear preview and linked explanation update; the clean reader is a separate route.
-  Why now: This proves the revised unique kernel on a small source-backed example before investing in bulk migration, persistence, or publishing.
+- [ ] **4. You can edit a gloss, preview it live, and save it through Tina**
+  Becomes usable: A dedicated editing route lets the editor select a token, change its source form/gloss or explanation, immediately see the interlinear preview and linked explanation update, then explicitly confirm saving to the Tina-managed Git JSON; the clean reader is a separate route.
+  Why now: This proves the revised unique kernel and the real CMS write path on a small source-backed example before investing in bulk migration, robust local draft recovery, or export.
   PRD ref: `prd.md > The Core Journey`, `prd.md > Editing Workspace`, `prd.md > Live Gloss Editing, Drafts, and Export`
   Spec ref: `spec.md > The Core Journey Through the System`, `spec.md > Gloss Editing Workspace`, `spec.md > Data Model`, `spec.md > Where It Runs and How Someone Tries It`
-  Build: Add the text-agnostic paragraph/example/token model for one existing example; create separate `/edit/<slug>` and `/read/<slug>` pages; implement token selection, an inspector, the live interlinear preview, and reader-style explanation using shared typed data.
-  Verify (mechanical): Run `npm run lint`, `npm run typecheck`, and `npm run build`; verify a browser-level edit changes the displayed token/gloss and explanation while the `/read/<slug>` page remains independent and unchanged.
-  Learner check: Open the editor, change one source gloss or explanation and observe the preview update immediately; open the separate reader and confirm it remains a reader, not an editor.
+  Build: Add the text-agnostic paragraph/example/token model for one existing example; create separate `/edit/<slug>` and `/read/<slug>` pages; implement token selection, an inspector, the live interlinear preview, and reader-style explanation using shared typed data; add an explicit confirmation and Tina JSON save with clear success/error reporting.
+  Verify (mechanical): Run `npm run lint`, `npm run typecheck`, `npm run build`, and `BASE_URL=http://localhost:3000 npm run test:smoke`; in a browser edit token details, confirm the preview changes and reader stays unchanged, then confirm a Tina write and verify the saved JSON in `content/texts/`; verify duplicate reader entries are suppressed and the selected gloss remains visible while scrolling.
+  Learner check: Open the editor, change one source gloss or explanation and observe the preview update immediately; explicitly save a test edit through Tina and inspect the Git-backed JSON; open the separate reader and confirm it remains a reader, not an editor.
   Commit: `Add live gloss editing workspace`
 
 - [ ] **5. You can edit the complete source text**
@@ -54,14 +54,14 @@ Build mode: fast
   Why now: The revised editor must prove the schema against the real document's full structure and exceptions, not only the first few example sentences.
   PRD ref: `prd.md > Content Schema and Editing Requirements`, `prd.md > Live Gloss Editing, Drafts, and Export`, `prd.md > Understanding the Source`
   Spec ref: `spec.md > Data Model`, `spec.md > File Structure`, `spec.md > Important Failure Modes`, `spec.md > Decisions and Open Issues`
-  Build: Import all source `\gll`/`\glt` pairs into ordered paragraph/example/token JSON; preserve literal TeX glosses and inline notes; connect reusable lexical IDs where available; render/select examples and support adding another text using the same model.
-  Verify (mechanical): Run `npm run validate:source`, `npm run typecheck`, and `npm run build`; require all 75 source/gloss/translation entries, 13 paragraph labels, footnote anchors, lexical references, and document metadata to validate with no alignment loss.
-  Learner check: Open the imported text in both routes, navigate between early and later paragraph groups, edit a token near a source exception, and confirm the translation and footnote stay with the correct example.
+  Build: Add a paste/import workflow for the supported `gb4e` subset, parse all source `\gll`/`\glt` pairs into ordered paragraph/example/token JSON, and preview before accepting; preserve literal TeX glosses, inline notes, resource citations, active abbreviations, and bibliography metadata; connect reusable lexical IDs where available; render/select examples and support adding another text using the same model.
+  Verify (mechanical): Run `npm run validate:source`, `npm run typecheck`, and `npm run build`; paste the supplied TeX fixture and require all 75 source/gloss/translation entries, 13 paragraph labels, footnote anchors, resource entries, active abbreviations, and document metadata to validate with no alignment loss; malformed/unsupported input must leave current editor data unchanged.
+  Learner check: Paste the supplied TeX manuscript into the editor, review the structured preview, navigate between early and later paragraph groups, edit a token near a source exception, and confirm the translation and footnote stay with the correct example.
   Commit: `Import full TeX corpus into text model`
 
 - [ ] **6. Your unfinished edits survive a refresh**
   Becomes usable: Token and document edits are autosaved as versioned browser-local drafts, restored for the matching text after refresh, and explicitly discardable without changing published content.
-  Why now: Once the full document is editable, the learner needs safe persistence before publishing changes to the Git-backed source.
+  Why now: Once the full document is editable, the learner needs safe browser-local recovery before the later confirmed publish flow writes changes to the Git-backed source.
   PRD ref: `prd.md > Editing Workspace`, `prd.md > Live Gloss Editing, Drafts, and Export`, `prd.md > States and Boundaries`
   Spec ref: `spec.md > Draft Controller`, `spec.md > Data Model`, `spec.md > Important Failure Modes`
   Build: Implement draft serialization/hydration, debounce, text/schema scoping, dirty status, recovery/discard confirmation, and base-version conflict detection; surface storage/parse failures without dropping current edits.
@@ -119,3 +119,7 @@ Activity mode: not started
 - Browser speech playback was removed at the learner's request because it mispronounces Old English; reliable audible pronunciation remains deferred.
 - Architectural revision: Restored the English translation sentence alongside the interlinear reading text; separated the student-facing reading visualizer from the authoring/editing tools so the reader is clean and focused, with TinaCMS editor access cleanly situated at `/admin` and in unobtrusive footer utility navigation.
 - The learner revised the product direction toward live gloss editing: the reader and editor will be separate pages; edits update an interactive preview, remain local until explicit Tina confirmation, use Git-backed JSON without a database, and export to source-structured LaTeX. Review of the supplied TeX found 13 paragraph groups, 75 aligned examples/translations, two inline footnotes, resource citations/list, and 42 active abbreviation entries; the full structured import/export is now in the build plan.
+- The learner approved expanding the editor so a pasted copy of the supplied `gb4e` LaTeX can be previewed and imported into the text model. Slice 5 now covers this supported document structure; arbitrary TeX packages and unknown macros remain excluded.
+- Slice 4 now includes the user-requested confirmed Tina save. Slice 8 remains responsible for the complete local-draft recovery flow and more robust publishing behavior after export.
+- Slice 4 implementation adds an explicit confirmed Tina save for the text JSON and stores the canonical text under `content/texts/` so Tina's text collection does not overlap the dictionary collection. The landing and reader hide the legacy manuscript when it duplicates a canonical text title/slug; the duplicate source remains intact.
+- Desktop gloss details now stay visible in a scrollable sticky sidebar during reading; mobile retains the bottom-sheet behavior.

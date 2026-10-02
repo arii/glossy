@@ -92,9 +92,6 @@ export function GlossPopup({ record, onClose }: GlossPopupProps) {
           Open in Wiktionary <span aria-hidden="true">↗</span>
         </a>
       )}
-      <a className="edit-gloss-link" href="/admin/index.html#/collections/text/~">
-        Edit this text&apos;s glosses
-      </a>
     </aside>
   );
 }

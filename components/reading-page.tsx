@@ -58,8 +58,17 @@ function ReadingPageInner({
   });
   const { activeTerm, setActiveTerm } = useGlossary();
 
+  const visibleManuscripts = manuscripts.filter(
+    (manuscript) =>
+      !texts.some(
+        (text) =>
+          text.textId === manuscript.slug ||
+          text.slug === manuscript.slug ||
+          normalizeTitle(text.title) === normalizeTitle(manuscript.title),
+      ),
+  );
   const allItems = [
-    ...manuscripts.map((m) => ({
+    ...visibleManuscripts.map((m) => ({
       type: "manuscript" as const,
       slug: m.slug,
       title: m.title,
@@ -75,8 +84,8 @@ function ReadingPageInner({
 
   const defaultSlug =
     initialSlug ??
-    manuscripts[0]?.slug ??
     texts[0]?.slug ??
+    visibleManuscripts[0]?.slug ??
     "";
 
   const [selectedSlug, setSelectedSlug] = useState(defaultSlug);
@@ -87,8 +96,8 @@ function ReadingPageInner({
 
   const activeManuscript =
     (tinaData as { manuscript?: ManuscriptDocument })?.manuscript ??
-    manuscripts.find((m) => m.slug === selectedSlug) ??
-    (manuscripts.length > 0 ? manuscripts[0] : null);
+    visibleManuscripts.find((m) => m.slug === selectedSlug) ??
+    (visibleManuscripts.length > 0 ? visibleManuscripts[0] : null);
 
   const selectedText = texts.find((text) => text.slug === selectedSlug) ?? texts[0];
   const glossRecords = selectedText ? getGlossRecords(selectedText) : {};
@@ -272,7 +281,7 @@ function ReadingPageInner({
 
           <section
             ref={glossAreaRef}
-            className="gloss-sidebar-container"
+            className={`gloss-sidebar-container${selectedRecord || activeTerm ? " has-selection" : ""}`}
           >
             {activeTerm ? (
               <GlossaryPanel
@@ -293,20 +302,11 @@ function ReadingPageInner({
           </section>
         </div>
 
-        <footer className="reader-footer">
-          <p className="reader-footer-note">
-            Glossy — Interactive Old English Reader &amp; Linguistic Visualizer
-          </p>
-          <a
-            className="reader-admin-link"
-            href="/admin/index.html#/collections/manuscript/~"
-            title="Open TinaCMS dictionary and manuscript authoring tools"
-          >
-            Editorial &amp; CMS Tools →
-          </a>
-        </footer>
       </article>
     </main>
   );
 }
 
+function normalizeTitle(title: string) {
+  return title.trim().replace(/\s+/gu, " ").toLocaleLowerCase("und");
+}

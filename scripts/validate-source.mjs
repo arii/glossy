@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
-const contentDirectory = "content";
+const contentDirectory = "content/texts";
 const contentFiles = readdirSync(contentDirectory).filter((fileName) =>
   fileName.endsWith(".json"),
 );

@@ -89,6 +89,10 @@ After an explicit review/confirmation, submits only changed documents to Tina's 
 
 Serializes the current draft or published text into a downloadable `.tex` file. It formats aligned surface/gloss lines, translations, paragraph/example groupings, footnotes, resources/citations, abbreviation lists, metadata, and bibliography configuration through a defined template. Export is independent from publishing.
 
+### LaTeX Paste Importer
+
+Accepts pasted source in the supported `gb4e` structure and converts it into the same text model used by the reader and editor. Parse labeled `exe`/`xlist` paragraph groups, aligned `\gll` surface/gloss token sequences, `\glt` translations and inline footnotes, resource-list entries/citations, active glossing abbreviations, title/author/date, and bibliography resource. Show a preview and validation summary before applying imported content. Validate each surface/gloss pair in its source example, retain literal TeX gloss strings, and report unsupported macros/structures explicitly rather than silently dropping text or replacing existing editor state.
+
 ### Annotated Passage
 
 Renders each passage block as an Old English line followed by a separate source-gloss line. Plain text remains ordinary text; annotated forms become keyboard-focusable buttons with stable gloss-record identifiers.
@@ -223,6 +227,7 @@ glossy/
 │   └── draft-storage.ts         # Versioned local draft persistence
 ├── scripts/
 │   ├── import-latex.mjs         # One-time structured import of the supplied TeX text
+│   ├── parse-latex.ts           # Browser-safe parser for the supported pasted gb4e subset
 │   └── validate-source.mjs      # Checks corpus alignment and export invariants
 ├── public/                      # Only local static assets if the build needs them
 ├── devpost/                     # Approved learning and planning documents
