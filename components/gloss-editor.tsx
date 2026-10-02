@@ -18,7 +18,8 @@ export function GlossEditor({ initialDocument }: { initialDocument: EditableDocu
 
   const activeSentence = document.sentences.find((sentence) => sentence.id === activeSentenceId);
   const activeWord = activeSentence?.words.find((word) => word.id === activeWordId);
-  const isDirty = JSON.stringify(document) !== JSON.stringify(initialDocument);
+  const [savedSnapshot, setSavedSnapshot] = useState(() => JSON.stringify(initialDocument));
+  const isDirty = JSON.stringify(document) !== savedSnapshot;
 
   const updateSentence = (patch: Partial<ReadingSentence>) => {
     setDocument((current) => ({
@@ -95,6 +96,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: EditableDocu
       if (!response.ok || result.errors?.length || !result.data?.updateDocument?._sys?.relativePath) {
         throw new Error(result.errors?.map((error) => error.message).join("; ") || `TinaCMS returned HTTP ${response.status}.`);
       }
+      setSavedSnapshot(JSON.stringify(document));
       setSaveState({
         kind: "success",
         message: `Saved content/texts/${result.data.updateDocument._sys.relativePath} to the Git working tree. It has not been committed or pushed.`,
@@ -130,11 +132,19 @@ export function GlossEditor({ initialDocument }: { initialDocument: EditableDocu
           <nav className="workspace-actions" aria-label="Editor actions">
             <a className="workspace-link" href={`/read/${document.slug}`}>Open reader</a>
             <a className="workspace-link" href="/admin/index.html">TinaCMS</a>
+            <span className={`editor-dirty is-${isDirty ? "dirty" : "clean"}`}>
+              {isDirty ? "Unsaved changes" : "No unsaved changes"}
+            </span>
             <button className="workspace-button" type="button" disabled={!isDirty || isSaving} onClick={saveToTina}>
               {isSaving ? "Saving…" : "Save to TinaCMS"}
             </button>
           </nav>
         </header>
+        <ol className="editor-steps">
+          <li>Pick an example and click a word.</li>
+          <li>Edit its fields on the right; the preview updates live.</li>
+          <li>Click “Save to TinaCMS” (top right) to write the changes to the JSON file.</li>
+        </ol>
         {saveState.message && (
           <p className={`editor-save-status is-${saveState.kind}`} role={saveState.kind === "error" ? "alert" : "status"}>
             {saveState.message}
@@ -181,10 +191,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: EditableDocu
                 onChange={(event) => updateSentence({ translation: event.target.value })}
               />
             </label>
-            <p className="editor-translation">{activeSentence.translation}</p>
-            <p className="editor-source-note">
-              Selecting a word opens its fields in the inspector. Changes here update this preview only.
-            </p>
+            <p className="editor-translation">‘{activeSentence.translation}’</p>
           </section>
 
           <aside className="editor-inspector" aria-labelledby="inspector-heading">

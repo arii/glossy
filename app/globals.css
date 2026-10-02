@@ -697,3 +697,8 @@ h2 {
     transform: translateY(0);
   }
 }
+
+.editor-steps { margin: 0.5rem 0 1rem; padding-left: 1.25rem; color: #57534e; font-size: 0.95rem; }
+.editor-dirty { align-self: center; font-size: 0.9rem; }
+.editor-dirty.is-dirty { color: #b45309; font-weight: 600; }
+.editor-dirty.is-clean { color: #78716c; }

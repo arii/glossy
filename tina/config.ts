@@ -20,7 +20,7 @@ export default defineConfig({
         path: "content/texts",
         format: "json",
         ui: {
-          router: ({ document }) => `/read/${document._sys.filename}`,
+          router: ({ document }) => `/edit/${document._sys.filename}`,
         },
         fields: [
           { type: "string", name: "textId", label: "Text ID", required: true },
@@ -169,7 +169,7 @@ export default defineConfig({
         path: "content/manuscripts",
         format: "mdx",
         ui: {
-          router: ({ document }) => `/texts/${document._sys.filename}`,
+          router: ({ document }) => `/read/${document._sys.filename}`,
         },
         fields: [
           { type: "string", name: "title", label: "Title", isTitle: true, required: true },

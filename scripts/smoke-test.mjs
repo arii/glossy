@@ -57,7 +57,7 @@ await check("/edit/ohthere-wulfstan", [
   "Open reader",
   "Save to TinaCMS",
 ]);
-await check("/texts/ohthere-wulfstan", ["The voyages of Ohthere and Wulfstan"]);
-await check("/texts/ohthere", ["The voyages of Ohthere and Wulfstan"]);
+await check("/read/ohthere-wulfstan", ["The voyages of Ohthere and Wulfstan"]);
+await check("/read/ohthere", ["The voyages of Ohthere and Wulfstan"]);
 await check("/admin/index.html", ["Tina"]);
 console.log(`Smoke test passed for route choice, separate reader/editor, previews, and Tina admin at ${baseUrl}.`);
