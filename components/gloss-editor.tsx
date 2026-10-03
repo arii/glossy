@@ -86,14 +86,21 @@ function mapLegacyTextDocToGlossDoc(legacyDoc: TextDocument): GlossDocument {
       freeTranslation: sent.translation || "",
       tokens: (sent.words || []).map((w: InterlinearWord, tIdx: number) => {
         const inflections = w.analysis?.features || {};
+        const lex = resolveOldEnglishLexicon(w.originalWord, w.morphologicalGloss || w.originalWord);
+        const resolvedLemma = (w.analysis?.lemma && w.analysis.lemma !== w.originalWord) ? w.analysis.lemma : lex.lemma;
+        const resolvedPos = w.analysis?.partOfSpeech || lex.pos || "noun";
+        const resolvedExpl = (w.analysis?.definition && w.analysis.definition !== w.morphologicalGloss) ? w.analysis.definition : (lex.definition || w.morphologicalGloss || "");
+        const resolvedIpa = w.analysis?.phonetic || lex.ipa || "";
+        const resolvedWiktionary = w.analysis?.wiktionaryUrl || lex.wiktionaryUrl;
+
         return {
           id: w.id || `sentence-${sIdx + 1}-token-${tIdx + 1}`,
           sourceForm: `${w.originalWord}${w.trailingPunctuation || ""}`,
           sourceGloss: w.morphologicalGloss || w.originalWord,
           literalTexGloss: w.sourceGlossTex || w.morphologicalGloss || w.originalWord,
-          lemma: w.analysis?.lemma || w.originalWord,
-          pos: w.analysis?.partOfSpeech || "noun",
-          explanation: w.analysis?.definition || "",
+          lemma: resolvedLemma,
+          pos: resolvedPos,
+          explanation: resolvedExpl,
           inflections: {
             case: inflections.case,
             number: inflections.number,
@@ -107,8 +114,8 @@ function mapLegacyTextDocToGlossDoc(legacyDoc: TextDocument): GlossDocument {
             morpheme: m.form || "",
             gloss: m.gloss || "",
           })),
-          ipa: w.analysis?.phonetic || "",
-          wiktionaryUrl: w.analysis?.wiktionaryUrl || "",
+          ipa: resolvedIpa,
+          wiktionaryUrl: resolvedWiktionary,
         };
       }),
     })),
@@ -133,7 +140,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
   // Backup snapshot for "Discard Changes" comparison
   const [savedSnapshot, setSavedSnapshot] = useState<string>(() => JSON.stringify(mapLegacyTextDocToGlossDoc(initialDocument)));
 
-  const storageKey = "glossy_document_ohthere_full_v3";
+  const storageKey = "glossy_document_ohthere_full_v4";
 
   // Ingest from API (/api/master-tex) helper
   const loadFromMasterTex = async (confirmOverwrite = false) => {
@@ -1058,6 +1065,18 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
                               {v}
                             </span>
                           ))}
+                      </div>
+                    )}
+                    {activeToken.wiktionaryUrl && (
+                      <div className="pt-2 border-t border-amber-100 mt-2">
+                        <a
+                          href={activeToken.wiktionaryUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-xs text-amber-900 underline font-semibold flex items-center gap-1 hover:text-amber-950"
+                        >
+                          Open in Wiktionary ↗
+                        </a>
                       </div>
                     )}
                   </div>
