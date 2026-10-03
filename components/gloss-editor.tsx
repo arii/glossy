@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { InterlinearWord, ReadingSentence, TextDocument } from "../lib/types";
 
@@ -15,10 +15,45 @@ export function GlossEditor({ initialDocument }: { initialDocument: EditableDocu
     message: "",
   });
   const [isSaving, setIsSaving] = useState(false);
+  const [savedSnapshot, setSavedSnapshot] = useState(() => JSON.stringify(initialDocument));
+
+  const draftKey = `glossy-draft-v1:${initialDocument.slug}`;
+  const [draftNotice, setDraftNotice] = useState("");
+
+  // Restore an unsaved draft once on load.
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(draftKey);
+      if (!raw) return;
+      const draft = JSON.parse(raw) as EditableDocument;
+      if (!Array.isArray(draft.sentences) || draft.slug !== initialDocument.slug) return;
+      setDocument(draft);
+      setDraftNotice("Restored your unsaved draft from this browser.");
+    } catch {
+      window.localStorage.removeItem(draftKey);
+    }
+  }, [draftKey, initialDocument.slug]);
+
+  // Debounced draft backup; clear it when the document matches the saved copy.
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      if (JSON.stringify(document) === savedSnapshot) {
+        window.localStorage.removeItem(draftKey);
+      } else {
+        window.localStorage.setItem(draftKey, JSON.stringify(document));
+      }
+    }, 400);
+    return () => window.clearTimeout(timer);
+  }, [document, savedSnapshot, draftKey]);
+
+  const discardDraft = () => {
+    if (!window.confirm("Discard unsaved changes and go back to the last saved version?")) return;
+    setDocument(JSON.parse(savedSnapshot) as EditableDocument);
+    setDraftNotice("");
+  };
 
   const activeSentence = document.sentences.find((sentence) => sentence.id === activeSentenceId);
   const activeWord = activeSentence?.words.find((word) => word.id === activeWordId);
-  const [savedSnapshot, setSavedSnapshot] = useState(() => JSON.stringify(initialDocument));
   const isDirty = JSON.stringify(document) !== savedSnapshot;
 
   const updateSentence = (patch: Partial<ReadingSentence>) => {
@@ -97,6 +132,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: EditableDocu
         throw new Error(result.errors?.map((error) => error.message).join("; ") || `TinaCMS returned HTTP ${response.status}.`);
       }
       setSavedSnapshot(JSON.stringify(document));
+      setDraftNotice("");
       setSaveState({
         kind: "success",
         message: `Saved content/texts/${result.data.updateDocument._sys.relativePath} to the Git working tree. It has not been committed or pushed.`,
@@ -135,6 +171,9 @@ export function GlossEditor({ initialDocument }: { initialDocument: EditableDocu
             <span className={`editor-dirty is-${isDirty ? "dirty" : "clean"}`}>
               {isDirty ? "Unsaved changes" : "No unsaved changes"}
             </span>
+            <button className="workspace-link" type="button" disabled={!isDirty || isSaving} onClick={discardDraft}>
+              Discard changes
+            </button>
             <button className="workspace-button" type="button" disabled={!isDirty || isSaving} onClick={saveToTina}>
               {isSaving ? "Saving…" : "Save to TinaCMS"}
             </button>
@@ -143,8 +182,9 @@ export function GlossEditor({ initialDocument }: { initialDocument: EditableDocu
         <ol className="editor-steps">
           <li>Pick an example and click a word.</li>
           <li>Edit its fields on the right; the preview updates live.</li>
-          <li>Click “Save to TinaCMS” (top right) to write the changes to the JSON file.</li>
+          <li>Edits are kept as a draft in this browser. Click “Save to TinaCMS” (top right) to write them to the JSON file.</li>
         </ol>
+        {draftNotice && <p className="editor-save-status is-idle" role="status">{draftNotice}</p>}
         {saveState.message && (
           <p className={`editor-save-status is-${saveState.kind}`} role={saveState.kind === "error" ? "alert" : "status"}>
             {saveState.message}
