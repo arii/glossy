@@ -1,13 +1,9 @@
 {
   "word": "on",
+  "lemma": "on",
   "pronunciation": "",
-  "sourceGloss": "in",
-  "morphemes": [
-    {
-      "part": "on",
-      "meaning": "in"
-    }
-  ],
-  "inflection": "",
-  "definition": "in"
+  "pos": "preposition",
+  "definition": "on",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/on#Old_English",
+  "sourceGloss": "on"
 }

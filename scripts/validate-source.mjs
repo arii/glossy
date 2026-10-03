@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { parseGb4e } from "../lib/gb4e.ts";
 
 const contentDirectory = "content/texts";
 const contentFiles = readdirSync(contentDirectory).filter((fileName) =>
@@ -120,47 +121,46 @@ console.log(
   `Validated ${checkedRecords} aligned source glosses across ${checkedDocuments} source-backed text documents.`,
 );
 
-function readAlignedGlossPairs(source, sourceFile) {
-  const lines = source.split(/\r?\n/u);
-  const pairs = [];
+// Comprehensive Master LaTeX Validation
+const masterTexPath = "references/Voyages_of_Ohthere_Wulfstan.tex";
+if (existsSync(masterTexPath)) {
+  const masterTexContent = readFileSync(masterTexPath, "utf8");
+  const parsedTex = parseGb4e(masterTexContent);
 
-  for (let index = 0; index < lines.length; index += 1) {
-    const surfaceLine = lines[index].match(/^\\ex\{\\gll\s+(.+?)\\\\\s*$/u);
-    if (!surfaceLine) {
-      continue;
-    }
+  if (parsedTex.warnings.length > 0) {
+    console.warn(`Master LaTeX warnings (${parsedTex.warnings.length}):`, parsedTex.warnings);
+  }
 
-    const surfaces = surfaceLine[1].trim().split(/\s+/u);
-    const glossLine = [];
-    let glossLineComplete = false;
-    for (let glossIndex = index + 1; glossIndex < lines.length; glossIndex += 1) {
-      const line = lines[glossIndex];
-      if (line.includes("\\glt") || line.match(/^\\ex\b/u)) {
-        break;
-      }
-      const endsGloss = /\\\\\s*$/u.test(line);
-      glossLine.push(line.replace(/\\\\\s*$/u, "").trim());
-      if (endsGloss) {
-        glossLineComplete = true;
-        break;
-      }
+  let totalTokensInTex = 0;
+  for (const sentence of parsedTex.sentences) {
+    if (!sentence.translation || sentence.translation.trim() === "") {
+      throw new Error(`Master TeX sentence "${sentence.id}" has an empty translation.`);
     }
-    if (!glossLineComplete) {
-      throw new Error(`Missing aligned gloss line after ${sourceFile}:${index + 1}.`);
+    if (!sentence.words || sentence.words.length === 0) {
+      throw new Error(`Master TeX sentence "${sentence.id}" has no words.`);
     }
-
-    const glosses = glossLine.join(" ").trim().split(/\s+/u);
-    if (surfaces.length !== glosses.length) {
-      throw new Error(
-        `Unaligned \\\\gll tokens in ${sourceFile}:${index + 1} (${surfaces.length} forms, ${glosses.length} glosses).`,
-      );
-    }
-
-    for (let tokenIndex = 0; tokenIndex < surfaces.length; tokenIndex += 1) {
-      pairs.push({ surface: surfaces[tokenIndex], gloss: glosses[tokenIndex] });
+    for (const word of sentence.words) {
+      requireString(word.originalWord, `Master TeX sentence "${sentence.id}" has empty originalWord.`);
+      totalTokensInTex += 1;
     }
   }
 
+  console.log(
+    `Validated master LaTeX document "${masterTexPath}": ${parsedTex.sentences.length} sentences, ${totalTokensInTex} tokens, ${parsedTex.warnings.length} warnings.`,
+  );
+}
+
+function readAlignedGlossPairs(source) {
+  const parsed = parseGb4e(source);
+  const pairs = [];
+  for (const sentence of parsed.sentences) {
+    for (const word of sentence.words) {
+      pairs.push({
+        surface: `${word.originalWord}${word.trailingPunctuation ?? ""}`,
+        gloss: word.sourceGlossTex ?? word.morphologicalGloss ?? word.originalWord,
+      });
+    }
+  }
   return pairs;
 }
 

@@ -7,6 +7,33 @@ status: approved
 
 Build mode: fast
 
+## Current Implementation Audit (2026-10-03)
+
+The checkboxes below record the build-slice history; they do not certify that every behavior written in each slice is implemented or re-verified. Current state:
+
+| Area | Current behavior | Remaining accuracy gap |
+|---|---|---|
+| Reader and editor | Separate `/read/<slug>` and `/edit/<slug>` routes; live preview and word inspector | Final accessibility/mobile review is still pending |
+| Corpus | Build scripts parse the supplied TeX to JSON (75 examples across 13 paragraph groups) and sync dictionary JSON | The editor's paste-import flow only appends parsed sentences; it does not import all document metadata |
+| Drafts | Debounced, slug-keyed `localStorage`; discard restores the saved snapshot | No schema version/base-version detection, discarded key cleanup, or reliable storage-error reporting |
+| Save | `/api/save-document` writes exported TeX and JSON; client then attempts a best-effort Tina update | Current success state does not verify Tina's response; the planned Tina-only/per-document publish flow is not implemented |
+| LaTeX | Parser and normalized download are present | Export does not round-trip all source resources, abbreviations, bibliography settings, or arbitrary TeX |
+| Verification | `validate:source`, `typecheck`, `lint`, and `test:smoke` scripts exist | No dedicated parser/export round-trip test is listed here; final hands-on review remains open |
+
+For the verified current code structure and remaining work, see `../plan.md`. Items in the slices below that promise more than this audit describes are unmet acceptance criteria, even where a historical checkbox is checked.
+
+## Follow-up Requirements
+
+These are the concrete follow-ups from the implementation audit. They remain unchecked until their acceptance criteria are implemented and verified. Product requirements are defined in `prd.md`; technical boundaries are in `spec.md`.
+
+- [ ] **Make Save report the actual persistence result.** Keep the Save button as the deliberate user action (no additional confirmation dialog). Route canonical JSON writes through Tina as specified; do not write canonical JSON or overwrite the source manuscript as a hidden Save side effect. Keep LaTeX download separate. Surface transport, GraphQL, and per-document errors; preserve the local draft on any failure; report success only for confirmed writes; never imply Git commit/push. Verify successful save, unavailable Tina, GraphQL errors, and partial multi-document writes.
+- [ ] **Complete safe draft recovery.** Store a schema version, text ID, and canonical base version with each draft. Validate the payload before restore; detect stale-base conflicts without overwriting canonical content; surface quota/disabled-storage errors while retaining in-memory edits; after confirmed discard remove the draft key and verify it stays discarded after reload. Verify edit/reload/recover, invalid draft, stale base, storage failure, discard, and unchanged reader content.
+- [ ] **Import the supplied manuscript structure in preview-first flow.** Parse 13 paragraph groups and 75 examples with stable order/labels, aligned surface and literal TeX glosses, translations, inline footnotes at their original positions, source/resource citations, the resource list, active abbreviations, title/author/date, and bibliography reference. Preview the complete result before the user accepts it; malformed or unsupported input must identify the issue and leave the current document/draft unchanged. Do not claim arbitrary TeX package or macro support.
+- [ ] **Export supported structure from the current draft.** Preserve and escape the supported document metadata, paragraph/example grouping, aligned tokens, translations, footnotes, resources/citations, abbreviations, and bibliography configuration. Keep export independent of Save. Test parsed-source → model → export invariants for all 13 groups/75 examples and document metadata; compile the generated file with XeLaTeX when available. Describe it as normalized export, not byte-for-byte TeX round-tripping.
+- [ ] **Add focused regression coverage.** Add automated checks for parser alignment/warnings, footnote/resource/abbreviation parsing, importer non-destructive failure, stable IDs, draft recovery/conflicts/storage errors, export invariants, and Save success/failure behavior. Integrate the checks into npm scripts and CI/build verification where configured; do not treat route smoke tests or typechecking as substitutes.
+- [ ] **Make linguistic-review status honest.** Keep transcription/source alignment review distinct from lemma/POS/definition review. Update the standalone lemma validator to avoid absolute accuracy claims, identify heuristic/unreviewed output, add a discoverable `npm run validate:lemmas` command, and review unresolved/high-risk lexicon entries against cited sources before labeling linguistic analysis reviewed. Test representative irregular forms and Wiktionary URLs.
+- [ ] **Verify reader behavior and finish the learner review.** Exercise desktop and mobile layouts, keyboard focus, touch, outside dismissal, Escape, close control, focus restoration, popup visibility while scrolling, and Old English/IPA glyph rendering. Record only behaviors actually verified; complete the final review, demo, and app-map learning tasks below.
+
 ## Slices
 
 - [x] **1. You can open and read the Old English passage**
@@ -39,7 +66,7 @@ Build mode: fast
   Learner check: Open `http://localhost:3000`, confirm each passage block reads as Old English line → separate gloss line → translation, then hover/click or tap a word and verify its expanded values. Confirm the visualizer has no intrusive edit chrome. Navigate to `http://localhost:3000/admin/index.html` to verify the separated editing tools.
   Commit: `Add interlinear glosses and improve editing`
 
-- [x] **4. You can edit a gloss, preview it live, and save it through Tina**
+- [ ] **4. You can edit a gloss, preview it live, and save it through Tina**
   Becomes usable: A dedicated editing route lets the editor select a token, change its source form/gloss or explanation, immediately see the interlinear preview and linked explanation update, then explicitly confirm saving to the Tina-managed Git JSON; the clean reader is a separate route.
   Why now: This proves the revised unique kernel and the real CMS write path on a small source-backed example before investing in bulk migration, robust local draft recovery, or export.
   PRD ref: `prd.md > The Core Journey`, `prd.md > Editing Workspace`, `prd.md > Live Gloss Editing, Drafts, and Export`
@@ -49,7 +76,7 @@ Build mode: fast
   Learner check: Open the editor, change one source gloss or explanation and observe the preview update immediately; explicitly save a test edit through Tina and inspect the Git-backed JSON; open the separate reader and confirm it remains a reader, not an editor.
   Commit: `Add live gloss editing workspace`
 
-- [x] **5. You can edit the complete source text**
+- [ ] **5. You can edit the complete source text**
   Becomes usable: The editor and reader handle the complete supplied TeX text in Git-backed JSON, preserving its 13 paragraph groups, 75 examples, translations, inline footnotes, resources/citations, abbreviations, and bibliography metadata.
   Why now: The revised editor must prove the schema against the real document's full structure and exceptions, not only the first few example sentences.
   PRD ref: `prd.md > Content Schema and Editing Requirements`, `prd.md > Live Gloss Editing, Drafts, and Export`, `prd.md > Understanding the Source`
@@ -59,7 +86,7 @@ Build mode: fast
   Learner check: Paste the supplied TeX manuscript into the editor, review the structured preview, navigate between early and later paragraph groups, edit a token near a source exception, and confirm the translation and footnote stay with the correct example.
   Commit: `Import full TeX corpus into text model`
 
-- [x] **6. Your unfinished edits survive a refresh**
+- [ ] **6. Your unfinished edits survive a refresh**
   Becomes usable: Token and document edits are autosaved as versioned browser-local drafts, restored for the matching text after refresh, and explicitly discardable without changing published content.
   Why now: Once the full document is editable, the learner needs safe browser-local recovery before the later confirmed publish flow writes changes to the Git-backed source.
   PRD ref: `prd.md > Editing Workspace`, `prd.md > Live Gloss Editing, Drafts, and Export`, `prd.md > States and Boundaries`
@@ -69,7 +96,7 @@ Build mode: fast
   Learner check: Change a token and translation, reload the editor, recover the draft, then discard it and open the reader to confirm it still shows the published values.
   Commit: `Persist editor drafts locally`
 
-- [x] **7. You can export the text as LaTeX**
+- [ ] **7. You can export the text as LaTeX**
   Becomes usable: The editor downloads a normalized `.tex` document from its current draft, preserving the source's supported gb4e structure and all text, gloss, translation, note, resource, abbreviation, and bibliography content.
   Why now: Export lets the editor review a shareable source-format artifact from the draft before any explicit Tina write, and proves the JSON model captures more than the web rendering.
   PRD ref: `prd.md > The Core Journey`, `prd.md > Live Gloss Editing, Drafts, and Export`, `prd.md > Content Schema and Editing Requirements`
@@ -79,12 +106,12 @@ Build mode: fast
   Learner check: Download TeX from a changed local draft, compare its paragraph/example order and a footnoted translation with the source document, and confirm export did not publish the draft.
   Commit: `Export glossed text to LaTeX`
 
-- [x] **8. Confirmed drafts save through TinaCMS**
-  Becomes usable: The editor previews exactly which text/lexical documents will change and writes them to the repository-backed Tina content only after explicit confirmation; failed writes retain the draft and show document-level results.
+- [ ] **8. Confirmed drafts save through TinaCMS**
+  Becomes usable: Pressing Save is the deliberate confirmation action; the editor previews which text/lexical documents will change and writes them to repository-backed Tina content only after that action. Failures retain the draft and report document-level results.
   Why now: This is the final controlled boundary from private browser state to permanent Git-backed source files, after the editor can already review and export the draft.
   PRD ref: `prd.md > The Core Journey`, `prd.md > Editing Workspace`, `prd.md > Live Gloss Editing, Drafts, and Export`, `prd.md > States and Boundaries`
-  Spec ref: `spec.md > Confirmed Tina Publisher`, `spec.md > External Services and Dependencies`, `spec.md > Important Failure Modes`
-  Build: Use the local Tina GraphQL create/update document operations for confirmed text and changed lexical entries; require a confirmation step, verify mutation results, retain retryable drafts on partial failure, and distinguish working-tree writes from Git commit/push.
+  Spec ref: `spec.md > Save and Tina Integration`, `spec.md > External Services and Dependencies`, `spec.md > Important Failure Modes`
+  Build: Use Tina GraphQL create/update operations for the confirmed text and changed lexical entries; do not write source/JSON files ahead of Tina success. Verify mutation results, retain retryable drafts on partial failure, and distinguish working-tree writes from Git commit/push. No extra confirmation dialog is required beyond the Save action.
   Verify (mechanical): Run `npm run dev`, then `npm run test:smoke`; exercise an unconfirmed draft (no file changes), confirm publish (expected JSON changes), and induce/verify a reported failed write without draft loss.
   Learner check: Edit and export a gloss, verify the reader/source files are unchanged before confirmation, then confirm and inspect the Tina content/worktree for the saved update; confirm the editor does not claim it committed or pushed Git.
   Commit: `Publish confirmed drafts through Tina`
@@ -93,7 +120,7 @@ Build mode: fast
 
 - [x] Early usable behavior explored — after slice 1, inspect the reading surface and typography before interaction work; learner reported inconsistent glyph sizing and missing interactions, which shaped slice 2.
 - [x] New editor workflow explored — after slice 4, try editing a token against the live preview before the remaining data/persistence work is built.
-- [x] Final kick-the-tires exploration and feedback completed — after slice 8, test editor, draft recovery, confirmed Tina save, LaTeX export, and the separate reader.
+- [ ] Final kick-the-tires exploration and feedback completed — after follow-up requirements are implemented, test editor, draft recovery, Tina save, LaTeX export, and the separate reader.
 
 ## Final Review
 
@@ -113,17 +140,18 @@ Activity mode: not started
 
 ## Revisions
 
+- Audit update: earlier revision notes below describe intended or earlier implementation states. The current save API writes both TeX and JSON before making an optional Tina request; that request is not currently required for success or reported independently. The current draft key is `glossy_draft_<slug>` and is not versioned. Paste import appends parsed sentences, and export does not preserve all resources, abbreviations, or bibliography data. Follow-up acceptance criteria are listed above.
 - The initial gloss record used a generic `conjugation` field and a shortened paraphrase of the source text. It was replaced with source-faithful surface tokens, source glosses, lemma/part-of-speech/inflection features, morphemes, and review metadata.
 - The learner requested the source gloss on its own line below the Old English line, while retaining the expanded hover/click/tap panel; the final slice now implements that two-level reading layout.
 - The learner reported Tina's text route returned 404 and the editor was not convenient for changing hover-panel values. The initial implementation added a preview route, reader-to-editor link, human-readable form/list labels, and source/reference validation; the new revision removes editor navigation from the reader and replaces this path with a dedicated live-editing route.
 - Browser speech playback was removed at the learner's request because it mispronounces Old English; reliable audible pronunciation remains deferred.
 - Architectural revision: Restored the English translation sentence alongside the interlinear reading text; separated the student-facing reading visualizer from the authoring/editing tools so the reader is clean and focused, with TinaCMS editor access cleanly situated at `/admin` and in unobtrusive footer utility navigation.
-- The learner revised the product direction toward live gloss editing: the reader and editor will be separate pages; edits update an interactive preview, remain local until explicit Tina confirmation, use Git-backed JSON without a database, and export to source-structured LaTeX. Review of the supplied TeX found 13 paragraph groups, 75 aligned examples/translations, two inline footnotes, resource citations/list, and 42 active abbreviation entries; the full structured import/export is now in the build plan.
+- The learner revised the product direction toward live gloss editing: the reader and editor are separate pages; edits update an interactive preview, use Git-backed JSON without a database, and export to normalized LaTeX. Earlier plans included full metadata import/export, but the current implementation audit identifies that as incomplete.
 - The learner approved expanding the editor so a pasted copy of the supplied `gb4e` LaTeX can be previewed and imported into the text model. Slice 5 now covers this supported document structure; arbitrary TeX packages and unknown macros remain excluded.
-- Slice 4 now includes the user-requested confirmed Tina save. Slice 8 remains responsible for the complete local-draft recovery flow and more robust publishing behavior after export.
-- Slice 4 implementation adds an explicit confirmed Tina save for the text JSON and stores the canonical text under `content/texts/` so Tina's text collection does not overlap the dictionary collection. The landing and reader hide the legacy manuscript when it duplicates a canonical text title/slug; the duplicate source remains intact.
+- Earlier slice 4 notes described a Tina-only save path. The current save API writes TeX and JSON locally and then attempts an optional Tina update; the intended Tina publish acceptance criterion remains incomplete.
+- The generated text is stored under `content/texts/`; dictionary entries are generated under `content/dictionary/`. This does not mean document resources, abbreviations, and bibliography metadata are currently represented in the editor.
 - Desktop gloss details now stay visible in a scrollable sticky sidebar during reading; mobile retains the bottom-sheet behavior.
-- Implemented ahead of their checkboxes: the `gb4e` parser (`lib/gb4e.ts`, 75 examples/13 paragraphs/2 footnotes from the reference TeX, per-sentence `footnotes`), a paste-and-preview import panel in the editor, and browser-local drafts (`glossy-draft-v1:<slug>`, debounced, restore on load, "Discard changes"). Slices 5 and 6 stay unchecked until the full text is imported and the learner checks them in a browser; slice 7 (export) is not started.
-- The "Save to TinaCMS" button no longer shows a `window.confirm` popup, at the learner's request: the save is already an explicit button press, the dirty label shows what is pending, and the result message states nothing is committed or pushed. Slice 8's richer pre-publish review remains optional.
+- Earlier notes cited the key `glossy-draft-v1:<slug>` and described export as not started. Current code uses `glossy_draft_<slug>` without schema-versioning; normalized `.tex` download exists, but full metadata round-trip is not implemented.
+- The "Save to TinaCMS" button does not show a separate confirmation popup; the button itself is the explicit user action. Current implementation writes TeX/JSON first and only then attempts Tina, so the Tina publishing acceptance criteria remain unchecked.
 - Removed `useTina` from the reader: it was never given a query, and its fresh `{}` props caused a "Maximum update depth exceeded" loop when the reader was opened inside Tina's admin. Visual editing in the Tina admin is not used; editing happens in `/edit/<slug>` or the Tina forms. Added a shared Glossy / Read / Edit nav and removed the duplicate `/texts/[slug]` route.
-- Saving works only against a running Tina backend. Locally that is `npm run dev` (GraphQL on :4001, files written to the working tree, then commit and push by hand). A deployed static site would need Tina Cloud (hosted, Git-backed, free tier) or a self-hosted Tina backend before the button can write to GitHub; this is an open decision, not built.
+- Earlier note: the Tina save path depended on the local GraphQL backend. Current implementation writes TeX and JSON through the local Next.js API even if Tina is unavailable, then attempts an optional GraphQL update. Neither path commits or pushes Git; deployment behavior has not been established.

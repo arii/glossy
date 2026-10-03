@@ -19,6 +19,7 @@ export type InflectionFeatures = {
 };
 
 export type Morpheme = {
+  id?: string;
   form: string;
   gloss: string;
   kind?: "stem" | "prefix" | "suffix" | "ending";
@@ -45,6 +46,14 @@ export type LinguisticAnalysis = {
   pronunciationSource?: string;
   historicalNote?: string;
   wiktionaryUrl?: string;
+};
+
+export type LexiconEntry = {
+  lemma: string;
+  pos: PartOfSpeech;
+  wiktionaryUrl: string;
+  definition?: string;
+  ipa?: string;
 };
 
 export type InterlinearWord = {
@@ -85,11 +94,13 @@ export type TextDocument = Passage & {
   slug: string;
   language: "Old English";
   author?: string;
+  date?: string;
   title: string;
   source: string;
   sourceFile: string;
   sourceEdition?: string;
   status: "draft" | "review" | "published";
+  texSource?: string;
   sentences?: ReadingSentence[];
   blocks?: PassageBlock[];
   glossRecords?: GlossRecord[];

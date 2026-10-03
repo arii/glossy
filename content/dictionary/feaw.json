@@ -1,13 +1,9 @@
 {
-  "word": "fēaw-um",
+  "word": "fēaw",
+  "lemma": "fēaw",
   "pronunciation": "",
-  "sourceGloss": "few-dat.pl.str",
-  "morphemes": [
-    {
-      "part": "fēawum",
-      "meaning": "few"
-    }
-  ],
-  "inflection": "",
-  "definition": "few"
+  "pos": "adjective",
+  "definition": "fēaw-um",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/feaw#Old_English",
+  "sourceGloss": "fēaw-um"
 }

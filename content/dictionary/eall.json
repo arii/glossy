@@ -1,13 +1,9 @@
 {
-  "word": "eal-ra",
+  "word": "eall",
+  "lemma": "eall",
   "pronunciation": "",
-  "sourceGloss": "all-gen.pl.str",
-  "morphemes": [
-    {
-      "part": "ealra",
-      "meaning": "all"
-    }
-  ],
-  "inflection": "",
-  "definition": "all"
+  "pos": "adjective",
+  "definition": "eal-ra",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/eall#Old_English",
+  "sourceGloss": "eal-ra"
 }

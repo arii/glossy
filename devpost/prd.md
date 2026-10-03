@@ -8,6 +8,8 @@ status: approved
 Glossy is a local-first interlinear glossing editor with a separate responsive reader for students and researchers.
 Source: `scope.md > Who It's For`, `scope.md > The POC Boundary`.
 
+**Implementation status:** This PRD records intended behavior, not a claim that every criterion is shipped. The current editor saves by writing exported TeX and JSON through `/api/save-document`, then attempts an optional Tina GraphQL update. The current local draft key is text-scoped but not schema-versioned; discard restores the saved snapshot but does not remove the storage key, and browser storage errors are not reliably surfaced. Pasted TeX currently appends parsed examples without importing all resource, abbreviation, and bibliography metadata; export does not yet round-trip that metadata. Lemma assignment now uses curated form maps and rule-based fallbacks, but those heuristics and the standalone lemma validator do not establish scholarly correctness. Track these as gaps rather than implying Tina-only publishing, versioned recovery, full-fidelity LaTeX support, or verified linguistic accuracy is complete.
+
 ## The Core Journey
 
 1. The editor opens the authoring workspace for a Git-backed text, starts a new text using the shared model, or pastes supported `gb4e` LaTeX to import it as a structured text.
@@ -15,7 +17,7 @@ Source: `scope.md > Who It's For`, `scope.md > The POC Boundary`.
 3. Selecting a token opens an inspector where the editor can update its exact surface, source gloss, lexical link, morphology, pronunciation, and explanation; changes appear in the preview immediately.
 4. Changes are autosaved as a text-scoped browser-local draft, not written to TinaCMS or the source files while the editor is working.
 5. The editor reloads or returns later and can recover, continue, or discard the draft.
-6. After reviewing the rendered text and export, the editor explicitly confirms publication. TinaCMS writes the confirmed JSON document(s) to the Git-backed content repository; Git commit/push remains a separate version-control action.
+6. After review, the editor presses Save; that button press is the deliberate confirmation and does not require a second dialog. The target write path updates the confirmed JSON document(s) through TinaCMS. The editor reports only writes Tina confirms, retains the draft on any failure, and never implies Git commit/push. The current local API write plus optional Tina request does not yet satisfy this requirement.
 7. The editor can export a normalized LaTeX document that preserves the supported source structure and content.
 8. A student or researcher opens the separate reader route, reads the published text, and hovers, focuses, or taps a glossed form to inspect its linked explanation.
 
@@ -25,9 +27,9 @@ Source: `scope.md > Who It's For`, `scope.md > The POC Boundary`.
 
 The editor is a dedicated route, separate from the reader and TinaCMS administration. It presents the sentence structure and an immediately updated interlinear preview alongside a token inspector. The editor can add or edit text examples, source forms and glosses, free translations, footnotes, lexical/grammatical analysis, document metadata, resources, and abbreviations. An unobtrusive link opens the corresponding reader preview; the reader does not contain editor controls.
 
-Draft state is local to the browser and scoped by text and schema version. The editor sees whether a draft is dirty, saved locally, or ready to publish. It can recover or discard a draft. Publishing requires a deliberate confirmation and writes through TinaCMS to Git-backed JSON; a failed or partial multi-document write must be reported, never presented as success. Local Tina writes modify the working tree; Git commit and push are not implicit.
+Draft state is local to the browser and scoped by text and schema version, with a base version to detect stale drafts. The editor sees whether a draft is dirty, saved locally, or ready to publish. It can recover or discard a draft; confirmed discard removes its stored key. Publishing uses the Save button as deliberate confirmation and writes through TinaCMS to Git-backed JSON; a failed or partial multi-document write must be reported, never presented as success. Local Tina writes modify the working tree; Git commit and push are not implicit. Storage errors must be surfaced while keeping in-memory edits visible.
 
-The editor accepts pasted LaTeX in the supported `gb4e` shape: labeled paragraph groups containing aligned `\gll` surface/gloss lines and `\glt` translations, plus the supplied document's footnotes, resource list, abbreviations, and bibliography metadata. A successful import opens as a live interlinear preview before it replaces or creates editor content. Unsupported or malformed structures produce a specific error and do not discard the editor's current work. Arbitrary preamble package recovery and unknown macros are out of scope.
+The editor accepts pasted LaTeX in the supported `gb4e` shape: labeled paragraph groups containing aligned `\gll` surface/gloss lines and `\glt` translations, plus the supplied document's footnotes, resource list, citations, abbreviations, and bibliography metadata. Import previews the complete parsed structure before the editor replaces or creates content. Unsupported or malformed structures identify the issue and do not discard current editor content or draft. Arbitrary preamble package recovery and unknown macros are out of scope.
 
 ### Reading Surface
 
@@ -41,11 +43,12 @@ The canonical text content is structured JSON in Git, not a database. TinaCMS pr
 - An **example** has a stable ID and paragraph membership, ordered tokens, a free translation, and any attached footnotes or source notes. Paragraph and example order/labels map to the original `exe`/`xlist` structure.
 - A **token** preserves exact source surface, literal TeX gloss, readable gloss, punctuation, and a stable optional lexical-entry reference. Its analysis includes lemma, part of speech, inflection features, morpheme segmentation, definition, optional IPA/history, and source-review provenance.
 - A **lexical entry** has a stable reusable ID and canonical lemma/part of speech/definition/notes. Text tokens can link to shared entries while retaining their text-specific surface and source gloss.
-- A **local draft** contains a schema version, text-scoped working copy, and any changed lexical entries. It is never sent to Tina until explicit confirmation.
-- The **LaTeX export** derives from the same data and preserves paragraph/example grouping, `\gll` surface/gloss alignment, `\glt` translations, footnotes, resource citations, abbreviations, metadata, and bibliography configuration using a normalized template.
+- A **local draft** is text-scoped and holds the working copy. The current implementation does not include a schema version or changed lexical-entry collection; versioned recovery remains an unmet requirement.
+- The **LaTeX export** derives from the current document and produces normalized `gb4e` output. Full preservation of resource citations, abbreviations, bibliography configuration, and all source metadata remains a requirement but is not currently implemented.
 - **Source-review metadata** identifies the manuscript file and entry locator, records `source-checked` or `needs-review`, and does not imply that the linguistic analysis has been independently certified.
 - Form labels and list summaries make text blocks, gloss records, and morphemes distinguishable without opening raw JSON or every list item. Stable IDs are clearly identified as references that should not be casually changed.
 - Validation checks required fields, uniqueness of text/paragraph/example/token/lexical IDs, lexical references, exact source surface/gloss pairing, footnote placement, and alignment of each token pair in its source manuscript example.
+- Draft validation checks schema version and base version before recovery; invalid or stale drafts must be reported without replacing canonical content. Source-transcription checks and linguistic-review status are distinct; heuristic lemma/POS results are not labeled scholarly-verified.
 - The content model supports adding a complete text through the Glossy editor and selecting it in the reader without changing application components.
 
 ## Look and Feel
@@ -92,20 +95,26 @@ The student can read the selected Old English passage and identify annotated wor
 - [ ] Validation rejects duplicate text, paragraph, example, token, or lexical-entry IDs; missing lexical references; and imported surface/gloss token mismatches.
 - [ ] Source validation checks that each record's surface and literal TeX gloss are aligned in the same source gloss entry, rather than merely appearing somewhere in the manuscript.
 - [ ] Review metadata distinguishes source transcription checked against the manuscript from linguistic analysis that still needs scholarly review.
+- [ ] Heuristic or otherwise unreviewed lemma/POS/definition values remain distinguishable from scholarly-reviewed analysis; automated validation does not claim absolute accuracy.
 
 ### Live Gloss Editing, Drafts, and Export
 
 - [ ] The editor can select an example and token and edit its source form, source gloss, translation, and available lexical analysis in an inspector.
 - [ ] Editing a token updates the interlinear preview and its linked reader-style explanation immediately.
 - [ ] Edits are stored in versioned, text-scoped localStorage drafts; a refresh restores a valid draft, and the editor can explicitly discard it.
+- [ ] Draft recovery detects an incompatible schema version or stale canonical base version, reports the conflict, and does not overwrite canonical content.
+- [ ] Local storage read/write/quota failures are shown clearly while the current in-memory edits remain available; confirmed discard removes the stored draft so it does not reappear after reload.
 - [ ] Draft changes do not update TinaCMS or canonical content until the editor confirms publication.
-- [ ] Saving is an explicit button press that names the file written (no extra dialog); success is shown only after Tina confirms every requested document write, and errors or partial writes are reported clearly with retry/recovery guidance.
+- [ ] Pressing Save is the deliberate confirmation (no extra dialog); the UI previews the documents to be written and uses Tina as the canonical JSON write path without first writing source or JSON directly through another API.
+- [ ] Success is shown only after Tina confirms every requested document write; errors or partial writes are reported per document with retry/recovery guidance and the local draft is retained.
 - [ ] Confirmed Tina local writes update JSON files in the Git working tree; the UI does not imply that files were committed or pushed.
 - [ ] A LaTeX export downloads a valid `.tex` document from the current draft without publishing it.
 - [ ] An editor can paste a supported `gb4e` manuscript and preview its structured paragraphs, aligned surface/gloss tokens, translations, footnotes, resources, abbreviations, and bibliography metadata before accepting the import.
+- [ ] The supplied manuscript import preserves all 13 paragraph groups and 75 examples in order, the aligned surface/literal-gloss pairs, translations, footnotes at their original positions, resources/citations, active abbreviations, metadata, and bibliography reference.
 - [ ] Unsupported LaTeX structures are reported without replacing current editor data; the importer does not claim to parse arbitrary packages or macros.
 - [ ] Export retains the supported source document structure and all 75 current examples across 13 paragraphs, translations, two footnotes, resource citations/list, abbreviations, title/author/date, and bibliography reference.
 - [ ] Source validation checks token/gloss pair alignment, unique stable IDs, paragraph/example ordering, footnote references, and the expected imported example count.
+- [ ] Automated parser/exporter tests cover representative malformed input, mismatched token alignment, footnotes, source metadata, resources, abbreviations, and normalized export invariants; validation output does not claim more than the checks establish.
 - [ ] The text model can represent additional texts without Old English-specific assumptions in the editor or renderer; arbitrary unknown TeX package/macro import is not required.
 
 ### Understanding the Source
@@ -181,6 +190,8 @@ The presentation should help the student connect the original text with its anal
 
 ## Open Questions
 
-- **Popup closing behavior** — The intended direction is for the popup to behave as an intuitive hover/tap box and update when another word is selected. Exact pointer-leave and mobile dismissal behavior can be finalized during `4-spec` because it does not change the product’s core promise.
-- **Notation support** — `4-spec` must identify and validate the appropriate phonetic or linguistic rendering support and confirm that the source’s conjugation syntax and typography can be represented accurately. This is required before implementation, not an optional polish item.
+- **Save implementation gap** — Use Tina as the canonical JSON write path after the Save button action; report confirmed per-document results, retain drafts on errors, and do not report success for optional/unconfirmed Tina updates.
+- **Full-document import/export gap** — Resource lists, citations, abbreviations, footnote positions, and bibliography settings are required for the supplied source; the current editor import/export does not preserve them.
+- **Versioned draft recovery gap** — Schema-version and base-version checks, storage failure reporting, and confirmed discard cleanup are required; the current localStorage implementation does not provide them.
+- **Notation and interaction verification** — Validate rendering of source typography and the implemented popup behavior in the finished app; don't describe the detail panel's close/focus behavior as shipped without a corresponding browser check.
 - **Speech accuracy** — browser speech synthesis mispronounces Old English and is not offered; revisit audible output only when a reliable recorded or IPA-compatible solution is available.

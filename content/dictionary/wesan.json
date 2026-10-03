@@ -1,13 +1,9 @@
 {
-  "word": "sīe",
+  "word": "wesan",
+  "lemma": "wesan",
   "pronunciation": "",
-  "sourceGloss": "be.prs.sjv.sg",
-  "morphemes": [
-    {
-      "part": "sīe",
-      "meaning": "be"
-    }
-  ],
-  "inflection": "",
-  "definition": "be"
+  "pos": "verb",
+  "definition": "wæs",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/wesan#Old_English",
+  "sourceGloss": "wæs"
 }

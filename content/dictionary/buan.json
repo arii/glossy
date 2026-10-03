@@ -1,21 +1,9 @@
 {
-  "word": "bū-d-e",
+  "word": "būan",
+  "lemma": "būan",
   "pronunciation": "/ˈbuː.de/",
-  "sourceGloss": "dwell-PST-SJV.SG",
-  "morphemes": [
-    {
-      "part": "bū",
-      "meaning": "dwell"
-    },
-    {
-      "part": "d",
-      "meaning": "PST"
-    },
-    {
-      "part": "e",
-      "meaning": "SJV.SG"
-    }
-  ],
-  "inflection": "tense: past, mood: subjunctive, person: 3, number: singular",
-  "definition": "dwelt, lived"
+  "pos": "verb",
+  "definition": "to dwell, inhabit",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/buan#Old_English",
+  "sourceGloss": "bū-d-e"
 }

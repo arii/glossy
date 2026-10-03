@@ -219,6 +219,30 @@ const OLD_ENGLISH_LEXICON: Record<string, LexiconEntry> = {
     wiktionaryUrl: "https://en.wiktionary.org/wiki/%C3%86lfred#Old_English",
     definition: "King Alfred the Great",
   },
+  "ælfrēd-e": {
+    lemma: "Ælfrēd",
+    pos: "noun",
+    wiktionaryUrl: "https://en.wiktionary.org/wiki/%C3%86lfred#Old_English",
+    definition: "King Alfred the Great",
+  },
+  "ælfred-e": {
+    lemma: "Ælfrēd",
+    pos: "noun",
+    wiktionaryUrl: "https://en.wiktionary.org/wiki/%C3%86lfred#Old_English",
+    definition: "King Alfred the Great",
+  },
+  "ælfrēd": {
+    lemma: "Ælfrēd",
+    pos: "noun",
+    wiktionaryUrl: "https://en.wiktionary.org/wiki/%C3%86lfred#Old_English",
+    definition: "King Alfred the Great",
+  },
+  "ælfred": {
+    lemma: "Ælfrēd",
+    pos: "noun",
+    wiktionaryUrl: "https://en.wiktionary.org/wiki/%C3%86lfred#Old_English",
+    definition: "King Alfred the Great",
+  },
   "hlāford-e": {
     lemma: "hlāford",
     pos: "noun",
@@ -494,25 +518,52 @@ const OLD_ENGLISH_LEXICON: Record<string, LexiconEntry> = {
 };
 
 export function resolveOldEnglishLexicon(rawSurface: string, gloss: string): LexiconEntry {
-  const cleanKey = rawSurface.toLowerCase().replace(/[.,;:!?]+$/, "").trim();
+  const nfc = rawSurface.normalize("NFC").toLowerCase().replace(/[.,;:!?]+$/, "").trim();
+  const nfd = rawSurface.normalize("NFD").toLowerCase().replace(/[.,;:!?]+$/, "").trim();
   
-  // Direct match
-  if (OLD_ENGLISH_LEXICON[cleanKey]) {
-    return OLD_ENGLISH_LEXICON[cleanKey];
+  // 1. Direct match (NFC or NFD)
+  if (OLD_ENGLISH_LEXICON[nfc]) return OLD_ENGLISH_LEXICON[nfc];
+  if (OLD_ENGLISH_LEXICON[nfd]) return OLD_ENGLISH_LEXICON[nfd];
+
+  // 2. Without hyphens
+  const unhyphenatedNfc = nfc.replace(/-/g, "");
+  const unhyphenatedNfd = nfd.replace(/-/g, "");
+  if (OLD_ENGLISH_LEXICON[unhyphenatedNfc]) return OLD_ENGLISH_LEXICON[unhyphenatedNfc];
+  if (OLD_ENGLISH_LEXICON[unhyphenatedNfd]) return OLD_ENGLISH_LEXICON[unhyphenatedNfd];
+
+  // 3. Strip combining macrons/accents match
+  const stripped = nfd.replace(/[\u0300-\u036f]/g, "").replace(/-/g, "");
+  for (const [key, val] of Object.entries(OLD_ENGLISH_LEXICON)) {
+    const keyStripped = key.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/-/g, "").toLowerCase();
+    if (keyStripped === stripped) {
+      return val;
+    }
   }
 
-  // Without hyphens
-  const unhyphenated = cleanKey.replace(/-/g, "");
-  if (OLD_ENGLISH_LEXICON[unhyphenated]) {
-    return OLD_ENGLISH_LEXICON[unhyphenated];
+  // 4. Special cases for common proper nouns & roots
+  if (unhyphenatedNfc.includes("ælfred") || unhyphenatedNfd.includes("ælfred")) {
+    return OLD_ENGLISH_LEXICON["ælfrēd-e"];
+  }
+  if (unhyphenatedNfc.includes("ohthere") || unhyphenatedNfc.includes("ōhthere")) {
+    return OLD_ENGLISH_LEXICON["ōhthere"];
+  }
+  if (unhyphenatedNfc.includes("wulfstan") || unhyphenatedNfc.includes("wulfstān")) {
+    return OLD_ENGLISH_LEXICON["wulfstān"];
   }
 
-  // Generic fallback with verified Old English Wiktionary link pattern
-  const fallbackLemma = unhyphenated.replace(/^-|-$/g, "");
+  // 5. Generic fallback with verified Old English Wiktionary link pattern
+  const fallbackLemma = unhyphenatedNfc.replace(/^-|-$/g, "");
+  if (fallbackLemma.endsWith("e") && fallbackLemma.length > 3) {
+    const root = fallbackLemma.slice(0, -1);
+    if (OLD_ENGLISH_LEXICON[root]) return OLD_ENGLISH_LEXICON[root];
+  }
+
+  // Ensure clean ASCII/Unicode slug without combining decomposed marks
+  const cleanWiktionarySlug = fallbackLemma.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   return {
     lemma: fallbackLemma,
     pos: gloss.toLowerCase().includes("say") || gloss.toLowerCase().includes("travel") ? "verb" : "noun",
-    wiktionaryUrl: `https://en.wiktionary.org/wiki/${encodeURIComponent(fallbackLemma)}#Old_English`,
+    wiktionaryUrl: `https://en.wiktionary.org/wiki/${encodeURIComponent(cleanWiktionarySlug)}#Old_English`,
     definition: gloss,
   };
 }

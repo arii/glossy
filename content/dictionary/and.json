@@ -1,13 +1,9 @@
 {
   "word": "and",
+  "lemma": "and",
   "pronunciation": "",
-  "sourceGloss": "and",
-  "morphemes": [
-    {
-      "part": "and",
-      "meaning": "and"
-    }
-  ],
-  "inflection": "",
-  "definition": "and"
+  "pos": "conjunction",
+  "definition": "and",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/and#Old_English",
+  "sourceGloss": "and"
 }

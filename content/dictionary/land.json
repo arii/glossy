@@ -1,13 +1,9 @@
 {
-  "word": "land-e",
+  "word": "land",
+  "lemma": "land",
   "pronunciation": "",
-  "sourceGloss": "land-dat.sg",
-  "morphemes": [
-    {
-      "part": "lande",
-      "meaning": "land"
-    }
-  ],
-  "inflection": "",
-  "definition": "land"
+  "pos": "noun",
+  "definition": "land",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/land#Old_English",
+  "sourceGloss": "land"
 }

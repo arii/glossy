@@ -1,13 +1,9 @@
 {
-  "word": "cyning-e",
+  "word": "cyning",
+  "lemma": "cyning",
   "pronunciation": "",
-  "sourceGloss": "king-dat.sg",
-  "morphemes": [
-    {
-      "part": "cyninge",
-      "meaning": "king"
-    }
-  ],
-  "inflection": "",
-  "definition": "king"
+  "pos": "noun",
+  "definition": "cyning-e",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/cyning#Old_English",
+  "sourceGloss": "cyning-e"
 }

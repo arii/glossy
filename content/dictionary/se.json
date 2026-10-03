@@ -1,13 +1,9 @@
 {
-  "word": "þǣm",
+  "word": "sē",
+  "lemma": "sē",
   "pronunciation": "",
-  "sourceGloss": "det.def.dat.sg.n",
-  "morphemes": [
-    {
-      "part": "þǣm",
-      "meaning": "the"
-    }
-  ],
-  "inflection": "",
-  "definition": "the"
+  "pos": "determiner",
+  "definition": "þæt",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/se#Old_English",
+  "sourceGloss": "þæt"
 }

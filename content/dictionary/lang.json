@@ -1,13 +1,9 @@
 {
   "word": "lang",
+  "lemma": "lang",
   "pronunciation": "",
-  "sourceGloss": "long.nom.sg.n.str",
-  "morphemes": [
-    {
-      "part": "lang",
-      "meaning": "long"
-    }
-  ],
-  "inflection": "",
-  "definition": "long"
+  "pos": "adjective",
+  "definition": "lang",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/lang#Old_English",
+  "sourceGloss": "lang"
 }

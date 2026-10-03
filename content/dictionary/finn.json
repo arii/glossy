@@ -1,13 +1,9 @@
 {
-  "word": "Finn-as",
+  "word": "Finn",
+  "lemma": "Finn",
   "pronunciation": "",
-  "sourceGloss": "Finn-nom.pl",
-  "morphemes": [
-    {
-      "part": "Finnas",
-      "meaning": "Finns"
-    }
-  ],
-  "inflection": "",
-  "definition": "Finns"
+  "pos": "noun",
+  "definition": "finn-as",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/Finn#Old_English",
+  "sourceGloss": "finn-as"
 }

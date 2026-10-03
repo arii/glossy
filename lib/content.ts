@@ -2,8 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { parseMDX } from "@tinacms/mdx";
-import type { DictionaryEntry, ManuscriptDocument, TextDocument, ReadingSentence, InterlinearWord, Morpheme, PartOfSpeech } from "./types";
-import { resolveOldEnglishLexicon } from "./old-english-lexicon";
+import type { DictionaryEntry, ManuscriptDocument, TextDocument, ReadingSentence } from "./types";
+import { parseGb4eToTextDocument } from "./gb4e";
 
 const contentDirectory = path.join(process.cwd(), "content", "texts");
 
@@ -83,26 +83,6 @@ export function loadManuscripts(): ManuscriptDocument[] {
   });
 }
 
-function stripLatexFootnotes(text: string): string {
-  let result = "";
-  let i = 0;
-  while (i < text.length) {
-    if (text.startsWith("\\footnote{", i)) {
-      i += 10;
-      let depth = 1;
-      while (i < text.length && depth > 0) {
-        if (text[i] === "{") depth++;
-        else if (text[i] === "}") depth--;
-        i++;
-      }
-    } else {
-      result += text[i];
-      i++;
-    }
-  }
-  return result;
-}
-
 export type LoadedTextDocument = TextDocument & { fileName: string };
 
 export function parseTexToLegacyTextDocument(): TextDocument {
@@ -111,135 +91,12 @@ export function parseTexToLegacyTextDocument(): TextDocument {
     throw new Error("Master TeX file not found.");
   }
   const content = fs.readFileSync(texPath, "utf8");
-
-  // Extract document metadata from preamble
-  const titleMatch = content.match(/\\title\{([\s\S]+?)\}/);
-  const authorMatch = content.match(/\\author\{([\s\S]+?)\}/);
-  const dateMatch = content.match(/\\date\{([\s\S]+?)\}/);
-
-  const title = titleMatch ? titleMatch[1].replace(/\\textbf\{|\}/g, "").trim() : "The voyages of Ohthere and Wulfstan";
-  const author = authorMatch ? authorMatch[1].replace(/\\textbf\{|\}/g, "").trim() : "Tyler Lemon";
-  const date = dateMatch ? dateMatch[1].trim() : "September 30, 2026";
-
-  const regex = /\\ex(?:\{)?\\gll\s+([\s\S]+?)\\\\\s*([\s\S]+?)\\\\\s*\\glt\s*([^\r\n]+)/g;
-
-  let match;
-  let sIdx = 1;
-  const sentences: ReadingSentence[] = [];
-
-  while ((match = regex.exec(content)) !== null) {
-    const line1 = match[1].trim();
-    const line2 = match[2].trim();
-    const rawTranslation = match[3].trim();
-
-    const cleanTranslation = stripLatexFootnotes(rawTranslation)
-      .replace(/\\(?:textit|textbf|textsc|emph)\{([^}]+)\}/g, "$1")
-      .replace(/\\href\{[^}]+\}\{([^}]+)\}/g, "$1")
-      .replace(/\\url\{[^}]+\}/g, "")
-      .replace(/^[`'‘"“\s]+|[`'’"”\}\s]+$/g, "")
-      .replace(/\s+/g, " ")
-      .trim();
-
-    const rawSurfaceWords = line1.replace(/\\\\$/, "").trim().split(/\s+/);
-    const rawGlossWords = line2.replace(/\\\\$/, "").trim().split(/\s+/);
-
-    const words: InterlinearWord[] = [];
-    const sentenceId = `sentence-${sIdx}`;
-
-    const maxLen = Math.max(rawSurfaceWords.length, rawGlossWords.length);
-    for (let tIdx = 0; tIdx < maxLen; tIdx++) {
-      const rawSurf = rawSurfaceWords[tIdx] || "";
-      const rawGl = rawGlossWords[tIdx] || "";
-
-      const sourceForm = rawSurf.replace(/[.,;:!?]+$/, "");
-      const literalTexGloss = rawGl;
-      const sourceGloss = rawGl
-        .replace(/\\textsc\{([^}]+)\}/g, "$1")
-        .replace(/\\/g, "");
-
-      const tokenId = `${sentenceId}-token-${tIdx + 1}`;
-
-      const surfParts = sourceForm.split("-");
-      const glossParts = sourceGloss.split("-");
-      const morphemes: Morpheme[] = [];
-
-      if (surfParts.length === glossParts.length && surfParts.length > 1) {
-        for (let mIdx = 0; mIdx < surfParts.length; mIdx++) {
-          morphemes.push({
-            form: surfParts[mIdx],
-            gloss: glossParts[mIdx],
-          });
-        }
-      } else {
-        morphemes.push({
-          form: sourceForm,
-          gloss: sourceGloss,
-        });
-      }
-
-      const lex = resolveOldEnglishLexicon(sourceForm, sourceGloss);
-
-      const caseVal = sourceGloss.toUpperCase().includes("NOM") ? "nominative" :
-                      sourceGloss.toUpperCase().includes("ACC") ? "accusative" :
-                      sourceGloss.toUpperCase().includes("GEN") ? "genitive" :
-                      sourceGloss.toUpperCase().includes("DAT") ? "dative" : undefined;
-
-      const numberVal = sourceGloss.toUpperCase().includes("PL") ? "plural" :
-                        sourceGloss.toUpperCase().includes("SG") ? "singular" : undefined;
-
-      const genderVal = sourceGloss.toUpperCase().includes("M") ? "masculine" :
-                        sourceGloss.toUpperCase().includes("F") ? "feminine" :
-                        sourceGloss.toUpperCase().includes("N") ? "neuter" : undefined;
-
-      const tenseVal = sourceGloss.toUpperCase().includes("PST") ? "past" :
-                       sourceGloss.toUpperCase().includes("PRS") ? "present" : undefined;
-
-      const punctuationMatch = rawSurf.match(/[.,;:!?]+$/);
-
-      words.push({
-        id: tokenId,
-        originalWord: sourceForm,
-        morphologicalGloss: sourceGloss,
-        trailingPunctuation: punctuationMatch ? punctuationMatch[0] : undefined,
-        sourceGlossTex: literalTexGloss,
-        analysis: {
-          lemma: lex.lemma,
-          partOfSpeech: (lex.pos || "noun") as PartOfSpeech,
-          features: {
-            case: caseVal,
-            number: numberVal,
-            gender: genderVal,
-            tense: tenseVal,
-          },
-          morphemes,
-          definition: lex.definition || sourceGloss,
-          phonetic: lex.ipa || "",
-          wiktionaryUrl: lex.wiktionaryUrl,
-        },
-      });
-    }
-
-    sentences.push({
-      id: sentenceId,
-      translation: cleanTranslation,
-      words,
-    });
-
-    sIdx++;
-  }
-
-  return {
+  return parseGb4eToTextDocument(content, {
     textId: "ohthere",
     slug: "ohthere-wulfstan",
-    language: "Old English",
-    author,
-    title,
-    source: `${author} · ${date}`,
     sourceFile: "references/Voyages_of_Ohthere_Wulfstan.tex",
     status: "published",
-    sentences,
-    blocks: [],
-  };
+  });
 }
 
 export function loadTextDocuments(): LoadedTextDocument[] {

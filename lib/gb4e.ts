@@ -1,6 +1,17 @@
-import type { InterlinearWord, ReadingSentence } from "./types";
+import type {
+  InflectionFeatures,
+  InterlinearWord,
+  Morpheme,
+  PartOfSpeech,
+  ReadingSentence,
+  TextDocument,
+} from "./types.ts";
+import { lemmatizeOldEnglish } from "./lemmatizer.ts";
 
 export type Gb4eImport = {
+  title?: string;
+  author?: string;
+  date?: string;
   sentences: ReadingSentence[];
   footnotes: Record<string, string[]>;
   warnings: string[];
@@ -15,19 +26,47 @@ export function parseGb4e(source: string): Gb4eImport {
   const warnings: string[] = [];
   const perParagraph = new Map<number, number>();
 
-  const labelPattern = /\\label\{ex:paragraph\.(\d+)\}/g;
-  const labels = [...text.matchAll(labelPattern)].map((m) => ({ index: m.index ?? 0, paragraph: Number(m[1]) }));
+  // Extract document metadata from LaTeX preamble using balanced brace extraction
+  const title = extractLatexMacro(text, "title");
+  const author = extractLatexMacro(text, "author");
+  const date = extractLatexMacro(text, "date");
 
-  const exPattern = /\\ex\s*\{\s*\\gll\b/g;
+  const labelPattern = /\\label\{ex:paragraph\.(\d+)\}/g;
+  const labels = [...text.matchAll(labelPattern)].map((m) => ({
+    index: m.index ?? 0,
+    paragraph: Number(m[1]),
+  }));
+
+  const exPattern = /\\ex\s*(?:\{\s*)?\\gll\b/g;
   for (const match of text.matchAll(exPattern)) {
     const start = match.index ?? 0;
+    let body = "";
     const open = text.indexOf("{", start);
-    const close = matchingBrace(text, open);
-    if (close === -1) {
-      warnings.push(`Unclosed \\ex{ near character ${start}; skipped.`);
-      continue;
+
+    // Check if \ex has matching outer braces \ex{...}
+    if (open !== -1 && open - start < 10) {
+      const close = matchingBrace(text, open);
+      if (close !== -1) {
+        body = text.slice(open + 1, close);
+      }
     }
-    const body = text.slice(open + 1, close);
+
+    if (!body) {
+      // Fallback for unbraced \ex \gll ... \\ ... \\ \glt ...
+      const gltIndex = text.indexOf("\\glt", start);
+      if (gltIndex !== -1) {
+        const nextExIndex = text.indexOf("\\ex", gltIndex);
+        const endBlock = text.indexOf("\\end{", gltIndex);
+        let end = text.length;
+        if (nextExIndex !== -1 && nextExIndex < end) end = nextExIndex;
+        if (endBlock !== -1 && endBlock < end) end = endBlock;
+        body = text.slice(start, end);
+      } else {
+        warnings.push(`Unmatched \\ex block near character ${start}; skipped.`);
+        continue;
+      }
+    }
+
     const paragraph = labels.filter((label) => label.index < start).at(-1)?.paragraph ?? 1;
     const number = (perParagraph.get(paragraph) ?? 0) + 1;
     perParagraph.set(paragraph, number);
@@ -39,6 +78,7 @@ export function parseGb4e(source: string): Gb4eImport {
       .split(/\\\\/)
       .map((line) => line.trim())
       .filter(Boolean);
+
     if (lines.length < 2 || gltAt === -1) {
       warnings.push(`${id}: expected two gloss lines and a \\glt translation; skipped.`);
       continue;
@@ -53,34 +93,160 @@ export function parseGb4e(source: string): Gb4eImport {
       warnings.push(`${id}: ${forms.length} words but ${glosses.length} gloss items; matched by position.`);
     }
 
-    const words: InterlinearWord[] = forms.map((form, index) => {
+    const maxLen = Math.max(forms.length, glosses.length);
+    const words: InterlinearWord[] = [];
+
+    for (let index = 0; index < maxLen; index++) {
+      const form = forms[index] || "";
+      const rawGloss = glosses[index] || "";
+
       const punctuation = form.match(/[,.;:?!]+$/)?.[0];
       const originalWord = punctuation ? form.slice(0, -punctuation.length) : form;
-      const rawGloss = glosses[index];
-      const word: InterlinearWord = { id: `${id}-word-${index + 1}`, originalWord };
-      if (punctuation) word.trailingPunctuation = punctuation;
-      if (rawGloss) {
-        word.sourceGlossTex = rawGloss;
-        word.morphologicalGloss = texToPlain(rawGloss);
-      }
-      return word;
-    });
+      const plainGloss = rawGloss ? texToPlain(rawGloss) : originalWord;
+      const wordId = `${id}-word-${index + 1}`;
 
-    sentences.push({ id, translation: cleanTranslation(translationText), words });
+      // Morpheme segmentation on hyphens
+      const formParts = originalWord.split("-");
+      const glossParts = plainGloss.split("-");
+      const morphemes: Morpheme[] = [];
+
+      if (formParts.length === glossParts.length && formParts.length > 1) {
+        for (let mIdx = 0; mIdx < formParts.length; mIdx++) {
+          morphemes.push({
+            id: `${wordId}-morpheme-${mIdx + 1}`,
+            form: formParts[mIdx],
+            gloss: glossParts[mIdx],
+          });
+        }
+      } else {
+        morphemes.push({
+          id: `${wordId}-morpheme-1`,
+          form: originalWord,
+          gloss: plainGloss,
+        });
+      }
+
+      const lex = lemmatizeOldEnglish(originalWord, plainGloss);
+      const features = extractInflectionFeatures(plainGloss);
+
+      const word: InterlinearWord = {
+        id: wordId,
+        originalWord,
+        morphologicalGloss: plainGloss,
+        trailingPunctuation: punctuation,
+        sourceGlossTex: rawGloss || undefined,
+        analysis: {
+          lemma: lex.lemma,
+          partOfSpeech: (lex.pos || "noun") as PartOfSpeech,
+          features,
+          morphemes,
+          definition: lex.definition || plainGloss,
+          phonetic: lex.ipa || undefined,
+          wiktionaryUrl: lex.wiktionaryUrl,
+        },
+        review: {
+          status: "source-checked",
+          source: {
+            file: "references/Voyages_of_Ohthere_Wulfstan.tex",
+            locator: `paragraph.${paragraph} / sentence ${number}`,
+          },
+        },
+      };
+
+      words.push(word);
+    }
+
+    sentences.push({
+      id,
+      translation: cleanTranslation(translationText),
+      footnotes: notes.length > 0 ? notes : undefined,
+      words,
+    });
   }
 
   if (sentences.length === 0) warnings.push("No \\ex{\\gll … \\glt …} examples were found.");
-  return { sentences, footnotes, warnings };
+  return {
+    title,
+    author,
+    date,
+    sentences,
+    footnotes,
+    warnings,
+  };
 }
 
-function stripComments(source: string) {
+export function parseGb4eToTextDocument(
+  source: string,
+  defaults: Partial<TextDocument> = {},
+): TextDocument {
+  const parsed = parseGb4e(source);
+  const title = parsed.title || defaults.title || "The voyages of Ohthere and Wulfstan";
+  const author = parsed.author || defaults.author || "Tyler Lemon";
+  const date = parsed.date || defaults.date || "September 30, 2026";
+  const slug = defaults.slug || "ohthere-wulfstan";
+  const textId = defaults.textId || "ohthere";
+
+  return {
+    textId,
+    slug,
+    language: "Old English",
+    author,
+    date,
+    title,
+    source: `${author} · ${date}`,
+    sourceFile: defaults.sourceFile || "references/Voyages_of_Ohthere_Wulfstan.tex",
+    status: defaults.status || "published",
+    sentences: parsed.sentences,
+    blocks: [],
+  };
+}
+
+function extractInflectionFeatures(gloss: string): InflectionFeatures {
+  const upper = gloss.toUpperCase();
+  const features: InflectionFeatures = {};
+
+  if (upper.includes("NOM")) features.case = "nominative";
+  else if (upper.includes("ACC")) features.case = "accusative";
+  else if (upper.includes("GEN")) features.case = "genitive";
+  else if (upper.includes("DAT")) features.case = "dative";
+
+  if (upper.includes("PL")) features.number = "plural";
+  else if (upper.includes("SG")) features.number = "singular";
+
+  if (upper.includes(".M") || upper.includes("-M") || upper.endsWith(".M") || upper.includes("M.NOM") || upper.includes("M.ACC") || upper.includes("M.DAT") || upper.includes("M.GEN")) {
+    features.gender = "masculine";
+  } else if (upper.includes(".F") || upper.includes("-F") || upper.endsWith(".F") || upper.includes("F.NOM") || upper.includes("F.ACC") || upper.includes("F.DAT") || upper.includes("F.GEN")) {
+    features.gender = "feminine";
+  } else if (upper.includes(".N") || upper.includes("-N") || upper.endsWith(".N") || upper.includes("N.NOM") || upper.includes("N.ACC") || upper.includes("N.DAT") || upper.includes("N.GEN")) {
+    features.gender = "neuter";
+  }
+
+  if (upper.includes("PST")) features.tense = "past";
+  else if (upper.includes("PRS")) features.tense = "present";
+
+  if (upper.includes("SJV")) features.mood = "subjunctive";
+  else if (upper.includes("IND")) features.mood = "indicative";
+  else if (upper.includes("IMP")) features.mood = "imperative";
+  else if (upper.includes("INF")) features.mood = "infinitive";
+
+  if (upper.includes("1SG") || upper.includes("1PL") || upper.includes(".1")) features.person = 1;
+  else if (upper.includes("2SG") || upper.includes("2PL") || upper.includes(".2")) features.person = 2;
+  else if (upper.includes("3SG") || upper.includes("3PL") || upper.includes(".3")) features.person = 3;
+
+  if (upper.includes("SUP")) features.degree = "superlative";
+  else if (upper.includes("COMP")) features.degree = "comparative";
+
+  return features;
+}
+
+function stripComments(source: string): string {
   return source
     .split("\n")
     .map((line) => line.replace(/(^|[^\\])%.*$/, "$1"))
     .join("\n");
 }
 
-function matchingBrace(text: string, open: number) {
+function matchingBrace(text: string, open: number): number {
   let depth = 0;
   for (let i = open; i < text.length; i++) {
     if (text[i] === "\\") {
@@ -94,7 +260,7 @@ function matchingBrace(text: string, open: number) {
   return -1;
 }
 
-function splitOutsideBraces(line: string) {
+function splitOutsideBraces(line: string): string[] {
   const parts: string[] = [];
   let depth = 0;
   let current = "";
@@ -112,7 +278,7 @@ function splitOutsideBraces(line: string) {
   return parts;
 }
 
-function extractFootnotes(translation: string) {
+function extractFootnotes(translation: string): { text: string; notes: string[] } {
   const notes: string[] = [];
   let out = "";
   let i = 0;
@@ -121,7 +287,7 @@ function extractFootnotes(translation: string) {
       const open = i + "\\footnote".length;
       const close = matchingBrace(translation, open);
       if (close !== -1) {
-        notes.push(texToPlain(translation.slice(open + 1, close)).replace(/\s+/g, " ").trim());
+        notes.push(cleanLatexFormatting(translation.slice(open + 1, close)).replace(/\s+/g, " ").trim());
         i = close + 1;
         continue;
       }
@@ -131,19 +297,51 @@ function extractFootnotes(translation: string) {
   return { text: out, notes };
 }
 
-function cleanTranslation(raw: string) {
-  return texToPlain(raw)
+function extractLatexMacro(text: string, macro: string): string | undefined {
+  const prefix = `\\${macro}`;
+  const idx = text.indexOf(prefix);
+  if (idx === -1) return undefined;
+  const open = text.indexOf("{", idx + prefix.length);
+  if (open === -1 || open - (idx + prefix.length) > 5) return undefined;
+  const close = matchingBrace(text, open);
+  if (close === -1) return undefined;
+  const inner = text.slice(open + 1, close);
+  return cleanLatexFormatting(inner);
+}
+
+function cleanLatexFormatting(text: string): string {
+  let cleaned = text;
+  let prev = "";
+  // Recursively unnest LaTeX formatting macros
+  while (cleaned !== prev) {
+    prev = cleaned;
+    cleaned = cleaned
+      .replace(/\\(?:textit|textbf|textsc|emph)\{([^}]*)\}/g, "$1")
+      .replace(/\\href\{[^}]*\}\{([^}]*)\}/g, "$1")
+      .replace(/\\url\{[^}]*\}/g, "");
+  }
+  // Strip any lingering macro prefixes or braces
+  cleaned = cleaned
+    .replace(/\\(?:textit|textbf|textsc|emph)\{?/g, "")
+    .replace(/\\([&%_#$])/g, "$1")
+    .replace(/[{}\\]/g, "")
     .replace(/\s+/g, " ")
-    .trim()
-    .replace(/^[`‘]\s*/, "")
-    .replace(/\s*['’]$/, "");
+    .trim();
+  return cleaned;
+}
+
+function cleanTranslation(raw: string): string {
+  return cleanLatexFormatting(texToPlain(raw))
+    .replace(/^[`'‘"“\s]+|[`'’"”\}\s]+$/g, "")
+    .trim();
 }
 
 // Gloss abbreviations become uppercase (Leipzig style); other commands keep their text.
-function texToPlain(tex: string) {
+function texToPlain(tex: string): string {
   return tex
     .replace(/\\textsc\{([^}]*)\}/g, (_, abbreviation: string) => abbreviation.toUpperCase())
     .replace(/\\href\{[^}]*\}\{([^}]*)\}/g, "$1")
     .replace(/\\(?:textit|textbf|emph)\{([^}]*)\}/g, "$1")
-    .replace(/\\([&%_#$])/g, "$1");
+    .replace(/\\([&%_#$])/g, "$1")
+    .replace(/\\/g, "");
 }

@@ -1,4 +1,4 @@
-import type { ReadingSentence, TextDocument } from "../lib/types";
+import type { ReadingSentence, TextDocument } from "../lib/types.ts";
 
 export function exportToGb4eLatex(document: TextDocument, customSentences?: ReadingSentence[]): string {
   const sentences = customSentences ?? document.sentences ?? [];

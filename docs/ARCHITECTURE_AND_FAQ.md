@@ -1,140 +1,95 @@
-# Linguistic Data Architecture, LaTeX Parsing & FAQ Guide
+# Glossy Architecture and Linguistic FAQ
 
-This document provides a comprehensive technical and linguistic reference for how the Old English glossing system parses documents, structures its data model, derives lemmas and Wiktionary references, and verifies data integrity.
+This document describes the technical architecture and current data flow of Glossy (audited 2026-10-03). Product requirements and specifications are tracked in `devpost/prd.md`, `devpost/spec.md`, and `plan.md`; remaining implementation and verification tasks are in `devpost/checklist.md > Follow-up Requirements`.
 
----
+## Routes and Data Flow
 
-## 1. How the `.tex` Document is Parsed and the Data Model
-
-### Parsing Mechanism
-The master document located at `references/Voyages_of_Ohthere_Wulfstan.tex` is authored using standard LaTeX linguistics conventions with the `gb4e` package (`\begin{exe}`, `\begin{xlist}`, `\ex`, `\gll`, `\glt`).
-
-The parser (`lib/content.ts` and `app/api/master-tex/route.ts`) processes this file through the following stages:
-
-1. **Preamble Metadata Extraction**:
-   - Matches document title (`\title{...}`), author (`\author{...}`), and date (`\date{...}`).
-2. **gb4e Interlinear Block Extraction**:
-   - Identifies every `\ex` or `\ex{\gll ... \\ ... \\ \glt ...}` block.
-   - Line 1: Surface forms separated by whitespace.
-   - Line 2: Morphological glosses (using `\textsc{...}` Leipzig abbreviations or plain text).
-   - Line 3 (`\glt`): Free translation string.
-3. **Balanced Footnote & LaTeX Command Stripping (`stripLatexFootnotes`)**:
-   - Handles LaTeX footnotes (e.g. `\footnote{Some versions have \textit{fætels}...}`) by tracking opening and closing brace depths (`{` and `}`) rather than greedy/lazy regexes. This prevents nested braces from prematurely truncating translation lines.
-   - Cleans formatting macros such as `\textit`, `\textbf`, `\textsc`, `\href`, and `\url` while preserving plain readable text.
-4. **1-to-1 Token Alignment & Morpheme Segmentation**:
-   - Line 1 surface words and Line 2 gloss words are indexed and paired 1-to-1.
-   - If words are hyphenated (e.g., surface: `sǣ-d-e`, gloss: `say-PST-IND3SG`), they are segmented into component `Morpheme` objects (`sǣ` $\rightarrow$ `say`, `d` $\rightarrow$ `PST`, `e` $\rightarrow$ `IND3SG`).
-   - Trailing punctuation (`.`, `,`, `;`, `:`, `!`, `?`) is separated so root tokens can be analyzed cleanly while preserving typographic flow.
+- `/` selects a text and links to the separate `/read/<slug>` reader and `/edit/<slug>` workspace.
+- `/docs` is the in-app architecture and linguistic data model FAQ; `/admin/index.html` is the TinaCMS admin.
+- `references/Voyages_of_Ohthere_Wulfstan.tex` is the transcription source manuscript (`gb4e` LaTeX). `lib/gb4e.ts` parses its supported syntax. `scripts/compile-tex-to-content.mjs` generates `content/texts/ohthere.json` from the parsed examples with exported `texSource`.
+- `lib/lemmatizer.ts` applies curated form maps and heuristic rules; it does not guarantee canonical or scholarly-correct lemmas. `scripts/sync-dictionary.mjs` generates JSON entries under `content/dictionary/`.
+- `npm run prebuild` automatically executes dictionary synchronization and TeX-to-JSON compilation before `npm run build`.
 
 ---
 
-### Data Model
+## 1. Beginner's Primer on Interlinear Glossing
 
-The application uses a typed, hierarchical data model in TypeScript:
+An **interlinear gloss** presents historical text aligned word-by-word with grammatical breakdowns and a fluent translation:
 
-```typescript
-// Core Morpheme Unit
-interface Morpheme {
-  id: string;
-  morpheme: string;    // e.g. "sǣ"
-  gloss: string;       // e.g. "say"
-}
-
-// Token (Word) Unit
-interface Token {
-  id: string;
-  sourceForm: string;        // Surface form with punctuation (e.g. "sǣ-d-e.")
-  sourceGloss: string;       // Human-readable Leipzig gloss (e.g. "say-PST-IND3SG")
-  literalTexGloss: string;   // Raw LaTeX markup (e.g. "say-\\textsc{pst}-\\textsc{ind.3sg}")
-  lemma: string;             // Dictionary headword (e.g. "secgan")
-  pos: string;               // Part of Speech ("verb", "noun", "adjective", etc.)
-  explanation: string;       // English gloss definition
-  inflections: {
-    case?: "nominative" | "accusative" | "genitive" | "dative";
-    number?: "singular" | "plural";
-    gender?: "masculine" | "feminine" | "neuter";
-    tense?: "present" | "past";
-    mood?: "indicative" | "subjunctive" | "imperative" | "infinitive";
-    person?: "1" | "2" | "3";
-  };
-  morphemes: Morpheme[];     // Morphological breakdown
-  ipa: string;               // Phonetic pronunciation (e.g. "/ˈsæː.de/")
-  wiktionaryUrl: string;     // Reference link to Wiktionary entry
-}
-
-// Sentence Block
-interface Sentence {
-  id: string;
-  tokens: Token[];
-  freeTranslation: string;   // Full English translation for the sentence
-}
-
-// Complete Text Document
-interface GlossDocument {
-  title: string;
-  author: string;
-  date: string;
-  sentences: Sentence[];
-}
+```
+Surface Text (Line 1):       Ōhthere       sǣ-d-e              his        hlāford-e
+Leipzig Gloss (Line 2):     Ohthere       say-PST-IND3SG      his.GEN    lord-DAT.SG
+Modern Translation (Line 3): "Ohthere said to his lord..."
+Canonical Lemma:            Ōhthere       secgan              hē         hlāford
 ```
 
----
+### Leipzig Grammatical Abbreviations Reference
 
-## 2. Reusability for Future Documents
-
-The system is designed for end-to-end reusability with new texts or manuscripts:
-
-### Option A: Master `.tex` Ingestion
-- Any new `.tex` manuscript formatted with standard `gb4e` syntax can be placed in `references/` or loaded via `/api/master-tex`.
-- The parser will automatically generate the `GlossDocument` JSON representation, token alignments, and morpheme structures.
-
-### Option B: Batch Import in Editor
-- In `/edit/[slug]`, the **Batch Import Pipeline** at the bottom of the page accepts raw `\ex{\gll ... \\ ... \\ \glt ...}` blocks directly via copy-paste.
-- Linguists can preview the parsed token count and apply the batch import directly into the live document.
-
-### Option C: Exporting back to LaTeX (`exportToGb4eLatex`)
-- The system is bidirectional: the `exportToGb4eLatex` utility in `data/latex-export.ts` takes the in-memory document state and exports a clean, compilable LaTeX `gb4e` document with proper `\gll`, `\textsc{...}` tags, and `\glt`.
-
----
-
-## 3. How Lemmas Were Derived
-
-The original `.tex` document contains only **surface forms** (Line 1) and **grammatical glosses** (Line 2); it does not explicitly declare dictionary headwords (lemmas).
-
-### Derivation Strategy:
-1. **Curated Lexicon Mapping**:
-   - For annotated texts like the *Voyages of Ohthere and Wulfstan*, high-frequency words were matched against curated dictionary datasets (`data/ohthere.ts` and `data/dictionary.json`).
-2. **Heuristic Morphological Fallback**:
-   - For new or unindexed words, the parser strips morpheme boundaries (`-`), prefixes, and known inflectional endings to hypothesize the base stem.
-3. **Interactive Editorial Override**:
-   - In the `/edit` workspace inspector, editors can inspect any individual token and manually edit the lemma, definition, and grammatical features.
+| Abbreviation | Full Term | Grammatical Role in Sentence | Example |
+| :--- | :--- | :--- | :--- |
+| `NOM` | **Nominative** | The subject performing the action. | *Ōhthere* sǣde |
+| `ACC` | **Accusative** | The direct object receiving the action. | he hæfde *dēor* |
+| `GEN` | **Genitive** | Possession or partitive origin (&ldquo;of&rdquo;). | *ealra* Norþmonna |
+| `DAT` | **Dative** | Indirect object (&ldquo;to/for&rdquo;) or prepositional object. | on *dagum*, to his *hlāforde* |
+| `INS` | **Instrumental** | Means or instrument by which an action is performed. | *þȳ* dæġe |
+| `STR` | **Strong Declension** | Indefinite adjective form (used alone without demonstratives). | *micel* scip |
+| `WK` | **Weak Declension** | Definite adjective form (used after &ldquo;the/this/his&rdquo;). | se *micla* mann |
+| `PST` | **Past Tense (Preterite)** | Action completed in the past. | *fōr* (went), *sǣde* (said) |
+| `PRS` | **Present Tense** | Action taking place in the present. | *is* (is), *cymð* (comes) |
+| `IND` | **Indicative Mood** | Factual statements. | he *sǣde* |
+| `SJV` | **Subjunctive Mood** | Hypothetical, conditional, or reported clauses. | þæt he *wǣre* |
+| `INF` | **Infinitive** | Uninflected dictionary verb form (&ldquo;to do&rdquo;). | *secgan*, *faran*, *dōn* |
 
 ---
 
-## 4. Wiktionary URLs & Why `sǣ-d-e` Had `sægan`
+## 2. Canonical Citation Standards by Part of Speech
 
-### Wiktionary URL Construction
-Wiktionary URLs follow the Wikimedia headword convention:
-$$\text{URL} = \text{https://en.wiktionary.org/wiki/} + \text{encodeURIComponent}(\text{lemma}) + \text{\#Old\_English}$$
+In standard Old English lexicography (Bosworth-Toller, Sweet, Clark Hall, DOE, Wiktionary), headwords (lemmas) adhere strictly to the following standards:
 
-### Why `sǣ-d-e` Pointed to `sægan`
-- **Linguistic Reality**: In Old English, `sǣde` is the past indicative 3rd person singular of the irregular weak Class 3 verb **secgan** (*to say*).
-- **The Heuristic Error**: Early automated stem extraction stripped the past suffix `-d-e` from `sǣ-d-e` and naively hypothesized an infinitive `*sǣgan` by appending `-an` to `sǣg-`.
-- **The Correction**: Because `sǣgan` is not the canonical dictionary headword, the correct entry is **secgan**:
-  - Correct URL: [https://en.wiktionary.org/wiki/secgan#Old_English](https://en.wiktionary.org/wiki/secgan#Old_English)
-  - `sǣde` is documented under the conjugation table of `secgan`.
-
-The Token Inspector in `/edit` allows updating the `Lemma` field to `secgan` and the `Wiktionary URL` to `https://en.wiktionary.org/wiki/secgan#Old_English`.
-
----
-
-## 5. Tools for Verifying Correctness and Accuracy
-
-| Tool / Check | Command / Location | Purpose |
+| Part of Speech | Canonical Citation Standard | Examples in Corpus |
 | :--- | :--- | :--- |
-| **Source Validation Script** | `npm run validate:source` (`scripts/validate-source.mjs`) | Validates 1:1 token alignment between Line 1 surface words and Line 2 gloss words, verifies Leipzig codes, and checks non-empty translations. |
-| **End-to-End Smoke Test** | `npm run test:smoke` (`scripts/smoke-test.mjs`) | Verifies that all reader routes, editor routes, and exports render without missing text, cut-offs, or 404s. |
-| **TypeScript Typechecker** | `npm run typecheck` (`tsc --noEmit`) | Enforces schema validation across all components and data structures. |
-| **ESLint Quality Check** | `npm run lint` (`eslint .`) | Audits code for syntax issues, dead code, or broken imports. |
-| **Interactive Token Inspector** | Web Route `/edit/ohthere-wulfstan` | Visual inspector that previews reader popups in real time and highlights invalid tags or mismatched morphemes. |
-| **External Dictionaries** | [Bosworth-Toller](https://bosworthtoller.com/) & [Wiktionary Old English](https://en.wiktionary.org/wiki/Category:Old_English_lemmas) | Authoritative reference lexicons for verifying headwords, etymology, and macrons. |
+| **Articles & Primary Demonstratives** | **Masculine Nominative Singular (`sē`)** | `sē` (for all forms: *sē, sēo, þæt, þone, þā, þæs, þǣre, þǣm, þām, þȳ, þon, ðæt, ðone, ðǣm, ðā, ðǣre, ðāra*) |
+| **Proximal Demonstratives** | **Masculine Nominative Singular (`þes`)** | `þes` (for all forms: *þes, þēos, þis, þisne, þās, þisses, þisse, þissere, þissum, þyssum, ðes, ðis, ðās, ðissum*) |
+| **Determiners & Quantifiers** | **Masculine Nominative Singular Strong** | `sum` (for *sumne, sumes, sumre, sumum, sume*), `ǣlċ` (for *ǣlces, ǣlcum*), `ǣniġ` (for *ǣniġne, ǣniġum*), `nǣniġ`, `swilċ`, `hwilċ`, `ōþer` (for *ōþerne, ōþrum*) |
+| **Adjectives** | **Masculine Nominative Singular Strong** | `eall` (from *ealne, eallum, ealra*), `micel` (from *miclan, micles, māra, mǣst*), `gōd` (from *gōde, betera*), `wēste` (*ja/jō*-stem), `fēaw` (from *fēawum*), `lang` (from *lengra*), `swift` (from *swīftre*), `norþweard` (from *norþweardum*) |
+| **Verbs** | **Infinitive** (`-an`, `-ian`, `-on`, contracted `-n`) | `secgan` (from *sǣde*), `faran` (from *fōr*), `licgan` (from *lǣġe*), `seġlian` (from *seġlode*), `cweþan` (from *cwæð*), `dōn` (from *dyde*), `bēon`/`wesan` (from *is, wæs, bið*), `sculan` (from *sceolde*), `magan` (from *meahte*) |
+| **Nouns** | **Nominative Singular** | `dæġ` (from *dagas, dagum*), `stōw` (from *stōwum*), `mann` (from *men, monna*), `hunta` (from *huntan*), `ealu` (from *ealað*), `wæter` (from *wæteres*), `winter` (from *wintra*), `fætels` (from *fǣtelsas*) |
+| **Personal & Interrogative Pronouns** | **Masculine Nominative Singular** (or 1st/2nd pers base) | `hē` (for *hē, hēo, hit, him, his, hī*), `ic` (for *ic, mē, mīn*), `þū` (for *þū, þē, þīn*), `hwā` (for *hwā, hwæt, hwone, hwæs, hwǣm*) |
+| **Adverbs / Prepositions / Conjunctions** | **Positive Base / Indeclinable Form** | `swīðe` (from *swīþe, swȳðe*), `norþ`, `ēast`, `þonan`, `on`, `mid`, `tō`, `būton`, `and`, `ac`, `þēah` |
+
+---
+
+## 3. Why Adjectives are Cited as Masculine Nominative Singular Strong
+
+In Old English grammar, every adjective can take up to 20+ different inflected endings depending on:
+- **Gender**: Masculine, Feminine, Neuter
+- **Number**: Singular, Plural
+- **Case**: Nominative, Accusative, Genitive, Dative, Instrumental
+- **Declension**: Strong (indefinite) vs. Weak (definite)
+
+For example, *good* appears across texts as *gōd, gōdne, gōdes, gōdre, gōdum, gōdra, gōde, gōda, gōdan, gōdena*. To avoid fragmented dictionary records, lexicographers universally use the **Masculine Nominative Singular Strong** form (*gōd*, *eall*, *micel*, *lang*) as the single canonical headword.
+
+### Ja/Jō-stem Adjectives
+Adjectives historically belonging to the *ja/jō*-stem class legitimately end in `-e` in their masculine nominative singular strong citation form (`wēste`, `blīðe`, `clǣne`, `dȳre`, `grēne`, `swēte`, `gedēfe`, `unmǣte`). The engine preserves these base forms without incorrectly stripping their root vowel.
+
+---
+
+## 4. The Numeral Lemmatization Challenge
+
+Old English numerals present unique challenges for automated lemmatization:
+1. **Numbers 1–3**: `1 (ān)` inflects like a strong adjective with a masculine nominative singular. However, `2 (twēgen/twā)` and `3 (þrīe/þrēo)` are **inherently plural in meaning** and possess no singular forms. They are cited by their plural citation forms: `twēgen` (or `twā`) and `þrīe`.
+2. **Numbers 4–19**: Cardinals from `4 (fēower)` to `19` are largely **indeclinable** when modifying nouns, with no distinct gender forms. Their citation headword is the base cardinal stem (`fēower`, `fīf`, `siex`, `seofon`, `eahta`, `nigon`, `tīen`).
+3. **Decades & Hundreds**: Numbers such as `twēntig (20)`, `syxtig (60)`, and `hundtēontiġ (100)` behave as neuter nouns that govern a dependent genitive plural (e.g. *syxtig hrāna* = &ldquo;sixty of reindeers&rdquo;). Their lemmas are the base cardinal noun forms.
+
+---
+
+## 5. Automated Verification Suite
+
+| Command | Function & Verification Target |
+|---|---|
+| `node scripts/validate-lemmas.mjs` | Runs heuristic checks on parsed lemma shapes and Wiktionary URL formatting. This is not a scholarly accuracy audit and is not currently wired to an npm script. |
+| `npm run validate:source` | Checks parsed examples for words and translations, and checks text-record surface/gloss pairs against the source. Parser warnings may be reported; this does not prove every token is linguistically correct. |
+| `npm run sync:dictionary` | Regenerates dictionary JSON under `content/dictionary/` from the curated lexicon list. |
+| `npm run compile:content` | Regenerates `content/texts/ohthere.json` from the supplied TeX manuscript, including exported `texSource`. |
+| `npm run typecheck` | Validates TypeScript type safety across the entire codebase. |
+| `npm run build` | Runs `prebuild` (sync:dictionary + compile:content) and generates production Next.js application. |

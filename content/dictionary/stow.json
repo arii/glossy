@@ -1,13 +1,9 @@
 {
-  "word": "stōw-um",
+  "word": "stōw",
+  "lemma": "stōw",
   "pronunciation": "",
-  "sourceGloss": "place-dat.pl",
-  "morphemes": [
-    {
-      "part": "stōwum",
-      "meaning": "places"
-    }
-  ],
-  "inflection": "",
-  "definition": "places"
+  "pos": "noun",
+  "definition": "stōw-um",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/stow#Old_English",
+  "sourceGloss": "stōw-um"
 }

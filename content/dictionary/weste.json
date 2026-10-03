@@ -1,13 +1,9 @@
 {
-  "word": "wēst-e",
+  "word": "wēste",
+  "lemma": "wēste",
   "pronunciation": "",
-  "sourceGloss": "waste.nom.sg.n.str",
-  "morphemes": [
-    {
-      "part": "wēste",
-      "meaning": "waste, uninhabited"
-    }
-  ],
-  "inflection": "",
-  "definition": "waste, uninhabited"
+  "pos": "adjective",
+  "definition": "wēst-e",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/weste#Old_English",
+  "sourceGloss": "wēst-e"
 }

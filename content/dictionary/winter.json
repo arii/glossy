@@ -1,13 +1,9 @@
 {
-  "word": "wintr-a",
+  "word": "winter",
+  "lemma": "winter",
   "pronunciation": "",
-  "sourceGloss": "winter-dat.sg",
-  "morphemes": [
-    {
-      "part": "wintra",
-      "meaning": "winter"
-    }
-  ],
-  "inflection": "",
-  "definition": "winter"
+  "pos": "noun",
+  "definition": "winter",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/winter#Old_English",
+  "sourceGloss": "winter"
 }

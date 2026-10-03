@@ -1,13 +1,9 @@
 {
-  "word": "his",
+  "word": "hē",
+  "lemma": "hē",
   "pronunciation": "",
-  "sourceGloss": "3sg.m.gen",
-  "morphemes": [
-    {
-      "part": "his",
-      "meaning": "his"
-    }
-  ],
-  "inflection": "",
-  "definition": "his"
+  "pos": "pronoun",
+  "definition": "hē",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English",
+  "sourceGloss": "hē"
 }

@@ -1,13 +1,9 @@
 {
   "word": "Ōhthere",
+  "lemma": "Ōhthere",
   "pronunciation": "",
-  "sourceGloss": "Ohthere.nom",
-  "morphemes": [
-    {
-      "part": "Ōhthere",
-      "meaning": "Ohthere"
-    }
-  ],
-  "inflection": "",
-  "definition": "Ohthere"
+  "pos": "noun",
+  "definition": "ōhthere",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/Ohthere#Old_English",
+  "sourceGloss": "ōhthere"
 }

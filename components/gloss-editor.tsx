@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { SiteNav } from "./site-nav";
 import { exportToGb4eLatex } from "../data/latex-export";
+import { parseGb4e } from "../lib/gb4e";
 import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
 import {
   BookOpen,
@@ -71,16 +72,23 @@ function stripLatexFootnotes(text: string): string {
   return result;
 }
 
-import type { TextDocument, ReadingSentence, InterlinearWord, Morpheme as LegacyMorpheme } from "../lib/types";
+import type {
+  TextDocument,
+  ReadingSentence,
+  InterlinearWord,
+  Morpheme as LegacyMorpheme,
+  PartOfSpeech,
+  InflectionFeatures,
+} from "../lib/types";
 
 function mapLegacyTextDocToGlossDoc(legacyDoc: TextDocument): GlossDocument {
-  const authorMatch = legacyDoc.author ? legacyDoc.author : "Tyler Lemon";
-  const dateMatch = legacyDoc.source ? legacyDoc.source.split("·")[1]?.trim() : "September 30, 2026";
+  const authorMatch = legacyDoc.author || (legacyDoc.source ? legacyDoc.source.split("·")[0]?.trim() : "Tyler Lemon");
+  const dateMatch = legacyDoc.date || (legacyDoc.source ? legacyDoc.source.split("·")[1]?.trim() : "September 30, 2026");
 
   return {
     title: legacyDoc.title || "The voyages of Ohthere and Wulfstan",
     author: authorMatch,
-    date: dateMatch || "September 30, 2026",
+    date: dateMatch,
     sentences: (legacyDoc.sentences || []).map((sent: ReadingSentence, sIdx: number) => ({
       id: sent.id || `sentence-${sIdx + 1}`,
       freeTranslation: sent.translation || "",
@@ -140,7 +148,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
   // Backup snapshot for "Discard Changes" comparison
   const [savedSnapshot, setSavedSnapshot] = useState<string>(() => JSON.stringify(mapLegacyTextDocToGlossDoc(initialDocument)));
 
-  const storageKey = "glossy_document_ohthere_full_v4";
+  const storageKey = `glossy_draft_${initialDocument.slug || initialDocument.textId || "ohthere"}`;
 
   // Ingest from API (/api/master-tex) helper
   const loadFromMasterTex = async (confirmOverwrite = false) => {
@@ -232,89 +240,35 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
 
   // Ingestion parsing function for multi-sentence gb4e input
   const parseMultiSentenceGb4e = (latex: string): Sentence[] => {
-    const sentences: Sentence[] = [];
-    const regex = /\\gll\s+([\s\S]+?)\\\\\s*([\s\S]+?)\\\\\s*\\glt\s*([^\r\n]+)/g;
-    let match;
-    let idx = 1;
-
-    while ((match = regex.exec(latex)) !== null) {
-      const line1 = match[1].trim();
-      const line2 = match[2].trim();
-      const rawTranslation = match[3].trim();
-
-      const cleanTranslation = stripLatexFootnotes(rawTranslation)
-        .replace(/\\(?:textit|textbf|textsc|emph)\{([^}]+)\}/g, "$1")
-        .replace(/\\href\{[^}]+\}\{([^}]+)\}/g, "$1")
-        .replace(/\\url\{[^}]+\}/g, "")
-        .replace(/^[`'‘"“\s]+|[`'’"”\}\s]+$/g, "")
-        .replace(/\s+/g, " ")
-        .trim();
-
-      const rawSurfaceWords = line1.replace(/\\\\$/, "").trim().split(/\s+/);
-      const rawGlossWords = line2.replace(/\\\\$/, "").trim().split(/\s+/);
-
-      const tokens: Token[] = [];
-      const sentenceId = `imported-sentence-${Date.now()}-${idx}`;
-
-      const maxLen = Math.max(rawSurfaceWords.length, rawGlossWords.length);
-      for (let tIdx = 0; tIdx < maxLen; tIdx++) {
-        const rawSurf = rawSurfaceWords[tIdx] || "";
-        const rawGl = rawGlossWords[tIdx] || "";
-
-        const sourceForm = rawSurf.replace(/[.,;:!?]+$/, "");
-        const literalTexGloss = rawGl;
-        const sourceGloss = rawGl
-          .replace(/\\textsc\{([^}]+)\}/g, "$1")
-          .replace(/\\/g, "");
-
-        const tokenId = `${sentenceId}-token-${tIdx + 1}`;
-
-        const surfParts = sourceForm.split("-");
-        const glossParts = sourceGloss.split("-");
-        const morphemes: Morpheme[] = [];
-
-        if (surfParts.length === glossParts.length && surfParts.length > 1) {
-          for (let mIdx = 0; mIdx < surfParts.length; mIdx++) {
-            morphemes.push({
-              id: `${tokenId}-morpheme-${mIdx + 1}`,
-              morpheme: surfParts[mIdx],
-              gloss: glossParts[mIdx],
-            });
-          }
-        } else {
-          morphemes.push({
-            id: `${tokenId}-morpheme-1`,
-            morpheme: sourceForm,
-            gloss: sourceGloss,
-          });
-        }
-
-        const lex = resolveOldEnglishLexicon(sourceForm, sourceGloss);
-
-        tokens.push({
-          id: tokenId,
-          sourceForm: rawSurf,
-          sourceGloss,
-          literalTexGloss,
-          lemma: lex.lemma,
-          pos: lex.pos,
-          explanation: lex.definition || sourceGloss,
-          inflections: {},
-          morphemes,
-          ipa: lex.ipa || "",
-          wiktionaryUrl: lex.wiktionaryUrl,
-        });
-      }
-
-      sentences.push({
-        id: sentenceId,
-        tokens,
-        freeTranslation: cleanTranslation,
-      });
-      idx++;
-    }
-
-    return sentences;
+    const parsed = parseGb4e(latex);
+    return parsed.sentences.map((sent, sIdx) => ({
+      id: sent.id || `imported-sentence-${Date.now()}-${sIdx + 1}`,
+      freeTranslation: sent.translation,
+      tokens: sent.words.map((w, tIdx) => ({
+        id: w.id || `imported-token-${Date.now()}-${tIdx + 1}`,
+        sourceForm: `${w.originalWord}${w.trailingPunctuation || ""}`,
+        sourceGloss: w.morphologicalGloss || w.originalWord,
+        literalTexGloss: w.sourceGlossTex || w.morphologicalGloss || w.originalWord,
+        lemma: w.analysis?.lemma || w.originalWord,
+        pos: w.analysis?.partOfSpeech || "noun",
+        explanation: w.analysis?.definition || w.morphologicalGloss || "",
+        inflections: {
+          case: w.analysis?.features?.case,
+          number: w.analysis?.features?.number,
+          gender: w.analysis?.features?.gender,
+          tense: w.analysis?.features?.tense,
+          mood: w.analysis?.features?.mood,
+          person: w.analysis?.features?.person ? String(w.analysis.features.person) : undefined,
+        },
+        morphemes: (w.analysis?.morphemes || []).map((m, mIdx) => ({
+          id: m.id || `morpheme-${mIdx + 1}`,
+          morpheme: m.form,
+          gloss: m.gloss,
+        })),
+        ipa: w.analysis?.phonetic || "",
+        wiktionaryUrl: w.analysis?.wiktionaryUrl || "",
+      })),
+    }));
   };
 
   const applyImportedSentences = () => {
@@ -425,16 +379,17 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
     }
   };
 
-  // Convert GlossDocument to legacy TextDocument shape for compatible backend updates
-  const mapToLegacyTextDocument = (doc: GlossDocument) => {
-    return {
+  // Convert GlossDocument to canonical TextDocument shape for compatible backend updates
+  const mapToLegacyTextDocument = (doc: GlossDocument): TextDocument => {
+    const rawDoc: TextDocument = {
       textId: initialDocument.textId || "ohthere",
       slug: initialDocument.slug || "ohthere-wulfstan",
       language: "Old English",
       author: doc.author,
+      date: doc.date,
       title: doc.title,
       source: `${doc.author} · ${doc.date}`,
-      sourceFile: "references/Voyages_of_Ohthere_Wulfstan.tex",
+      sourceFile: initialDocument.sourceFile || "references/Voyages_of_Ohthere_Wulfstan.tex",
       status: "published",
       sentences: doc.sentences.map((sent) => ({
         id: sent.id,
@@ -447,20 +402,21 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
             id: tok.id,
             originalWord: originalCleanWord,
             morphologicalGloss: tok.sourceGloss,
-            trailingPunctuation: punctuationMatch ? punctuationMatch[0] : null,
+            trailingPunctuation: punctuationMatch ? punctuationMatch[0] : undefined,
             sourceGlossTex: tok.literalTexGloss,
             analysis: {
               lemma: tok.lemma,
-              partOfSpeech: tok.pos,
+              partOfSpeech: (tok.pos || "noun") as PartOfSpeech,
               features: {
-                case: tok.inflections.case,
-                number: tok.inflections.number,
-                gender: tok.inflections.gender,
-                tense: tok.inflections.tense,
-                mood: tok.inflections.mood,
-                person: tok.inflections.person ? parseInt(String(tok.inflections.person), 10) : undefined,
+                case: tok.inflections.case as InflectionFeatures["case"],
+                number: tok.inflections.number as InflectionFeatures["number"],
+                gender: tok.inflections.gender as InflectionFeatures["gender"],
+                tense: tok.inflections.tense as InflectionFeatures["tense"],
+                mood: tok.inflections.mood as InflectionFeatures["mood"],
+                person: tok.inflections.person ? (parseInt(String(tok.inflections.person), 10) as 1 | 2 | 3) : undefined,
               },
               morphemes: tok.morphemes.map((m) => ({
+                id: m.id,
                 form: m.morpheme,
                 gloss: m.gloss,
               })),
@@ -471,10 +427,14 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
           };
         }),
       })),
+      blocks: [],
     };
+
+    rawDoc.texSource = exportToGb4eLatex(rawDoc);
+    return rawDoc;
   };
 
-  // Save to TinaCMS
+  // Save Document (Dual-Write: Filesystem TeX/JSON + TinaCMS working tree)
   const saveToTina = async () => {
     if (!documentState || isSaving) return;
 
@@ -483,41 +443,51 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
     const legacyDoc = mapToLegacyTextDocument(documentState);
 
     try {
-      const response = await fetch(
-        process.env.NEXT_PUBLIC_TINA_LOCAL_URL ?? "http://localhost:4001/graphql",
-        {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            query: `mutation UpdateText($relativePath: String!, $params: DocumentUpdateMutation!) {
-              updateDocument(collection: "text", relativePath: $relativePath, params: $params) {
-                ... on Text { _sys { relativePath } }
-              }
-            }`,
-            variables: {
-              relativePath: `${initialDocument.fileName || "ohthere"}.json`,
-              params: { text: legacyDoc },
-            },
-          }),
-        },
-      );
+      // 1. Write to local filesystem API (/api/save-document)
+      const apiResponse = await fetch("/api/save-document", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          slug: initialDocument.slug,
+          fileName: initialDocument.fileName || "ohthere",
+          document: legacyDoc,
+        }),
+      });
 
-      const result = (await response.json()) as {
-        data?: { updateDocument?: { _sys?: { relativePath?: string } } };
-        errors?: Array<{ message: string }>;
-      };
+      if (!apiResponse.ok) {
+        const errorData = await apiResponse.json();
+        throw new Error(errorData.error || "Failed to save document to server filesystem.");
+      }
 
-      if (!response.ok || result.errors?.length || !result.data?.updateDocument?._sys?.relativePath) {
-        throw new Error(
-          result.errors?.map((error) => error.message).join("; ") || `TinaCMS server returned HTTP ${response.status}.`
+      // 2. Optionally notify TinaCMS GraphQL server if active
+      try {
+        await fetch(
+          process.env.NEXT_PUBLIC_TINA_LOCAL_URL ?? "http://localhost:4001/graphql",
+          {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+              query: `mutation UpdateText($relativePath: String!, $params: DocumentUpdateMutation!) {
+                updateDocument(collection: "text", relativePath: $relativePath, params: $params) {
+                  ... on Text { _sys { relativePath } }
+                }
+              }`,
+              variables: {
+                relativePath: `${initialDocument.fileName || "ohthere"}.json`,
+                params: { text: legacyDoc },
+              },
+            }),
+          },
         );
+      } catch {
+        // Tina server optional during standalone dev
       }
 
       const serialized = JSON.stringify(documentState);
       setSavedSnapshot(serialized);
       setSaveStatus({
         kind: "success",
-        message: `Saved content/texts/${result.data.updateDocument._sys.relativePath} to TinaCMS working tree successfully!`,
+        message: `Saved document to master TeX source and TinaCMS repository successfully!`,
       });
     } catch (error) {
       setSaveStatus({
@@ -525,7 +495,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
         message:
           error instanceof Error
             ? error.message
-            : "The TinaCMS save operation failed.",
+            : "The save operation failed.",
       });
     } finally {
       setIsSaving(false);
@@ -1096,7 +1066,32 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
           <h2 id="import-heading" style={{ margin: "0.25rem 0 1rem", fontSize: "1.3rem" }}>Paste one or more gb4e</h2>
           
           <div className="editor-field" style={{ marginTop: 0 }}>
-            <label>{"Paste gb4e latex blocks (multiple \\ex or \\begin{exe} structures supported)"}</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-sm font-semibold text-stone-800">
+                {"Paste gb4e LaTeX blocks or upload .tex file"}
+              </label>
+              <label className="text-xs bg-stone-100 hover:bg-stone-200 text-stone-800 px-2.5 py-1 rounded cursor-pointer border border-stone-300 font-medium">
+                <span>📁 Upload .tex file</span>
+                <input
+                  type="file"
+                  accept=".tex,.txt"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                      const text = event.target?.result as string;
+                      if (text) {
+                        setLatexImportSource(text);
+                        setImportPreview(parseMultiSentenceGb4e(text));
+                      }
+                    };
+                    reader.readAsText(file);
+                  }}
+                />
+              </label>
+            </div>
             <textarea
               rows={5}
               value={latexImportSource}

@@ -1,21 +1,9 @@
 {
-  "word": "wīc-i-að",
-  "pronunciation": "/ˈwiː.ki.ɑθ/",
-  "sourceGloss": "camp-THM-PRS.IND.PL",
-  "morphemes": [
-    {
-      "part": "wīc",
-      "meaning": "camp"
-    },
-    {
-      "part": "i",
-      "meaning": "THM"
-    },
-    {
-      "part": "að",
-      "meaning": "PRS.IND.PL"
-    }
-  ],
-  "inflection": "tense: present, mood: indicative, person: 3, number: plural",
-  "definition": "camp, dwell temporarily"
+  "word": "wīcian",
+  "lemma": "wīcian",
+  "pronunciation": "",
+  "pos": "verb",
+  "definition": "wīc-i-að",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/wician#Old_English",
+  "sourceGloss": "wīc-i-að"
 }

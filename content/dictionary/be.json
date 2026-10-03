@@ -1,13 +1,9 @@
 {
   "word": "be",
+  "lemma": "be",
   "pronunciation": "",
-  "sourceGloss": "by",
-  "morphemes": [
-    {
-      "part": "be",
-      "meaning": "by"
-    }
-  ],
-  "inflection": "",
-  "definition": "by"
+  "pos": "preposition",
+  "definition": "be",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/be#Old_English",
+  "sourceGloss": "be"
 }

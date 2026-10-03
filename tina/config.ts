@@ -38,6 +38,12 @@ export default defineConfig({
             options: ["draft", "review", "published"],
           },
           {
+            type: "string",
+            name: "texSource",
+            label: "Raw LaTeX Source (gb4e)",
+            ui: { component: "textarea" },
+          },
+          {
             type: "object",
             name: "sentences",
             label: "Examples",

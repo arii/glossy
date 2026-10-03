@@ -1,13 +1,9 @@
 {
   "word": "ac",
+  "lemma": "ac",
   "pronunciation": "",
-  "sourceGloss": "but",
-  "morphemes": [
-    {
-      "part": "ac",
-      "meaning": "but"
-    }
-  ],
-  "inflection": "",
-  "definition": "but"
+  "pos": "conjunction",
+  "definition": "ac",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/ac#Old_English",
+  "sourceGloss": "ac"
 }

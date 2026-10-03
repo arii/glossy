@@ -1,13 +1,9 @@
 {
   "word": "būton",
+  "lemma": "būton",
   "pronunciation": "",
-  "sourceGloss": "except",
-  "morphemes": [
-    {
-      "part": "būton",
-      "meaning": "except"
-    }
-  ],
-  "inflection": "",
-  "definition": "except"
+  "pos": "preposition",
+  "definition": "būton",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/buton#Old_English",
+  "sourceGloss": "būton"
 }
