@@ -82,6 +82,26 @@ export function loadManuscripts(): ManuscriptDocument[] {
   });
 }
 
+function stripLatexFootnotes(text: string): string {
+  let result = "";
+  let i = 0;
+  while (i < text.length) {
+    if (text.startsWith("\\footnote{", i)) {
+      i += 10;
+      let depth = 1;
+      while (i < text.length && depth > 0) {
+        if (text[i] === "{") depth++;
+        else if (text[i] === "}") depth--;
+        i++;
+      }
+    } else {
+      result += text[i];
+      i++;
+    }
+  }
+  return result;
+}
+
 export type LoadedTextDocument = TextDocument & { fileName: string };
 
 export function parseTexToLegacyTextDocument(): TextDocument {
@@ -100,7 +120,7 @@ export function parseTexToLegacyTextDocument(): TextDocument {
   const author = authorMatch ? authorMatch[1].replace(/\\textbf\{|\}/g, "").trim() : "Tyler Lemon";
   const date = dateMatch ? dateMatch[1].trim() : "September 30, 2026";
 
-  const regex = /\\ex(?:\{)?\\gll\s+([\s\S]+?)\\\\\s*([\s\S]+?)\\\\\s*\\glt\s*(?:`|'|‘|“)?([\s\S]+?)(?:'|`|’|”)?\s*(?:\n|\\|$)/g;
+  const regex = /\\ex(?:\{)?\\gll\s+([\s\S]+?)\\\\\s*([\s\S]+?)\\\\\s*\\glt\s*([^\r\n]+)/g;
 
   let match;
   let sIdx = 1;
@@ -111,7 +131,13 @@ export function parseTexToLegacyTextDocument(): TextDocument {
     const line2 = match[2].trim();
     const rawTranslation = match[3].trim();
 
-    const cleanTranslation = rawTranslation.replace(/^[`'‘"“]|[`'’"”}$]+$/g, "").trim();
+    const cleanTranslation = stripLatexFootnotes(rawTranslation)
+      .replace(/\\(?:textit|textbf|textsc|emph)\{([^}]+)\}/g, "$1")
+      .replace(/\\href\{[^}]+\}\{([^}]+)\}/g, "$1")
+      .replace(/\\url\{[^}]+\}/g, "")
+      .replace(/^[`'‘"“\s]+|[`'’"”\}\s]+$/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
 
     const rawSurfaceWords = line1.replace(/\\\\$/, "").trim().split(/\s+/);
     const rawGlossWords = line2.replace(/\\\\$/, "").trim().split(/\s+/);

@@ -50,6 +50,26 @@ interface GlossDocument {
   sentences: Sentence[];
 }
 
+function stripLatexFootnotes(text: string): string {
+  let result = "";
+  let i = 0;
+  while (i < text.length) {
+    if (text.startsWith("\\footnote{", i)) {
+      i += 10;
+      let depth = 1;
+      while (i < text.length && depth > 0) {
+        if (text[i] === "{") depth++;
+        else if (text[i] === "}") depth--;
+        i++;
+      }
+    } else {
+      result += text[i];
+      i++;
+    }
+  }
+  return result;
+}
+
 import type { TextDocument, ReadingSentence, InterlinearWord, Morpheme as LegacyMorpheme } from "../lib/types";
 
 function mapLegacyTextDocToGlossDoc(legacyDoc: TextDocument): GlossDocument {
@@ -184,7 +204,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
   // Ingestion parsing function for multi-sentence gb4e input
   const parseMultiSentenceGb4e = (latex: string): Sentence[] => {
     const sentences: Sentence[] = [];
-    const regex = /\\gll\s+([\s\S]+?)\\\\\s*([\s\S]+?)\\\\\s*\\glt\s*(?:`|'|‘|“)?([\s\S]+?)(?:'|`|’|”)?\s*(?:\n|\\|$)/g;
+    const regex = /\\gll\s+([\s\S]+?)\\\\\s*([\s\S]+?)\\\\\s*\\glt\s*([^\r\n]+)/g;
     let match;
     let idx = 1;
 
@@ -193,7 +213,13 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
       const line2 = match[2].trim();
       const rawTranslation = match[3].trim();
 
-      const cleanTranslation = rawTranslation.replace(/^[`'‘"“]|[`'’"”}$]+$/g, "").trim();
+      const cleanTranslation = stripLatexFootnotes(rawTranslation)
+        .replace(/\\(?:textit|textbf|textsc|emph)\{([^}]+)\}/g, "$1")
+        .replace(/\\href\{[^}]+\}\{([^}]+)\}/g, "$1")
+        .replace(/\\url\{[^}]+\}/g, "")
+        .replace(/^[`'‘"“\s]+|[`'’"”\}\s]+$/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
 
       const rawSurfaceWords = line1.replace(/\\\\$/, "").trim().split(/\s+/);
       const rawGlossWords = line2.replace(/\\\\$/, "").trim().split(/\s+/);
@@ -733,53 +759,6 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
                 );
               })}
             </div>
-
-            {/* Multi-Sentence gb4e Importer */}
-            <section className="workspace-panel editor-import bg-stone-50 border border-stone-200 rounded-lg p-5 mt-6">
-              <span className="text-xs font-bold uppercase tracking-wider text-amber-800">Batch Import Pipeline</span>
-              <h2 id="import-heading" className="text-lg font-bold text-stone-900 mt-1">Paste one or more gb4e</h2>
-              
-              <label className="block text-xs font-semibold text-stone-500 mt-3">
-                {"Paste gb4e latex blocks (multiple \\ex or \\begin{exe} structures supported)"}
-                <textarea
-                  rows={5}
-                  value={latexImportSource}
-                  onChange={(e) => {
-                    setLatexImportSource(e.target.value);
-                    setImportPreview(null);
-                  }}
-                  placeholder="\ex{\gll Ōhthere sǣ-d-e ...\\&#10;Ohthere.\textsc{nom} say-\textsc{pst} ...\\&#10;\glt `Ohthere said ...'}"
-                  className="w-full border border-stone-300 bg-white rounded-md p-2.5 mt-1 font-mono text-xs focus:outline-none focus:border-amber-800 focus:ring-1 focus:ring-amber-800"
-                />
-              </label>
-              <div className="flex gap-2 mt-3">
-                <button
-                  type="button"
-                  disabled={!latexImportSource.trim()}
-                  onClick={() => setImportPreview(parseMultiSentenceGb4e(latexImportSource))}
-                  className="px-3 py-1.5 bg-white border border-stone-300 rounded hover:bg-stone-50 text-xs font-semibold text-stone-700"
-                >
-                  Preview Import
-                </button>
-              </div>
-
-              {importPreview && (
-                <div className="mt-4 p-4 bg-white border border-stone-200 rounded-md">
-                  <p className="text-xs text-stone-600 font-semibold">
-                    Found {importPreview.length} sentences with {importPreview.reduce((acc, curr) => acc + curr.tokens.length, 0)} total tokens.
-                  </p>
-                  {importPreview.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={applyImportedSentences}
-                      className="mt-3 px-4 py-1.5 bg-amber-800 hover:bg-amber-900 text-white rounded text-xs font-semibold shadow-sm transition-all"
-                    >
-                      Apply {importPreview.length} sentences to document
-                    </button>
-                  )}
-                </div>
-              )}
-            </section>
           </section>
 
           {/* Persistent Sidebar Inspector (Right Column) */}
@@ -1067,6 +1046,53 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
             )}
           </aside>
         </div>
+
+        {/* Multi-Sentence gb4e Importer (Dedicated full-width section at bottom of page) */}
+        <section className="workspace-panel editor-import" style={{ marginTop: "2rem" }}>
+          <p className="workspace-eyebrow" style={{ margin: 0 }}>Batch Import Pipeline</p>
+          <h2 id="import-heading" style={{ margin: "0.25rem 0 1rem", fontSize: "1.3rem" }}>Paste one or more gb4e</h2>
+          
+          <div className="editor-field" style={{ marginTop: 0 }}>
+            <label>{"Paste gb4e latex blocks (multiple \\ex or \\begin{exe} structures supported)"}</label>
+            <textarea
+              rows={5}
+              value={latexImportSource}
+              onChange={(e) => {
+                setLatexImportSource(e.target.value);
+                setImportPreview(null);
+              }}
+              placeholder="\ex{\gll Ōhthere sǣ-d-e ...\\&#10;Ohthere.\textsc{nom} say-\textsc{pst} ...\\&#10;\glt `Ohthere said ...'}"
+            />
+          </div>
+          <div style={{ marginTop: "0.75rem" }}>
+            <button
+              type="button"
+              disabled={!latexImportSource.trim()}
+              onClick={() => setImportPreview(parseMultiSentenceGb4e(latexImportSource))}
+              className="workspace-button"
+            >
+              Preview Import
+            </button>
+          </div>
+
+          {importPreview && (
+            <div style={{ marginTop: "1rem", padding: "1rem", background: "var(--surface)", border: "1px solid var(--rule)", borderRadius: "0.35rem" }}>
+              <p style={{ margin: 0, fontSize: "0.9rem" }}>
+                Found <strong>{importPreview.length}</strong> sentences with <strong>{importPreview.reduce((acc, curr) => acc + curr.tokens.length, 0)}</strong> total tokens.
+              </p>
+              {importPreview.length > 0 && (
+                <button
+                  type="button"
+                  onClick={applyImportedSentences}
+                  className="workspace-button"
+                  style={{ marginTop: "0.75rem", background: "var(--accent)", color: "#fff" }}
+                >
+                  Apply {importPreview.length} sentences to document
+                </button>
+              )}
+            </div>
+          )}
+        </section>
       </div>
     </main>
   );

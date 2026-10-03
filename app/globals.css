@@ -744,7 +744,7 @@ h2 {
 .editor-dirty.is-dirty { color: #b45309; font-weight: 600; }
 .editor-dirty.is-clean { color: #78716c; }
 
-.editor-import { grid-column: 1 / -1; order: 3; }
+.editor-import { width: 100%; margin-top: 2.5rem; clear: both; }
 .editor-import textarea { font-family: monospace; width: 100%; }
 
 .site-nav { display: flex; gap: 1rem; align-items: baseline; margin-bottom: 0.75rem; font-size: 0.95rem; }

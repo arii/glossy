@@ -42,6 +42,26 @@ interface GlossDocument {
   sentences: Sentence[];
 }
 
+function stripLatexFootnotes(text: string): string {
+  let result = "";
+  let i = 0;
+  while (i < text.length) {
+    if (text.startsWith("\\footnote{", i)) {
+      i += 10;
+      let depth = 1;
+      while (i < text.length && depth > 0) {
+        if (text[i] === "{") depth++;
+        else if (text[i] === "}") depth--;
+        i++;
+      }
+    } else {
+      result += text[i];
+      i++;
+    }
+  }
+  return result;
+}
+
 export async function GET() {
   try {
     const texPath = path.join(process.cwd(), "references", "Voyages_of_Ohthere_Wulfstan.tex");
@@ -64,7 +84,7 @@ export async function GET() {
 
     // Comprehensive regex to find all \ex{\gll ... \\ ... \\ \glt '...'} blocks
     // This supports optionally curly-braced ex structures and xlists
-    const regex = /\\ex(?:\{)?\\gll\s+([\s\S]+?)\\\\\s*([\s\S]+?)\\\\\s*\\glt\s*(?:`|'|‘|“)?([\s\S]+?)(?:'|`|’|”)?\s*(?:\}|\n)/g;
+    const regex = /\\ex(?:\{)?\\gll\s+([\s\S]+?)\\\\\s*([\s\S]+?)\\\\\s*\\glt\s*([^\r\n]+)/g;
 
     let match;
     let sIdx = 1;
@@ -74,8 +94,14 @@ export async function GET() {
       const line2 = match[2].trim();
       const rawTranslation = match[3].trim();
 
-      // Clean translation of raw quotes or trailing LaTeX characters
-      const cleanTranslation = rawTranslation.replace(/^[`'‘"“]|[`'’"”}$]+$/g, "").trim();
+      // Clean translation of raw quotes, footnotes, or LaTeX formatting
+      const cleanTranslation = stripLatexFootnotes(rawTranslation)
+        .replace(/\\(?:textit|textbf|textsc|emph)\{([^}]+)\}/g, "$1")
+        .replace(/\\href\{[^}]+\}\{([^}]+)\}/g, "$1")
+        .replace(/\\url\{[^}]+\}/g, "")
+        .replace(/^[`'‘"“\s]+|[`'’"”\}\s]+$/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
 
       // Token splitting - clean up extra backslashes at ends of lines
       const rawSurfaceWords = line1.replace(/\\\\$/, "").trim().split(/\s+/);
