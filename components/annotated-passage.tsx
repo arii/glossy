@@ -17,9 +17,15 @@ export function AnnotatedPassage({
   onSelect,
   onTriggerFocus,
 }: AnnotatedPassageProps) {
+  const handleHover = (id: string) => {
+    if (typeof window !== "undefined" && window.matchMedia("(hover: hover)").matches) {
+      onHover(id);
+    }
+  };
+
   return (
     <div className="interlinear-block">
-      <p className="old-english">
+      <div className="old-english">
         {segments.map((segment, index) => {
           if (segment.type === "text") {
             return (
@@ -37,51 +43,52 @@ export function AnnotatedPassage({
             return <span key={`${segment.glossId}-${index}`}>{segment.value}</span>;
           }
 
+          const tags = record.sourceGloss.split(".");
+
           return (
-            <button
-              key={`${segment.glossId}-${index}`}
-              className={`gloss-trigger${record.analysis.morphemes.length > 1 ? " is-multi-morpheme" : ""}${selectedId === record.id ? " is-selected" : ""}${selectedId && selectedId !== record.id ? " is-dimmed" : ""}`}
-              type="button"
-              aria-label={`Show ${record.analysis.morphemes.length > 1 ? "multi-morpheme " : ""}gloss for ${record.surface}`}
-              aria-pressed={selectedId === record.id}
-              aria-expanded={selectedId === record.id}
-              aria-controls="gloss-popup"
-              title={`Show gloss for ${record.surface}`}
-              data-selected={selectedId === record.id}
-              onPointerOver={() => onHover(record.id)}
-              onMouseOver={() => onHover(record.id)}
-              onTouchStart={() => {
-                onTriggerFocus(record.id);
-                onSelect(record.id);
-              }}
-              onFocus={() => {
-                onTriggerFocus(record.id);
-                onHover(record.id);
-              }}
-              onClick={() => {
-                onTriggerFocus(record.id);
-                onSelect(record.id);
-              }}
-            >
-              {segment.value}
-            </button>
+            <span key={`${segment.glossId}-${index}`} className="inline-gloss-unit">
+              <button
+                className={`gloss-trigger${record.analysis.morphemes.length > 1 ? " is-multi-morpheme" : ""}${selectedId === record.id ? " is-selected" : ""}${selectedId && selectedId !== record.id ? " is-dimmed" : ""}`}
+                type="button"
+                data-gloss-trigger={record.id}
+                aria-label={`Show ${record.analysis.morphemes.length > 1 ? "multi-morpheme " : ""}gloss for ${record.surface}`}
+                aria-pressed={selectedId === record.id}
+                aria-expanded={selectedId === record.id}
+                aria-controls="gloss-popup"
+                title={`Show gloss for ${record.surface}`}
+                data-selected={selectedId === record.id}
+                onPointerOver={() => handleHover(record.id)}
+                onMouseOver={() => handleHover(record.id)}
+                onFocus={() => {
+                  onTriggerFocus(record.id);
+                  handleHover(record.id);
+                }}
+                onClick={() => {
+                  onTriggerFocus(record.id);
+                  onSelect(record.id);
+                }}
+              >
+                {segment.value}
+              </button>
+              <span className="source-gloss-token">
+                {tags.map((tag, tagIndex) => {
+                  const isGrammar = /^[A-Z0-9\-]+$/.test(tag);
+                  return (
+                    <span
+                      key={tagIndex}
+                      className={`tag-badge ${isGrammar ? "is-grammatical" : "is-lexical"}`}
+                    >
+                      {tag}
+                    </span>
+                  );
+                })}
+              </span>
+            </span>
           );
         })}
-      </p>
-      <p className="source-gloss-line" aria-label="Source gloss line">
-        {segments.map((segment, index) => {
-          if (segment.type === "text") {
-            const spacing = segment.value.replace(/[^\s]/gu, "");
-            return spacing ? <span key={`space-${index}`}>{spacing}</span> : null;
-          }
-
-          const record = records[segment.glossId];
-          return record ? (
-            <span className="source-gloss-token" key={`${segment.glossId}-${index}`}>
-              {record.sourceGloss}
-            </span>
-          ) : null;
-        })}
+      </div>
+      <p className="source-gloss-line sr-only" aria-label="Source gloss line">
+        Source gloss line
       </p>
     </div>
   );

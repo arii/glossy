@@ -68,12 +68,18 @@ export function GlossWord({ text, dictEntry }: GlossWordProps) {
     }
   };
 
+  const handleMouseEnter = () => {
+    if (typeof window !== "undefined" && window.matchMedia("(hover: hover)").matches) {
+      handleSelect();
+    }
+  };
+
   return (
     <span className="inline-gloss-unit">
       <button
         type="button"
         onClick={handleSelect}
-        onMouseEnter={handleSelect}
+        onMouseEnter={handleMouseEnter}
         onFocus={handleSelect}
         className={`gloss-trigger${hasMultiMorphemes ? " is-multi-morpheme" : ""}${isActive ? " is-selected" : ""}`}
         aria-label={`Show gloss for ${text}`}

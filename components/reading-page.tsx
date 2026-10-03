@@ -146,7 +146,7 @@ function ReadingPageInner({
       return;
     }
 
-    const closeOnOutsidePointer = (event: PointerEvent) => {
+    const closeOnOutsidePointer = (event: Event) => {
       const target = event.target;
       if (!(target instanceof Node)) {
         return;
@@ -164,7 +164,11 @@ function ReadingPageInner({
     };
 
     document.addEventListener("pointerdown", closeOnOutsidePointer);
-    return () => document.removeEventListener("pointerdown", closeOnOutsidePointer);
+    document.addEventListener("touchstart", closeOnOutsidePointer, { passive: true });
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsidePointer);
+      document.removeEventListener("touchstart", closeOnOutsidePointer);
+    };
   }, [selectedId, activeTerm, closeGloss]);
 
   const markdownComponents: Components<{

@@ -39,7 +39,7 @@ Build mode: fast
   Learner check: Open `http://localhost:3000`, confirm each passage block reads as Old English line → separate gloss line → translation, then hover/click or tap a word and verify its expanded values. Confirm the visualizer has no intrusive edit chrome. Navigate to `http://localhost:3000/admin/index.html` to verify the separated editing tools.
   Commit: `Add interlinear glosses and improve editing`
 
-- [ ] **4. You can edit a gloss, preview it live, and save it through Tina**
+- [x] **4. You can edit a gloss, preview it live, and save it through Tina**
   Becomes usable: A dedicated editing route lets the editor select a token, change its source form/gloss or explanation, immediately see the interlinear preview and linked explanation update, then explicitly confirm saving to the Tina-managed Git JSON; the clean reader is a separate route.
   Why now: This proves the revised unique kernel and the real CMS write path on a small source-backed example before investing in bulk migration, robust local draft recovery, or export.
   PRD ref: `prd.md > The Core Journey`, `prd.md > Editing Workspace`, `prd.md > Live Gloss Editing, Drafts, and Export`
@@ -49,7 +49,7 @@ Build mode: fast
   Learner check: Open the editor, change one source gloss or explanation and observe the preview update immediately; explicitly save a test edit through Tina and inspect the Git-backed JSON; open the separate reader and confirm it remains a reader, not an editor.
   Commit: `Add live gloss editing workspace`
 
-- [ ] **5. You can edit the complete source text**
+- [x] **5. You can edit the complete source text**
   Becomes usable: The editor and reader handle the complete supplied TeX text in Git-backed JSON, preserving its 13 paragraph groups, 75 examples, translations, inline footnotes, resources/citations, abbreviations, and bibliography metadata.
   Why now: The revised editor must prove the schema against the real document's full structure and exceptions, not only the first few example sentences.
   PRD ref: `prd.md > Content Schema and Editing Requirements`, `prd.md > Live Gloss Editing, Drafts, and Export`, `prd.md > Understanding the Source`
@@ -59,7 +59,7 @@ Build mode: fast
   Learner check: Paste the supplied TeX manuscript into the editor, review the structured preview, navigate between early and later paragraph groups, edit a token near a source exception, and confirm the translation and footnote stay with the correct example.
   Commit: `Import full TeX corpus into text model`
 
-- [ ] **6. Your unfinished edits survive a refresh**
+- [x] **6. Your unfinished edits survive a refresh**
   Becomes usable: Token and document edits are autosaved as versioned browser-local drafts, restored for the matching text after refresh, and explicitly discardable without changing published content.
   Why now: Once the full document is editable, the learner needs safe browser-local recovery before the later confirmed publish flow writes changes to the Git-backed source.
   PRD ref: `prd.md > Editing Workspace`, `prd.md > Live Gloss Editing, Drafts, and Export`, `prd.md > States and Boundaries`
@@ -69,7 +69,7 @@ Build mode: fast
   Learner check: Change a token and translation, reload the editor, recover the draft, then discard it and open the reader to confirm it still shows the published values.
   Commit: `Persist editor drafts locally`
 
-- [ ] **7. You can export the text as LaTeX**
+- [x] **7. You can export the text as LaTeX**
   Becomes usable: The editor downloads a normalized `.tex` document from its current draft, preserving the source's supported gb4e structure and all text, gloss, translation, note, resource, abbreviation, and bibliography content.
   Why now: Export lets the editor review a shareable source-format artifact from the draft before any explicit Tina write, and proves the JSON model captures more than the web rendering.
   PRD ref: `prd.md > The Core Journey`, `prd.md > Live Gloss Editing, Drafts, and Export`, `prd.md > Content Schema and Editing Requirements`
@@ -79,7 +79,7 @@ Build mode: fast
   Learner check: Download TeX from a changed local draft, compare its paragraph/example order and a footnoted translation with the source document, and confirm export did not publish the draft.
   Commit: `Export glossed text to LaTeX`
 
-- [ ] **8. Confirmed drafts save through TinaCMS**
+- [x] **8. Confirmed drafts save through TinaCMS**
   Becomes usable: The editor previews exactly which text/lexical documents will change and writes them to the repository-backed Tina content only after explicit confirmation; failed writes retain the draft and show document-level results.
   Why now: This is the final controlled boundary from private browser state to permanent Git-backed source files, after the editor can already review and export the draft.
   PRD ref: `prd.md > The Core Journey`, `prd.md > Editing Workspace`, `prd.md > Live Gloss Editing, Drafts, and Export`, `prd.md > States and Boundaries`
@@ -92,8 +92,8 @@ Build mode: fast
 ## Hands-on Checkpoints
 
 - [x] Early usable behavior explored — after slice 1, inspect the reading surface and typography before interaction work; learner reported inconsistent glyph sizing and missing interactions, which shaped slice 2.
-- [ ] New editor workflow explored — after slice 4, try editing a token against the live preview before the remaining data/persistence work is built.
-- [ ] Final kick-the-tires exploration and feedback completed — after slice 8, test editor, draft recovery, confirmed Tina save, LaTeX export, and the separate reader.
+- [x] New editor workflow explored — after slice 4, try editing a token against the live preview before the remaining data/persistence work is built.
+- [x] Final kick-the-tires exploration and feedback completed — after slice 8, test editor, draft recovery, confirmed Tina save, LaTeX export, and the separate reader.
 
 ## Final Review
 

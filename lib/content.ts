@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { parseMDX } from "@tinacms/mdx";
-import type { DictionaryEntry, ManuscriptDocument, TextDocument } from "./types";
+import type { DictionaryEntry, ManuscriptDocument, TextDocument, ReadingSentence, InterlinearWord, Morpheme, PartOfSpeech } from "./types";
 
 const contentDirectory = path.join(process.cwd(), "content", "texts");
 
@@ -84,6 +84,145 @@ export function loadManuscripts(): ManuscriptDocument[] {
 
 export type LoadedTextDocument = TextDocument & { fileName: string };
 
+export function parseTexToLegacyTextDocument(): TextDocument {
+  const texPath = path.join(process.cwd(), "references", "Voyages_of_Ohthere_Wulfstan.tex");
+  if (!fs.existsSync(texPath)) {
+    throw new Error("Master TeX file not found.");
+  }
+  const content = fs.readFileSync(texPath, "utf8");
+
+  // Extract document metadata from preamble
+  const titleMatch = content.match(/\\title\{([\s\S]+?)\}/);
+  const authorMatch = content.match(/\\author\{([\s\S]+?)\}/);
+  const dateMatch = content.match(/\\date\{([\s\S]+?)\}/);
+
+  const title = titleMatch ? titleMatch[1].replace(/\\textbf\{|\}/g, "").trim() : "The voyages of Ohthere and Wulfstan";
+  const author = authorMatch ? authorMatch[1].replace(/\\textbf\{|\}/g, "").trim() : "Tyler Lemon";
+  const date = dateMatch ? dateMatch[1].trim() : "September 30, 2026";
+
+  const regex = /\\ex(?:\{)?\\gll\s+([\s\S]+?)\\\\\s*([\s\S]+?)\\\\\s*\\glt\s*(?:`|'|‘|“)?([\s\S]+?)(?:'|`|’|”)?\s*(?:\n|\\|$)/g;
+
+  let match;
+  let sIdx = 1;
+  const sentences: ReadingSentence[] = [];
+
+  while ((match = regex.exec(content)) !== null) {
+    const line1 = match[1].trim();
+    const line2 = match[2].trim();
+    const rawTranslation = match[3].trim();
+
+    const cleanTranslation = rawTranslation.replace(/^[`'‘"“]|[`'’"”}$]+$/g, "").trim();
+
+    const rawSurfaceWords = line1.replace(/\\\\$/, "").trim().split(/\s+/);
+    const rawGlossWords = line2.replace(/\\\\$/, "").trim().split(/\s+/);
+
+    const words: InterlinearWord[] = [];
+    const sentenceId = `sentence-${sIdx}`;
+
+    const maxLen = Math.max(rawSurfaceWords.length, rawGlossWords.length);
+    for (let tIdx = 0; tIdx < maxLen; tIdx++) {
+      const rawSurf = rawSurfaceWords[tIdx] || "";
+      const rawGl = rawGlossWords[tIdx] || "";
+
+      const sourceForm = rawSurf.replace(/[.,;:!?]+$/, "");
+      const literalTexGloss = rawGl;
+      const sourceGloss = rawGl
+        .replace(/\\textsc\{([^}]+)\}/g, "$1")
+        .replace(/\\/g, "");
+
+      const tokenId = `${sentenceId}-token-${tIdx + 1}`;
+
+      const surfParts = sourceForm.split("-");
+      const glossParts = sourceGloss.split("-");
+      const morphemes: Morpheme[] = [];
+
+      if (surfParts.length === glossParts.length && surfParts.length > 1) {
+        for (let mIdx = 0; mIdx < surfParts.length; mIdx++) {
+          morphemes.push({
+            form: surfParts[mIdx],
+            gloss: glossParts[mIdx],
+          });
+        }
+      } else {
+        morphemes.push({
+          form: sourceForm,
+          gloss: sourceGloss,
+        });
+      }
+
+      // Infer initial POS and inflections from gloss indicators
+      let pos = "noun";
+      if (sourceGloss.toLowerCase().includes("say") || sourceGloss.toLowerCase().includes("dwell") || sourceGloss.toLowerCase().includes("travel")) {
+        pos = "verb";
+      } else if (sourceGloss.toUpperCase().includes("DET") || sourceGloss.toUpperCase().includes("DEM")) {
+        pos = "determiner";
+      } else if (sourceGloss.toUpperCase().includes("3SG") || sourceGloss.toUpperCase().includes("3PL")) {
+        pos = "pronoun";
+      }
+
+      const caseVal = sourceGloss.toUpperCase().includes("NOM") ? "nominative" :
+                      sourceGloss.toUpperCase().includes("ACC") ? "accusative" :
+                      sourceGloss.toUpperCase().includes("GEN") ? "genitive" :
+                      sourceGloss.toUpperCase().includes("DAT") ? "dative" : undefined;
+
+      const numberVal = sourceGloss.toUpperCase().includes("PL") ? "plural" :
+                        sourceGloss.toUpperCase().includes("SG") ? "singular" : undefined;
+
+      const genderVal = sourceGloss.toUpperCase().includes("M") ? "masculine" :
+                        sourceGloss.toUpperCase().includes("F") ? "feminine" :
+                        sourceGloss.toUpperCase().includes("N") ? "neuter" : undefined;
+
+      const tenseVal = sourceGloss.toUpperCase().includes("PST") ? "past" :
+                       sourceGloss.toUpperCase().includes("PRS") ? "present" : undefined;
+
+      const punctuationMatch = rawSurf.match(/[.,;:!?]+$/);
+
+      words.push({
+        id: tokenId,
+        originalWord: sourceForm,
+        morphologicalGloss: sourceGloss,
+        trailingPunctuation: punctuationMatch ? punctuationMatch[0] : undefined,
+        sourceGlossTex: literalTexGloss,
+        analysis: {
+          lemma: sourceForm.replace(/^-|-$/g, ""),
+          partOfSpeech: pos as PartOfSpeech,
+          features: {
+            case: caseVal,
+            number: numberVal,
+            gender: genderVal,
+            tense: tenseVal,
+          },
+          morphemes,
+          definition: sourceGloss,
+          phonetic: "",
+          wiktionaryUrl: "",
+        },
+      });
+    }
+
+    sentences.push({
+      id: sentenceId,
+      translation: cleanTranslation,
+      words,
+    });
+
+    sIdx++;
+  }
+
+  return {
+    textId: "ohthere",
+    slug: "ohthere-wulfstan",
+    language: "Old English",
+    author,
+    title,
+    source: `${author} · ${date}`,
+    sourceFile: "references/Voyages_of_Ohthere_Wulfstan.tex",
+    status: "published",
+    sentences,
+    blocks: [],
+  };
+}
+
 export function loadTextDocuments(): LoadedTextDocument[] {
   const fileNames = fs
     .readdirSync(contentDirectory)
@@ -93,6 +232,28 @@ export function loadTextDocuments(): LoadedTextDocument[] {
     const filePath = path.join(contentDirectory, fileName);
     const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as unknown;
     const normalized = normalizeDocumentShape(requireObject(parsed, `Text document "${fileName}"`), fileName);
+
+    // If it's the Voyages document, merge in any extra parsed sentences from Voyages_of_Ohthere_Wulfstan.tex
+    if (normalized.slug === "ohthere-wulfstan" || normalized.textId === "ohthere") {
+      try {
+        const fullLegacy = parseTexToLegacyTextDocument();
+        const existingSentences = (normalized.sentences as ReadingSentence[]) || [];
+        const fullSentences = (fullLegacy.sentences as ReadingSentence[]) || [];
+        
+        // Merge the two arrays by sentence ID / index
+        const mergedSentences = [...existingSentences];
+        
+        // Append sentences from fullSentences that are not present in existingSentences by comparing length
+        for (let idx = existingSentences.length; idx < fullSentences.length; idx++) {
+          mergedSentences.push(fullSentences[idx]);
+        }
+        
+        normalized.sentences = mergedSentences;
+      } catch (err) {
+        console.error("Failed to dynamically load full TeX document in loadTextDocuments", err);
+      }
+    }
+
     return { ...normalized, fileName: path.basename(fileName, ".json") } as LoadedTextDocument;
   });
 
