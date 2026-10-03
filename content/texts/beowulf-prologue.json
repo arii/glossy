@@ -1,0 +1,135 @@
+{
+  "textId": "beowulf-prologue",
+  "slug": "beowulf-prologue",
+  "title": "Beowulf: Prologue (Lines 1–11)",
+  "author": "Anonymous (Nowell Codex)",
+  "source": "London, British Library, Cotton MS Vitellius A. xv, ff. 129r–198v",
+  "sourceFile": "references/Beowulf_Prologue.tex",
+  "language": "Old English",
+  "status": "published",
+  "sentences": [
+    {
+      "id": "sent-1",
+      "translation": "Listen! We have heard of the glory of the Spear-Danes, of the kings of the people in days of old, how those noble ones performed deeds of courage.",
+      "words": [
+        {
+          "id": "t1",
+          "originalWord": "Hwæt",
+          "trailingPunctuation": "!",
+          "morphologicalGloss": "hwæt.INTERJ",
+          "sourceGlossTex": "hwæt",
+          "analysis": {
+            "lemma": "hwæt",
+            "partOfSpeech": "pronoun",
+            "definition": "what, lo, listen",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/hw%C3%A6t#Old_English",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "Hwæt",
+                "gloss": "hwæt"
+              }
+            ]
+          }
+        },
+        {
+          "id": "t2",
+          "originalWord": "Wē",
+          "trailingPunctuation": "",
+          "morphologicalGloss": "1PL.NOM",
+          "sourceGlossTex": "1PL.NOM",
+          "analysis": {
+            "lemma": "ic",
+            "partOfSpeech": "pronoun",
+            "definition": "we (1st person pl)",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/ic#Old_English",
+            "features": {
+              "number": "plural"
+            },
+            "morphemes": [
+              {
+                "form": "Wē",
+                "gloss": "1PL.NOM"
+              }
+            ]
+          }
+        },
+        {
+          "id": "t3",
+          "originalWord": "Gār-Dena",
+          "trailingPunctuation": "",
+          "morphologicalGloss": "spear-Dane.GEN.PL",
+          "sourceGlossTex": "spear-Dane.GEN.PL",
+          "analysis": {
+            "lemma": "Gār-Dene",
+            "partOfSpeech": "noun",
+            "definition": "Spear-Danes",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/Gar-Dena#Old_English",
+            "features": {
+              "case": "genitive",
+              "number": "plural"
+            },
+            "morphemes": [
+              {
+                "form": "Gār",
+                "gloss": "spear"
+              },
+              {
+                "form": "Dena",
+                "gloss": "Dane.GEN.PL"
+              }
+            ]
+          }
+        },
+        {
+          "id": "t4",
+          "originalWord": "in",
+          "trailingPunctuation": "",
+          "morphologicalGloss": "in",
+          "sourceGlossTex": "in",
+          "analysis": {
+            "lemma": "in",
+            "partOfSpeech": "preposition",
+            "definition": "in, on",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/in#Old_English",
+            "features": {},
+            "morphemes": [
+              {
+                "form": "in",
+                "gloss": "in"
+              }
+            ]
+          }
+        },
+        {
+          "id": "t5",
+          "originalWord": "ġeār-dagum",
+          "trailingPunctuation": ",",
+          "morphologicalGloss": "year-day.DAT.PL",
+          "sourceGlossTex": "year-day.DAT.PL",
+          "analysis": {
+            "lemma": "ġeārdæġ",
+            "partOfSpeech": "noun",
+            "definition": "days of yore",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/geardagum#Old_English",
+            "features": {
+              "case": "dative",
+              "number": "plural"
+            },
+            "morphemes": [
+              {
+                "form": "ġeār",
+                "gloss": "year"
+              },
+              {
+                "form": "dagum",
+                "gloss": "day.DAT.PL"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "texSource": "%!TEX TS-program = xelatex\n% !BIB program = biber\n\\documentclass{article}[12pt]\n\\usepackage{setspace}\n\\singlespacing\n\\usepackage{ifpdf}\n\\usepackage{fontspec}\n\\usepackage[margin=0.75in]{geometry}\n\\usepackage{amsthm, amsmath, amssymb}\n\\usepackage[linguistics]{forest}\n\\usepackage{adjustbox}\n\\usepackage[loose,nice]{units}\n\\usepackage{tipa}\n\\usepackage{graphicx}\n\\usepackage{covington}\n\\usepackage{gb4e}\n\\noautomath\n\\let\\eachwordone=\\normalfont\n\\let\\eachwordone=\\textbf\n\\usepackage{hanging}\n\\usepackage{textgreek}\n\\usepackage{multirow}\n\\usepackage{multicol}\n\\setlength{\\multicolsep}{0pt}\n\\usepackage[normalem]{ulem}\n\\usepackage{stmaryrd}\n\\usepackage{hyperref}\n\\usepackage[backend=biber,style=unified,citestyle=authoryear-comp,maxcitenames=3,maxbibnames=99]{biblatex}\n\\DeclareFieldFormat{postnote}{#1}\n\\renewcommand{\\postnotedelim}{\\addcolon\\space}\n\\usepackage[utf8x]{inputenc}\n\n\\title{\\textbf{Beowulf: Prologue (Lines 1–11)}}\n\\author{Translated and glossed by Anonymous (Nowell Codex)}\n\\date{September 30, 2026}\n\n\\addbibresource{Voyages_of_Ohthere_Wulfstan.bib}\n\n\\begin{document}\n\\maketitle\n\n\\section{Text}\n\n\\begin{exe}\n\\ex \\label{ex:paragraph.1} \\begin{xlist}\n\n\\ex{\\gll Hwæt! Wē Gār-Dena in ġeār-dagum,\\\\\nhwæt 1PL.NOM spear-Dane.GEN.PL in year-day.DAT.PL\\\\\n\\glt `Listen! We have heard of the glory of the Spear-Danes, of the kings of the people in days of old, how those noble ones performed deeds of courage.'}\n\n\\end{xlist}\n\\end{exe}\n\n\\end{document}\n"
+}

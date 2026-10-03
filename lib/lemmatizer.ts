@@ -1,4 +1,4 @@
-import type { LexiconEntry, PartOfSpeech } from "./types.ts";
+import type { InflectionFeatures, LexiconEntry, PartOfSpeech } from "./types.ts";
 import { resolveOldEnglishLexicon } from "./old-english-lexicon.ts";
 
 /**
@@ -1005,9 +1005,67 @@ export function formatWiktionaryUrl(lemma: string): string {
     "sciringesheal",
     "halgoland",
     "truso",
+    "beowulf",
+    "hrothgar",
+    "grendel",
+    "scyld",
+    "scyldingas",
+    "gar-dena",
   ].includes(normalized.toLowerCase())
     ? normalized.charAt(0).toUpperCase() + normalized.slice(1)
     : normalized;
 
   return `https://en.wiktionary.org/wiki/${encodeURIComponent(capitalized)}#Old_English`;
 }
+
+export type TokenizedWord = {
+  id: string;
+  sourceForm: string;
+  sourceGloss: string;
+  literalTexGloss: string;
+  lemma: string;
+  pos: PartOfSpeech;
+  explanation: string;
+  wiktionaryUrl: string;
+  ipa?: string;
+  morphemes?: Array<{ id: string; morpheme: string; gloss: string }>;
+  inflections?: InflectionFeatures;
+};
+
+export function tokenizeAndLemmatizeSentence(
+  rawOldEnglish: string,
+  sentenceIndex = 1
+): TokenizedWord[] {
+  const words = rawOldEnglish.trim().split(/\s+/).filter(Boolean);
+  
+  return words.map((rawWord, tokenIdx) => {
+    // Separate trailing punctuation
+    const match = rawWord.match(/^(.*?)([.,;:!?"'“”‘’()\[\]]*)$/);
+    const coreWord = match ? match[1] : rawWord;
+    const trailingPunct = match ? match[2] : "";
+
+    const analysis = lemmatizeOldEnglish(coreWord, "");
+    const tokenId = `token-${sentenceIndex}-${tokenIdx + 1}`;
+
+    // If coreWord has hyphens (e.g. Gār-Dena, ġeār-dagum, bū-d-e), split morphemes
+    const morphemeParts = coreWord.includes("-") ? coreWord.split("-") : [coreWord];
+    const morphemes = morphemeParts.map((part, mIdx) => ({
+      id: `morpheme-${tokenIdx + 1}-${mIdx + 1}`,
+      morpheme: part,
+      gloss: mIdx === 0 ? analysis.lemma : analysis.pos.toUpperCase(),
+    }));
+
+    return {
+      id: tokenId,
+      sourceForm: `${coreWord}${trailingPunct}`,
+      sourceGloss: analysis.lemma,
+      literalTexGloss: analysis.lemma,
+      lemma: analysis.lemma,
+      pos: analysis.pos,
+      explanation: analysis.definition || `${analysis.pos} (${analysis.lemma})`,
+      wiktionaryUrl: analysis.wiktionaryUrl,
+      morphemes: morphemes.length > 1 ? morphemes : undefined,
+    };
+  });
+}
+

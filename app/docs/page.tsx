@@ -1,5 +1,5 @@
 import { SiteNav } from "../../components/site-nav";
-import { CheckCircle2, BookOpen, HelpCircle, Hash } from "lucide-react";
+import { CheckCircle2, BookOpen, HelpCircle, Hash, Sparkles } from "lucide-react";
 
 export const metadata = {
   title: "Architecture & FAQ | Glossy",
@@ -258,6 +258,11 @@ export default function DocsPage() {
                     <td className="py-2.5 px-3 text-stone-600">Pre-compiles master TeX source into content/texts/ohthere.json with raw texSource.</td>
                   </tr>
                   <tr>
+                    <td className="py-2.5 px-3 font-semibold text-stone-900">Dead Code Audit</td>
+                    <td className="py-2.5 px-3 font-mono text-amber-900">npm run audit:deadcode</td>
+                    <td className="py-2.5 px-3 text-stone-600">Automated Knip analysis verifying zero dead code, unlisted dependencies, or unused exports.</td>
+                  </tr>
+                  <tr>
                     <td className="py-2.5 px-3 font-semibold text-stone-900">TypeScript Typecheck</td>
                     <td className="py-2.5 px-3 font-mono text-amber-900">npm run typecheck</td>
                     <td className="py-2.5 px-3 text-stone-600">Type safety validation across the entire application codebase.</td>
@@ -265,6 +270,33 @@ export default function DocsPage() {
                 </tbody>
               </table>
             </div>
+          </div>
+        </section>
+
+        {/* Section 5: Corpus Ingestion & Custom Texts */}
+        <section className="bg-white border border-stone-200 rounded-xl p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="flex items-center gap-3 border-b border-stone-100 pb-4">
+            <div className="p-2 bg-amber-50 text-amber-900 rounded-lg">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-amber-800">Corpus Expansion</span>
+              <h2 className="text-2xl font-serif font-bold text-stone-900">
+                5. Ingesting &amp; Glossing New Texts (Beowulf, Cædmon, Custom OE)
+              </h2>
+            </div>
+          </div>
+
+          <div className="prose prose-stone max-w-none text-sm leading-relaxed text-stone-700 space-y-4">
+            <p>
+              Glossy allows scholars and learners to add any Old English text to the digital corpus at <code className="font-mono text-amber-900">/edit/new</code>.
+              When new sentences are pasted (or loaded via classic presets like <em>Beowulf: Prologue</em>, <em>Cædmon&apos;s Hymn</em>, or <em>The Wanderer</em>):
+            </p>
+            <ol className="list-decimal pl-5 space-y-1.5">
+              <li><strong>Automatic Tokenization:</strong> Punctuation is cleanly separated and bound morphemes (hyphenated compounds) are split into individual glossable units.</li>
+              <li><strong>Automatic Lemmatization:</strong> Every token is evaluated through the Old English linguistic engine, assigning canonical masculine nominative singular strong adjective lemmas, infinitive verb lemmas, nominative noun lemmas, and direct Wiktionary etymological links.</li>
+              <li><strong>TinaCMS Dual-Write Persistence:</strong> Saving writes structured JSON to <code className="font-mono">content/texts/&lt;slug&gt;.json</code> and compilable LaTeX to <code className="font-mono">references/&lt;slug&gt;.tex</code>, immediately rendering the text available across the visual reader and live editor.</li>
+            </ol>
           </div>
         </section>
       </div>

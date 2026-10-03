@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 type SiteNavProps = {
-  current?: "read" | "edit" | "docs";
+  current?: "read" | "edit" | "docs" | "new";
   slug?: string;
   canEdit?: boolean;
 };
@@ -14,6 +14,7 @@ export function SiteNav({ current, slug = "ohthere-wulfstan", canEdit = true }: 
       {canEdit && (
         <Link href={`/edit/${slug}`} aria-current={current === "edit" ? "page" : undefined}>Edit</Link>
       )}
+      <Link href="/edit/new" aria-current={current === "new" ? "page" : undefined} style={{ fontWeight: 600 }}>+ New Text</Link>
       <Link href="/docs" aria-current={current === "docs" ? "page" : undefined}>Architecture & FAQ</Link>
     </nav>
   );

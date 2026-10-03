@@ -3,18 +3,36 @@ import fs from "node:fs";
 import path from "node:path";
 import { parseGb4eToTextDocument } from "../../../lib/gb4e";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const texPath = path.join(process.cwd(), "references", "Voyages_of_Ohthere_Wulfstan.tex");
+    const url = new URL(request.url);
+    const requestedFile = url.searchParams.get("sourceFile");
+    const requestedSlug = url.searchParams.get("slug") || "ohthere-wulfstan";
+
+    let texPath = requestedFile
+      ? path.join(process.cwd(), requestedFile)
+      : path.join(process.cwd(), "references", "Voyages_of_Ohthere_Wulfstan.tex");
+
+    if (!fs.existsSync(texPath)) {
+      // Try resolving within references/
+      if (requestedFile && !requestedFile.startsWith("references/")) {
+        texPath = path.join(process.cwd(), "references", requestedFile);
+      }
+    }
+
+    if (!fs.existsSync(texPath)) {
+      texPath = path.join(process.cwd(), "references", "Voyages_of_Ohthere_Wulfstan.tex");
+    }
+
     if (!fs.existsSync(texPath)) {
       return NextResponse.json({ error: "Master TeX file not found." }, { status: 404 });
     }
 
     const content = fs.readFileSync(texPath, "utf8");
     const document = parseGb4eToTextDocument(content, {
-      textId: "ohthere",
-      slug: "ohthere-wulfstan",
-      sourceFile: "references/Voyages_of_Ohthere_Wulfstan.tex",
+      textId: requestedSlug,
+      slug: requestedSlug,
+      sourceFile: path.relative(process.cwd(), texPath),
       status: "published",
     });
 

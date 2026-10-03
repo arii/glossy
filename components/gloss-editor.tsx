@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import { SiteNav } from "./site-nav";
 import { exportToGb4eLatex } from "../data/latex-export";
 import { parseGb4e } from "../lib/gb4e";
@@ -10,6 +11,8 @@ import {
   RefreshCw,
   Save,
 } from "lucide-react";
+
+import { tokenizeAndLemmatizeSentence } from "../lib/lemmatizer";
 
 // Definitions matching the exact schema requirements
 interface Morpheme {
@@ -157,14 +160,32 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
     }
     setIsLoading(true);
     try {
-      const response = await fetch("/api/master-tex");
-      if (!response.ok) throw new Error("Failed to load Master TeX file.");
+      const query = new URLSearchParams();
+      if (initialDocument.sourceFile) query.set("sourceFile", initialDocument.sourceFile);
+      if (initialDocument.slug) query.set("slug", initialDocument.slug);
+      
+      const response = await fetch(`/api/master-tex?${query.toString()}`);
+      if (!response.ok) {
+        // Fallback to initialDocument directly if master TeX is not found
+        const fallback = mapLegacyTextDocToGlossDoc(initialDocument);
+        setDocumentState(fallback);
+        const dataStr = JSON.stringify(fallback);
+        setSavedSnapshot(dataStr);
+        try { window.localStorage.setItem(storageKey, dataStr); } catch {}
+        if (fallback.sentences.length > 0) {
+          setActiveSentenceId(fallback.sentences[0].id);
+          setActiveTokenId(fallback.sentences[0].tokens[0]?.id || "");
+        }
+        setSaveStatus({ kind: "success", message: "Loaded document directly from corpus definition!" });
+        return;
+      }
+
       const data = (await response.json()) as GlossDocument;
       
       setDocumentState(data);
       const dataStr = JSON.stringify(data);
       setSavedSnapshot(dataStr);
-      window.localStorage.setItem(storageKey, dataStr);
+      try { window.localStorage.setItem(storageKey, dataStr); } catch {}
 
       if (data.sentences.length > 0) {
         setActiveSentenceId(data.sentences[0].id);
@@ -179,7 +200,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
     } finally {
       setIsLoading(false);
     }
-  }, [storageKey]);
+  }, [initialDocument, storageKey]);
 
   // Initial mount load sequence
   useEffect(() => {
@@ -231,44 +252,82 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
     setAutosaveStatus("saving");
     const timer = window.setTimeout(() => {
       const serialized = JSON.stringify(documentState);
-      window.localStorage.setItem(storageKey, serialized);
+      try {
+        window.localStorage.setItem(storageKey, serialized);
+      } catch (e) {
+        // Safe fallback if browser localStorage quota is exceeded
+        console.warn("LocalStorage quota exceeded, skipping local storage cache:", e);
+      }
       setAutosaveStatus("saved");
     }, 300);
 
     return () => window.clearTimeout(timer);
   }, [documentState, isLoading, storageKey]);
 
-  // Ingestion parsing function for multi-sentence gb4e input
-  const parseMultiSentenceGb4e = (latex: string): Sentence[] => {
-    const parsed = parseGb4e(latex);
-    return parsed.sentences.map((sent, sIdx) => ({
-      id: sent.id || `imported-sentence-${Date.now()}-${sIdx + 1}`,
-      freeTranslation: sent.translation,
-      tokens: sent.words.map((w, tIdx) => ({
-        id: w.id || `imported-token-${Date.now()}-${tIdx + 1}`,
-        sourceForm: `${w.originalWord}${w.trailingPunctuation || ""}`,
-        sourceGloss: w.morphologicalGloss || w.originalWord,
-        literalTexGloss: w.sourceGlossTex || w.morphologicalGloss || w.originalWord,
-        lemma: w.analysis?.lemma || w.originalWord,
-        pos: w.analysis?.partOfSpeech || "noun",
-        explanation: w.analysis?.definition || w.morphologicalGloss || "",
-        inflections: {
-          case: w.analysis?.features?.case,
-          number: w.analysis?.features?.number,
-          gender: w.analysis?.features?.gender,
-          tense: w.analysis?.features?.tense,
-          mood: w.analysis?.features?.mood,
-          person: w.analysis?.features?.person ? String(w.analysis.features.person) : undefined,
-        },
-        morphemes: (w.analysis?.morphemes || []).map((m, mIdx) => ({
-          id: m.id || `morpheme-${mIdx + 1}`,
-          morpheme: m.form,
-          gloss: m.gloss,
+  // Ingestion parsing function for multi-sentence gb4e input or plain Old English text
+  const parseMultiSentenceGb4e = (rawInput: string): Sentence[] => {
+    const isLatex = rawInput.includes("\\begin{exe}") || rawInput.includes("\\gll") || rawInput.includes("\\ex");
+    if (isLatex) {
+      const parsed = parseGb4e(rawInput);
+      return parsed.sentences.map((sent, sIdx) => ({
+        id: sent.id || `imported-sentence-${Date.now()}-${sIdx + 1}`,
+        freeTranslation: sent.translation,
+        tokens: sent.words.map((w, tIdx) => ({
+          id: w.id || `imported-token-${Date.now()}-${tIdx + 1}`,
+          sourceForm: `${w.originalWord}${w.trailingPunctuation || ""}`,
+          sourceGloss: w.morphologicalGloss || w.originalWord,
+          literalTexGloss: w.sourceGlossTex || w.morphologicalGloss || w.originalWord,
+          lemma: w.analysis?.lemma || w.originalWord,
+          pos: w.analysis?.partOfSpeech || "noun",
+          explanation: w.analysis?.definition || w.morphologicalGloss || "",
+          inflections: {
+            case: w.analysis?.features?.case,
+            number: w.analysis?.features?.number,
+            gender: w.analysis?.features?.gender,
+            tense: w.analysis?.features?.tense,
+            mood: w.analysis?.features?.mood,
+            person: w.analysis?.features?.person ? String(w.analysis.features.person) : undefined,
+          },
+          morphemes: (w.analysis?.morphemes || []).map((m, mIdx) => ({
+            id: m.id || `morpheme-${mIdx + 1}`,
+            morpheme: m.form,
+            gloss: m.gloss,
+          })),
+          ipa: w.analysis?.phonetic || "",
+          wiktionaryUrl: w.analysis?.wiktionaryUrl || "",
         })),
-        ipa: w.analysis?.phonetic || "",
-        wiktionaryUrl: w.analysis?.wiktionaryUrl || "",
-      })),
-    }));
+      }));
+    }
+
+    // Plain text sentences parsing with automatic lemmatization
+    const lines = rawInput.split("\n").map((l) => l.trim()).filter(Boolean);
+    return lines.map((line, sIdx) => {
+      const words = tokenizeAndLemmatizeSentence(line, sIdx + 1);
+      return {
+        id: `imported-sentence-${Date.now()}-${sIdx + 1}`,
+        freeTranslation: `[Translation for appended sentence ${sIdx + 1}]`,
+        tokens: words.map((w, tIdx) => ({
+          id: `imported-token-${Date.now()}-${tIdx + 1}`,
+          sourceForm: w.sourceForm,
+          sourceGloss: w.sourceGloss,
+          literalTexGloss: w.literalTexGloss,
+          lemma: w.lemma,
+          pos: w.pos,
+          explanation: w.explanation,
+          inflections: w.inflections ? {
+            case: w.inflections.case,
+            number: w.inflections.number,
+            gender: w.inflections.gender,
+            tense: w.inflections.tense,
+            mood: w.inflections.mood,
+            person: w.inflections.person ? String(w.inflections.person) : undefined,
+          } : {},
+          morphemes: w.morphemes || [],
+          ipa: w.ipa || "",
+          wiktionaryUrl: w.wiktionaryUrl,
+        })),
+      };
+    });
   };
 
   const applyImportedSentences = () => {
@@ -588,6 +647,14 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
               </span>
             )}
 
+            <Link
+              href="/edit/new"
+              className="workspace-link"
+              style={{ background: "#e0f2fe", color: "#0369a1", textDecoration: "none" }}
+              title="Gloss a brand new Old English text from scratch"
+            >
+              + New Text
+            </Link>
             <button
               onClick={() => loadFromMasterTex(true)}
               className="workspace-link"

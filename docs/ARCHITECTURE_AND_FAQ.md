@@ -89,5 +89,21 @@ In standard Old English lexicography (Bosworth-Toller, Sweet, Clark Hall, DOE, W
 | `npm run validate:source` | Validates 100% token and gloss alignment across all 75 sentences (1,716 tokens). |
 | `npm run sync:dictionary` | Generates clean, normalized dictionary records in `content/dictionary/`. |
 | `npm run compile:content` | Pre-compiles master TeX source into `content/texts/ohthere.json` with embedded `texSource`. |
+| `npm run audit:deadcode` | Runs Knip dead code audit asserting zero dead files, unlisted dependencies, or unused exports. |
 | `npm run typecheck` | Validates TypeScript type safety across the entire codebase. |
-| `npm run build` | Runs `prebuild` (sync:dictionary + compile:content) and generates production Next.js application. |
+| `npm run build` | Runs `prebuild` (sync:dictionary + compile:content + build:tina) and generates production Next.js application. |
+
+---
+
+## 4. Multi-Text Glossing & Corpus Expansion
+
+Glossy supports expanding the Old English digital corpus beyond the master text:
+
+1. **New Text Ingestion (`/edit/new`)**:
+   - Scholars and students can create new documents by entering title, attribution, and pasting raw Old English sentences, sentence pairs with translations, or LaTeX `gb4e` code.
+   - Built-in classic presets include **Beowulf: Prologue (Lines 1–11)**, **Cædmon's Hymn**, and **The Wanderer**.
+2. **Automatic Tokenization & Lemmatization**:
+   - The ingestion pipeline strips punctuation and immediately resolves each word against standard Old English grammar rules, assigning the canonical masculine nominative singular strong adjective lemma, infinitive verb lemma, noun nominative lemma, or masculine numeral lemma.
+3. **Dual-Write CMS & LaTeX Persistence**:
+   - Saving writes structured JSON to `content/texts/<slug>.json` and LaTeX to `references/<slug>.tex`, making the text immediately available for reading at `/read/<slug>` and editing at `/edit/<slug>`.
+
