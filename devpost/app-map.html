@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glossy — Architecture Map &amp; System Tour</title>
+  <style>
+    :root {
+      --bg: #faf7f2;
+      --surface: #ffffff;
+      --border: #e6dfd3;
+      --text: #2b2621;
+      --muted: #6b635b;
+      --accent: #9a3412;
+      --primary: #0284c7;
+      --tag-gram: #2a5a3b;
+      --tag-gram-bg: #e5f3e9;
+      --tag-lex: #1a4f6e;
+      --tag-lex-bg: #e1f0fa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    header {
+      padding: 2.5rem 2rem;
+      background: linear-gradient(135deg, #2b2621 0%, #453c35 100%);
+      color: #fff;
+    }
+    header h1 {
+      font-size: 2rem;
+      font-family: Georgia, serif;
+      margin-bottom: 0.5rem;
+    }
+    header p {
+      color: #d6cfc7;
+      font-size: 1rem;
+      max-width: 700px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: #ea580c;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+    .content {
+      padding: 2rem;
+    }
+    h2 {
+      font-size: 1.4rem;
+      font-family: Georgia, serif;
+      color: #2b2621;
+      margin: 1.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .card {
+      background: #faf8f5;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+    }
+    .card h3 {
+      font-size: 1.1rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+    .card code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.8rem;
+      background: #eee7dd;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      color: #1f1b17;
+    }
+    .diagram-box {
+      background: #1e1b18;
+      color: #f3eadb;
+      padding: 1.5rem;
+      border-radius: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    .tag {
+      display: inline-block;
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 0.25rem;
+    }
+    .tag-gram { background: var(--tag-gram-bg); color: var(--tag-gram); border: 1px solid #b7dfc3; }
+    .tag-lex { background: var(--tag-lex-bg); color: var(--tag-lex); border: 1px solid #b3d7ee; }
+    footer {
+      padding: 1.5rem 2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fdfbf7;
+    }
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">Architecture &amp; App Map</div>
+      <h1>Glossy: Old English Visual Glossing System</h1>
+      <p>
+        An interactive, scholarly reader and live authoring workspace that transforms historical manuscripts
+        and raw Old English into 3-tier interlinear visual glosses, backed by a dual-write LaTeX &amp; TinaCMS architecture.
+      </p>
+    </header>
+
+    <div class="content">
+      <h2>1. Interactive Application Routes</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>📖 Visual Reader</h3>
+          <p>3-tier interlinear visual reader with interactive word popovers, sticky token inspector, grammatical tags, and full translations.</p>
+          <code>/read/[slug]</code>
+        </div>
+        <div class="card">
+          <h3>✏️ Live Gloss Studio</h3>
+          <p>Real-time token and morpheme editor, sentence navigation, draft autosave, LaTeX gb4e batch importer, and export engine.</p>
+          <code>/edit/[slug]</code>
+        </div>
+        <div class="card">
+          <h3>✨ Corpus Ingestion</h3>
+          <p>Add new Old English texts (e.g. <em>Beowulf</em>, <em>Cædmon</em>) with automatic tokenization and lemmatization.</p>
+          <code>/edit/new</code>
+        </div>
+        <div class="card">
+          <h3>📚 Architecture &amp; FAQ</h3>
+          <p>Complete 37-abbreviation Leipzig reference table from master TeX manuscript and grammatical citation standards.</p>
+          <code>/docs</code>
+        </div>
+      </div>
+
+      <h2>2. Data Flow Architecture</h2>
+      <div class="diagram-box">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                             GLOSSY DATA PIPELINE                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    [Master LaTeX Manuscript]                [Raw Old English Ingestion]
+  references/Voyages_...tex                   /edit/new (Beowulf, Caedmon)
+             │                                              │
+             ▼                                              ▼
+   ┌───────────────────┐                          ┌───────────────────┐
+   │  lib/gb4e.ts      │                          │ lib/lemmatizer.ts │
+   │  LaTeX Macro      │                          │ Auto-Lemmatizer & │
+   │  Balanced Parser  │                          │ Tokenizer Engine  │
+   └─────────┬─────────┘                          └─────────┬─────────┘
+             │                                              │
+             └──────────────────────┬───────────────────────┘
+                                    │
+                                    ▼
+                      ┌───────────────────────────┐
+                      │  Dual-Write Persistence   │
+                      │  /api/save-document       │
+                      └─────────────┬─────────────┘
+                                    │
+                    ┌───────────────┴───────────────┐
+                    ▼                               ▼
+       [Structured TinaCMS JSON]         [Exportable LaTeX gb4e]
+        content/texts/&lt;slug&gt;.json         references/&lt;slug&gt;.tex
+                    │                               │
+                    ▼                               ▼
+       ┌─────────────────────────┐     ┌─────────────────────────┐
+       │   Interactive Reader    │     │   Live Editing Studio   │
+       │   /read/[slug]          │     │   /edit/[slug]          │
+       └─────────────────────────┘     └─────────────────────────┘
+      </div>
+
+      <h2>3. Linguistic Citation Standards</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Adjectives</h3>
+          <p><strong>Masculine Nominative Singular Strong Form</strong> (e.g. <span class="tag tag-lex">eall</span>, <span class="tag tag-lex">micel</span>, <span class="tag tag-lex">gōd</span>, <span class="tag tag-lex">wēste</span>).</p>
+        </div>
+        <div class="card">
+          <h3>Verbs</h3>
+          <p><strong>Canonical Infinitive</strong> ending in <code>-an</code>, <code>-ian</code>, <code>-on</code> (e.g. <span class="tag tag-lex">secgan</span>, <span class="tag tag-lex">faran</span>, <span class="tag tag-lex">licgan</span>, <span class="tag tag-lex">dōn</span>).</p>
+        </div>
+        <div class="card">
+          <h3>Nouns</h3>
+          <p><strong>Canonical Nominative Singular</strong> (e.g. <span class="tag tag-lex">dæġ</span>, <span class="tag tag-lex">stōw</span>, <span class="tag tag-lex">mann</span>, <span class="tag tag-lex">hunta</span>).</p>
+        </div>
+        <div class="card">
+          <h3>Numerals</h3>
+          <p><strong>Masculine Nominative</strong> for numbers > 1 (e.g. <span class="tag tag-lex">ān</span>, <span class="tag tag-lex">twēgen</span> for 2, <span class="tag tag-lex">þrīe</span> for 3, <span class="tag tag-lex">fēower</span>).</p>
+        </div>
+      </div>
+
+      <h2>4. Verification &amp; Quality Tools</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Automated Lemma Audit</h3>
+          <p>Verifies 100% citation compliance across all corpus tokens.</p>
+          <code>node scripts/validate-lemmas.mjs</code>
+        </div>
+        <div class="card">
+          <h3>Dead Code Audit (Knip)</h3>
+          <p>Verifies 0 unused files, unlisted dependencies, or dead exports.</p>
+          <code>npm run audit:deadcode</code>
+        </div>
+        <div class="card">
+          <h3>Source Alignment</h3>
+          <p>Verifies 100% token and gloss alignment with 0 warnings.</p>
+          <code>npm run validate:source</code>
+        </div>
+        <div class="card">
+          <h3>Full Production Build</h3>
+          <p>Generates static and dynamic routes with TinaCMS bundle.</p>
+          <code>npm run build</code>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <span>Glossy · Old English Interlinear System</span>
+      <a href="/">Open Application &rarr;</a>
+    </footer>
+  </div>
+</body>
+</html>
