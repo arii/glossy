@@ -2,7 +2,6 @@
 
 import { SiteNav } from "./site-nav";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useTina } from "tinacms/dist/react";
 import { TinaMarkdown, type Components } from "tinacms/dist/rich-text";
 import { getGlossRecords, getReadingPassage } from "../data/ohthere";
 import type { DictionaryEntry, ManuscriptDocument, TextDocument } from "../lib/types";
@@ -15,9 +14,6 @@ type ReadingPageProps = {
   manuscripts?: ManuscriptDocument[];
   dictionary?: Record<string, DictionaryEntry>;
   initialSlug?: string;
-  query?: string;
-  variables?: object;
-  data?: Record<string, unknown>;
 };
 
 export function ReadingPage({
@@ -25,9 +21,6 @@ export function ReadingPage({
   manuscripts = [],
   dictionary = {},
   initialSlug,
-  query,
-  variables,
-  data,
 }: ReadingPageProps) {
   return (
     <GlossaryProvider dictionaryMap={dictionary}>
@@ -36,9 +29,6 @@ export function ReadingPage({
         manuscripts={manuscripts}
         dictionary={dictionary}
         initialSlug={initialSlug}
-        query={query}
-        variables={variables}
-        data={data}
       />
     </GlossaryProvider>
   );
@@ -48,15 +38,7 @@ function ReadingPageInner({
   texts,
   manuscripts = [],
   initialSlug,
-  query,
-  variables,
-  data,
 }: ReadingPageProps) {
-  const { data: tinaData } = useTina({
-    query: query ?? "",
-    variables: variables ?? {},
-    data: data ?? {},
-  });
   const { activeTerm, setActiveTerm } = useGlossary();
 
   const visibleManuscripts = manuscripts.filter(
@@ -96,7 +78,6 @@ function ReadingPageInner({
   const glossAreaRef = useRef<HTMLElement | null>(null);
 
   const activeManuscript =
-    (tinaData as { manuscript?: ManuscriptDocument })?.manuscript ??
     visibleManuscripts.find((m) => m.slug === selectedSlug) ??
     (visibleManuscripts.length > 0 ? visibleManuscripts[0] : null);
 

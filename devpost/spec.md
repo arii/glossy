@@ -83,6 +83,8 @@ Loads the canonical document, validates and hydrates a versioned localStorage dr
 
 ### Confirmed Tina Publisher
 
+Current implementation: the editor's "Save to TinaCMS" button (no extra confirm dialog) posts one `updateDocument(collection:"text")` mutation to `NEXT_PUBLIC_TINA_LOCAL_URL` (default `http://localhost:4001/graphql`). It works only while `npm run dev` runs; a deployed site needs Tina Cloud or a self-hosted backend (open decision).
+
 After an explicit review/confirmation, submits only changed documents to Tina's GraphQL `updateDocument`/`createDocument` mutations. It reports per-document results. Multiple documents are not assumed to be atomic; failed writes keep the draft and permit idempotent retry. A successful local Tina write means the repository working tree changed, not that Git committed or pushed it.
 
 ### LaTeX Exporter
@@ -293,3 +295,5 @@ There are no runtime external services. The only external destination is the use
 - **Open issue: exact popup dismissal and positioning** — implement and verify with desktop hover, keyboard focus, mobile tap, click-away, and narrow viewport checks during the build.
 - **Open issue: scholarly font availability** — validate the chosen local fallback stack with representative IPA and Old English strings before finalizing the demo passage.
 - **Open issue: confirmed Tina mutations** — verify the exact local GraphQL `createDocument`/`updateDocument` mutation inputs and multi-document failure behavior before wiring publish; local saves must never claim to commit or push Git.
+- **Implementation decision: no `useTina` in the reader** — the reader is plain server-loaded data; Tina visual editing is not used, which also removed a render loop inside the Tina admin.
+- **Implementation decision: gb4e import** — `lib/gb4e.ts` parses `\ex{\gll … \glt …}` into sentences with footnotes; the editor previews counts/warnings and merges by sentence ID, keeping analysis for unchanged source forms.

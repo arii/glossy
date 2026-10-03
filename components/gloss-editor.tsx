@@ -132,9 +132,6 @@ export function GlossEditor({ initialDocument }: { initialDocument: EditableDocu
 
   const saveToTina = async () => {
     if (!isDirty || isSaving) return;
-    if (!window.confirm(`Save the current edits to TinaCMS for "${document.title}"? This updates the Git-backed JSON file in your working tree.`)) {
-      return;
-    }
 
     setIsSaving(true);
     setSaveState({ kind: "idle", message: "" });
@@ -175,7 +172,9 @@ export function GlossEditor({ initialDocument }: { initialDocument: EditableDocu
     } catch (error) {
       setSaveState({
         kind: "error",
-        message: error instanceof Error ? error.message : "The TinaCMS save failed.",
+        message:
+          (error instanceof TypeError ? "Could not reach TinaCMS. Saving only works while `npm run dev` is running locally. " : "") +
+          (error instanceof Error ? error.message : "The TinaCMS save failed."),
       });
     } finally {
       setIsSaving(false);

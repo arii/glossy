@@ -99,7 +99,7 @@ The student can read the selected Old English passage and identify annotated wor
 - [ ] Editing a token updates the interlinear preview and its linked reader-style explanation immediately.
 - [ ] Edits are stored in versioned, text-scoped localStorage drafts; a refresh restores a valid draft, and the editor can explicitly discard it.
 - [ ] Draft changes do not update TinaCMS or canonical content until the editor confirms publication.
-- [ ] Publish confirmation names the content being written; success is shown only after Tina confirms every requested document write, and errors or partial writes are reported clearly with retry/recovery guidance.
+- [ ] Saving is an explicit button press that names the file written (no extra dialog); success is shown only after Tina confirms every requested document write, and errors or partial writes are reported clearly with retry/recovery guidance.
 - [ ] Confirmed Tina local writes update JSON files in the Git working tree; the UI does not imply that files were committed or pushed.
 - [ ] A LaTeX export downloads a valid `.tex` document from the current draft without publishing it.
 - [ ] An editor can paste a supported `gb4e` manuscript and preview its structured paragraphs, aligned surface/gloss tokens, translations, footnotes, resources, abbreviations, and bibliography metadata before accepting the import.
