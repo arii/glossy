@@ -5,6 +5,7 @@ export type PartOfSpeech =
   | "verb"
   | "pronoun"
   | "determiner"
+  | "numeral"
   | "preposition"
   | "conjunction";
 
@@ -150,4 +151,3 @@ export type ManuscriptDocument = {
   rawBody?: string;
   _tina_metadata?: Record<string, string>;
 };
-

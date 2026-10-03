@@ -16,6 +16,7 @@ let verbsCount = 0;
 let nounsCount = 0;
 let adjectivesCount = 0;
 let determinersCount = 0;
+let numeralsCount = 0;
 const invalidLemmas = [];
 const invalidUrls = [];
 
@@ -40,6 +41,24 @@ const irregularVerbLemmas = new Set([
 ]);
 
 const validDemonstrativeLemmas = new Set(["sē", "þes", "sum", "ǣlċ", "ǣniġ", "nǣniġ", "swilċ", "hwilċ", "ōþer"]);
+const validNumeralLemmas = new Set([
+  "ān",
+  "twēgen",
+  "þrīe",
+  "fēower",
+  "fīf",
+  "siex",
+  "syx",
+  "seofon",
+  "eahta",
+  "nigon",
+  "tīen",
+  "twēntig",
+  "syxtig",
+  "hund",
+  "hundtēontiġ",
+  "þūsend",
+]);
 
 for (const sentence of parsed.sentences) {
   for (const word of sentence.words) {
@@ -96,7 +115,22 @@ for (const sentence of parsed.sentences) {
       }
     }
 
-    // 4. Check Adjectives (must be masculine nominative singular strong form)
+    // 4. Check Numerals (must be Masculine Nominative form)
+    if (analysis.partOfSpeech === "numeral") {
+      numeralsCount++;
+      const lemma = analysis.lemma;
+      if (!validNumeralLemmas.has(lemma)) {
+        invalidLemmas.push({
+          id: word.id,
+          surface: word.originalWord,
+          pos: "numeral",
+          lemma,
+          error: "Numeral lemma is not in canonical Masculine Nominative form (e.g. twēgen, þrīe)",
+        });
+      }
+    }
+
+    // 5. Check Adjectives (must be masculine nominative singular strong form)
     if (analysis.partOfSpeech === "adjective") {
       adjectivesCount++;
       const lemma = analysis.lemma;
@@ -120,7 +154,7 @@ for (const sentence of parsed.sentences) {
       }
     }
 
-    // 5. Check Determiners / Demonstratives / Articles
+    // 6. Check Determiners / Demonstratives / Articles
     if (analysis.partOfSpeech === "determiner") {
       determinersCount++;
       const lemma = analysis.lemma;
@@ -157,6 +191,7 @@ console.log(`- ${verbsCount} verbs verified for canonical infinitive lemmas`);
 console.log(`- ${nounsCount} nouns verified for canonical nominative singular lemmas`);
 console.log(`- ${adjectivesCount} adjectives verified for masculine nominative singular strong lemmas`);
 console.log(`- ${determinersCount} determiners verified for masculine nominative singular lemmas`);
+console.log(`- ${numeralsCount} numerals verified for masculine nominative lemmas`);
 
 if (invalidUrls.length > 0) {
   console.error(`Found ${invalidUrls.length} invalid Wiktionary URLs:`, invalidUrls);

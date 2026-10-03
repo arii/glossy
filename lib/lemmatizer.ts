@@ -418,7 +418,88 @@ const JA_JO_ADJECTIVES = new Set([
 ]);
 
 /**
- * Adjectives and Determiners mapping strictly to base Masculine Nominative Singular Strong form.
+ * Numerals mapping strictly to Masculine Nominative Form:
+ * - 1 -> "ān" (Masc Nom Sg)
+ * - 2 -> "twēgen" (Masculine Nominative form, resolving twā, tū, twǣm)
+ * - 3 -> "þrīe" (Masculine Nominative form, resolving þrēo, þrim)
+ * - 4+ -> "fēower", "fīf", "siex", "seofon", "eahta", "nigon", "tīen", "twēntig", "syxtig", "hundtēontiġ", "þūsend"
+ */
+const NUMERAL_MAP: Record<string, string> = {
+  // 1
+  "ān": "ān",
+  "ǣn-ne": "ān",
+  "ǣnne": "ān",
+  "ān-es": "ān",
+  "ānes": "ān",
+  "ān-um": "ān",
+  "ānum": "ān",
+  "ān-e": "ān",
+  "āne": "ān",
+
+  // 2 (Masc Nom: twēgen)
+  "twēgen": "twēgen",
+  "twēġen": "twēgen",
+  "twā": "twēgen",
+  "tū": "twēgen",
+  "twǣm": "twēgen",
+  "twām": "twēgen",
+  "twēgra": "twēgen",
+
+  // 3 (Masc Nom: þrīe)
+  "þrīe": "þrīe",
+  "þrī": "þrīe",
+  "þrēo": "þrīe",
+  "þri-m": "þrīe",
+  "þrim": "þrīe",
+  "þrēo-ra": "þrīe",
+  "þrēora": "þrīe",
+
+  // 4
+  "fēower": "fēower",
+  "fēowr-um": "fēower",
+  "fēowrum": "fēower",
+
+  // 5
+  "fīf": "fīf",
+  "fīf-um": "fīf",
+  "fīfum": "fīf",
+
+  // 6
+  "syx": "siex",
+  "siex": "siex",
+  "six": "siex",
+  "syx-um": "siex",
+  "syxum": "siex",
+
+  // 7
+  "seofon": "seofon",
+  "syfon": "seofon",
+
+  // 8
+  "eahta": "eahta",
+
+  // 9
+  "nigon": "nigon",
+
+  // 10
+  "tīen": "tīen",
+  "tēn": "tīen",
+  "tȳn": "tīen",
+
+  // 20, 60, 100, 1000
+  "twēntig": "twēntig",
+  "twēntiġ": "twēntig",
+  "syxtig": "syxtig",
+  "syxtiġ": "syxtig",
+  "siextiġ": "syxtig",
+  "hund": "hund",
+  "hund-tēontiġ": "hundtēontiġ",
+  "hundtēontiġ": "hundtēontiġ",
+  "þūsend": "þūsend",
+};
+
+/**
+ * Adjectives mapping strictly to base Masculine Nominative Singular Strong form.
  */
 const ADJ_LEMMA_MAP: Record<string, string> = {
   // eall
@@ -456,22 +537,6 @@ const ADJ_LEMMA_MAP: Record<string, string> = {
   "ōþer-ne": "ōþer",
   "ōþerne": "ōþer",
   "ōþer": "ōþer",
-
-  // Numerals
-  "þrīe": "þrīe",
-  "þri-m": "þrīe",
-  "þrim": "þrīe",
-  "fēower": "fēower",
-  "fīf": "fīf",
-  "syx": "siex",
-  "siex": "siex",
-  "seofon": "seofon",
-  "eahta": "eahta",
-  "nigon": "nigon",
-  "tīen": "tīen",
-  "twēntig": "twēntig",
-  "hund": "hund",
-  "hund-tēontiġ": "hundtēontiġ",
 
   // Directional & positional adjectives
   "norþ-weard-um": "norþweard",
@@ -671,6 +736,7 @@ const PRON_CONJ_MAP: Record<string, { lemma: string; pos: PartOfSpeech }> = {
   "hit": { lemma: "hē", pos: "pronoun" },
   "hȳ": { lemma: "hē", pos: "pronoun" },
   "hī": { lemma: "hē", pos: "pronoun" },
+  "hīe": { lemma: "hē", pos: "pronoun" },
   "ic": { lemma: "ic", pos: "pronoun" },
   "mē": { lemma: "ic", pos: "pronoun" },
   "mīn": { lemma: "ic", pos: "pronoun" },
@@ -712,6 +778,7 @@ const PRON_CONJ_MAP: Record<string, { lemma: string; pos: PartOfSpeech }> = {
  * Main Old English Lemmatization Engine.
  * Enforces:
  * - Articles/Demonstratives/Determiners -> Masculine Nominative Singular (e.g. sē, þes, sum)
+ * - Numerals -> Masculine Nominative (e.g. ān for 1, twēgen for 2, þrīe for 3, fēower for 4)
  * - Adjectives -> Masculine Nominative Singular Strong Form (e.g. eall, micel, wēste, fēaw)
  * - Verbs -> Canonical Infinitive (e.g. secgan, faran, licgan, dōn, bēon)
  * - Nouns -> Canonical Nominative Singular (e.g. dæġ, stōw, mann, hunta)
@@ -721,7 +788,18 @@ export function lemmatizeOldEnglish(rawSurface: string, gloss: string): LexiconE
   const unhyphenatedNfc = nfc.replace(/-/g, "");
   const upperGloss = gloss.toUpperCase();
 
-  // 1. Articles and Demonstratives (Definite Article -> "sē", Proximal -> "þes")
+  // 1. Numerals (Masculine Nominative Form)
+  if (NUMERAL_MAP[nfc] || NUMERAL_MAP[unhyphenatedNfc]) {
+    const lemma = NUMERAL_MAP[nfc] || NUMERAL_MAP[unhyphenatedNfc];
+    return {
+      lemma,
+      pos: "numeral",
+      wiktionaryUrl: formatWiktionaryUrl(lemma),
+      definition: gloss,
+    };
+  }
+
+  // 2. Articles and Demonstratives (Definite Article -> "sē", Proximal -> "þes")
   if (DEMONSTRATIVE_ARTICLE_MAP[nfc] || DEMONSTRATIVE_ARTICLE_MAP[unhyphenatedNfc]) {
     const lemma = DEMONSTRATIVE_ARTICLE_MAP[nfc] || DEMONSTRATIVE_ARTICLE_MAP[unhyphenatedNfc];
     return {
@@ -732,7 +810,7 @@ export function lemmatizeOldEnglish(rawSurface: string, gloss: string): LexiconE
     };
   }
 
-  // 2. Determiners and Quantifiers
+  // 3. Determiners and Quantifiers
   if (DETERMINER_MAP[nfc] || DETERMINER_MAP[unhyphenatedNfc]) {
     const lemma = DETERMINER_MAP[nfc] || DETERMINER_MAP[unhyphenatedNfc];
     return {
@@ -743,7 +821,7 @@ export function lemmatizeOldEnglish(rawSurface: string, gloss: string): LexiconE
     };
   }
 
-  // 3. Direct Verb Lemmatization (Infinitive)
+  // 4. Direct Verb Lemmatization (Infinitive)
   if (VERB_ABLUT_MAP[nfc] || VERB_ABLUT_MAP[unhyphenatedNfc]) {
     const lemma = VERB_ABLUT_MAP[nfc] || VERB_ABLUT_MAP[unhyphenatedNfc];
     return {
@@ -754,7 +832,7 @@ export function lemmatizeOldEnglish(rawSurface: string, gloss: string): LexiconE
     };
   }
 
-  // 4. Direct Noun Lemmatization (Nominative Singular)
+  // 5. Direct Noun Lemmatization (Nominative Singular)
   if (NOUN_LEMMA_MAP[nfc] || NOUN_LEMMA_MAP[unhyphenatedNfc]) {
     const lemma = NOUN_LEMMA_MAP[nfc] || NOUN_LEMMA_MAP[unhyphenatedNfc];
     return {
@@ -765,7 +843,7 @@ export function lemmatizeOldEnglish(rawSurface: string, gloss: string): LexiconE
     };
   }
 
-  // 5. Direct Adjectives (Masculine Nominative Singular Strong Form)
+  // 6. Direct Adjectives (Masculine Nominative Singular Strong Form)
   if (ADJ_LEMMA_MAP[nfc] || ADJ_LEMMA_MAP[unhyphenatedNfc]) {
     const lemma = ADJ_LEMMA_MAP[nfc] || ADJ_LEMMA_MAP[unhyphenatedNfc];
     return {
@@ -776,7 +854,7 @@ export function lemmatizeOldEnglish(rawSurface: string, gloss: string): LexiconE
     };
   }
 
-  // 6. Pronouns & Conjunctions
+  // 7. Pronouns & Conjunctions
   if (PRON_CONJ_MAP[nfc] || PRON_CONJ_MAP[unhyphenatedNfc]) {
     const entry = PRON_CONJ_MAP[nfc] || PRON_CONJ_MAP[unhyphenatedNfc];
     return {
@@ -787,13 +865,13 @@ export function lemmatizeOldEnglish(rawSurface: string, gloss: string): LexiconE
     };
   }
 
-  // 7. Lexicon Fallback Match
+  // 8. Lexicon Fallback Match
   const lex = resolveOldEnglishLexicon(rawSurface, gloss);
   if (lex.lemma && lex.lemma !== unhyphenatedNfc) {
     return lex;
   }
 
-  // 8. Algorithmic Demorphing Engine for Unseen Words
+  // 9. Algorithmic Demorphing Engine for Unseen Words
   const isVerb =
     upperGloss.includes("PST") ||
     upperGloss.includes("PRS") ||
@@ -904,7 +982,7 @@ export function lemmatizeOldEnglish(rawSurface: string, gloss: string): LexiconE
     };
   }
 
-  // 9. Generic Fallback
+  // 10. Generic Fallback
   const cleanLemma = unhyphenatedNfc.replace(/^-|-$/g, "");
   return {
     lemma: cleanLemma,

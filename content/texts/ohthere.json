@@ -3484,7 +3484,7 @@
           "sourceGlossTex": "three.\\textsc{acc.m}",
           "analysis": {
             "lemma": "þrīe",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "accusative",
               "gender": "masculine"
@@ -4328,7 +4328,7 @@
           "sourceGlossTex": "three-\\textsc{dat}",
           "analysis": {
             "lemma": "þrīe",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "dative"
             },
@@ -5627,7 +5627,7 @@
           "sourceGlossTex": "four",
           "analysis": {
             "lemma": "fēower",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -6862,7 +6862,7 @@
           "sourceGlossTex": "five",
           "analysis": {
             "lemma": "fīf",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -7056,7 +7056,7 @@
           "sourceGlossTex": "one.\\textsc{nom.sg.f}",
           "analysis": {
             "lemma": "ān",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "nominative",
               "number": "singular",
@@ -7365,8 +7365,8 @@
           "morphologicalGloss": "3PL.NOM",
           "sourceGlossTex": "\\textsc{3pl.nom}",
           "analysis": {
-            "lemma": "hīe",
-            "partOfSpeech": "noun",
+            "lemma": "hē",
+            "partOfSpeech": "pronoun",
             "features": {
               "case": "nominative",
               "number": "plural",
@@ -7381,7 +7381,7 @@
               }
             ],
             "definition": "3PL.NOM",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/hie#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
           },
           "review": {
             "status": "source-checked",
@@ -7598,8 +7598,8 @@
           "morphologicalGloss": "3PL.NOM",
           "sourceGlossTex": "\\textsc{3pl.nom}",
           "analysis": {
-            "lemma": "hīe",
-            "partOfSpeech": "noun",
+            "lemma": "hē",
+            "partOfSpeech": "pronoun",
             "features": {
               "case": "nominative",
               "number": "plural",
@@ -7614,7 +7614,7 @@
               }
             ],
             "definition": "3PL.NOM",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/hie#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
           },
           "review": {
             "status": "source-checked",
@@ -9993,8 +9993,8 @@
           "morphologicalGloss": "3PL.NOM",
           "sourceGlossTex": "\\textsc{3pl.nom}",
           "analysis": {
-            "lemma": "hīe",
-            "partOfSpeech": "noun",
+            "lemma": "hē",
+            "partOfSpeech": "pronoun",
             "features": {
               "case": "nominative",
               "number": "plural",
@@ -10009,7 +10009,7 @@
               }
             ],
             "definition": "3PL.NOM",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/hie#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
           },
           "review": {
             "status": "source-checked",
@@ -11239,8 +11239,8 @@
           "morphologicalGloss": "3PL.ACC",
           "sourceGlossTex": "\\textsc{3pl.acc}",
           "analysis": {
-            "lemma": "hīe",
-            "partOfSpeech": "noun",
+            "lemma": "hē",
+            "partOfSpeech": "pronoun",
             "features": {
               "case": "accusative",
               "number": "plural",
@@ -11254,7 +11254,7 @@
               }
             ],
             "definition": "3PL.ACC",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/hie#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
           },
           "review": {
             "status": "source-checked",
@@ -12100,7 +12100,7 @@
           "sourceGlossTex": "one.\\textsc{acc.sg.n}",
           "analysis": {
             "lemma": "ān",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "accusative",
               "number": "singular",
@@ -12608,8 +12608,8 @@
           "morphologicalGloss": "3PL.NOM",
           "sourceGlossTex": "\\textsc{3pl.nom}",
           "analysis": {
-            "lemma": "hīe",
-            "partOfSpeech": "noun",
+            "lemma": "hē",
+            "partOfSpeech": "pronoun",
             "features": {
               "case": "nominative",
               "number": "plural",
@@ -12624,7 +12624,7 @@
               }
             ],
             "definition": "3PL.NOM",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/hie#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
           },
           "review": {
             "status": "source-checked",
@@ -12950,8 +12950,8 @@
           "morphologicalGloss": "3PL.NOM",
           "sourceGlossTex": "\\textsc{3pl.nom}",
           "analysis": {
-            "lemma": "hīe",
-            "partOfSpeech": "noun",
+            "lemma": "hē",
+            "partOfSpeech": "pronoun",
             "features": {
               "case": "nominative",
               "number": "plural",
@@ -12966,7 +12966,7 @@
               }
             ],
             "definition": "3PL.NOM",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/hie#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
           },
           "review": {
             "status": "source-checked",
@@ -14305,7 +14305,7 @@
           "sourceGlossTex": "eight",
           "analysis": {
             "lemma": "eahta",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -14960,8 +14960,8 @@
           "morphologicalGloss": "six-ty",
           "sourceGlossTex": "six-ty",
           "analysis": {
-            "lemma": "syxtiġ",
-            "partOfSpeech": "noun",
+            "lemma": "syxtig",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -15019,8 +15019,8 @@
           "morphologicalGloss": "two-DAT",
           "sourceGlossTex": "two-\\textsc{dat}",
           "analysis": {
-            "lemma": "twām",
-            "partOfSpeech": "noun",
+            "lemma": "twēgen",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "dative"
             },
@@ -15037,7 +15037,7 @@
               }
             ],
             "definition": "two-DAT",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/twam#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/twegen#Old_English"
           },
           "review": {
             "status": "source-checked",
@@ -16053,7 +16053,7 @@
           "sourceGlossTex": "six",
           "analysis": {
             "lemma": "siex",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -16080,7 +16080,7 @@
           "sourceGlossTex": "hundred.\\textsc{acc.pl}",
           "analysis": {
             "lemma": "hund",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "accusative",
               "number": "plural"
@@ -16348,7 +16348,7 @@
           "sourceGlossTex": "six",
           "analysis": {
             "lemma": "siex",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -17324,8 +17324,8 @@
           "morphologicalGloss": "two-ty",
           "sourceGlossTex": "two-ty",
           "analysis": {
-            "lemma": "twēntiġ",
-            "partOfSpeech": "noun",
+            "lemma": "twēntig",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -17418,8 +17418,8 @@
           "morphologicalGloss": "two-ty",
           "sourceGlossTex": "two-ty",
           "analysis": {
-            "lemma": "twēntiġ",
-            "partOfSpeech": "noun",
+            "lemma": "twēntig",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -17512,8 +17512,8 @@
           "morphologicalGloss": "two-ty",
           "sourceGlossTex": "two-ty",
           "analysis": {
-            "lemma": "twēntiġ",
-            "partOfSpeech": "noun",
+            "lemma": "twēntig",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -19609,7 +19609,7 @@
           "sourceGlossTex": "five",
           "analysis": {
             "lemma": "fīf",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -19699,7 +19699,7 @@
           "sourceGlossTex": "one.\\textsc{acc.sg.n}",
           "analysis": {
             "lemma": "ān",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "accusative",
               "number": "singular",
@@ -19822,8 +19822,8 @@
           "morphologicalGloss": "ten",
           "sourceGlossTex": "ten",
           "analysis": {
-            "lemma": "tȳn",
-            "partOfSpeech": "noun",
+            "lemma": "tīen",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -19833,7 +19833,7 @@
               }
             ],
             "definition": "ten",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/tyn#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/tien#Old_English"
           },
           "review": {
             "status": "source-checked",
@@ -20112,8 +20112,8 @@
           "morphologicalGloss": "two.ACC.M",
           "sourceGlossTex": "two.\\textsc{acc.m}",
           "analysis": {
-            "lemma": "twēġen",
-            "partOfSpeech": "noun",
+            "lemma": "twēgen",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "accusative",
               "gender": "masculine"
@@ -20241,8 +20241,8 @@
           "morphologicalGloss": "six-ty",
           "sourceGlossTex": "six-ty",
           "analysis": {
-            "lemma": "syxtiġ",
-            "partOfSpeech": "noun",
+            "lemma": "syxtig",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -22875,8 +22875,8 @@
           "morphologicalGloss": "six-ty",
           "sourceGlossTex": "six-ty",
           "analysis": {
-            "lemma": "syxtiġ",
-            "partOfSpeech": "noun",
+            "lemma": "syxtig",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -23631,8 +23631,8 @@
           "morphologicalGloss": "three-GEN",
           "sourceGlossTex": "three-\\textsc{gen}",
           "analysis": {
-            "lemma": "þrēo",
-            "partOfSpeech": "noun",
+            "lemma": "þrīe",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "genitive"
             },
@@ -23649,7 +23649,7 @@
               }
             ],
             "definition": "three-GEN",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%BEreo#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%BErie#Old_English"
           },
           "review": {
             "status": "source-checked",
@@ -24211,8 +24211,8 @@
           "morphologicalGloss": "two-DAT",
           "sourceGlossTex": "two-\\textsc{dat}",
           "analysis": {
-            "lemma": "twām",
-            "partOfSpeech": "noun",
+            "lemma": "twēgen",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "dative"
             },
@@ -24229,7 +24229,7 @@
               }
             ],
             "definition": "two-DAT",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/twam#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/twegen#Old_English"
           },
           "review": {
             "status": "source-checked",
@@ -24618,7 +24618,7 @@
           "sourceGlossTex": "six",
           "analysis": {
             "lemma": "siex",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -27851,7 +27851,7 @@
           "sourceGlossTex": "one.\\textsc{nom.sg.m}",
           "analysis": {
             "lemma": "ān",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "nominative",
               "number": "singular",
@@ -28465,7 +28465,7 @@
           "sourceGlossTex": "one-\\textsc{dat.sg.m}",
           "analysis": {
             "lemma": "ān",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "dative",
               "number": "singular",
@@ -31584,7 +31584,7 @@
           "sourceGlossTex": "hundred.\\textsc{acc.pl}",
           "analysis": {
             "lemma": "hund",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "accusative",
               "number": "plural"
@@ -32085,7 +32085,7 @@
           "sourceGlossTex": "five",
           "analysis": {
             "lemma": "fīf",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -33511,8 +33511,8 @@
           "morphologicalGloss": "two.ACC.M",
           "sourceGlossTex": "two.\\textsc{acc.m}",
           "analysis": {
-            "lemma": "twēġen",
-            "partOfSpeech": "noun",
+            "lemma": "twēgen",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "accusative",
               "gender": "masculine"
@@ -34565,8 +34565,8 @@
           "morphologicalGloss": "two.ACC.M",
           "sourceGlossTex": "two.\\textsc{acc.m}",
           "analysis": {
-            "lemma": "twēġen",
-            "partOfSpeech": "noun",
+            "lemma": "twēgen",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "accusative",
               "gender": "masculine"
@@ -43874,8 +43874,8 @@
           "trailingPunctuation": ";",
           "sourceGlossTex": "two.\\textsc{acc.m}",
           "analysis": {
-            "lemma": "twēġen",
-            "partOfSpeech": "noun",
+            "lemma": "twēgen",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "accusative",
               "gender": "masculine"
@@ -46520,7 +46520,7 @@
           "sourceGlossTex": "five",
           "analysis": {
             "lemma": "fīf",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -46575,7 +46575,7 @@
           "sourceGlossTex": "six",
           "analysis": {
             "lemma": "siex",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -48827,7 +48827,7 @@
           "sourceGlossTex": "five",
           "analysis": {
             "lemma": "fīf",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -48943,7 +48943,7 @@
           "sourceGlossTex": "six",
           "analysis": {
             "lemma": "siex",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "numeral",
             "features": {},
             "morphemes": [
               {
@@ -53587,7 +53587,7 @@
           "sourceGlossTex": "one.\\textsc{acc.sg.n}",
           "analysis": {
             "lemma": "ān",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "accusative",
               "number": "singular",
@@ -54063,7 +54063,7 @@
           "sourceGlossTex": "one.\\textsc{nom.sg.f}",
           "analysis": {
             "lemma": "ān",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "nominative",
               "number": "singular",
@@ -55026,8 +55026,8 @@
           "morphologicalGloss": "two.ACC.M",
           "sourceGlossTex": "two.\\textsc{acc.m}",
           "analysis": {
-            "lemma": "twēġen",
-            "partOfSpeech": "noun",
+            "lemma": "twēgen",
+            "partOfSpeech": "numeral",
             "features": {
               "case": "accusative",
               "gender": "masculine"
