@@ -106,8 +106,8 @@ export function parseGb4e(source: string): Gb4eImport {
       const wordId = `${id}-word-${index + 1}`;
 
       // Morpheme segmentation on hyphens
-      const formParts = originalWord.split("-");
-      const glossParts = plainGloss.split("-");
+      const formParts = originalWord.split("-").filter(Boolean);
+      const glossParts = plainGloss.split("-").filter(Boolean);
       const morphemes: Morpheme[] = [];
 
       if (formParts.length === glossParts.length && formParts.length > 1) {
@@ -116,6 +116,26 @@ export function parseGb4e(source: string): Gb4eImport {
             id: `${wordId}-morpheme-${mIdx + 1}`,
             form: formParts[mIdx],
             gloss: glossParts[mIdx],
+          });
+        }
+      } else if (formParts.length > 1) {
+        // Expand gloss parts if gloss uses dot notation for inflection suffixes (e.g. Dane.GEN.PL for Den-a)
+        const expandedGloss: string[] = [];
+        for (let i = 0; i < glossParts.length; i++) {
+          const part = glossParts[i];
+          if (i === glossParts.length - 1 && formParts.length > glossParts.length && part.includes(".")) {
+            const dotParts = part.split(".");
+            expandedGloss.push(dotParts[0], dotParts.slice(1).join("."));
+          } else {
+            expandedGloss.push(part);
+          }
+        }
+
+        for (let mIdx = 0; mIdx < formParts.length; mIdx++) {
+          morphemes.push({
+            id: `${wordId}-morpheme-${mIdx + 1}`,
+            form: formParts[mIdx],
+            gloss: expandedGloss[mIdx] || formParts[mIdx],
           });
         }
       } else {

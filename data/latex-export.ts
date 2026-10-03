@@ -56,8 +56,23 @@ ${author ? `\\author{${escapeTex(author)}}` : ""}
     tex += `\n\\begin{exe}\n\\ex \\label{ex:paragraph.${paragraphNum}} \\begin{xlist}\n\n`;
 
     for (const sentence of paraSentences) {
-      const surfaceWords = sentence.words.map((word) => `${word.originalWord}${word.trailingPunctuation ?? ""}`);
+      const surfaceWords = sentence.words.map((word) => {
+        if (word.analysis?.morphemes && word.analysis.morphemes.length > 1) {
+          const joinedForm = word.analysis.morphemes.map((m) => m.form).filter(Boolean).join("-");
+          if (joinedForm) {
+            return `${joinedForm}${word.trailingPunctuation ?? ""}`;
+          }
+        }
+        return `${word.originalWord}${word.trailingPunctuation ?? ""}`;
+      });
+
       const glossWords = sentence.words.map((word) => {
+        if (word.analysis?.morphemes && word.analysis.morphemes.length > 1) {
+          const joinedGloss = word.analysis.morphemes.map((m) => plainToTexGloss(m.gloss)).filter(Boolean).join("-");
+          if (joinedGloss) {
+            return joinedGloss;
+          }
+        }
         if (word.sourceGlossTex) return word.sourceGlossTex;
         if (word.morphologicalGloss) return plainToTexGloss(word.morphologicalGloss);
         return word.originalWord;
@@ -105,12 +120,17 @@ function groupSentencesByParagraph(sentences: ReadingSentence[]): Map<number, Re
   return map;
 }
 
-function plainToTexGloss(gloss: string): string {
+export function plainToTexGloss(gloss: string): string {
+  if (!gloss) return "";
+  if (gloss.includes("\\textsc{")) return gloss;
+
   // Convert Leipzig abbreviations like PST, NOM, IND.3SG to \textsc{pst}, \textsc{nom}, etc.
   return gloss.replace(/\b([A-Z0-9.]+)\b/g, (match) => {
-    // If it's pure numbers or contains non-letters other than dots
-    const lower = match.toLowerCase();
-    return `\\textsc{${lower}}`;
+    if (/^[A-Z0-9.]+$/.test(match) && !/^[A-Z][a-z]+$/.test(match)) {
+      const lower = match.toLowerCase();
+      return `\\textsc{${lower}}`;
+    }
+    return match;
   });
 }
 

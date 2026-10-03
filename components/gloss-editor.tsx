@@ -2,8 +2,9 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { SiteNav } from "./site-nav";
-import { exportToGb4eLatex } from "../data/latex-export";
+import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
 import { parseGb4e } from "../lib/gb4e";
 import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
 import {
@@ -133,7 +134,14 @@ function mapLegacyTextDocToGlossDoc(legacyDoc: TextDocument): GlossDocument {
   };
 }
 
-export function GlossEditor({ initialDocument }: { initialDocument: TextDocument & { fileName?: string } }) {
+export function GlossEditor({
+  initialDocument,
+  availableTexts = [],
+}: {
+  initialDocument: TextDocument & { fileName?: string };
+  availableTexts?: Array<{ slug: string; title: string }>;
+}) {
+  const router = useRouter();
   const [documentState, setDocumentState] = useState<GlossDocument>(() => mapLegacyTextDocToGlossDoc(initialDocument));
   const [activeSentenceId, setActiveSentenceId] = useState<string>(() => initialDocument.sentences?.[0]?.id || "");
   const [activeTokenId, setActiveTokenId] = useState<string>(() => initialDocument.sentences?.[0]?.words?.[0]?.id || "");
@@ -154,10 +162,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
   const storageKey = `glossy_draft_${initialDocument.slug || initialDocument.textId || "ohthere"}`;
 
   // Ingest from API (/api/master-tex) helper
-  const loadFromMasterTex = useCallback(async (confirmOverwrite = false) => {
-    if (confirmOverwrite && !window.confirm("Are you sure you want to reload from the Master .tex source? This will overwrite your local changes.")) {
-      return;
-    }
+  const loadFromMasterTex = useCallback(async () => {
     setIsLoading(true);
     try {
       const query = new URLSearchParams();
@@ -202,7 +207,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
     }
   }, [initialDocument, storageKey]);
 
-  // Initial mount load sequence
+  // Initial mount load sequence with robust stale-cache invalidation
   useEffect(() => {
     // Clear old legacy corrupted caches
     try {
@@ -210,10 +215,24 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
       window.localStorage.removeItem("glossy_document_ohthere_full_v2");
     } catch {}
 
+    const expectedSentenceCount = initialDocument.sentences?.length ?? 0;
     const cached = window.localStorage.getItem(storageKey);
     if (cached) {
       try {
         const parsed = JSON.parse(cached) as GlossDocument;
+        // Check if cached draft is stale or sentence count mismatch
+        if (!parsed.sentences || parsed.sentences.length !== expectedSentenceCount) {
+          window.localStorage.removeItem(storageKey);
+          const fresh = mapLegacyTextDocToGlossDoc(initialDocument);
+          setDocumentState(fresh);
+          setSavedSnapshot(JSON.stringify(fresh));
+          if (fresh.sentences.length > 0) {
+            setActiveSentenceId(fresh.sentences[0].id);
+            setActiveTokenId(fresh.sentences[0].tokens[0]?.id || "");
+          }
+          return;
+        }
+
         // Sanitize any residual footnote macro strings in translations
         const sanitized: GlossDocument = {
           ...parsed,
@@ -240,10 +259,15 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
         loadFromMasterTex();
       }
     } else {
-      // Ingest the full text directly from master source if no local cache exists
-      loadFromMasterTex();
+      const initial = mapLegacyTextDocToGlossDoc(initialDocument);
+      setDocumentState(initial);
+      setSavedSnapshot(JSON.stringify(initial));
+      if (initial.sentences.length > 0) {
+        setActiveSentenceId(initial.sentences[0].id);
+        setActiveTokenId(initial.sentences[0].tokens[0]?.id || "");
+      }
     }
-  }, [loadFromMasterTex, storageKey]);
+  }, [initialDocument, loadFromMasterTex, storageKey]);
 
   // Autosave to localStorage debounced at 300ms
   useEffect(() => {
@@ -424,7 +448,6 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
 
   // Discard changes to restore initial snapshot
   const discardChanges = () => {
-    if (!window.confirm("Are you sure you want to discard your unsaved edits?")) return;
     try {
       const parsed = JSON.parse(savedSnapshot) as GlossDocument;
       setDocumentState(parsed);
@@ -434,7 +457,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
       }
       setSaveStatus({ kind: "success", message: "Edits successfully discarded. Reverted to previous save." });
     } catch {
-      alert("Failed to discard edits; saved state is invalid.");
+      setSaveStatus({ kind: "error", message: "Failed to discard edits; saved state is invalid." });
     }
   };
 
@@ -456,13 +479,24 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
         words: sent.tokens.map((tok) => {
           // Extract trailing punctuation safely if present
           const punctuationMatch = tok.sourceForm.match(/[.,;:!?]+$/);
-          const originalCleanWord = tok.sourceForm.replace(/[.,;:!?]+$/, "");
+          const originalCleanWord = (tok.morphemes && tok.morphemes.length > 1)
+            ? tok.morphemes.map((m) => m.morpheme).filter(Boolean).join("-")
+            : tok.sourceForm.replace(/[.,;:!?]+$/, "");
+          
+          const sourceGlossVal = (tok.morphemes && tok.morphemes.length > 1)
+            ? tok.morphemes.map((m) => m.gloss).filter(Boolean).join("-")
+            : (tok.sourceGloss || tok.sourceForm);
+
+          const texGlossVal = (tok.morphemes && tok.morphemes.length > 1)
+            ? tok.morphemes.map((m) => plainToTexGloss(m.gloss)).filter(Boolean).join("-")
+            : (tok.literalTexGloss || plainToTexGloss(tok.sourceGloss));
+
           return {
             id: tok.id,
             originalWord: originalCleanWord,
-            morphologicalGloss: tok.sourceGloss,
+            morphologicalGloss: sourceGlossVal,
             trailingPunctuation: punctuationMatch ? punctuationMatch[0] : undefined,
-            sourceGlossTex: tok.literalTexGloss,
+            sourceGlossTex: texGlossVal,
             analysis: {
               lemma: tok.lemma,
               partOfSpeech: (tok.pos || "noun") as PartOfSpeech,
@@ -576,6 +610,71 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
     URL.revokeObjectURL(url);
   };
 
+  // Synchronize morphemes with sourceForm, sourceGloss, and literalTexGloss
+  const syncMorphemesAndToken = (newMorphemes: Morpheme[]) => {
+    if (!activeToken) return;
+    const punct = activeToken.sourceForm.match(/[,.;:!?]+$/)?.[0] || "";
+    const forms = newMorphemes.map((m) => m.morpheme).filter(Boolean);
+    const glosses = newMorphemes.map((m) => m.gloss).filter(Boolean);
+
+    const newSourceForm = forms.length > 0 ? forms.join("-") + punct : activeToken.sourceForm;
+    const newSourceGloss = glosses.length > 0 ? glosses.join("-") : activeToken.sourceGloss;
+    const newLiteralTex = glosses.length > 0
+      ? glosses.map((g) => plainToTexGloss(g)).join("-")
+      : plainToTexGloss(activeToken.sourceGloss);
+
+    updateToken({
+      morphemes: newMorphemes,
+      sourceForm: newSourceForm,
+      sourceGloss: newSourceGloss,
+      literalTexGloss: newLiteralTex,
+    });
+  };
+
+  const handleSourceFormChange = (newVal: string) => {
+    if (!activeToken) return;
+    const punct = newVal.match(/[,.;:!?]+$/)?.[0] || "";
+    const cleanWord = punct ? newVal.slice(0, -punct.length) : newVal;
+    const parts = cleanWord.split("-").filter(Boolean);
+
+    if (parts.length > 1) {
+      const current = activeToken.morphemes || [];
+      const updatedMorphemes: Morpheme[] = parts.map((part, idx) => ({
+        id: current[idx]?.id || `${activeToken.id}-morpheme-${idx + 1}`,
+        morpheme: part,
+        gloss: current[idx]?.gloss || (idx === parts.length - 1 ? activeToken.sourceGloss : part),
+      }));
+      updateToken({
+        sourceForm: newVal,
+        morphemes: updatedMorphemes,
+      });
+    } else {
+      updateToken({ sourceForm: newVal });
+    }
+  };
+
+  const handleSourceGlossChange = (newVal: string) => {
+    if (!activeToken) return;
+    const parts = newVal.split("-").filter(Boolean);
+    const current = activeToken.morphemes || [];
+    if (parts.length > 1 && parts.length === current.length) {
+      const updatedMorphemes: Morpheme[] = current.map((m, idx) => ({
+        ...m,
+        gloss: parts[idx] || m.gloss,
+      }));
+      updateToken({
+        sourceGloss: newVal,
+        literalTexGloss: parts.map((p) => plainToTexGloss(p)).join("-"),
+        morphemes: updatedMorphemes,
+      });
+    } else {
+      updateToken({
+        sourceGloss: newVal,
+        literalTexGloss: plainToTexGloss(newVal),
+      });
+    }
+  };
+
   // Morphemes management
   const addMorpheme = () => {
     if (!activeToken) return;
@@ -585,9 +684,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
       morpheme: "",
       gloss: "",
     };
-    updateToken({
-      morphemes: [...currentMorphemes, newMorpheme],
-    });
+    syncMorphemesAndToken([...currentMorphemes, newMorpheme]);
   };
 
   const updateMorphemeVal = (mIdx: number, field: "morpheme" | "gloss", val: string) => {
@@ -597,13 +694,13 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
       ...currentMorphemes[mIdx],
       [field]: val,
     };
-    updateToken({ morphemes: currentMorphemes });
+    syncMorphemesAndToken(currentMorphemes);
   };
 
   const removeMorpheme = (mIdx: number) => {
     if (!activeToken) return;
     const currentMorphemes = (activeToken.morphemes || []).filter((_, idx) => idx !== mIdx);
-    updateToken({ morphemes: currentMorphemes });
+    syncMorphemesAndToken(currentMorphemes);
   };
 
   // Filter sentences by query
@@ -637,6 +734,23 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
             <p className="text-sm text-stone-500 mt-1">
               By {documentState.author} · {documentState.date}
             </p>
+            {availableTexts && availableTexts.length > 1 && (
+              <div className="mt-2 flex items-center gap-2">
+                <label htmlFor="editor-text-select" className="text-xs font-semibold text-stone-600">Switch text:</label>
+                <select
+                  id="editor-text-select"
+                  value={initialDocument.slug}
+                  onChange={(e) => router.push(`/edit/${e.target.value}`)}
+                  className="text-xs bg-stone-50 border border-stone-300 rounded px-2 py-1 font-medium text-stone-800 focus:outline-none focus:border-amber-800"
+                >
+                  {availableTexts.map((t) => (
+                    <option key={t.slug} value={t.slug}>
+                      {t.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
 
           <div className="editor-actions-grid">
@@ -656,7 +770,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
               + New Text
             </Link>
             <button
-              onClick={() => loadFromMasterTex(true)}
+              onClick={() => loadFromMasterTex()}
               className="workspace-link"
               title="Re-parse the raw .tex file and discard all local browser modifications"
             >
@@ -780,6 +894,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
                     <div className="editor-tokens-list">
                       {sent.tokens.map((tok) => {
                         const isTokActive = tok.id === activeTokenId;
+                        const isMultiMorpheme = tok.morphemes && tok.morphemes.length > 1;
                         return (
                           <button
                             key={tok.id}
@@ -789,12 +904,17 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
                               setActiveSentenceId(sent.id);
                               setActiveTokenId(tok.id);
                             }}
-                            className={`editor-word-chip ${isTokActive ? "is-selected" : ""}`}
+                            className={`editor-word-chip ${isTokActive ? "is-selected" : ""} ${isMultiMorpheme ? "is-multi-morpheme" : ""}`}
                           >
                             <span className="chip-form">{tok.sourceForm}</span>
                             <span className="chip-gloss">
                               {tok.sourceGloss || tok.sourceForm}
                             </span>
+                            {isMultiMorpheme && (
+                              <span className="chip-morph-badge" style={{ fontSize: "9px", background: "#fef3c7", color: "#92400e", padding: "1px 4px", borderRadius: "3px", marginTop: "2px", fontWeight: "600", display: "inline-block" }}>
+                                {tok.morphemes.length} morphs
+                              </span>
+                            )}
                           </button>
                         );
                       })}
@@ -847,7 +967,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
                     <input
                       type="text"
                       value={activeToken.sourceForm}
-                      onChange={(e) => updateToken({ sourceForm: e.target.value })}
+                      onChange={(e) => handleSourceFormChange(e.target.value)}
                       className="w-full border border-stone-300 rounded p-2 mt-1 text-xs focus:outline-none focus:border-amber-800"
                     />
                   </label>
@@ -857,7 +977,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
                     <input
                       type="text"
                       value={activeToken.sourceGloss}
-                      onChange={(e) => updateToken({ sourceGloss: e.target.value })}
+                      onChange={(e) => handleSourceGlossChange(e.target.value)}
                       className="w-full border border-stone-300 rounded p-2 mt-1 text-xs focus:outline-none focus:border-amber-800"
                     />
                   </label>
@@ -1093,6 +1213,20 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
                     <p className="text-sm text-stone-700 mt-1">
                       {activeToken.explanation || "No gloss definition set."}
                     </p>
+                    {activeToken.morphemes && activeToken.morphemes.length > 0 && (
+                      <div className="pt-2 border-t border-amber-100/60 mt-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500 block mb-1">
+                          Morphemes Breakdown
+                        </span>
+                        <div className="flex flex-wrap gap-1">
+                          {activeToken.morphemes.map((m, mIdx) => (
+                            <span key={m.id || mIdx} className="bg-amber-100/70 text-amber-950 px-1.5 py-0.5 rounded text-[11px] font-mono border border-amber-200/60">
+                              {m.morpheme || "?"} = {m.gloss || "?"}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     {Object.values(activeToken.inflections).some(Boolean) && (
                       <div className="flex flex-wrap gap-1 mt-2">
                         {Object.entries(activeToken.inflections)

@@ -47,7 +47,7 @@ const reader = await check("/read/ohthere-wulfstan", [
 await check("/read/beowulf-prologue", [
   "Beowulf: Prologue (Lines 1–11)",
   "Hwæt!",
-  "Gār-Dena",
+  "Gār-Den-a",
   "Listen! We of the Spear-Danes in days of yore,",
 ]);
 if (reader.includes("Edit this text") || reader.includes("Editorial &amp; CMS Tools")) {

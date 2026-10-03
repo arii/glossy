@@ -33,6 +33,7 @@ export default async function EditPage({ params }: EditPageProps) {
       initialDocument={
         document as typeof document & { sentences: NonNullable<typeof document.sentences> }
       }
+      availableTexts={texts.map((t) => ({ slug: t.slug, title: t.title }))}
     />
   );
 }

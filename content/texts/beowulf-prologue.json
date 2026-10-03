@@ -54,10 +54,10 @@
         },
         {
           "id": "token-1-3",
-          "originalWord": "Gār-Dena",
+          "originalWord": "Gār-Den-a",
           "trailingPunctuation": "",
-          "morphologicalGloss": "gārdena",
-          "sourceGlossTex": "gārdena",
+          "morphologicalGloss": "Spear-Dane-GEN.PL",
+          "sourceGlossTex": "Spear-Dane-\\textsc{gen.pl}",
           "analysis": {
             "lemma": "gārdena",
             "partOfSpeech": "noun",
@@ -67,11 +67,15 @@
             "morphemes": [
               {
                 "form": "Gār",
-                "gloss": "gārdena"
+                "gloss": "Spear"
               },
               {
-                "form": "Dena",
-                "gloss": "NOUN"
+                "form": "Den",
+                "gloss": "Dane"
+              },
+              {
+                "form": "a",
+                "gloss": "GEN.PL"
               }
             ]
           }
@@ -98,10 +102,10 @@
         },
         {
           "id": "token-1-5",
-          "originalWord": "ġeār-dagum",
+          "originalWord": "ġeār-dag-um",
           "trailingPunctuation": ",",
-          "morphologicalGloss": "ġeārdagum",
-          "sourceGlossTex": "ġeārdagum",
+          "morphologicalGloss": "year-day-DAT.PL",
+          "sourceGlossTex": "year-day-\\textsc{dat.pl}",
           "analysis": {
             "lemma": "ġeārdagum",
             "partOfSpeech": "noun",
@@ -111,11 +115,15 @@
             "morphemes": [
               {
                 "form": "ġeār",
-                "gloss": "ġeārdagum"
+                "gloss": "year"
               },
               {
-                "form": "dagum",
-                "gloss": "NOUN"
+                "form": "dag",
+                "gloss": "day"
+              },
+              {
+                "form": "um",
+                "gloss": "DAT.PL"
               }
             ]
           }
@@ -128,10 +136,10 @@
       "words": [
         {
           "id": "token-2-1",
-          "originalWord": "þēod-cyninga",
+          "originalWord": "þēod-cyning-a",
           "trailingPunctuation": ",",
-          "morphologicalGloss": "þēodcyninga",
-          "sourceGlossTex": "þēodcyninga",
+          "morphologicalGloss": "people-king-GEN.PL",
+          "sourceGlossTex": "people-king-\\textsc{gen.pl}",
           "analysis": {
             "lemma": "þēodcyninga",
             "partOfSpeech": "noun",
@@ -141,11 +149,15 @@
             "morphemes": [
               {
                 "form": "þēod",
-                "gloss": "þēodcyninga"
+                "gloss": "people"
               },
               {
-                "form": "cyninga",
-                "gloss": "NOUN"
+                "form": "cyning",
+                "gloss": "king"
+              },
+              {
+                "form": "a",
+                "gloss": "GEN.PL"
               }
             ]
           }
@@ -450,10 +462,10 @@
         },
         {
           "id": "token-5-3",
-          "originalWord": "meodo-setla",
+          "originalWord": "meodo-setl-a",
           "trailingPunctuation": "",
-          "morphologicalGloss": "meodosetla",
-          "sourceGlossTex": "meodosetla",
+          "morphologicalGloss": "mead-bench-GEN.PL",
+          "sourceGlossTex": "mead-bench-\\textsc{gen.pl}",
           "analysis": {
             "lemma": "meodosetla",
             "partOfSpeech": "noun",
@@ -463,11 +475,15 @@
             "morphemes": [
               {
                 "form": "meodo",
-                "gloss": "meodosetla"
+                "gloss": "mead"
               },
               {
-                "form": "setla",
-                "gloss": "NOUN"
+                "form": "setl",
+                "gloss": "bench"
+              },
+              {
+                "form": "a",
+                "gloss": "GEN.PL"
               }
             ]
           }
@@ -964,10 +980,10 @@
         },
         {
           "id": "token-10-2",
-          "originalWord": "hron-rāde",
+          "originalWord": "hron-rād-e",
           "trailingPunctuation": "",
-          "morphologicalGloss": "hronrāde",
-          "sourceGlossTex": "hronrāde",
+          "morphologicalGloss": "whale-road-DAT.SG",
+          "sourceGlossTex": "whale-road-\\textsc{dat.sg}",
           "analysis": {
             "lemma": "hronrāde",
             "partOfSpeech": "noun",
@@ -977,11 +993,15 @@
             "morphemes": [
               {
                 "form": "hron",
-                "gloss": "hronrāde"
+                "gloss": "whale"
               },
               {
-                "form": "rāde",
-                "gloss": "NOUN"
+                "form": "rād",
+                "gloss": "road"
+              },
+              {
+                "form": "e",
+                "gloss": "DAT.SG"
               }
             ]
           }
@@ -1156,5 +1176,5 @@
     }
   ],
   "blocks": [],
-  "texSource": "%!TEX TS-program = xelatex\n% !BIB program = biber\n\\documentclass{article}[12pt]\n\\usepackage{setspace}\n\\singlespacing\n\\usepackage{ifpdf}\n\\usepackage{fontspec}\n\\usepackage[margin=0.75in]{geometry}\n\\usepackage{amsthm, amsmath, amssymb}\n\\usepackage[linguistics]{forest}\n\\usepackage{adjustbox}\n\\usepackage[loose,nice]{units}\n\\usepackage{tipa}\n\\usepackage{graphicx}\n\\usepackage{covington}\n\\usepackage{gb4e}\n\\noautomath\n\\let\\eachwordone=\\normalfont\n\\let\\eachwordone=\\textbf\n\\usepackage{hanging}\n\\usepackage{textgreek}\n\\usepackage{multirow}\n\\usepackage{multicol}\n\\setlength{\\multicolsep}{0pt}\n\\usepackage[normalem]{ulem}\n\\usepackage{stmaryrd}\n\\usepackage{hyperref}\n\\usepackage[backend=biber,style=unified,citestyle=authoryear-comp,maxcitenames=3,maxbibnames=99]{biblatex}\n\\DeclareFieldFormat{postnote}{#1}\n\\renewcommand{\\postnotedelim}{\\addcolon\\space}\n\\usepackage[utf8x]{inputenc}\n\n\\title{\\textbf{Beowulf: Prologue (Lines 1–11)}}\n\\author{Translated and glossed by Anonymous (Nowell Codex)}\n\\date{September 30, 2026}\n\n\\addbibresource{Voyages_of_Ohthere_Wulfstan.bib}\n\n\\begin{document}\n\\maketitle\n\n\\section{Text}\n\n\\begin{exe}\n\\ex \\label{ex:paragraph.1} \\begin{xlist}\n\n\\ex{\\gll Hwæt! Wē Gār-Dena in ġeār-dagum,\\\\\nhwā wē gārdena in ġeārdagum\\\\\n\\glt `Listen! We of the Spear-Danes in days of yore,'}\n\n\\ex{\\gll þēod-cyninga, þrym ġefrūnon,\\\\\nþēodcyninga þrym ġefrūnon\\\\\n\\glt `of the people's kings, have heard of their glory,'}\n\n\\ex{\\gll hū ðā æþelingas ellen fremedon.\\\\\nhū sē æþelingas ellen fremedon\\\\\n\\glt `how those noble princes performed courageous deeds.'}\n\n\\ex{\\gll Oft Scyld Scēfing sceaþena þrēatum,\\\\\noft scyld scēfing sceaþena þrēatum\\\\\n\\glt `Often Scyld Scefing from troops of enemies,'}\n\n\\ex{\\gll monegum mǣġþum, meodo-setla oftēah,\\\\\nmonegum mǣġþum meodosetla oftēah\\\\\n\\glt `from many tribes, seized the mead-benches,'}\n\n\\ex{\\gll egsode eorlas, syððan ǣrest wearð\\\\\negsode eorlas syððan ǣrest wearð\\\\\n\\glt `terrified the earls, after he was first'}\n\n\\ex{\\gll fēasceaft funden; hē þæs frōfre ġebād,\\\\\nfēasceaft funden hē sē frōfre ġebād\\\\\n\\glt `found destitute; he experienced solace for that,'}\n\n\\ex{\\gll wēox under wolcnum, weorðmyndum þāh,\\\\\nweaxan under wolcnum weorðmyndum þāh\\\\\n\\glt `grew under the clouds, prospered in honors,'}\n\n\\ex{\\gll oðþæt him ǣġhwylċ þāra ymbsittendra\\\\\noðþæt hē ǣġhwylċ sē ymbsittendra\\\\\n\\glt `until each of the surrounding peoples'}\n\n\\ex{\\gll ofer hron-rāde hȳran scolde,\\\\\nofer hronrāde hȳran scolde\\\\\n\\glt `across the whale-road had to obey him,'}\n\n\\ex{\\gll gomban gyldan. Þæt wæs gōd cyning!\\\\\ngomban gyldan sē wesan gōd cyning\\\\\n\\glt `and pay tribute. That was a good king!'}\n\n\\end{xlist}\n\\end{exe}\n\n\\end{document}\n"
+  "texSource": "%!TEX TS-program = xelatex\n% !BIB program = biber\n\\documentclass{article}[12pt]\n\\usepackage{setspace}\n\\singlespacing\n\\usepackage{ifpdf}\n\\usepackage{fontspec}\n\\usepackage[margin=0.75in]{geometry}\n\\usepackage{amsthm, amsmath, amssymb}\n\\usepackage[linguistics]{forest}\n\\usepackage{adjustbox}\n\\usepackage[loose,nice]{units}\n\\usepackage{tipa}\n\\usepackage{graphicx}\n\\usepackage{covington}\n\\usepackage{gb4e}\n\\noautomath\n\\let\\eachwordone=\\normalfont\n\\let\\eachwordone=\\textbf\n\\usepackage{hanging}\n\\usepackage{textgreek}\n\\usepackage{multirow}\n\\usepackage{multicol}\n\\setlength{\\multicolsep}{0pt}\n\\usepackage[normalem]{ulem}\n\\usepackage{stmaryrd}\n\\usepackage{hyperref}\n\\usepackage[backend=biber,style=unified,citestyle=authoryear-comp,maxcitenames=3,maxbibnames=99]{biblatex}\n\\DeclareFieldFormat{postnote}{#1}\n\\renewcommand{\\postnotedelim}{\\addcolon\\space}\n\\usepackage[utf8x]{inputenc}\n\n\\title{\\textbf{Beowulf: Prologue (Lines 1–11)}}\n\\author{Translated and glossed by Anonymous (Nowell Codex)}\n\\date{September 30, 2026}\n\n\\addbibresource{Voyages_of_Ohthere_Wulfstan.bib}\n\n\\begin{document}\n\\maketitle\n\n\\section{Text}\n\n\\begin{exe}\n\\ex \\label{ex:paragraph.1} \\begin{xlist}\n\n\\ex{\\gll Hwæt! Wē Gār-Den-a in ġeār-dag-um,\\\\\nhwā wē Spear-Dane-\\textsc{gen.pl} in year-day-\\textsc{dat.pl}\\\\\n\\glt `Listen! We of the Spear-Danes in days of yore,'}\n\n\\ex{\\gll þēod-cyning-a, þrym ġefrūnon,\\\\\npeople-king-\\textsc{gen.pl} þrym ġefrūnon\\\\\n\\glt `of the people's kings, have heard of their glory,'}\n\n\\ex{\\gll hū ðā æþelingas ellen fremedon.\\\\\nhū sē æþelingas ellen fremedon\\\\\n\\glt `how those noble princes performed courageous deeds.'}\n\n\\ex{\\gll Oft Scyld Scēfing sceaþena þrēatum,\\\\\noft scyld scēfing sceaþena þrēatum\\\\\n\\glt `Often Scyld Scefing from troops of enemies,'}\n\n\\ex{\\gll monegum mǣġþum, meodo-setl-a oftēah,\\\\\nmonegum mǣġþum mead-bench-\\textsc{gen.pl} oftēah\\\\\n\\glt `from many tribes, seized the mead-benches,'}\n\n\\ex{\\gll egsode eorlas, syððan ǣrest wearð\\\\\negsode eorlas syððan ǣrest wearð\\\\\n\\glt `terrified the earls, after he was first'}\n\n\\ex{\\gll fēasceaft funden; hē þæs frōfre ġebād,\\\\\nfēasceaft funden hē sē frōfre ġebād\\\\\n\\glt `found destitute; he experienced solace for that,'}\n\n\\ex{\\gll wēox under wolcnum, weorðmyndum þāh,\\\\\nweaxan under wolcnum weorðmyndum þāh\\\\\n\\glt `grew under the clouds, prospered in honors,'}\n\n\\ex{\\gll oðþæt him ǣġhwylċ þāra ymbsittendra\\\\\noðþæt hē ǣġhwylċ sē ymbsittendra\\\\\n\\glt `until each of the surrounding peoples'}\n\n\\ex{\\gll ofer hron-rād-e hȳran scolde,\\\\\nofer whale-road-\\textsc{dat.sg} hȳran scolde\\\\\n\\glt `across the whale-road had to obey him,'}\n\n\\ex{\\gll gomban gyldan. Þæt wæs gōd cyning!\\\\\ngomban gyldan sē wesan gōd cyning\\\\\n\\glt `and pay tribute. That was a good king!'}\n\n\\end{xlist}\n\\end{exe}\n\n\\end{document}\n"
 }

@@ -1047,19 +1047,62 @@ export function tokenizeAndLemmatizeSentence(
     const analysis = lemmatizeOldEnglish(coreWord, "");
     const tokenId = `token-${sentenceIndex}-${tokenIdx + 1}`;
 
-    // If coreWord has hyphens (e.g. Gār-Dena, ġeār-dagum, bū-d-e), split morphemes
-    const morphemeParts = coreWord.includes("-") ? coreWord.split("-") : [coreWord];
-    const morphemes = morphemeParts.map((part, mIdx) => ({
-      id: `morpheme-${tokenIdx + 1}-${mIdx + 1}`,
-      morpheme: part,
-      gloss: mIdx === 0 ? analysis.lemma : analysis.pos.toUpperCase(),
-    }));
+    // If coreWord has hyphens (e.g. Gār-Den-a, ġeār-dag-um, bū-d-e), split morphemes
+    const morphemeParts = coreWord.includes("-") ? coreWord.split("-").filter(Boolean) : [coreWord];
+    const morphemes = morphemeParts.map((part, mIdx) => {
+      const lower = part.toLowerCase();
+      let mGloss = part;
+
+      // Check common inflectional and derivational suffixes
+      if (lower === "a" && mIdx === morphemeParts.length - 1) mGloss = "GEN.PL";
+      else if (lower === "um" && mIdx === morphemeParts.length - 1) mGloss = "DAT.PL";
+      else if (lower === "e" && mIdx === morphemeParts.length - 1) mGloss = "DAT.SG";
+      else if (lower === "es" && mIdx === morphemeParts.length - 1) mGloss = "GEN.SG";
+      else if (lower === "ne" && mIdx === morphemeParts.length - 1) mGloss = "ACC.SG.M";
+      else if (lower === "ra" && mIdx === morphemeParts.length - 1) mGloss = "GEN.PL";
+      else if (lower === "an" && mIdx === morphemeParts.length - 1) mGloss = "INF";
+      else if (lower === "on" && mIdx === morphemeParts.length - 1) mGloss = "PST.PL";
+      else if ((lower === "að" || lower === "eð") && mIdx === morphemeParts.length - 1) mGloss = "PRS.3SG";
+      else if (lower === "de" || lower === "te" || lower === "d") mGloss = "PST";
+      else if (lower === "en" && mIdx === morphemeParts.length - 1) mGloss = "PTCP";
+      else if (lower === "ing" || lower === "ung") mGloss = "son.of";
+      else if (lower === "ġe" && mIdx === 0) mGloss = "PFX";
+      else if (lower === "un" && mIdx === 0) mGloss = "UN";
+      else if (lower === "gār") mGloss = "Spear";
+      else if (lower === "den" || lower === "dena") mGloss = "Dane";
+      else if (lower === "þēod") mGloss = "people";
+      else if (lower === "cyning") mGloss = "king";
+      else if (lower === "ġeār") mGloss = "year";
+      else if (lower === "dag") mGloss = "day";
+      else if (lower === "meodo") mGloss = "mead";
+      else if (lower === "setl") mGloss = "bench";
+      else if (lower === "hron") mGloss = "whale";
+      else if (lower === "rād") mGloss = "road";
+      else {
+        const subAnalysis = lemmatizeOldEnglish(part, "");
+        mGloss = subAnalysis.lemma || part;
+      }
+
+      return {
+        id: `morpheme-${tokenIdx + 1}-${mIdx + 1}`,
+        morpheme: part,
+        gloss: mGloss,
+      };
+    });
+
+    const combinedGloss = morphemes.length > 1
+      ? morphemes.map((m) => m.gloss).join("-")
+      : (analysis.lemma || coreWord);
+
+    const texGloss = morphemes.length > 1
+      ? morphemes.map((m) => /^[A-Z0-9.]+$/.test(m.gloss) ? `\\textsc{${m.gloss.toLowerCase()}}` : m.gloss).join("-")
+      : (analysis.lemma || coreWord);
 
     return {
       id: tokenId,
       sourceForm: `${coreWord}${trailingPunct}`,
-      sourceGloss: analysis.lemma,
-      literalTexGloss: analysis.lemma,
+      sourceGloss: combinedGloss,
+      literalTexGloss: texGloss,
       lemma: analysis.lemma,
       pos: analysis.pos,
       explanation: analysis.definition || `${analysis.pos} (${analysis.lemma})`,

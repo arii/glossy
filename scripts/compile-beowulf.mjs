@@ -5,11 +5,11 @@ import { exportToGb4eLatex } from "../data/latex-export.ts";
 
 const lines = [
   {
-    oe: "Hwæt! Wē Gār-Dena in ġeār-dagum,",
+    oe: "Hwæt! Wē Gār-Den-a in ġeār-dag-um,",
     en: "Listen! We of the Spear-Danes in days of yore,",
   },
   {
-    oe: "þēod-cyninga, þrym ġefrūnon,",
+    oe: "þēod-cyning-a, þrym ġefrūnon,",
     en: "of the people's kings, have heard of their glory,",
   },
   {
@@ -21,7 +21,7 @@ const lines = [
     en: "Often Scyld Scefing from troops of enemies,",
   },
   {
-    oe: "monegum mǣġþum, meodo-setla oftēah,",
+    oe: "monegum mǣġþum, meodo-setl-a oftēah,",
     en: "from many tribes, seized the mead-benches,",
   },
   {
@@ -41,7 +41,7 @@ const lines = [
     en: "until each of the surrounding peoples",
   },
   {
-    oe: "ofer hron-rāde hȳran scolde,",
+    oe: "ofer hron-rād-e hȳran scolde,",
     en: "across the whale-road had to obey him,",
   },
   {
