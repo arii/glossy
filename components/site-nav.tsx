@@ -1,12 +1,12 @@
 import Link from "next/link";
 
 type SiteNavProps = {
-  current: "read" | "edit";
-  slug: string;
+  current?: "read" | "edit" | "docs";
+  slug?: string;
   canEdit?: boolean;
 };
 
-export function SiteNav({ current, slug, canEdit = true }: SiteNavProps) {
+export function SiteNav({ current, slug = "ohthere-wulfstan", canEdit = true }: SiteNavProps) {
   return (
     <nav className="site-nav" aria-label="Site">
       <Link href="/" className="site-nav-home">Glossy</Link>
@@ -14,6 +14,7 @@ export function SiteNav({ current, slug, canEdit = true }: SiteNavProps) {
       {canEdit && (
         <Link href={`/edit/${slug}`} aria-current={current === "edit" ? "page" : undefined}>Edit</Link>
       )}
+      <Link href="/docs" aria-current={current === "docs" ? "page" : undefined}>Architecture & FAQ</Link>
     </nav>
   );
 }

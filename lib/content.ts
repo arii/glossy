@@ -3,6 +3,7 @@ import path from "node:path";
 import matter from "gray-matter";
 import { parseMDX } from "@tinacms/mdx";
 import type { DictionaryEntry, ManuscriptDocument, TextDocument, ReadingSentence, InterlinearWord, Morpheme, PartOfSpeech } from "./types";
+import { resolveOldEnglishLexicon } from "./old-english-lexicon";
 
 const contentDirectory = path.join(process.cwd(), "content", "texts");
 
@@ -176,15 +177,7 @@ export function parseTexToLegacyTextDocument(): TextDocument {
         });
       }
 
-      // Infer initial POS and inflections from gloss indicators
-      let pos = "noun";
-      if (sourceGloss.toLowerCase().includes("say") || sourceGloss.toLowerCase().includes("dwell") || sourceGloss.toLowerCase().includes("travel")) {
-        pos = "verb";
-      } else if (sourceGloss.toUpperCase().includes("DET") || sourceGloss.toUpperCase().includes("DEM")) {
-        pos = "determiner";
-      } else if (sourceGloss.toUpperCase().includes("3SG") || sourceGloss.toUpperCase().includes("3PL")) {
-        pos = "pronoun";
-      }
+      const lex = resolveOldEnglishLexicon(sourceForm, sourceGloss);
 
       const caseVal = sourceGloss.toUpperCase().includes("NOM") ? "nominative" :
                       sourceGloss.toUpperCase().includes("ACC") ? "accusative" :
@@ -210,8 +203,8 @@ export function parseTexToLegacyTextDocument(): TextDocument {
         trailingPunctuation: punctuationMatch ? punctuationMatch[0] : undefined,
         sourceGlossTex: literalTexGloss,
         analysis: {
-          lemma: sourceForm.replace(/^-|-$/g, ""),
-          partOfSpeech: pos as PartOfSpeech,
+          lemma: lex.lemma,
+          partOfSpeech: (lex.pos || "noun") as PartOfSpeech,
           features: {
             case: caseVal,
             number: numberVal,
@@ -219,9 +212,9 @@ export function parseTexToLegacyTextDocument(): TextDocument {
             tense: tenseVal,
           },
           morphemes,
-          definition: sourceGloss,
-          phonetic: "",
-          wiktionaryUrl: "",
+          definition: lex.definition || sourceGloss,
+          phonetic: lex.ipa || "",
+          wiktionaryUrl: lex.wiktionaryUrl,
         },
       });
     }

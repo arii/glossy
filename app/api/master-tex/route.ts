@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import fs from "node:fs";
 import path from "node:path";
+import { resolveOldEnglishLexicon } from "../../../lib/old-english-lexicon";
 
 interface Morpheme {
   id: string;
@@ -150,15 +151,7 @@ export async function GET() {
           });
         }
 
-        // Infer initial POS and inflections from gloss indicators
-        let pos = "noun";
-        if (sourceGloss.toLowerCase().includes("say") || sourceGloss.toLowerCase().includes("dwell") || sourceGloss.toLowerCase().includes("travel")) {
-          pos = "verb";
-        } else if (sourceGloss.toUpperCase().includes("DET") || sourceGloss.toUpperCase().includes("DEM")) {
-          pos = "determiner";
-        } else if (sourceGloss.toUpperCase().includes("3SG") || sourceGloss.toUpperCase().includes("3PL")) {
-          pos = "pronoun";
-        }
+        const lex = resolveOldEnglishLexicon(sourceForm, sourceGloss);
 
         const caseVal = sourceGloss.toUpperCase().includes("NOM") ? "nominative" :
                         sourceGloss.toUpperCase().includes("ACC") ? "accusative" :
@@ -180,9 +173,9 @@ export async function GET() {
           sourceForm: rawSurf, // Hold raw token with punctuation in place for clean flow spacing
           sourceGloss,
           literalTexGloss,
-          lemma: sourceForm.replace(/^-|-$/g, ""),
-          pos,
-          explanation: sourceGloss,
+          lemma: lex.lemma,
+          pos: lex.pos,
+          explanation: lex.definition || sourceGloss,
           inflections: {
             case: caseVal,
             number: numberVal,
@@ -190,8 +183,8 @@ export async function GET() {
             tense: tenseVal,
           },
           morphemes,
-          ipa: "",
-          wiktionaryUrl: "",
+          ipa: lex.ipa || "",
+          wiktionaryUrl: lex.wiktionaryUrl,
         });
       }
 

@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { SiteNav } from "./site-nav";
 import { exportToGb4eLatex } from "../data/latex-export";
+import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
 import {
   BookOpen,
   RefreshCw,
@@ -132,7 +133,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
   // Backup snapshot for "Discard Changes" comparison
   const [savedSnapshot, setSavedSnapshot] = useState<string>(() => JSON.stringify(mapLegacyTextDocToGlossDoc(initialDocument)));
 
-  const storageKey = "glossy_document_ohthere_full";
+  const storageKey = "glossy_document_ohthere_full_v3";
 
   // Ingest from API (/api/master-tex) helper
   const loadFromMasterTex = async (confirmOverwrite = false) => {
@@ -167,15 +168,36 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
 
   // Initial mount load sequence
   useEffect(() => {
+    // Clear old legacy corrupted caches
+    try {
+      window.localStorage.removeItem("glossy_document_ohthere_full");
+      window.localStorage.removeItem("glossy_document_ohthere_full_v2");
+    } catch {}
+
     const cached = window.localStorage.getItem(storageKey);
     if (cached) {
       try {
         const parsed = JSON.parse(cached) as GlossDocument;
-        setDocumentState(parsed);
-        setSavedSnapshot(cached);
-        if (parsed.sentences.length > 0) {
-          setActiveSentenceId(parsed.sentences[0].id);
-          setActiveTokenId(parsed.sentences[0].tokens[0]?.id || "");
+        // Sanitize any residual footnote macro strings in translations
+        const sanitized: GlossDocument = {
+          ...parsed,
+          sentences: parsed.sentences.map((s) => ({
+            ...s,
+            freeTranslation: stripLatexFootnotes(s.freeTranslation)
+              .replace(/\\(?:textit|textbf|textsc|emph)\{([^}]+)\}/g, "$1")
+              .replace(/\\href\{[^}]+\}\{([^}]+)\}/g, "$1")
+              .replace(/\\url\{[^}]+\}/g, "")
+              .replace(/^[`'‘"“\s]+|[`'’"”\}\s]+$/g, "")
+              .replace(/\s+/g, " ")
+              .trim(),
+          })),
+        };
+
+        setDocumentState(sanitized);
+        setSavedSnapshot(JSON.stringify(sanitized));
+        if (sanitized.sentences.length > 0) {
+          setActiveSentenceId(sanitized.sentences[0].id);
+          setActiveTokenId(sanitized.sentences[0].tokens[0]?.id || "");
         }
       } catch {
         // Fallback to reload if JSON is corrupt
@@ -260,18 +282,20 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
           });
         }
 
+        const lex = resolveOldEnglishLexicon(sourceForm, sourceGloss);
+
         tokens.push({
           id: tokenId,
           sourceForm: rawSurf,
           sourceGloss,
           literalTexGloss,
-          lemma: sourceForm.replace(/^-|-$/g, ""),
-          pos: "noun",
-          explanation: sourceGloss,
+          lemma: lex.lemma,
+          pos: lex.pos,
+          explanation: lex.definition || sourceGloss,
           inflections: {},
           morphemes,
-          ipa: "",
-          wiktionaryUrl: "",
+          ipa: lex.ipa || "",
+          wiktionaryUrl: lex.wiktionaryUrl,
         });
       }
 

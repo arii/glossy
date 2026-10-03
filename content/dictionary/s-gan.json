@@ -1,5 +1,6 @@
 {
   "word": "sǣ-d-e",
+  "lemma": "secgan",
   "pronunciation": "/ˈsæː.de/",
   "sourceGloss": "say-PST-IND.3SG",
   "morphemes": [
@@ -17,5 +18,6 @@
     }
   ],
   "inflection": "tense: past, mood: indicative, person: 3, number: singular",
-  "definition": "said, spoke"
+  "definition": "said, spoke",
+  "wiktionaryUrl": "https://en.wiktionary.org/wiki/secgan#Old_English"
 }
