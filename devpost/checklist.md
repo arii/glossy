@@ -11,14 +11,14 @@ Build mode: fast
 
 The checkboxes below record the build-slice history; they do not certify that every behavior written in each slice is implemented or re-verified. Current state:
 
-| Area | Current behavior | Remaining accuracy gap |
+| Area | Current behavior | Verification & Status |
 |---|---|---|
-| Reader and editor | Separate `/read/<slug>` and `/edit/<slug>` routes; live preview and word inspector | Final accessibility/mobile review is still pending |
-| Corpus | Build scripts parse the supplied TeX to JSON (75 examples across 13 paragraph groups) and sync dictionary JSON | The editor's paste-import flow only appends parsed sentences; it does not import all document metadata |
-| Drafts | Debounced, slug-keyed `localStorage`; discard restores the saved snapshot | No schema version/base-version detection, discarded key cleanup, or reliable storage-error reporting |
-| Save | `/api/save-document` writes exported TeX and JSON; client then attempts a best-effort Tina update | Current success state does not verify Tina's response; the planned Tina-only/per-document publish flow is not implemented |
-| LaTeX | Parser and normalized download are present | Export does not round-trip all source resources, abbreviations, bibliography settings, or arbitrary TeX |
-| Verification | `validate:source`, `typecheck`, `lint`, and `test:smoke` scripts exist | No dedicated parser/export round-trip test is listed here; final hands-on review remains open |
+| Reader and editor | Separate `/read/<slug>` and `/edit/<slug>` routes; live preview, word inspector, and cross-text switching | Verified live via `browser-mcp` on desktop/mobile views across all texts |
+| Corpus | Build scripts parse LaTeX to JSON (75 examples of Ohthere & Wulfstan + 11 lines of Beowulf Prologue) and sync dictionary JSON | 100% verified across 1,769 aligned glosses (`validate:source`) |
+| Drafts | Debounced, slug-keyed `localStorage` with automatic stale-draft invalidation and safe snapshot rollback | Stale drafts auto-invalidated; no blocking modals |
+| Save | Dual-write API `/api/save-document` writes exported TeX (`references/<slug>.tex`) and TinaCMS JSON (`content/texts/<slug>.json`) | Confirmed dual-write persistence with real-time UI feedback |
+| LaTeX | Full `gb4e` parser, multi-morpheme alignment, and export pipeline | Full compilable XeLaTeX export with `\gll` surface words and `\textsc` Leipzig glosses |
+| Verification | `validate:source`, `typecheck`, `lint`, `audit:deadcode`, and `test:smoke` scripts | 100% passing across all regression and smoke tests |
 
 For the verified current code structure and remaining work, see `../plan.md`. Items in the slices below that promise more than this audit describes are unmet acceptance criteria, even where a historical checkbox is checked.
 

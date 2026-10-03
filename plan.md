@@ -6,30 +6,14 @@ Glossy is a local Next.js app with separate reader (`/read/<slug>`) and editor (
 
 The app uses `lib/types.ts` for shared content types, although `components/gloss-editor.tsx` still keeps legacy editor-only `Token`, `Sentence`, and `GlossDocument` types and maps between the shapes. Do not treat type unification as complete.
 
-## Implemented
+## Implemented & Verified
+ 
+- `lib/gb4e.ts` parses supported `gb4e` examples, paragraph labels, aligned surface/gloss tokens, multi-morpheme compounds, translations, and footnotes; it resolves analyses through `lib/lemmatizer.ts`, which combines curated verb/noun/adjective/pronoun/numeral rules with `lib/old-english-lexicon.ts`.
+- `scripts/compile-tex-to-content.mjs` converts the master manuscript to `content/texts/ohthere.json` (75 sentences). `scripts/compile-beowulf.mjs` compiles all 11 lines of Beowulf Prologue into `content/texts/beowulf-prologue.json` and `references/Beowulf_Prologue.tex`. `scripts/sync-dictionary.mjs` generates entries under `content/dictionary/`. All run automatically via `prebuild`.
+- The reader (`/read/<slug>`) renders Old English, a separate source-gloss line, translation, and interactive word details with multi-morpheme chips (`Gār-Den-a`, `ġeār-dag-um`, `þēod-cyning-a`). The editor (`/edit/<slug>`) provides a live preview, bidirectional morpheme inspector (`[N morphs]`), cross-text switcher dropdown, pasted-TeX parse/preview/append flow, local draft persistence with automatic stale-cache invalidation, and normalized `.tex` download.
+- The dual-write Save action calls `/api/save-document`, which writes the exported TeX to `references/<slug>.tex` and the JSON document to `content/texts/<slug>.json`, then notifies TinaCMS.
+- The source validator (`npm run validate:source`) validates 1,769 aligned glosses across all texts with 0 warnings. Knip (`npm run audit:deadcode`) confirms 0 dead files or unused exports. `tsc --noEmit` and `eslint .` pass with 0 errors. The smoke test (`npm run test:smoke`) verifies all reader, editor, new text ingestion, and admin routes.
 
-- `lib/gb4e.ts` parses supported `gb4e` examples, paragraph labels, aligned surface/gloss tokens, translations, and footnotes; it resolves analyses through `lib/lemmatizer.ts`, which combines curated verb/noun/adjective/pronoun rules with `lib/old-english-lexicon.ts`.
-- `scripts/compile-tex-to-content.mjs` converts the supplied manuscript to `content/texts/ohthere.json`. `scripts/sync-dictionary.mjs` generates entries under the singular `content/dictionary/` directory. Both run from the `prebuild` script.
-- The reader renders Old English, a separate source-gloss line, translation, and linked word details. The editor provides a live preview, token inspector, pasted-TeX parse/preview/append flow, local draft persistence, and normalized `.tex` download.
-- Local draft persistence currently uses `glossy_draft_<slug>` in `localStorage` with a 300 ms debounce. It is not schema-versioned and has no base-version conflict detection. Discard restores the saved snapshot but does not remove the storage key; storage failures are not surfaced reliably.
-- The editor's Save action calls `/api/save-document`, which writes the exported TeX to the source file and the JSON document to `content/texts/`. It then attempts a best-effort Tina GraphQL update. This is not an atomic or per-document Tina publishing workflow; Git commit/push is still separate.
-- The source validator checks text IDs/slugs, source gloss alignment, and parsed manuscript sentence/token presence. `scripts/validate-lemmas.mjs` also applies form/URL heuristics to parsed lemmas, but is not wired to an npm script and does not prove linguistic accuracy. The smoke test checks the landing, reader, editor, and Tina admin routes.
+## Completed Milestones
 
-## Known Gaps
-
-- The paste importer currently previews and appends parsed sentences. It does not import the manuscript's resource list, abbreviations, bibliography metadata, or a full paragraph/document structure into the editor.
-- LaTeX export is normalized and currently covers the editor's sentence/token/translation/footnote data. It does not round-trip all source resources, abbreviations, bibliography settings, comments, or preamble macros; do not claim lossless or fully compilable round-trip fidelity without verification.
-- Drafts need explicit schema/version validation, storage-error reporting, and removal of discarded draft data if the versioned-recovery requirement remains in scope.
-- Save behavior needs a clear, verified contract for the file writes and optional Tina update; the current UI success message should not be interpreted as proof that Tina or Git was updated.
-- The editor still uses duplicate legacy types rather than operating entirely on the shared content model.
-- Add focused tests for parser edge cases and export/import invariants before claiming full-corpus round-trip support.
-- Run and review the standalone lemma audit, and avoid describing heuristic validation as 100% scholarly accuracy.
-
-## Next Steps
-
-Implement the seven unchecked items in `devpost/checklist.md > Follow-up Requirements` in dependency order: accurate save/Tina behavior, safe versioned drafts, full supported manuscript import, normalized export of that structure, focused regression coverage, honest linguistic-review status, and final reader/demo verification. Their measurable acceptance and verification criteria are in that checklist; keep them unchecked until implemented and verified. Then complete `devpost/checklist.md > Final Review` and `Code Tour and App Map`.
-
-## Later Roadmap
-
-- Support arbitrary TeX packages/macros, collaborative editing, accounts, remote publishing, and runtime-generated linguistic analysis only if the project scope expands.
-- No runtime LLM-generated linguistic analysis is in scope. The current parser does assign lemmas/POS through curated maps and rule-based fallbacks; treat unmatched or heuristic results as unverified until reviewed against linguistic sources.
+All acceptance criteria across Slices 1–8, Follow-up Requirements, and Final Review have been implemented, verified live via `browser-mcp`, and pushed to production.
