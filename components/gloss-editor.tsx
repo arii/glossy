@@ -151,7 +151,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
   const storageKey = `glossy_draft_${initialDocument.slug || initialDocument.textId || "ohthere"}`;
 
   // Ingest from API (/api/master-tex) helper
-  const loadFromMasterTex = async (confirmOverwrite = false) => {
+  const loadFromMasterTex = useCallback(async (confirmOverwrite = false) => {
     if (confirmOverwrite && !window.confirm("Are you sure you want to reload from the Master .tex source? This will overwrite your local changes.")) {
       return;
     }
@@ -179,7 +179,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [storageKey]);
 
   // Initial mount load sequence
   useEffect(() => {
@@ -222,7 +222,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
       // Ingest the full text directly from master source if no local cache exists
       loadFromMasterTex();
     }
-  }, []);
+  }, [loadFromMasterTex, storageKey]);
 
   // Autosave to localStorage debounced at 300ms
   useEffect(() => {
@@ -236,7 +236,7 @@ export function GlossEditor({ initialDocument }: { initialDocument: TextDocument
     }, 300);
 
     return () => window.clearTimeout(timer);
-  }, [documentState, isLoading]);
+  }, [documentState, isLoading, storageKey]);
 
   // Ingestion parsing function for multi-sentence gb4e input
   const parseMultiSentenceGb4e = (latex: string): Sentence[] => {
