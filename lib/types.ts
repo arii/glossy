@@ -60,6 +60,7 @@ export type InterlinearWord = {
 export type ReadingSentence = {
   id: string;
   translation: string;
+  footnotes?: string[];
   words: InterlinearWord[];
 };
 

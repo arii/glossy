@@ -1,5 +1,6 @@
 "use client";
 
+import { SiteNav } from "./site-nav";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTina } from "tinacms/dist/react";
 import { TinaMarkdown, type Components } from "tinacms/dist/rich-text";
@@ -197,6 +198,7 @@ function ReadingPageInner({
     <main className="page-shell">
       <article className="reading-surface">
         <header className="page-header">
+          <SiteNav current="read" slug={selectedSlug} canEdit={texts.some((text) => text.slug === selectedSlug)} />
           <p className="eyebrow">Old English visual gloss</p>
           {allItems.length > 1 && (
             <div className="text-picker">

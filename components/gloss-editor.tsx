@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { SiteNav } from "./site-nav";
+import { parseGb4e, type Gb4eImport } from "../lib/gb4e";
 import type { InterlinearWord, ReadingSentence, TextDocument } from "../lib/types";
 
 type EditableDocument = TextDocument & { fileName: string; sentences: ReadingSentence[] };
@@ -45,6 +47,39 @@ export function GlossEditor({ initialDocument }: { initialDocument: EditableDocu
     }, 400);
     return () => window.clearTimeout(timer);
   }, [document, savedSnapshot, draftKey]);
+
+  const [latexSource, setLatexSource] = useState("");
+  const [latexResult, setLatexResult] = useState<Gb4eImport | null>(null);
+
+  const applyLatex = () => {
+    if (!latexResult || latexResult.sentences.length === 0) return;
+    const imported = latexResult.sentences.map((sentence) => ({
+      ...sentence,
+      footnotes: latexResult.footnotes[sentence.id],
+    }));
+    setDocument((current) => {
+      const existing = new Map(current.sentences.map((sentence) => [sentence.id, sentence]));
+      // Keep existing analysis for words whose source form is unchanged.
+      const merged = imported.map((sentence) => {
+        const old = existing.get(sentence.id);
+        return {
+          ...sentence,
+          words: sentence.words.map((word, index) => {
+            const oldWord = old?.words[index];
+            return oldWord && oldWord.originalWord === word.originalWord
+              ? { ...word, analysis: oldWord.analysis, review: oldWord.review }
+              : word;
+          }),
+        };
+      });
+      const importedIds = new Set(merged.map((sentence) => sentence.id));
+      const rest = current.sentences.filter((sentence) => !importedIds.has(sentence.id));
+      return { ...current, sentences: [...merged, ...rest] };
+    });
+    setDraftNotice(`Imported ${imported.length} examples from LaTeX. Review them, then save.`);
+    setLatexResult(null);
+    setLatexSource("");
+  };
 
   const discardDraft = () => {
     if (!window.confirm("Discard unsaved changes and go back to the last saved version?")) return;
@@ -161,12 +196,12 @@ export function GlossEditor({ initialDocument }: { initialDocument: EditableDocu
       <div className="workspace">
         <header className="workspace-header">
           <div>
-            <p className="workspace-eyebrow">Glossy · Editing workspace</p>
+            <SiteNav current="edit" slug={document.slug} />
+            <p className="workspace-eyebrow">Editing workspace</p>
             <h1>{document.title}</h1>
             <p className="source-line">{document.source}</p>
           </div>
           <nav className="workspace-actions" aria-label="Editor actions">
-            <a className="workspace-link" href={`/read/${document.slug}`}>Open reader</a>
             <a className="workspace-link" href="/admin/index.html">TinaCMS</a>
             <span className={`editor-dirty is-${isDirty ? "dirty" : "clean"}`}>
               {isDirty ? "Unsaved changes" : "No unsaved changes"}
@@ -232,6 +267,47 @@ export function GlossEditor({ initialDocument }: { initialDocument: EditableDocu
               />
             </label>
             <p className="editor-translation">‘{activeSentence.translation}’</p>
+          </section>
+
+          <section className="workspace-panel editor-import" aria-labelledby="import-heading">
+            <p className="workspace-eyebrow">Import</p>
+            <h2 id="import-heading">Paste gb4e LaTeX</h2>
+            <label className="editor-field">
+              Paste one or more gb4e examples (gll / glt blocks)
+              <textarea
+                rows={6}
+                value={latexSource}
+                onChange={(event) => {
+                  setLatexSource(event.target.value);
+                  setLatexResult(null);
+                }}
+              />
+            </label>
+            <button className="workspace-link" type="button" disabled={!latexSource.trim()} onClick={() => setLatexResult(parseGb4e(latexSource))}>
+              Preview import
+            </button>
+            {latexResult && (
+              <div role="status">
+                <p>
+                  Found {latexResult.sentences.length} examples,{" "}
+                  {latexResult.sentences.reduce((total, sentence) => total + sentence.words.length, 0)} words,{" "}
+                  {Object.keys(latexResult.footnotes).length} with footnotes.
+                </p>
+                {latexResult.warnings.length > 0 && (
+                  <ul>{latexResult.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul>
+                )}
+                {latexResult.sentences.length > 0 && (
+                  <>
+                    <button className="workspace-button" type="button" onClick={applyLatex}>
+                      Add or update these examples
+                    </button>
+                    <p className="editor-source-note">
+                      Examples with the same ID are replaced; analysis is kept for words whose source form is unchanged. Nothing is saved until you click Save to TinaCMS.
+                    </p>
+                  </>
+                )}
+              </div>
+            )}
           </section>
 
           <aside className="editor-inspector" aria-labelledby="inspector-heading">

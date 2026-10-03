@@ -48,6 +48,7 @@ export default defineConfig({
             fields: [
               { type: "string", name: "id", label: "Example ID", required: true },
               { type: "string", name: "translation", label: "English Translation", ui: { component: "textarea" } },
+              { type: "string", name: "footnotes", label: "Footnotes", list: true, ui: { component: "textarea" } },
               {
                 type: "object",
                 name: "words",

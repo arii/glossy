@@ -702,3 +702,12 @@ h2 {
 .editor-dirty { align-self: center; font-size: 0.9rem; }
 .editor-dirty.is-dirty { color: #b45309; font-weight: 600; }
 .editor-dirty.is-clean { color: #78716c; }
+
+.editor-import { grid-column: 1 / -1; order: 3; }
+.editor-import textarea { font-family: monospace; width: 100%; }
+
+.site-nav { display: flex; gap: 1rem; align-items: baseline; margin-bottom: 0.75rem; font-size: 0.95rem; }
+.site-nav a { color: #57534e; text-decoration: none; padding-bottom: 2px; }
+.site-nav a:hover { color: #92400e; }
+.site-nav a[aria-current="page"] { color: #1c1917; font-weight: 600; border-bottom: 2px solid #b45309; }
+.site-nav .site-nav-home { font-weight: 700; margin-right: 0.5rem; }

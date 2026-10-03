@@ -50,11 +50,12 @@ if (reader.includes("Hear word")) {
 }
 
 await check("/edit/ohthere-wulfstan", [
-  "Glossy · Editing workspace",
+  "Editing workspace",
   "Live preview",
   "Source form",
   "Explanation",
-  "Open reader",
+  "Read",
+  "Paste one or more gb4e",
   "Save to TinaCMS",
 ]);
 await check("/read/ohthere-wulfstan", ["The voyages of Ohthere and Wulfstan"]);
