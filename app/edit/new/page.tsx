@@ -28,20 +28,48 @@ const PRESETS: Preset[] = [
     sourceFile: "references/Beowulf_Prologue.tex",
     lines: [
       {
-        oe: "Hwæt! Wē Gār-Dena in ġeār-dagum, þēod-cyninga, þrym ġefrūnon, hū ðā æþelingas ellen fremedon.",
-        en: "Listen! We have heard of the glory of the Spear-Danes, of the kings of the people in days of old, how those noble ones performed deeds of courage.",
+        oe: "Hwæt! Wē Gār-Dena in ġeār-dagum,",
+        en: "Listen! We of the Spear-Danes in days of yore,",
       },
       {
-        oe: "Oft Scyld Scēfing sceaþena þrēatum, monegum mǣġþum, meodo-setla oftēah, egsode eorlas.",
-        en: "Often Scyld Scefing snatched mead-benches from troops of enemies, from many tribes, terrifying the warriors.",
+        oe: "þēod-cyninga, þrym ġefrūnon,",
+        en: "of the people's kings, have heard of their glory,",
       },
       {
-        oe: "Syððan ǣrest wearð fēasceaft funden, hē þæs frōfre ġebād, wēox under wolcnum, weorðmyndum þāh, oðþæt him ǣġhwylċ þāra ymbsittendra ofer hron-rāde hȳran scolde, gomban gyldan.",
-        en: "Since he was first found destitute, he experienced solace for that; he grew under the heavens, prospered in honors, until each of the neighboring peoples across the whale-road had to obey him and yield tribute.",
+        oe: "hū ðā æþelingas ellen fremedon.",
+        en: "how those noble princes performed courageous deeds.",
       },
       {
-        oe: "Þæt wæs gōd cyning!",
-        en: "That was a good king!",
+        oe: "Oft Scyld Scēfing sceaþena þrēatum,",
+        en: "Often Scyld Scefing from troops of enemies,",
+      },
+      {
+        oe: "monegum mǣġþum, meodo-setla oftēah,",
+        en: "from many tribes, seized the mead-benches,",
+      },
+      {
+        oe: "egsode eorlas, syððan ǣrest wearð",
+        en: "terrified the earls, after he was first",
+      },
+      {
+        oe: "fēasceaft funden; hē þæs frōfre ġebād,",
+        en: "found destitute; he experienced solace for that,",
+      },
+      {
+        oe: "wēox under wolcnum, weorðmyndum þāh,",
+        en: "grew under the clouds, prospered in honors,",
+      },
+      {
+        oe: "oðþæt him ǣġhwylċ þāra ymbsittendra",
+        en: "until each of the surrounding peoples",
+      },
+      {
+        oe: "ofer hron-rāde hȳran scolde,",
+        en: "across the whale-road had to obey him,",
+      },
+      {
+        oe: "gomban gyldan. Þæt wæs gōd cyning!",
+        en: "and pay tribute. That was a good king!",
       },
     ],
   },

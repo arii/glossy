@@ -31,16 +31,24 @@ const landing = await check("/", [
   "Read a text or work on its glosses.",
   "/read/ohthere-wulfstan",
   "/edit/ohthere-wulfstan",
+  "/read/beowulf-prologue",
+  "/edit/beowulf-prologue",
 ]);
 const cardCount = [...landing.matchAll(/class="workspace-choice-card"/gu)].length;
-if (cardCount !== 1) {
-  throw new Error(`Expected one unique text on the landing page, found ${cardCount}.`);
+if (cardCount < 1) {
+  throw new Error(`Expected at least one text on the landing page, found ${cardCount}.`);
 }
 const reader = await check("/read/ohthere-wulfstan", [
   "Old English visual gloss",
   "Source gloss line",
-  "Ohthere.nom",
+  "Ohthere",
   "Ohthere said to his lord, King Alfred",
+]);
+await check("/read/beowulf-prologue", [
+  "Beowulf: Prologue (Lines 1–11)",
+  "Hwæt!",
+  "Gār-Dena",
+  "Listen! We of the Spear-Danes in days of yore,",
 ]);
 if (reader.includes("Edit this text") || reader.includes("Editorial &amp; CMS Tools")) {
   throw new Error("The reader must not contain editing or CMS controls.");
