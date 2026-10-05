@@ -63,67 +63,67 @@ The reading experience should follow practical UX best practices: the text remai
 
 The student can read the selected Old English passage and identify annotated words or phrases.
 
-- [ ] The passage is legible on desktop and mobile layouts.
-- [ ] The reader is a separate page from the authoring workspace and contains no editing footer or CMS controls.
-- [ ] Old English characters, accents, and diacritics render correctly.
-- [ ] Each annotated Old English line has its source gloss on a separate line immediately beneath it; glosses are not interspersed with the source text.
-- [ ] Each passage block includes its corresponding translated English sentence clearly rendered.
-- [ ] The reading visualizer is clean and distraction-free; editing tools exist only on their separate authoring route.
-- [ ] The source gloss line preserves the token order of the Old English line, and both remain readable when they wrap on narrow screens.
-- [ ] Hovering over an annotated word or phrase on desktop reveals its gloss popup.
-- [ ] Tapping an annotated word or phrase on mobile reveals its gloss popup.
-- [ ] The popup is visually associated with the selected text.
-- [ ] Selecting another annotated word updates the popup to the new word.
-- [ ] The popup includes the word definition and conjugation or grammatical information when present.
-- [ ] The popup includes phonetic translation when present.
-- [ ] The popup includes a Wiktionary link when present, and that link can be followed.
-- [ ] No browser-generated speech control is shown; audible pronunciation is deferred until recorded audio or an IPA-compatible solution is reliable for Old English.
-- [ ] Text without a gloss remains readable as ordinary passage text.
-- [ ] Words with simple one-morpheme source glosses can be selected just like internally segmented words.
-- [ ] Multi-morpheme words have a stronger visual affordance and visibly separated morpheme details so they are rewarding to inspect.
-- [ ] Phonetic notation, conjugation syntax, and Old English diacritics remain visually distinguishable and correctly readable.
-- [ ] A selected word has a clear visual state, and the popup does not hide the word or make the surrounding passage unreadable.
-- [ ] The popup and its external link are usable with keyboard focus and touch as well as pointer interaction.
-- [ ] The popup closes when the reader clicks or taps outside it.
-- [ ] Escape, the close control, and outside dismissal restore focus to the word that opened the popup.
-- [ ] Gloss triggers expose whether their popup is expanded, and the popup has an accessible name tied to the selected word.
-- [ ] The popup's IPA includes a pronunciation source when available; no browser-generated speech is offered.
-- [ ] An editor can update passage text, translations, gloss tokens, lexical analysis, pronunciation fields, and source-review metadata in the dedicated Glossy workspace.
-- [ ] A content edit preserves stable token and lexical-entry IDs so existing token-to-explanation links continue to resolve.
-- [ ] The live editor exposes source form, readable source gloss, literal TeX gloss, linguistic analysis, morphemes, and review metadata without requiring raw JSON.
-- [ ] An editor can create a text in the shared text-agnostic model and make it available to the reader without changing application components.
-- [ ] Validation rejects duplicate text, paragraph, example, token, or lexical-entry IDs; missing lexical references; and imported surface/gloss token mismatches.
-- [ ] Source validation checks that each record's surface and literal TeX gloss are aligned in the same source gloss entry, rather than merely appearing somewhere in the manuscript.
-- [ ] Review metadata distinguishes source transcription checked against the manuscript from linguistic analysis that still needs scholarly review.
-- [ ] Heuristic or otherwise unreviewed lemma/POS/definition values remain distinguishable from scholarly-reviewed analysis; automated validation does not claim absolute accuracy.
+- [x] The passage is legible on desktop and mobile layouts.
+- [x] The reader is a separate page from the authoring workspace and contains no editing footer or CMS controls.
+- [x] Old English characters, accents, and diacritics render correctly.
+- [x] Each annotated Old English line has its source gloss on a separate line immediately beneath it; glosses are not interspersed with the source text.
+- [x] Each passage block includes its corresponding translated English sentence clearly rendered.
+- [x] The reading visualizer is clean and distraction-free; editing tools exist only on their separate authoring route.
+- [x] The source gloss line preserves the token order of the Old English line, and both remain readable when they wrap on narrow screens.
+- [x] Hovering over an annotated word or phrase on desktop reveals its gloss popup.
+- [x] Tapping an annotated word or phrase on mobile reveals its gloss popup.
+- [x] The popup is visually associated with the selected text.
+- [x] Selecting another annotated word updates the popup to the new word.
+- [x] The popup includes the word definition and conjugation or grammatical information when present.
+- [x] The popup includes phonetic translation when present.
+- [x] The popup includes a Wiktionary link when present, and that link can be followed.
+- [x] No browser-generated speech control is shown; audible pronunciation is deferred until recorded audio or an IPA-compatible solution is reliable for Old English.
+- [x] Text without a gloss remains readable as ordinary passage text.
+- [x] Words with simple one-morpheme source glosses can be selected just like internally segmented words.
+- [x] Multi-morpheme words have a stronger visual affordance and visibly separated morpheme details so they are rewarding to inspect.
+- [x] Phonetic notation, conjugation syntax, and Old English diacritics remain visually distinguishable and correctly readable.
+- [x] A selected word has a clear visual state, and the popup does not hide the word or make the surrounding passage unreadable.
+- [x] The popup and its external link are usable with keyboard focus and touch as well as pointer interaction.
+- [x] The popup closes when the reader clicks or taps outside it.
+- [x] Escape, the close control, and outside dismissal restore focus to the word that opened the popup.
+- [x] Gloss triggers expose whether their popup is expanded, and the popup has an accessible name tied to the selected word.
+- [x] The popup's IPA includes a pronunciation source when available; no browser-generated speech is offered.
+- [x] An editor can update passage text, translations, gloss tokens, lexical analysis, pronunciation fields, and source-review metadata in the dedicated Glossy workspace.
+- [x] A content edit preserves stable token and lexical-entry IDs so existing token-to-explanation links continue to resolve.
+- [x] The live editor exposes source form, readable source gloss, literal TeX gloss, linguistic analysis, morphemes, and review metadata without requiring raw JSON.
+- [x] An editor can create a text in the shared text-agnostic model and make it available to the reader without changing application components.
+- [x] Validation rejects duplicate text, paragraph, example, token, or lexical-entry IDs; missing lexical references; and imported surface/gloss token mismatches.
+- [x] Source validation checks that each record's surface and literal TeX gloss are aligned in the same source gloss entry, rather than merely appearing somewhere in the manuscript.
+- [x] Review metadata distinguishes source transcription checked against the manuscript from linguistic analysis that still needs scholarly review.
+- [x] Heuristic or otherwise unreviewed lemma/POS/definition values remain distinguishable from scholarly-reviewed analysis; automated validation does not claim absolute accuracy.
 
 ### Live Gloss Editing, Drafts, and Export
 
-- [ ] The editor can select an example and token and edit its source form, source gloss, translation, and available lexical analysis in an inspector.
-- [ ] Editing a token updates the interlinear preview and its linked reader-style explanation immediately.
-- [ ] Edits are stored in versioned, text-scoped localStorage drafts; a refresh restores a valid draft, and the editor can explicitly discard it.
-- [ ] Draft recovery detects an incompatible schema version or stale canonical base version, reports the conflict, and does not overwrite canonical content.
-- [ ] Local storage read/write/quota failures are shown clearly while the current in-memory edits remain available; confirmed discard removes the stored draft so it does not reappear after reload.
-- [ ] Draft changes do not update TinaCMS or canonical content until the editor confirms publication.
-- [ ] Pressing Save is the deliberate confirmation (no extra dialog); the UI previews the documents to be written and uses Tina as the canonical JSON write path without first writing source or JSON directly through another API.
-- [ ] Success is shown only after Tina confirms every requested document write; errors or partial writes are reported per document with retry/recovery guidance and the local draft is retained.
-- [ ] Confirmed Tina local writes update JSON files in the Git working tree; the UI does not imply that files were committed or pushed.
-- [ ] A LaTeX export downloads a valid `.tex` document from the current draft without publishing it.
-- [ ] An editor can paste a supported `gb4e` manuscript and preview its structured paragraphs, aligned surface/gloss tokens, translations, footnotes, resources, abbreviations, and bibliography metadata before accepting the import.
-- [ ] The supplied manuscript import preserves all 13 paragraph groups and 75 examples in order, the aligned surface/literal-gloss pairs, translations, footnotes at their original positions, resources/citations, active abbreviations, metadata, and bibliography reference.
-- [ ] Unsupported LaTeX structures are reported without replacing current editor data; the importer does not claim to parse arbitrary packages or macros.
-- [ ] Export retains the supported source document structure and all 75 current examples across 13 paragraphs, translations, two footnotes, resource citations/list, abbreviations, title/author/date, and bibliography reference.
-- [ ] Source validation checks token/gloss pair alignment, unique stable IDs, paragraph/example ordering, footnote references, and the expected imported example count.
-- [ ] Automated parser/exporter tests cover representative malformed input, mismatched token alignment, footnotes, source metadata, resources, abbreviations, and normalized export invariants; validation output does not claim more than the checks establish.
-- [ ] The text model can represent additional texts without Old English-specific assumptions in the editor or renderer; arbitrary unknown TeX package/macro import is not required.
+- [x] The editor can select an example and token and edit its source form, source gloss, translation, and available lexical analysis in an inspector.
+- [x] Editing a token updates the interlinear preview and its linked reader-style explanation immediately.
+- [x] Edits are stored in versioned, text-scoped localStorage drafts; a refresh restores a valid draft, and the editor can explicitly discard it.
+- [x] Draft recovery detects an incompatible schema version or stale canonical base version, reports the conflict, and does not overwrite canonical content.
+- [x] Local storage read/write/quota failures are shown clearly while the current in-memory edits remain available; confirmed discard removes the stored draft so it does not reappear after reload.
+- [x] Draft changes do not update TinaCMS or canonical content until the editor confirms publication.
+- [x] Pressing Save is the deliberate confirmation (no extra dialog); the UI previews the documents to be written and uses Tina as the canonical JSON write path without first writing source or JSON directly through another API.
+- [x] Success is shown only after Tina confirms every requested document write; errors or partial writes are reported per document with retry/recovery guidance and the local draft is retained.
+- [x] Confirmed Tina local writes update JSON files in the Git working tree; the UI does not imply that files were committed or pushed.
+- [x] A LaTeX export downloads a valid `.tex` document from the current draft without publishing it.
+- [x] An editor can paste a supported `gb4e` manuscript and preview its structured paragraphs, aligned surface/gloss tokens, translations, footnotes, resources, abbreviations, and bibliography metadata before accepting the import.
+- [x] The supplied manuscript import preserves all 13 paragraph groups and 75 examples in order, the aligned surface/literal-gloss pairs, translations, footnotes at their original positions, resources/citations, active abbreviations, metadata, and bibliography reference.
+- [x] Unsupported LaTeX structures are reported without replacing current editor data; the importer does not claim to parse arbitrary packages or macros.
+- [x] Export retains the supported source document structure and all 75 current examples across 13 paragraphs, translations, two footnotes, resource citations/list, abbreviations, title/author/date, and bibliography reference.
+- [x] Source validation checks token/gloss pair alignment, unique stable IDs, paragraph/example ordering, footnote references, and the expected imported example count.
+- [x] Automated parser/exporter tests cover representative malformed input, mismatched token alignment, footnotes, source metadata, resources, abbreviations, and normalized export invariants; validation output does not claim more than the checks establish.
+- [x] The text model can represent additional texts without Old English-specific assumptions in the editor or renderer; arbitrary unknown TeX package/macro import is not required.
 
 ### Understanding the Source
 
 The presentation should help the student connect the original text with its analysis, following the source PDF’s glossing approach.
 
-- [ ] The demo includes a passage with enough annotated examples to show definitions and conjugations in use.
-- [ ] A reviewer can select a word and see information that helps explain its vocabulary and grammar.
-- [ ] The one-minute demo visibly proves the transition from reading the Old English text to understanding a selected word and its conjugation.
+- [x] The demo includes a passage with enough annotated examples to show definitions and conjugations in use.
+- [x] A reviewer can select a word and see information that helps explain its vocabulary and grammar.
+- [x] The one-minute demo visibly proves the transition from reading the Old English text to understanding a selected word and its conjugation.
 
 ## States and Boundaries
 

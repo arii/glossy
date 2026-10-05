@@ -18,6 +18,7 @@
     "audit:deadcode": "knip",
     "test:smoke": "node scripts/smoke-test.mjs",
     "typecheck": "tsc --noEmit",
+    "validate:lemmas": "node scripts/validate-lemmas.mjs",
     "validate:source": "node scripts/validate-source.mjs"
   },
   "dependencies": {

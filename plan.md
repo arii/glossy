@@ -4,7 +4,7 @@
 
 Glossy is a local Next.js app with separate reader (`/read/<slug>`) and editor (`/edit/<slug>`) routes, a route-choice home page, an architecture FAQ (`/docs`), and the Tina admin (`/admin/index.html`). Text data is stored in Git under `content/texts/`; the supplied LaTeX manuscript remains the source for transcription and is parsed into the reader/editor model.
 
-The app uses `lib/types.ts` for shared content types, although `components/gloss-editor.tsx` still keeps legacy editor-only `Token`, `Sentence`, and `GlossDocument` types and maps between the shapes. Do not treat type unification as complete.
+The app uses `lib/types.ts` for unified shared content types (`TextDocument`, `ReadingSentence`, `InterlinearWord`, `LinguisticAnalysis`, `Morpheme`, `InflectionFeatures`, `PartOfSpeech`) across both the reader and editor workspaces, completing full type unification.
 
 ## Implemented & Verified
  
