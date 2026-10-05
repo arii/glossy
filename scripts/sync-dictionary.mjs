@@ -1,6 +1,7 @@
 import { writeFileSync, mkdirSync, existsSync, readdirSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 import { lemmatizeOldEnglish } from "../lib/lemmatizer.ts";
+import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon.ts";
 
 const dictDir = join(process.cwd(), "content", "dictionary");
 if (!existsSync(dictDir)) {
@@ -116,17 +117,22 @@ function slugify(text) {
 const generatedEntries = new Map();
 
 for (const surface of canonicalWords) {
-  const lex = lemmatizeOldEnglish(surface, surface);
+  const lex = lemmatizeOldEnglish(surface, "");
+  const directLex = resolveOldEnglishLexicon(surface) || resolveOldEnglishLexicon(lex.lemma);
   const slug = slugify(lex.lemma);
 
   if (!generatedEntries.has(slug)) {
+    const lemmaLex = resolveOldEnglishLexicon(lex.lemma);
+    const resolvedIpa = (lemmaLex && lemmaLex.ipa) ? lemmaLex.ipa : ((directLex && directLex.ipa) ? directLex.ipa : (lex.ipa || ""));
+    const resolvedDef = (directLex && directLex.definition) ? directLex.definition : ((lemmaLex && lemmaLex.definition) ? lemmaLex.definition : (lex.definition && lex.definition !== surface ? lex.definition : lex.lemma));
+
     const entry = {
       word: lex.lemma,
       lemma: lex.lemma,
-      pronunciation: lex.ipa || "",
+      pronunciation: resolvedIpa,
       pos: lex.pos,
-      definition: lex.definition || "",
-      wiktionaryUrl: lex.wiktionaryUrl,
+      definition: resolvedDef,
+      wiktionaryUrl: (directLex && directLex.wiktionaryUrl) ? directLex.wiktionaryUrl : lex.wiktionaryUrl,
       sourceGloss: surface,
     };
     generatedEntries.set(slug, entry);

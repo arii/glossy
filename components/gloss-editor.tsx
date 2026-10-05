@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SiteNav } from "./site-nav";
@@ -11,6 +11,15 @@ import {
   BookOpen,
   RefreshCw,
   Save,
+  Trash2,
+  Plus,
+  ExternalLink,
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
+  SlidersHorizontal,
+  Upload,
+  Download,
 } from "lucide-react";
 
 import { tokenizeAndLemmatizeSentence } from "../lib/lemmatizer";
@@ -37,6 +46,7 @@ interface Token {
     tense?: string;
     mood?: string;
     person?: string;
+    declension?: string;
   };
   morphemes: Morpheme[];
   ipa: string;
@@ -120,6 +130,7 @@ function mapLegacyTextDocToGlossDoc(legacyDoc: TextDocument): GlossDocument {
             tense: inflections.tense,
             mood: inflections.mood,
             person: inflections.person ? String(inflections.person) : undefined,
+            declension: (w.analysis?.features as Record<string, string | undefined>)?.declension,
           },
           morphemes: (w.analysis?.morphemes || []).map((m: LegacyMorpheme, mIdx: number) => ({
             id: `${w.id || "word"}-morpheme-${mIdx + 1}`,
@@ -147,6 +158,7 @@ export function GlossEditor({
   const [activeTokenId, setActiveTokenId] = useState<string>(() => initialDocument.sentences?.[0]?.words?.[0]?.id || "");
   const [searchQuery, setSearchQuery] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [showAllInflections, setShowAllInflections] = useState(false);
   const [saveStatus, setSaveStatus] = useState<{ kind: "idle" | "success" | "error"; message: string }>({
     kind: "idle",
     message: "",
@@ -209,7 +221,6 @@ export function GlossEditor({
 
   // Initial mount load sequence with robust stale-cache invalidation
   useEffect(() => {
-    // Clear old legacy corrupted caches
     try {
       window.localStorage.removeItem("glossy_document_ohthere_full");
       window.localStorage.removeItem("glossy_document_ohthere_full_v2");
@@ -220,7 +231,6 @@ export function GlossEditor({
     if (cached) {
       try {
         const parsed = JSON.parse(cached) as GlossDocument;
-        // Check if cached draft is stale or sentence count mismatch
         if (!parsed.sentences || parsed.sentences.length !== expectedSentenceCount) {
           window.localStorage.removeItem(storageKey);
           const fresh = mapLegacyTextDocToGlossDoc(initialDocument);
@@ -233,7 +243,6 @@ export function GlossEditor({
           return;
         }
 
-        // Sanitize any residual footnote macro strings in translations
         const sanitized: GlossDocument = {
           ...parsed,
           sentences: parsed.sentences.map((s) => ({
@@ -255,7 +264,6 @@ export function GlossEditor({
           setActiveTokenId(sanitized.sentences[0].tokens[0]?.id || "");
         }
       } catch {
-        // Fallback to reload if JSON is corrupt
         loadFromMasterTex();
       }
     } else {
@@ -279,8 +287,7 @@ export function GlossEditor({
       try {
         window.localStorage.setItem(storageKey, serialized);
       } catch (e) {
-        // Safe fallback if browser localStorage quota is exceeded
-        console.warn("LocalStorage quota exceeded, skipping local storage cache:", e);
+        console.warn("LocalStorage quota exceeded, skipping local cache:", e);
       }
       setAutosaveStatus("saved");
     }, 300);
@@ -323,7 +330,6 @@ export function GlossEditor({
       }));
     }
 
-    // Plain text sentences parsing with automatic lemmatization
     const lines = rawInput.split("\n").map((l) => l.trim()).filter(Boolean);
     return lines.map((line, sIdx) => {
       const words = tokenizeAndLemmatizeSentence(line, sIdx + 1);
@@ -356,13 +362,11 @@ export function GlossEditor({
 
   const applyImportedSentences = () => {
     if (!importPreview || importPreview.length === 0) return;
-    setDocumentState((prev) => {
-      return {
-        ...prev,
-        sentences: [...prev.sentences, ...importPreview],
-      };
-    });
-    alert(`Successfully appended ${importPreview.length} sentences to the active document feed!`);
+    setDocumentState((prev) => ({
+      ...prev,
+      sentences: [...prev.sentences, ...importPreview],
+    }));
+    setSaveStatus({ kind: "success", message: `Successfully appended ${importPreview.length} sentences to the active document feed!` });
     setLatexImportSource("");
     setImportPreview(null);
   };
@@ -398,52 +402,48 @@ export function GlossEditor({
   const updateToken = useCallback((patch: Partial<Token>) => {
     if (!activeTokenId) return;
 
-    setDocumentState((prev) => {
-      return {
-        ...prev,
-        sentences: prev.sentences.map((sent) => ({
-          ...sent,
-          tokens: sent.tokens.map((tok) => {
-            if (tok.id === activeTokenId) {
-              return {
-                ...tok,
-                ...patch,
-                inflections: {
-                  ...tok.inflections,
-                  ...(patch.inflections ?? {}),
-                },
-              };
-            }
-            return tok;
-          }),
-        })),
-      };
-    });
+    setDocumentState((prev) => ({
+      ...prev,
+      sentences: prev.sentences.map((sent) => ({
+        ...sent,
+        tokens: sent.tokens.map((tok) => {
+          if (tok.id === activeTokenId) {
+            return {
+              ...tok,
+              ...patch,
+              inflections: {
+                ...tok.inflections,
+                ...(patch.inflections ?? {}),
+              },
+            };
+          }
+          return tok;
+        }),
+      })),
+    }));
   }, [activeTokenId]);
 
   // Update inflection feature helper
   const updateInflection = useCallback((key: keyof Token["inflections"], val: string | undefined) => {
     if (!activeTokenId) return;
-    setDocumentState((prev) => {
-      return {
-        ...prev,
-        sentences: prev.sentences.map((sent) => ({
-          ...sent,
-          tokens: sent.tokens.map((tok) => {
-            if (tok.id === activeTokenId) {
-              return {
-                ...tok,
-                inflections: {
-                  ...tok.inflections,
-                  [key]: val || undefined,
-                },
-              };
-            }
-            return tok;
-          }),
-        })),
-      };
-    });
+    setDocumentState((prev) => ({
+      ...prev,
+      sentences: prev.sentences.map((sent) => ({
+        ...sent,
+        tokens: sent.tokens.map((tok) => {
+          if (tok.id === activeTokenId) {
+            return {
+              ...tok,
+              inflections: {
+                ...tok.inflections,
+                [key]: val || undefined,
+              },
+            };
+          }
+          return tok;
+        }),
+      })),
+    }));
   }, [activeTokenId]);
 
   // Discard changes to restore initial snapshot
@@ -461,7 +461,6 @@ export function GlossEditor({
     }
   };
 
-  // Convert GlossDocument to canonical TextDocument shape for compatible backend updates
   const mapToLegacyTextDocument = (doc: GlossDocument): TextDocument => {
     const rawDoc: TextDocument = {
       textId: initialDocument.textId || "ohthere",
@@ -477,7 +476,6 @@ export function GlossEditor({
         id: sent.id,
         translation: sent.freeTranslation,
         words: sent.tokens.map((tok) => {
-          // Extract trailing punctuation safely if present
           const punctuationMatch = tok.sourceForm.match(/[.,;:!?]+$/);
           const originalCleanWord = (tok.morphemes && tok.morphemes.length > 1)
             ? tok.morphemes.map((m) => m.morpheme).filter(Boolean).join("-")
@@ -527,7 +525,6 @@ export function GlossEditor({
     return rawDoc;
   };
 
-  // Save Document (Dual-Write: Filesystem TeX/JSON + TinaCMS working tree)
   const saveToTina = async () => {
     if (!documentState || isSaving) return;
 
@@ -536,7 +533,6 @@ export function GlossEditor({
     const legacyDoc = mapToLegacyTextDocument(documentState);
 
     try {
-      // 1. Write to local filesystem API (/api/save-document)
       const apiResponse = await fetch("/api/save-document", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -552,7 +548,6 @@ export function GlossEditor({
         throw new Error(errorData.error || "Failed to save document to server filesystem.");
       }
 
-      // 2. Optionally notify TinaCMS GraphQL server if active
       try {
         await fetch(
           process.env.NEXT_PUBLIC_TINA_LOCAL_URL ?? "http://localhost:4001/graphql",
@@ -572,9 +567,7 @@ export function GlossEditor({
             }),
           },
         );
-      } catch {
-        // Tina server optional during standalone dev
-      }
+      } catch {}
 
       const serialized = JSON.stringify(documentState);
       setSavedSnapshot(serialized);
@@ -595,7 +588,6 @@ export function GlossEditor({
     }
   };
 
-  // LaTeX Exporter mapping
   const handleExportLatex = () => {
     if (!documentState) return;
     const legacyDoc = mapToLegacyTextDocument(documentState);
@@ -610,7 +602,6 @@ export function GlossEditor({
     URL.revokeObjectURL(url);
   };
 
-  // Synchronize morphemes with sourceForm, sourceGloss, and literalTexGloss
   const syncMorphemesAndToken = (newMorphemes: Morpheme[]) => {
     if (!activeToken) return;
     const punct = activeToken.sourceForm.match(/[,.;:!?]+$/)?.[0] || "";
@@ -675,7 +666,6 @@ export function GlossEditor({
     }
   };
 
-  // Morphemes management
   const addMorpheme = () => {
     if (!activeToken) return;
     const currentMorphemes = activeToken.morphemes || [];
@@ -703,7 +693,6 @@ export function GlossEditor({
     syncMorphemesAndToken(currentMorphemes);
   };
 
-  // Filter sentences by query
   const filteredSentences = documentState?.sentences.filter((sent) => {
     if (!searchQuery) return true;
     const matchTranslation = sent.freeTranslation.toLowerCase().includes(searchQuery.toLowerCase());
@@ -711,10 +700,32 @@ export function GlossEditor({
     return matchTranslation || matchWord;
   }) || [];
 
+  // Determine relevant inflection features based on active POS
+  const relevantFeatures = useMemo(() => {
+    const pos = (activeToken?.pos || "noun").toLowerCase();
+    if (showAllInflections) {
+      return { case: true, number: true, gender: true, tense: true, mood: true, person: true, declension: true };
+    }
+    switch (pos) {
+      case "noun":
+      case "pronoun":
+        return { case: true, number: true, gender: true, tense: false, mood: false, person: false, declension: false };
+      case "verb":
+        return { case: false, number: true, gender: false, tense: true, mood: true, person: true, declension: false };
+      case "adjective":
+        return { case: true, number: true, gender: true, tense: false, mood: false, person: false, declension: true };
+      case "determiner":
+      case "numeral":
+        return { case: true, number: true, gender: true, tense: false, mood: false, person: false, declension: false };
+      default:
+        return { case: false, number: false, gender: false, tense: false, mood: false, person: false, declension: false };
+    }
+  }, [activeToken?.pos, showAllInflections]);
+
   if (isLoading || !documentState) {
     return (
       <main className="workspace-shell flex items-center justify-center min-h-[60vh] bg-stone-50">
-        <div className="text-center p-8 bg-white border border-stone-200 rounded-lg shadow-sm">
+        <div className="text-center p-8 bg-white border border-stone-200 rounded-xl shadow-sm">
           <RefreshCw className="w-8 h-8 text-amber-800 animate-spin mx-auto mb-4" />
           <h2 className="text-stone-900 font-semibold text-lg">Ingesting Master LaTeX Glosses...</h2>
           <p className="text-stone-500 text-sm mt-1">Parsing Voyages_of_Ohthere_Wulfstan.tex working tree</p>
@@ -723,25 +734,40 @@ export function GlossEditor({
     );
   }
 
+  // Clean, displayable form for the selected token header
+  const cleanHeaderWord = activeToken?.sourceForm ? activeToken.sourceForm.replace(/[.,;:!?]+$/, "") : "";
+
   return (
-    <main className="workspace-shell bg-stone-50 min-h-screen">
+    <main className="workspace-shell bg-[#fbf9f4] min-h-screen text-stone-900">
       <div className="workspace max-w-7xl mx-auto px-4 py-6">
-        <header className="workspace-header bg-white border border-stone-200 rounded-lg p-5 shadow-sm mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        {/* Header card with site navigation & primary actions */}
+        <header className="bg-white border border-stone-300/80 rounded-xl p-5 sm:p-6 shadow-sm mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <SiteNav current="edit" slug={initialDocument.slug} />
             <span className="sr-only">Editing workspace</span>
-            <h1 className="text-2xl font-bold font-serif text-stone-900 mt-1">{documentState.title}</h1>
-            <p className="text-sm text-stone-500 mt-1">
-              By {documentState.author} · {documentState.date}
+            <div className="flex items-center gap-2 mt-2">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-300/60">
+                Linguistic Editor
+              </span>
+              <span className="text-xs text-stone-500">
+                {documentState.sentences.length} sentences · {documentState.sentences.reduce((acc, s) => acc + s.tokens.length, 0)} tokens
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold font-serif text-stone-900 mt-1">
+              {documentState.title}
+            </h1>
+            <p className="text-xs sm:text-sm text-stone-500 mt-0.5">
+              Attribution: {documentState.author} · {documentState.date}
             </p>
+
             {availableTexts && availableTexts.length > 1 && (
-              <div className="mt-2 flex items-center gap-2">
-                <label htmlFor="editor-text-select" className="text-xs font-semibold text-stone-600">Switch text:</label>
+              <div className="mt-3 flex items-center gap-2">
+                <label htmlFor="editor-text-select" className="text-xs font-semibold text-stone-600">Switch corpus text:</label>
                 <select
                   id="editor-text-select"
                   value={initialDocument.slug}
                   onChange={(e) => router.push(`/edit/${e.target.value}`)}
-                  className="text-xs bg-stone-50 border border-stone-300 rounded px-2 py-1 font-medium text-stone-800 focus:outline-none focus:border-amber-800"
+                  className="text-xs bg-stone-50 border border-stone-300 rounded-lg px-2.5 py-1 font-medium text-stone-800 focus:outline-none focus:border-amber-800"
                 >
                   {availableTexts.map((t) => (
                     <option key={t.slug} value={t.slug}>
@@ -753,78 +779,104 @@ export function GlossEditor({
             )}
           </div>
 
-          <div className="editor-actions-grid">
-            {/* Status alerts */}
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Autosave badge */}
             {(autosaveStatus === "saved" || autosaveStatus === "saving") && (
-              <span className={`editor-dirty ${autosaveStatus === "saved" ? "is-clean" : "is-dirty"}`}>
+              <span className={`text-xs px-2.5 py-1 rounded-full border font-medium ${
+                autosaveStatus === "saved"
+                  ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                  : "bg-amber-50 text-amber-800 border-amber-200 animate-pulse"
+              }`}>
                 {autosaveStatus === "saved" ? "✓ Draft saved" : "Autosaving..."}
               </span>
             )}
 
             <Link
               href="/edit/new"
-              className="workspace-link"
-              style={{ background: "#e0f2fe", color: "#0369a1", textDecoration: "none" }}
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-sky-50 text-sky-800 border border-sky-200 hover:bg-sky-100 transition-colors flex items-center gap-1.5"
               title="Gloss a brand new Old English text from scratch"
             >
-              + New Text
+              <Plus className="w-3.5 h-3.5" /> New Text
             </Link>
+
             <button
+              type="button"
               onClick={() => loadFromMasterTex()}
-              className="workspace-link"
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-stone-100 text-stone-700 border border-stone-300 hover:bg-stone-200 transition-colors flex items-center gap-1.5"
               title="Re-parse the raw .tex file and discard all local browser modifications"
             >
-              <RefreshCw className="w-3.5 h-3.5" style={{ marginRight: "0.25rem" }} /> Reload Master .tex
+              <RefreshCw className="w-3.5 h-3.5" /> Reload TeX
             </button>
+
             <button
+              type="button"
               onClick={discardChanges}
-              className="workspace-link"
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-stone-100 text-stone-700 border border-stone-300 hover:bg-stone-200 transition-colors"
               title="Revert edits back to previous saved TinaCMS copy"
             >
               Discard edits
             </button>
+
             <button
+              type="button"
               onClick={handleExportLatex}
-              className="workspace-link"
-              style={{ background: "#f3eadb", color: "#7b3f2a" }}
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-100/80 text-amber-950 border border-amber-300/80 hover:bg-amber-200 transition-colors flex items-center gap-1.5"
               title="Download compiled .tex document"
             >
-              Export LaTeX
+              <Download className="w-3.5 h-3.5" /> Export LaTeX
             </button>
+
             <button
+              type="button"
               onClick={saveToTina}
               disabled={isSaving}
-              className="workspace-button"
-              style={{ background: "#25231f", color: "#fff" }}
+              className="px-4 py-1.5 rounded-lg text-xs font-bold bg-stone-900 text-white hover:bg-stone-800 disabled:opacity-50 transition-colors shadow-sm flex items-center gap-1.5"
             >
-              <Save className="w-3.5 h-3.5" style={{ marginRight: "0.25rem" }} />
+              <Save className="w-3.5 h-3.5" />
               {isSaving ? "Saving..." : "Save to TinaCMS"}
             </button>
           </div>
         </header>
 
-        {/* Global Action Messages */}
+        {/* Global Action Alerts */}
         {saveStatus.message && (
-          <div className={`editor-save-status ${saveStatus.kind === "success" ? "is-success" : saveStatus.kind === "error" ? "is-error" : ""}`}>
+          <div className={`p-3.5 rounded-xl mb-6 text-xs font-medium border flex items-center justify-between ${
+            saveStatus.kind === "success"
+              ? "bg-emerald-50 text-emerald-900 border-emerald-200"
+              : saveStatus.kind === "error"
+              ? "bg-rose-50 text-rose-900 border-rose-200"
+              : "bg-stone-100 text-stone-800 border-stone-200"
+          }`}>
             <p>{saveStatus.message}</p>
+            <button
+              type="button"
+              onClick={() => setSaveStatus({ kind: "idle", message: "" })}
+              className="text-stone-400 hover:text-stone-700 font-bold ml-2"
+            >
+              ×
+            </button>
           </div>
         )}
 
-        {/* Sentence Navigation Jump Selector & Pagination */}
-        <section className="editor-nav-box">
-          <div>
-            <p className="workspace-eyebrow" style={{ margin: 0 }}>Sentence Navigator</p>
-            <strong>{documentState.sentences.length} sentences loaded</strong>
+        {/* Sentence Navigation Quick Bar */}
+        <section className="bg-white border border-stone-300/80 rounded-xl p-4 shadow-sm mb-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100/70 px-2 py-0.5 rounded border border-amber-200">
+              Navigator
+            </span>
+            <strong className="text-xs text-stone-800">
+              Sentence {currentIndex + 1} of {documentState.sentences.length}
+            </strong>
           </div>
           
-          <div className="editor-nav-controls">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <button
               type="button"
               disabled={currentIndex <= 0}
               onClick={handlePrev}
-              className="editor-nav-btn"
+              className="px-3 py-1.5 bg-stone-100 hover:bg-stone-200 disabled:opacity-40 text-stone-800 border border-stone-300 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1"
             >
-              ← Prev
+              <ChevronLeft className="w-3.5 h-3.5" /> Prev
             </button>
 
             <select
@@ -837,10 +889,11 @@ export function GlossEditor({
                   setActiveTokenId(targetSent.tokens[0].id);
                 }
               }}
+              className="text-xs bg-stone-50 border border-stone-300 rounded-lg px-3 py-1.5 font-medium text-stone-900 focus:outline-none focus:border-amber-800 flex-1 sm:flex-none"
             >
               {documentState.sentences.map((sent, index) => (
                 <option key={sent.id} value={sent.id}>
-                  Sentence {index + 1}
+                  Sentence {index + 1} ({sent.tokens.length} words)
                 </option>
               ))}
             </select>
@@ -849,31 +902,45 @@ export function GlossEditor({
               type="button"
               disabled={currentIndex >= documentState.sentences.length - 1}
               onClick={handleNext}
-              className="editor-nav-btn"
+              className="px-3 py-1.5 bg-stone-100 hover:bg-stone-200 disabled:opacity-40 text-stone-800 border border-stone-300 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1"
             >
-              Next →
+              Next <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </section>
 
-        {/* Full-Text Workspace Grid */}
-        <div className="workspace-grid">
-          {/* Complete Text Column (Left/Center) */}
-          <section className="workspace-panel">
-            <div className="editor-sentence-header">
-              <h2 style={{ margin: 0, fontSize: "1.2rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <BookOpen className="w-4 h-4" /> Live preview & Document Feed
-              </h2>
-              <input
-                type="text"
-                placeholder="Filter by word or translation..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ padding: "0.35rem 0.6rem", border: "1px solid var(--rule)", borderRadius: "0.25rem", font: "inherit", fontSize: "0.85rem", width: "14rem" }}
-              />
+        {/* Main Workspace Layout (65/35 Split: Document Feed & Sticky Inspector) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left / Main Column: Live Preview & Document Feed (60-65% width) */}
+          <section className="lg:col-span-7 xl:col-span-8 bg-white border border-stone-300/80 rounded-xl p-5 sm:p-7 shadow-sm space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-stone-200">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-amber-100/80 text-amber-900 rounded-lg">
+                  <BookOpen className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-serif font-bold text-stone-900">
+                    Live Preview &amp; Document Feed
+                  </h2>
+                  <p className="text-[11px] text-stone-500 font-sans">
+                    Click any word token to load and inspect its morphological layers
+                  </p>
+                </div>
+              </div>
+
+              <div className="relative w-full sm:w-60">
+                <input
+                  type="text"
+                  placeholder="Filter by word or translation..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full text-xs bg-stone-50 border border-stone-300 rounded-lg pl-3 pr-3 py-1.5 focus:outline-none focus:border-amber-800 focus:bg-white transition-all"
+                />
+              </div>
             </div>
 
-            <div style={{ maxHeight: "70vh", overflowY: "auto", paddingRight: "0.5rem" }}>
+            {/* Scrollable Sentence Feed */}
+            <div className="space-y-5 max-h-[calc(100vh-14rem)] overflow-y-auto pr-1">
               {filteredSentences.map((sent) => {
                 const isSentActive = sent.id === activeSentenceId;
                 const actualIndex = documentState.sentences.findIndex((s) => s.id === sent.id) + 1;
@@ -882,16 +949,27 @@ export function GlossEditor({
                   <div
                     key={sent.id}
                     onClick={() => setActiveSentenceId(sent.id)}
-                    className={`editor-sentence-card ${isSentActive ? "is-active" : ""}`}
+                    className={`p-5 rounded-xl border transition-all ${
+                      isSentActive
+                        ? "bg-[#fffdfa] border-amber-700/60 ring-1 ring-amber-700/20 shadow-md"
+                        : "bg-white border-stone-200/90 hover:border-stone-300 hover:shadow-sm"
+                    }`}
                   >
-                    <div className="editor-sentence-header">
-                      <strong style={{ fontSize: "0.85rem", color: "var(--accent)" }}>
-                        Sentence {actualIndex}
-                      </strong>
+                    <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-stone-100">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
+                          isSentActive ? "bg-amber-800 text-white" : "bg-stone-100 text-stone-600"
+                        }`}>
+                          Sentence {actualIndex}
+                        </span>
+                        <span className="text-[11px] text-stone-600 font-medium">
+                          {sent.tokens.length} tokens
+                        </span>
+                      </div>
                     </div>
 
-                    {/* Word Tokens Grid Layout with custom word cards */}
-                    <div className="editor-tokens-list">
+                    {/* Word Tokens Grid Layout with custom word chips */}
+                    <div className="flex flex-wrap gap-2.5 p-3.5 bg-stone-50/80 border border-stone-200/80 rounded-xl mb-4">
                       {sent.tokens.map((tok) => {
                         const isTokActive = tok.id === activeTokenId;
                         const isMultiMorpheme = tok.morphemes && tok.morphemes.length > 1;
@@ -904,14 +982,24 @@ export function GlossEditor({
                               setActiveSentenceId(sent.id);
                               setActiveTokenId(tok.id);
                             }}
-                            className={`editor-word-chip ${isTokActive ? "is-selected" : ""} ${isMultiMorpheme ? "is-multi-morpheme" : ""}`}
+                            className={`group inline-flex flex-col items-start px-3 py-2 rounded-lg border text-left transition-all ${
+                              isTokActive
+                                ? "bg-[#7b3f2a] text-white border-[#7b3f2a] shadow-sm scale-[1.02]"
+                                : "bg-white text-stone-900 border-stone-300/80 hover:border-amber-700/60 hover:bg-amber-50/40"
+                            }`}
                           >
-                            <span className="chip-form">{tok.sourceForm}</span>
-                            <span className="chip-gloss">
+                            <span className="text-sm font-semibold font-serif leading-tight">
+                              {tok.sourceForm}
+                            </span>
+                            <span className={`text-[11px] font-sans font-bold uppercase tracking-wider mt-0.5 ${
+                              isTokActive ? "text-amber-200" : "text-[#7b3f2a]"
+                            }`}>
                               {tok.sourceGloss || tok.sourceForm}
                             </span>
                             {isMultiMorpheme && (
-                              <span className="chip-morph-badge" style={{ fontSize: "9px", background: "#fef3c7", color: "#92400e", padding: "1px 4px", borderRadius: "3px", marginTop: "2px", fontWeight: "600", display: "inline-block" }}>
+                              <span className={`text-[9px] px-1.5 py-0.2 rounded font-mono font-semibold mt-1 ${
+                                isTokActive ? "bg-amber-900/60 text-amber-100 border border-amber-700" : "bg-amber-100/80 text-amber-900 border border-amber-200"
+                              }`}>
                                 {tok.morphemes.length} morphs
                               </span>
                             )}
@@ -920,27 +1008,28 @@ export function GlossEditor({
                       })}
                     </div>
 
-                    {/* Free Translation Input Block - Sitting cleanly below and full-width */}
-                    <div className="editor-translation-block">
-                      <label>Free Translation</label>
+                    {/* Free Translation Input */}
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-bold uppercase tracking-wider text-stone-500 block">
+                        Free English Translation
+                      </label>
                       <textarea
-                        rows={3}
+                        rows={2}
                         value={sent.freeTranslation}
                         onChange={(e) => {
                           const val = e.target.value;
-                          setDocumentState((prev) => {
-                            return {
-                              ...prev,
-                              sentences: prev.sentences.map((s) => {
-                                if (s.id === sent.id) {
-                                  return { ...s, freeTranslation: val };
-                                }
-                                return s;
-                              }),
-                            };
-                          });
+                          setDocumentState((prev) => ({
+                            ...prev,
+                            sentences: prev.sentences.map((s) => {
+                              if (s.id === sent.id) {
+                                return { ...s, freeTranslation: val };
+                              }
+                              return s;
+                            }),
+                          }));
                         }}
-                        placeholder="Enter translation here..."
+                        placeholder="Enter sentence translation..."
+                        className="w-full text-xs font-serif italic text-stone-800 bg-white border border-stone-300 rounded-lg p-2.5 focus:outline-none focus:border-amber-800 focus:ring-1 focus:ring-amber-800/20 leading-relaxed resize-vertical"
                       />
                     </div>
                   </div>
@@ -949,388 +1038,528 @@ export function GlossEditor({
             </div>
           </section>
 
-          {/* Persistent Sidebar Inspector (Right Column) */}
-          <aside className="editor-inspector" style={{ maxHeight: "85vh", overflowY: "auto" }}>
-            <div style={{ borderBottom: "1px solid var(--rule)", paddingBottom: "0.75rem", marginBottom: "1rem" }}>
-              <span className="workspace-eyebrow" style={{ margin: 0 }}>Selected Token Inspector</span>
-              <h2 style={{ margin: "0.25rem 0 0", fontSize: "1.6rem" }}>
-                {activeToken?.sourceForm ? activeToken.sourceForm.replace(/[.,;:!?]+$/, "") : "No token active"}
-              </h2>
-            </div>
-
-            {activeToken ? (
-              <div className="space-y-4">
-                {/* 1. Source Form & Glosses */}
-                <div className="space-y-3">
-                  <label className="block text-xs font-bold text-stone-700">
-                    Source form (raw token)
-                    <input
-                      type="text"
-                      value={activeToken.sourceForm}
-                      onChange={(e) => handleSourceFormChange(e.target.value)}
-                      className="w-full border border-stone-300 rounded p-2 mt-1 text-xs focus:outline-none focus:border-amber-800"
-                    />
-                  </label>
-
-                  <label className="block text-xs font-bold text-stone-700">
-                    Readable Leipzig Gloss
-                    <input
-                      type="text"
-                      value={activeToken.sourceGloss}
-                      onChange={(e) => handleSourceGlossChange(e.target.value)}
-                      className="w-full border border-stone-300 rounded p-2 mt-1 text-xs focus:outline-none focus:border-amber-800"
-                    />
-                  </label>
-
-                  <label className="block text-xs font-bold text-stone-700">
-                    Literal TeX Gloss
-                    <input
-                      type="text"
-                      value={activeToken.literalTexGloss}
-                      onChange={(e) => updateToken({ literalTexGloss: e.target.value })}
-                      className="w-full border border-stone-300 rounded p-2 mt-1 text-xs focus:outline-none focus:border-amber-800 font-mono"
-                    />
-                  </label>
-                </div>
-
-                {/* 2. Grammar & Lexicon */}
-                <div className="border-t border-stone-100 pt-3 space-y-3">
-                  <label className="block text-xs font-bold text-stone-700">
-                    Lemma
-                    <input
-                      type="text"
-                      value={activeToken.lemma}
-                      onChange={(e) => updateToken({ lemma: e.target.value })}
-                      className="w-full border border-stone-300 rounded p-2 mt-1 text-xs focus:outline-none focus:border-amber-800"
-                    />
-                  </label>
-
-                  <label className="block text-xs font-bold text-stone-700">
-                    Part of Speech
-                    <select
-                      value={activeToken.pos}
-                      onChange={(e) => updateToken({ pos: e.target.value })}
-                      className="w-full border border-stone-300 rounded p-2 mt-1 text-xs focus:outline-none focus:border-amber-800"
-                    >
-                      <option value="noun">Noun</option>
-                      <option value="verb">Verb</option>
-                      <option value="adjective">Adjective</option>
-                      <option value="adverb">Adverb</option>
-                      <option value="pronoun">Pronoun</option>
-                      <option value="determiner">Determiner</option>
-                      <option value="preposition">Preposition</option>
-                      <option value="conjunction">Conjunction</option>
-                    </select>
-                  </label>
-
-                  <label className="block text-xs font-bold text-stone-700">
-                    Explanation
-                    <textarea
-                      rows={2}
-                      value={activeToken.explanation}
-                      onChange={(e) => updateToken({ explanation: e.target.value })}
-                      className="w-full border border-stone-300 rounded p-2 mt-1 text-xs focus:outline-none focus:border-amber-800"
-                    />
-                  </label>
-
-                  {/* Grammatical features grid */}
-                  <fieldset className="border border-stone-200 rounded p-3 mt-3">
-                    <legend className="text-[10px] font-extrabold uppercase tracking-wider text-stone-400 px-1">
-                      Inflections & Features
-                    </legend>
-                    <div className="grid grid-cols-2 gap-2 text-xs mt-1">
-                      <label className="block">
-                        Case
-                        <select
-                          value={activeToken.inflections.case || ""}
-                          onChange={(e) => updateInflection("case", e.target.value)}
-                          className="w-full border border-stone-300 rounded p-1 mt-0.5 text-xs"
-                        >
-                          <option value="">None</option>
-                          <option value="nominative">Nominative</option>
-                          <option value="accusative">Accusative</option>
-                          <option value="genitive">Genitive</option>
-                          <option value="dative">Dative</option>
-                        </select>
-                      </label>
-
-                      <label className="block">
-                        Number
-                        <select
-                          value={activeToken.inflections.number || ""}
-                          onChange={(e) => updateInflection("number", e.target.value)}
-                          className="w-full border border-stone-300 rounded p-1 mt-0.5 text-xs"
-                        >
-                          <option value="">None</option>
-                          <option value="singular">Singular</option>
-                          <option value="plural">Plural</option>
-                        </select>
-                      </label>
-
-                      <label className="block">
-                        Gender
-                        <select
-                          value={activeToken.inflections.gender || ""}
-                          onChange={(e) => updateInflection("gender", e.target.value)}
-                          className="w-full border border-stone-300 rounded p-1 mt-0.5 text-xs"
-                        >
-                          <option value="">None</option>
-                          <option value="masculine">Masculine</option>
-                          <option value="feminine">Feminine</option>
-                          <option value="neuter">Neuter</option>
-                        </select>
-                      </label>
-
-                      <label className="block">
-                        Tense
-                        <select
-                          value={activeToken.inflections.tense || ""}
-                          onChange={(e) => updateInflection("tense", e.target.value)}
-                          className="w-full border border-stone-300 rounded p-1 mt-0.5 text-xs"
-                        >
-                          <option value="">None</option>
-                          <option value="present">Present</option>
-                          <option value="past">Past</option>
-                        </select>
-                      </label>
-
-                      <label className="block">
-                        Mood
-                        <select
-                          value={activeToken.inflections.mood || ""}
-                          onChange={(e) => updateInflection("mood", e.target.value)}
-                          className="w-full border border-stone-300 rounded p-1 mt-0.5 text-xs"
-                        >
-                          <option value="">None</option>
-                          <option value="indicative">Indicative</option>
-                          <option value="subjunctive">Subjunctive</option>
-                          <option value="imperative">Imperative</option>
-                          <option value="infinitive">Infinitive</option>
-                        </select>
-                      </label>
-
-                      <label className="block">
-                        Person
-                        <select
-                          value={activeToken.inflections.person || ""}
-                          onChange={(e) => updateInflection("person", e.target.value)}
-                          className="w-full border border-stone-300 rounded p-1 mt-0.5 text-xs"
-                        >
-                          <option value="">None</option>
-                          <option value="1">1</option>
-                          <option value="2">2</option>
-                          <option value="3">3</option>
-                        </select>
-                      </label>
-                    </div>
-                  </fieldset>
-                </div>
-
-                {/* 3. Morphemes Interactive List Builder */}
-                <div className="border-t border-stone-100 pt-3">
-                  <span className="block text-xs font-bold text-stone-700 mb-2">
-                    Morphemes Breakdown ({activeToken.morphemes?.length || 0})
+          {/* Right Column: Sticky Selected Token Inspector (35-40% width) */}
+          <aside className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-6 space-y-4 max-h-[calc(100vh-3rem)] overflow-y-auto pr-1">
+            <div className={`bg-white border rounded-xl p-5 sm:p-6 shadow-sm transition-all ${
+              activeToken
+                ? "border-stone-300/90 border-l-4 border-l-[#7b3f2a]"
+                : "border-stone-200"
+            }`}>
+              {/* Header with clean display */}
+              <div className="pb-3 mb-4 border-b border-stone-200">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800">
+                    Selected Token Inspector
                   </span>
-                  <div className="space-y-2">
-                    {(activeToken.morphemes || []).map((morpheme, idx) => (
-                      <div key={morpheme.id || idx} className="flex gap-2 items-center">
+                  {activeToken && (
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200">
+                      {activeToken.pos || "token"}
+                    </span>
+                  )}
+                </div>
+
+                <div className="mt-1 flex items-baseline gap-2">
+                  <h2 className="text-2xl font-serif font-bold text-stone-900 tracking-tight">
+                    {cleanHeaderWord || "No Token Selected"}
+                  </h2>
+                  {activeToken?.lemma && activeToken.lemma !== cleanHeaderWord && (
+                    <span className="text-xs text-stone-500 font-sans italic">
+                      &larr; lemma: <strong className="text-stone-700 font-semibold">{activeToken.lemma}</strong>
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {activeToken ? (
+                <div className="space-y-4 text-xs">
+                  {/* 1. Core Source Form & Glosses */}
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-600 mb-1">
+                        Source Form (raw token)
+                      </label>
+                      <input
+                        type="text"
+                        value={activeToken.sourceForm}
+                        onChange={(e) => handleSourceFormChange(e.target.value)}
+                        className="w-full bg-white border border-stone-300 rounded-lg p-2 text-xs text-stone-900 font-serif focus:outline-none focus:border-amber-800 focus:ring-1 focus:ring-amber-800/20 shadow-2xs"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-600 mb-1">
+                          Leipzig Gloss
+                        </label>
                         <input
                           type="text"
-                          placeholder="Morpheme"
-                          value={morpheme.morpheme}
-                          onChange={(e) => updateMorphemeVal(idx, "morpheme", e.target.value)}
-                          className="border border-stone-300 rounded p-1 text-xs w-1/2 focus:outline-none focus:border-amber-800"
+                          value={activeToken.sourceGloss}
+                          onChange={(e) => handleSourceGlossChange(e.target.value)}
+                          className="w-full bg-white border border-stone-300 rounded-lg p-2 text-xs text-amber-900 font-bold uppercase tracking-wide focus:outline-none focus:border-amber-800 focus:ring-1 focus:ring-amber-800/20 shadow-2xs"
                         />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-600 mb-1">
+                          Literal TeX Gloss
+                        </label>
                         <input
                           type="text"
-                          placeholder="Gloss"
-                          value={morpheme.gloss}
-                          onChange={(e) => updateMorphemeVal(idx, "gloss", e.target.value)}
-                          className="border border-stone-300 rounded p-1 text-xs w-1/2 focus:outline-none focus:border-amber-800"
+                          value={activeToken.literalTexGloss}
+                          onChange={(e) => updateToken({ literalTexGloss: e.target.value })}
+                          className="w-full bg-white border border-stone-300 rounded-lg p-2 text-xs font-mono text-stone-800 focus:outline-none focus:border-amber-800 focus:ring-1 focus:ring-amber-800/20 shadow-2xs"
                         />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 2. Lexical & Grammatical Properties */}
+                  <div className="border-t border-stone-200/80 pt-3.5 space-y-3">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-600 mb-1">
+                          Canonical Lemma
+                        </label>
+                        <input
+                          type="text"
+                          value={activeToken.lemma}
+                          onChange={(e) => updateToken({ lemma: e.target.value })}
+                          className="w-full bg-white border border-stone-300 rounded-lg p-2 text-xs text-stone-900 font-serif focus:outline-none focus:border-amber-800 focus:ring-1 focus:ring-amber-800/20 shadow-2xs"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-600 mb-1">
+                          Part of Speech
+                        </label>
+                        <select
+                          value={activeToken.pos}
+                          onChange={(e) => updateToken({ pos: e.target.value })}
+                          className="w-full bg-white border border-stone-300 rounded-lg p-2 text-xs font-medium text-stone-900 focus:outline-none focus:border-amber-800 shadow-2xs"
+                        >
+                          <option value="noun">Noun</option>
+                          <option value="verb">Verb</option>
+                          <option value="adjective">Adjective</option>
+                          <option value="adverb">Adverb</option>
+                          <option value="pronoun">Pronoun</option>
+                          <option value="determiner">Determiner</option>
+                          <option value="numeral">Numeral</option>
+                          <option value="preposition">Preposition</option>
+                          <option value="conjunction">Conjunction</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-600 mb-1">
+                        Linguistic Explanation / Definition
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={activeToken.explanation}
+                        onChange={(e) => updateToken({ explanation: e.target.value })}
+                        placeholder="Lexical gloss or definition..."
+                        className="w-full bg-white border border-stone-300 rounded-lg p-2 text-xs text-stone-800 focus:outline-none focus:border-amber-800 focus:ring-1 focus:ring-amber-800/20 shadow-2xs leading-relaxed"
+                      />
+                    </div>
+
+                    {/* De-cluttered Dynamic Inflections & Features */}
+                    <div className="border border-stone-200/90 bg-stone-50/70 rounded-xl p-3.5 space-y-2.5">
+                      <div className="flex items-center justify-between pb-1 border-b border-stone-200/80">
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-stone-700">
+                          Active Inflections &amp; Features ({activeToken.pos || "unclassified"})
+                        </span>
                         <button
                           type="button"
-                          onClick={() => removeMorpheme(idx)}
-                          className="text-stone-400 hover:text-amber-800 text-sm font-bold p-1"
-                          title="Remove morpheme"
+                          onClick={() => setShowAllInflections(!showAllInflections)}
+                          className="text-[10px] font-semibold text-amber-800 hover:text-amber-950 flex items-center gap-1"
                         >
-                          ✕
+                          <SlidersHorizontal className="w-3 h-3" />
+                          {showAllInflections ? "Show Relevant Only" : "Show All Fields"}
                         </button>
                       </div>
-                    ))}
+
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        {relevantFeatures.case && (
+                          <div>
+                            <label className="block text-[10px] font-bold uppercase text-stone-500 mb-0.5">
+                              Case
+                            </label>
+                            <select
+                              value={activeToken.inflections.case || ""}
+                              onChange={(e) => updateInflection("case", e.target.value)}
+                              className="w-full bg-white border border-stone-300 rounded-lg p-1.5 text-xs text-stone-900 focus:border-amber-800"
+                            >
+                              <option value="">None</option>
+                              <option value="nominative">Nominative</option>
+                              <option value="accusative">Accusative</option>
+                              <option value="genitive">Genitive</option>
+                              <option value="dative">Dative</option>
+                              <option value="instrumental">Instrumental</option>
+                            </select>
+                          </div>
+                        )}
+
+                        {relevantFeatures.number && (
+                          <div>
+                            <label className="block text-[10px] font-bold uppercase text-stone-500 mb-0.5">
+                              Number
+                            </label>
+                            <select
+                              value={activeToken.inflections.number || ""}
+                              onChange={(e) => updateInflection("number", e.target.value)}
+                              className="w-full bg-white border border-stone-300 rounded-lg p-1.5 text-xs text-stone-900 focus:border-amber-800"
+                            >
+                              <option value="">None</option>
+                              <option value="singular">Singular</option>
+                              <option value="plural">Plural</option>
+                            </select>
+                          </div>
+                        )}
+
+                        {relevantFeatures.gender && (
+                          <div>
+                            <label className="block text-[10px] font-bold uppercase text-stone-500 mb-0.5">
+                              Gender
+                            </label>
+                            <select
+                              value={activeToken.inflections.gender || ""}
+                              onChange={(e) => updateInflection("gender", e.target.value)}
+                              className="w-full bg-white border border-stone-300 rounded-lg p-1.5 text-xs text-stone-900 focus:border-amber-800"
+                            >
+                              <option value="">None</option>
+                              <option value="masculine">Masculine</option>
+                              <option value="feminine">Feminine</option>
+                              <option value="neuter">Neuter</option>
+                            </select>
+                          </div>
+                        )}
+
+                        {relevantFeatures.tense && (
+                          <div>
+                            <label className="block text-[10px] font-bold uppercase text-stone-500 mb-0.5">
+                              Tense
+                            </label>
+                            <select
+                              value={activeToken.inflections.tense || ""}
+                              onChange={(e) => updateInflection("tense", e.target.value)}
+                              className="w-full bg-white border border-stone-300 rounded-lg p-1.5 text-xs text-stone-900 focus:border-amber-800"
+                            >
+                              <option value="">None</option>
+                              <option value="present">Present</option>
+                              <option value="past">Past (Preterite)</option>
+                            </select>
+                          </div>
+                        )}
+
+                        {relevantFeatures.mood && (
+                          <div>
+                            <label className="block text-[10px] font-bold uppercase text-stone-500 mb-0.5">
+                              Mood
+                            </label>
+                            <select
+                              value={activeToken.inflections.mood || ""}
+                              onChange={(e) => updateInflection("mood", e.target.value)}
+                              className="w-full bg-white border border-stone-300 rounded-lg p-1.5 text-xs text-stone-900 focus:border-amber-800"
+                            >
+                              <option value="">None</option>
+                              <option value="indicative">Indicative</option>
+                              <option value="subjunctive">Subjunctive</option>
+                              <option value="imperative">Imperative</option>
+                              <option value="infinitive">Infinitive</option>
+                              <option value="participle">Participle</option>
+                            </select>
+                          </div>
+                        )}
+
+                        {relevantFeatures.person && (
+                          <div>
+                            <label className="block text-[10px] font-bold uppercase text-stone-500 mb-0.5">
+                              Person
+                            </label>
+                            <select
+                              value={activeToken.inflections.person || ""}
+                              onChange={(e) => updateInflection("person", e.target.value)}
+                              className="w-full bg-white border border-stone-300 rounded-lg p-1.5 text-xs text-stone-900 focus:border-amber-800"
+                            >
+                              <option value="">None</option>
+                              <option value="1">1st Person</option>
+                              <option value="2">2nd Person</option>
+                              <option value="3">3rd Person</option>
+                            </select>
+                          </div>
+                        )}
+
+                        {relevantFeatures.declension && (
+                          <div>
+                            <label className="block text-[10px] font-bold uppercase text-stone-500 mb-0.5">
+                              Declension
+                            </label>
+                            <select
+                              value={activeToken.inflections.declension || ""}
+                              onChange={(e) => updateInflection("declension", e.target.value)}
+                              className="w-full bg-white border border-stone-300 rounded-lg p-1.5 text-xs text-stone-900 focus:border-amber-800"
+                            >
+                              <option value="">None</option>
+                              <option value="strong">Strong (Indefinite)</option>
+                              <option value="weak">Weak (Definite)</option>
+                            </select>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Display active tags summary */}
+                      {Object.values(activeToken.inflections).some(Boolean) && (
+                        <div className="flex flex-wrap gap-1 pt-2 border-t border-stone-200">
+                          {Object.entries(activeToken.inflections)
+                            .filter(([, v]) => Boolean(v))
+                            .map(([k, v]) => (
+                              <span key={k} className="text-[9px] bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-bold uppercase border border-amber-200">
+                                {k}: {v}
+                              </span>
+                            ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={addMorpheme}
-                    className="text-xs text-amber-900 font-semibold underline mt-2 flex items-center"
-                  >
-                    + Add Morpheme
-                  </button>
-                </div>
 
-                {/* 4. Lexical Details */}
-                <div className="border-t border-stone-100 pt-3 space-y-3">
-                  <label className="block text-xs font-bold text-stone-700">
-                    IPA Pronunciation
-                    <input
-                      type="text"
-                      placeholder="e.g. /ˈoːx.teː.re/"
-                      value={activeToken.ipa}
-                      onChange={(e) => updateToken({ ipa: e.target.value })}
-                      className="w-full border border-stone-300 rounded p-2 mt-1 text-xs focus:outline-none focus:border-amber-800 font-mono"
-                    />
-                  </label>
-
-                  <label className="block text-xs font-bold text-stone-700">
-                    Wiktionary URL
-                    <input
-                      type="url"
-                      placeholder="https://en.wiktionary.org/wiki/..."
-                      value={activeToken.wiktionaryUrl}
-                      onChange={(e) => updateToken({ wiktionaryUrl: e.target.value })}
-                      className="w-full border border-stone-300 rounded p-2 mt-1 text-xs focus:outline-none focus:border-amber-800"
-                    />
-                  </label>
-                </div>
-
-                {/* 5. Reader Popup Preview Card */}
-                <div className="border-t border-stone-200 pt-4 mt-4 bg-amber-50/20 p-4 border rounded-lg border-amber-100">
-                  <span className="block text-[10px] font-extrabold uppercase tracking-wider text-amber-800 mb-1.5">
-                    Reader Popup Preview
-                  </span>
-                  <div className="space-y-1">
-                    <p className="text-stone-900 font-serif font-bold text-base flex items-center gap-1.5">
-                      {activeToken.lemma || activeToken.sourceForm.replace(/[.,;:!?]+$/, "")}
-                      <span className="text-xs font-sans text-stone-500 font-normal italic">
-                        ({activeToken.pos || "unclassified"})
+                  {/* 3. Morphemes Interactive List Builder with Boxed Cells & Trash Icons */}
+                  <div className="border-t border-stone-200/80 pt-3.5 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-stone-700">
+                        Morphemes Breakdown ({activeToken.morphemes?.length || 0})
                       </span>
-                    </p>
-                    {activeToken.ipa && (
-                      <p className="text-xs text-stone-500 font-mono">
-                        {activeToken.ipa}
+                      <button
+                        type="button"
+                        onClick={addMorpheme}
+                        className="text-[11px] text-amber-900 hover:text-amber-950 font-bold flex items-center gap-1 bg-amber-50 px-2 py-0.5 rounded border border-amber-200"
+                      >
+                        <Plus className="w-3 h-3" /> Add Morpheme
+                      </button>
+                    </div>
+
+                    <div className="space-y-2">
+                      {(activeToken.morphemes || []).map((morpheme, idx) => (
+                        <div
+                          key={morpheme.id || idx}
+                          className="p-2.5 bg-white border border-stone-300 rounded-xl shadow-2xs flex items-center gap-2 group hover:border-amber-700/60 transition-colors"
+                        >
+                          <div className="flex-1">
+                            <label className="block text-[9px] font-bold uppercase text-stone-400 mb-0.5">
+                              Morpheme Segment
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="e.g. ġeār"
+                              value={morpheme.morpheme}
+                              onChange={(e) => updateMorphemeVal(idx, "morpheme", e.target.value)}
+                              className="w-full border border-stone-200 rounded-md p-1.5 text-xs text-stone-900 font-serif focus:outline-none focus:border-amber-800"
+                            />
+                          </div>
+
+                          <div className="flex-1">
+                            <label className="block text-[9px] font-bold uppercase text-stone-400 mb-0.5">
+                              Gloss / Tag
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="e.g. year"
+                              value={morpheme.gloss}
+                              onChange={(e) => updateMorphemeVal(idx, "gloss", e.target.value)}
+                              className="w-full border border-stone-200 rounded-md p-1.5 text-xs text-stone-900 font-mono uppercase focus:outline-none focus:border-amber-800"
+                            />
+                          </div>
+
+                          <div className="pt-3">
+                            <button
+                              type="button"
+                              onClick={() => removeMorpheme(idx)}
+                              className="p-1.5 text-stone-400 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors"
+                              title="Remove morpheme"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 4. IPA & Wiktionary Fields */}
+                  <div className="border-t border-stone-200/80 pt-3.5 space-y-3">
+                    <div>
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-600 mb-1">
+                        IPA Historical Pronunciation
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. /ˈoːx.teː.re/"
+                        value={activeToken.ipa}
+                        onChange={(e) => updateToken({ ipa: e.target.value })}
+                        className="w-full bg-white border border-stone-300 rounded-lg p-2 text-xs font-mono text-stone-800 focus:outline-none focus:border-amber-800 focus:ring-1 focus:ring-amber-800/20 shadow-2xs"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-600 mb-1">
+                        Wiktionary External Reference URL
+                      </label>
+                      <input
+                        type="url"
+                        placeholder="https://en.wiktionary.org/wiki/..."
+                        value={activeToken.wiktionaryUrl}
+                        onChange={(e) => updateToken({ wiktionaryUrl: e.target.value })}
+                        className="w-full bg-white border border-stone-300 rounded-lg p-2 text-xs text-stone-800 focus:outline-none focus:border-amber-800 focus:ring-1 focus:ring-amber-800/20 shadow-2xs"
+                      />
+                    </div>
+                  </div>
+
+                  {/* 5. Consolidate Duplicate Content -> Unified Dictionary & Reader Reference Card */}
+                  <div className="border border-amber-200/90 bg-gradient-to-br from-amber-50/60 to-stone-50 rounded-xl p-4 shadow-2xs space-y-2 mt-4">
+                    <div className="flex items-center justify-between pb-1.5 border-b border-amber-200/70">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-800" />
+                        Reader Reference Preview
+                      </span>
+                      <span className="text-[10px] font-mono text-stone-500">Live Render</span>
+                    </div>
+
+                    <div>
+                      <p className="text-stone-900 font-serif font-bold text-base flex items-baseline gap-2">
+                        {activeToken.lemma || cleanHeaderWord}
+                        <span className="text-xs font-sans text-stone-500 font-normal italic">
+                          ({activeToken.pos || "unclassified"})
+                        </span>
                       </p>
-                    )}
-                    <p className="text-sm text-stone-700 mt-1">
-                      {activeToken.explanation || "No gloss definition set."}
-                    </p>
+                      {activeToken.ipa && (
+                        <p className="text-xs text-stone-600 font-mono mt-0.5">
+                          {activeToken.ipa}
+                        </p>
+                      )}
+                      <p className="text-xs text-stone-700 mt-1 leading-relaxed">
+                        {activeToken.explanation || "No gloss definition set."}
+                      </p>
+                    </div>
+
+                    {/* Morpheme & Inflection Chips */}
                     {activeToken.morphemes && activeToken.morphemes.length > 0 && (
-                      <div className="pt-2 border-t border-amber-100/60 mt-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500 block mb-1">
-                          Morphemes Breakdown
+                      <div className="pt-2 border-t border-amber-200/50">
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-stone-500 block mb-1">
+                          Morpheme Alignment:
                         </span>
                         <div className="flex flex-wrap gap-1">
                           {activeToken.morphemes.map((m, mIdx) => (
-                            <span key={m.id || mIdx} className="bg-amber-100/70 text-amber-950 px-1.5 py-0.5 rounded text-[11px] font-mono border border-amber-200/60">
-                              {m.morpheme || "?"} = {m.gloss || "?"}
+                            <span key={m.id || mIdx} className="bg-white text-stone-800 px-2 py-0.5 rounded text-[10px] font-mono border border-stone-200 shadow-2xs">
+                              {m.morpheme || "?"} <span className="text-amber-800 font-bold">&rarr;</span> {m.gloss || "?"}
                             </span>
                           ))}
                         </div>
                       </div>
                     )}
-                    {Object.values(activeToken.inflections).some(Boolean) && (
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {Object.entries(activeToken.inflections)
-                          .filter(([, v]) => Boolean(v))
-                          .map(([k, v]) => (
-                            <span key={k} className="text-[10px] bg-amber-100/60 text-amber-900 px-1.5 py-0.5 rounded uppercase font-bold tracking-tight">
-                              {v}
-                            </span>
-                          ))}
-                      </div>
-                    )}
+
                     {activeToken.wiktionaryUrl && (
-                      <div className="pt-2 border-t border-amber-100 mt-2">
+                      <div className="pt-2 border-t border-amber-200/50 flex justify-end">
                         <a
                           href={activeToken.wiktionaryUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-xs text-amber-900 underline font-semibold flex items-center gap-1 hover:text-amber-950"
+                          className="text-xs text-amber-900 hover:text-amber-950 font-bold underline inline-flex items-center gap-1"
                         >
-                          Open in Wiktionary ↗
+                          Open in Wiktionary <ExternalLink className="w-3 h-3" />
                         </a>
                       </div>
                     )}
                   </div>
                 </div>
-              </div>
-            ) : (
-              <p className="text-stone-500 text-sm mt-4 text-center py-8">
-                Select any word in the document feed to inspect and customize its linguistic layers.
-              </p>
-            )}
+              ) : (
+                <div className="text-center py-10 px-4 text-stone-500 space-y-2">
+                  <BookOpen className="w-8 h-8 text-stone-400 mx-auto opacity-60" />
+                  <p className="text-xs">
+                    Select any word in the document feed on the left to inspect and customize its linguistic layers.
+                  </p>
+                </div>
+              )}
+            </div>
           </aside>
         </div>
 
-        {/* Multi-Sentence gb4e Importer (Dedicated full-width section at bottom of page) */}
-        <section className="workspace-panel editor-import" style={{ marginTop: "2rem" }}>
-          <p className="workspace-eyebrow" style={{ margin: 0 }}>Batch Import Pipeline</p>
-          <h2 id="import-heading" style={{ margin: "0.25rem 0 1rem", fontSize: "1.3rem" }}>Paste one or more gb4e</h2>
-          
-          <div className="editor-field" style={{ marginTop: 0 }}>
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-sm font-semibold text-stone-800">
-                {"Paste gb4e LaTeX blocks or upload .tex file"}
-              </label>
-              <label className="text-xs bg-stone-100 hover:bg-stone-200 text-stone-800 px-2.5 py-1 rounded cursor-pointer border border-stone-300 font-medium">
-                <span>📁 Upload .tex file</span>
-                <input
-                  type="file"
-                  accept=".tex,.txt"
-                  className="hidden"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                      const text = event.target?.result as string;
-                      if (text) {
-                        setLatexImportSource(text);
-                        setImportPreview(parseMultiSentenceGb4e(text));
-                      }
-                    };
-                    reader.readAsText(file);
-                  }}
-                />
-              </label>
+        {/* Multi-Sentence gb4e Batch Importer */}
+        <section className="bg-white border border-stone-300/80 rounded-xl p-6 shadow-sm mt-8 space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-stone-200">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 block">
+                Batch Import Pipeline
+              </span>
+              <h2 className="text-lg font-serif font-bold text-stone-900">
+                Paste gb4e LaTeX Blocks or Plain Old English Text
+              </h2>
             </div>
+
+            <label className="text-xs bg-stone-100 hover:bg-stone-200 text-stone-800 px-3 py-1.5 rounded-lg cursor-pointer border border-stone-300 font-semibold transition-colors flex items-center gap-1.5 shadow-2xs">
+              <Upload className="w-3.5 h-3.5 text-stone-600" />
+              <span>Upload .tex file</span>
+              <input
+                type="file"
+                accept=".tex,.txt"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const reader = new FileReader();
+                  reader.onload = (event) => {
+                    const text = event.target?.result as string;
+                    if (text) {
+                      setLatexImportSource(text);
+                      setImportPreview(parseMultiSentenceGb4e(text));
+                    }
+                  };
+                  reader.readAsText(file);
+                }}
+              />
+            </label>
+          </div>
+
+          <div className="space-y-2">
             <textarea
-              rows={5}
+              rows={4}
               value={latexImportSource}
               onChange={(e) => {
                 setLatexImportSource(e.target.value);
                 setImportPreview(null);
               }}
-              placeholder="\ex{\gll Ōhthere sǣ-d-e ...\\&#10;Ohthere.\textsc{nom} say-\textsc{pst} ...\\&#10;\glt `Ohthere said ...'}"
+              placeholder="\ex{\gll Ōhthere sǣ-d-e his hlāforde ...\\&#10;Ohthere say-\textsc{pst}-\textsc{ind}3\textsc{sg} his lord ...\\&#10;\glt `Ohthere said to his lord...'}"
+              className="w-full text-xs font-mono text-stone-900 bg-stone-50 border border-stone-300 rounded-xl p-3 focus:outline-none focus:border-amber-800 focus:bg-white transition-all shadow-inner"
             />
-          </div>
-          <div style={{ marginTop: "0.75rem" }}>
-            <button
-              type="button"
-              disabled={!latexImportSource.trim()}
-              onClick={() => setImportPreview(parseMultiSentenceGb4e(latexImportSource))}
-              className="workspace-button"
-            >
-              Preview Import
-            </button>
-          </div>
 
-          {importPreview && (
-            <div style={{ marginTop: "1rem", padding: "1rem", background: "var(--surface)", border: "1px solid var(--rule)", borderRadius: "0.35rem" }}>
-              <p style={{ margin: 0, fontSize: "0.9rem" }}>
-                Found <strong>{importPreview.length}</strong> sentences with <strong>{importPreview.reduce((acc, curr) => acc + curr.tokens.length, 0)}</strong> total tokens.
-              </p>
-              {importPreview.length > 0 && (
+            <div className="flex items-center gap-2 pt-1">
+              <button
+                type="button"
+                disabled={!latexImportSource.trim()}
+                onClick={() => setImportPreview(parseMultiSentenceGb4e(latexImportSource))}
+                className="px-3.5 py-1.5 bg-stone-100 hover:bg-stone-200 disabled:opacity-40 text-stone-800 border border-stone-300 rounded-lg text-xs font-bold transition-colors shadow-2xs"
+              >
+                Preview Import
+              </button>
+
+              {importPreview && (
                 <button
                   type="button"
                   onClick={applyImportedSentences}
-                  className="workspace-button"
-                  style={{ marginTop: "0.75rem", background: "var(--accent)", color: "#fff" }}
+                  className="px-4 py-1.5 bg-amber-800 hover:bg-amber-900 text-white rounded-lg text-xs font-bold transition-colors shadow-sm"
                 >
                   Apply {importPreview.length} sentences to document
                 </button>
               )}
             </div>
-          )}
+
+            {importPreview && (
+              <div className="p-3.5 bg-amber-50/70 border border-amber-200 rounded-xl text-xs text-amber-950 flex items-center justify-between">
+                <span>
+                  Found <strong>{importPreview.length}</strong> sentences with <strong>{importPreview.reduce((acc, curr) => acc + curr.tokens.length, 0)}</strong> total tokens ready to append.
+                </span>
+              </div>
+            )}
+          </div>
         </section>
       </div>
     </main>

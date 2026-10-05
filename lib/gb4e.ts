@@ -229,8 +229,10 @@ function extractInflectionFeatures(gloss: string): InflectionFeatures {
   else if (upper.includes("ACC")) features.case = "accusative";
   else if (upper.includes("GEN")) features.case = "genitive";
   else if (upper.includes("DAT")) features.case = "dative";
+  else if (upper.includes("INS")) features.case = "instrumental";
 
   if (upper.includes("PL")) features.number = "plural";
+  else if (upper.includes("DU")) features.number = "dual";
   else if (upper.includes("SG")) features.number = "singular";
 
   if (upper.includes(".M") || upper.includes("-M") || upper.endsWith(".M") || upper.includes("M.NOM") || upper.includes("M.ACC") || upper.includes("M.DAT") || upper.includes("M.GEN")) {
@@ -254,7 +256,10 @@ function extractInflectionFeatures(gloss: string): InflectionFeatures {
   else if (upper.includes("3SG") || upper.includes("3PL") || upper.includes(".3")) features.person = 3;
 
   if (upper.includes("SUP")) features.degree = "superlative";
-  else if (upper.includes("COMP")) features.degree = "comparative";
+  else if (upper.includes("CMP") && !upper.includes("COMP")) features.degree = "comparative";
+
+  if (upper.includes("STR")) features.declension = "strong";
+  else if (upper.includes("WK")) features.declension = "weak";
 
   return features;
 }

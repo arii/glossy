@@ -232,9 +232,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-1-sentence-1-word-7-morpheme-1",
@@ -295,7 +293,8 @@
             "partOfSpeech": "adjective",
             "features": {
               "case": "genitive",
-              "number": "plural"
+              "number": "plural",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -516,9 +515,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-1-sentence-2-word-3-morpheme-1",
@@ -715,7 +712,8 @@
             "features": {
               "case": "dative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -753,7 +751,9 @@
           "analysis": {
             "lemma": "wiþ",
             "partOfSpeech": "noun",
-            "features": {},
+            "features": {
+              "case": "instrumental"
+            },
             "morphemes": [
               {
                 "id": "paragraph-1-sentence-2-word-10-morpheme-1",
@@ -954,9 +954,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-1-sentence-3-word-4-morpheme-1",
@@ -1076,7 +1074,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-1-sentence-3-word-8-morpheme-1",
@@ -1111,7 +1111,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -1320,7 +1321,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -1409,7 +1411,8 @@
             "partOfSpeech": "adjective",
             "features": {
               "case": "dative",
-              "number": "plural"
+              "number": "plural",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -2051,9 +2054,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-2-sentence-1-word-3-morpheme-1",
@@ -2142,7 +2143,8 @@
             "features": {
               "case": "dative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -2538,7 +2540,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -3046,7 +3049,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -3143,7 +3147,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -4296,7 +4301,8 @@
             "partOfSpeech": "adjective",
             "features": {
               "case": "dative",
-              "number": "plural"
+              "number": "plural",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -5033,9 +5039,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-2-sentence-5-word-20-morpheme-1",
@@ -7091,7 +7095,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "feminine"
+              "gender": "feminine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -8103,7 +8108,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -8171,7 +8177,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "feminine"
+              "gender": "feminine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -8479,7 +8486,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -8668,7 +8676,8 @@
             "features": {
               "case": "dative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -8858,7 +8867,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -8924,7 +8934,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -9806,7 +9817,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-3-sentence-1-word-4-morpheme-1",
@@ -9868,7 +9881,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -10365,7 +10379,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -10999,7 +11014,8 @@
             "features": {
               "case": "dative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -11702,7 +11718,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -12180,7 +12197,8 @@
             "lemma": "swīþost",
             "partOfSpeech": "noun",
             "features": {
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -12678,7 +12696,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-3-sentence-5-word-16-morpheme-1",
@@ -12713,7 +12733,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -13033,7 +13054,8 @@
             "features": {
               "case": "accusative",
               "number": "plural",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -13285,7 +13307,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-3-sentence-5-word-35-morpheme-1",
@@ -13320,7 +13344,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "feminine"
+              "gender": "feminine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -13555,7 +13580,9 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "degree": "comparative",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -13618,7 +13645,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -13781,7 +13809,9 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "degree": "comparative",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -13912,7 +13942,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -14035,7 +14066,8 @@
             "features": {
               "case": "dative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -14170,7 +14202,8 @@
               "case": "nominative",
               "number": "singular",
               "gender": "masculine",
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -14449,7 +14482,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -14544,7 +14578,8 @@
               "case": "nominative",
               "number": "plural",
               "gender": "masculine",
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -14661,7 +14696,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -14804,9 +14840,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-3-sentence-8-word-4-morpheme-1",
@@ -15171,7 +15205,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-4-sentence-1-word-3-morpheme-1",
@@ -15206,7 +15242,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -15946,7 +15983,8 @@
             "partOfSpeech": "noun",
             "features": {
               "case": "genitive",
-              "number": "plural"
+              "number": "plural",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -16016,7 +16054,8 @@
             "partOfSpeech": "noun",
             "features": {
               "case": "genitive",
-              "number": "plural"
+              "number": "plural",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -16495,7 +16534,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-4-sentence-3-word-12-morpheme-1",
@@ -16530,7 +16571,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -16785,7 +16827,8 @@
             "partOfSpeech": "noun",
             "features": {
               "case": "accusative",
-              "number": "plural"
+              "number": "plural",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -17012,7 +17055,8 @@
             "partOfSpeech": "noun",
             "features": {
               "case": "dative",
-              "number": "plural"
+              "number": "plural",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -17280,9 +17324,7 @@
           "analysis": {
             "lemma": "mā",
             "partOfSpeech": "noun",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-4-sentence-4-word-13-morpheme-1",
@@ -17653,7 +17695,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -19053,7 +19096,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -19190,7 +19234,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -19391,7 +19436,8 @@
               "case": "nominative",
               "number": "singular",
               "gender": "masculine",
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -19961,7 +20007,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -20059,7 +20106,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -20324,7 +20372,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -20355,7 +20404,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -20515,7 +20565,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -20556,7 +20607,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -20727,9 +20779,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-5-sentence-1-word-3-morpheme-1",
@@ -20864,7 +20914,9 @@
           "analysis": {
             "lemma": "swȳþe",
             "partOfSpeech": "noun",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-5-sentence-1-word-7-morpheme-1",
@@ -20899,7 +20951,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -20954,7 +21007,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-5-sentence-1-word-10-morpheme-1",
@@ -20990,7 +21045,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -21027,7 +21083,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -21398,7 +21455,9 @@
           "analysis": {
             "lemma": "wið",
             "partOfSpeech": "noun",
-            "features": {},
+            "features": {
+              "case": "instrumental"
+            },
             "morphemes": [
               {
                 "id": "paragraph-5-sentence-2-word-13-morpheme-1",
@@ -21633,7 +21692,8 @@
             "partOfSpeech": "determiner",
             "features": {
               "case": "dative",
-              "number": "plural"
+              "number": "plural",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -21701,7 +21761,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-5-sentence-2-word-23-morpheme-1",
@@ -21737,7 +21799,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -21842,7 +21905,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -21978,7 +22042,9 @@
           "analysis": {
             "lemma": "wiðuppon",
             "partOfSpeech": "noun",
-            "features": {},
+            "features": {
+              "case": "instrumental"
+            },
             "morphemes": [
               {
                 "id": "paragraph-5-sentence-3-word-7-morpheme-1",
@@ -22086,7 +22152,8 @@
             "features": {
               "case": "dative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -22398,7 +22465,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -22535,7 +22603,8 @@
               "case": "nominative",
               "number": "singular",
               "gender": "neuter",
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -22649,7 +22718,9 @@
           "analysis": {
             "lemma": "norðor",
             "partOfSpeech": "noun",
-            "features": {},
+            "features": {
+              "degree": "comparative"
+            },
             "morphemes": [
               {
                 "id": "paragraph-5-sentence-4-word-11-morpheme-1",
@@ -22713,7 +22784,7 @@
               "case": "nominative",
               "number": "singular",
               "gender": "neuter",
-              "degree": "comparative"
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -22957,7 +23028,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -23043,7 +23115,9 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "degree": "comparative",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -23204,7 +23278,7 @@
               "case": "nominative",
               "number": "singular",
               "gender": "neuter",
-              "degree": "comparative"
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -23436,7 +23510,8 @@
               "case": "nominative",
               "number": "singular",
               "gender": "neuter",
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -23506,9 +23581,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-5-sentence-6-word-9-morpheme-1",
@@ -23715,7 +23788,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -23982,7 +24056,8 @@
             "partOfSpeech": "determiner",
             "features": {
               "case": "dative",
-              "number": "plural"
+              "number": "plural",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -24080,7 +24155,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -24388,7 +24464,8 @@
             "partOfSpeech": "determiner",
             "features": {
               "case": "dative",
-              "number": "plural"
+              "number": "plural",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -24486,7 +24563,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -24799,7 +24877,8 @@
             "features": {
               "case": "genitive",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -24907,7 +24986,8 @@
             "features": {
               "case": "dative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -24975,7 +25055,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "feminine"
+              "gender": "feminine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -25235,7 +25316,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -25298,7 +25380,8 @@
             "features": {
               "case": "genitive",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -25405,7 +25488,8 @@
             "features": {
               "case": "dative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -26094,7 +26178,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-5-sentence-9-word-4-morpheme-1",
@@ -26129,7 +26215,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -26201,7 +26288,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -26932,7 +27020,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-5-sentence-9-word-30-morpheme-1",
@@ -26967,7 +27057,8 @@
             "features": {
               "case": "accusative",
               "number": "plural",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -27057,7 +27148,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-5-sentence-9-word-34-morpheme-1",
@@ -27088,7 +27181,8 @@
             "features": {
               "case": "accusative",
               "number": "plural",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -27199,9 +27293,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-6-sentence-1-word-3-morpheme-1",
@@ -27562,9 +27654,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-6-sentence-2-word-3-morpheme-1",
@@ -27954,7 +28044,8 @@
             "features": {
               "case": "dative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -28278,9 +28369,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-6-sentence-4-word-4-morpheme-1",
@@ -28735,8 +28824,10 @@
             "lemma": "ǣlċe",
             "partOfSpeech": "noun",
             "features": {
+              "case": "instrumental",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -28849,7 +28940,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -28950,7 +29042,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "feminine"
+              "gender": "feminine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -30305,7 +30398,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -30505,6 +30599,7 @@
             "lemma": "wiðsūðan",
             "partOfSpeech": "noun",
             "features": {
+              "case": "instrumental",
               "gender": "feminine"
             },
             "morphemes": [
@@ -30641,7 +30736,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-7-sentence-1-word-5-morpheme-1",
@@ -30676,7 +30773,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "feminine"
+              "gender": "feminine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -30945,7 +31043,7 @@
               "case": "nominative",
               "number": "singular",
               "gender": "feminine",
-              "degree": "comparative"
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -31013,7 +31111,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -31273,7 +31372,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "feminine"
+              "gender": "feminine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -31567,7 +31667,8 @@
             "features": {
               "case": "accusative",
               "number": "plural",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -31962,9 +32063,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-7-sentence-3-word-6-morpheme-1",
@@ -35018,9 +35117,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-8-sentence-1-word-3-morpheme-1",
@@ -35183,9 +35280,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-8-sentence-1-word-8-morpheme-1",
@@ -35489,9 +35584,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-8-sentence-1-word-18-morpheme-1",
@@ -35615,7 +35708,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -36400,7 +36494,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -36918,7 +37013,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -37301,7 +37397,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -37993,7 +38090,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -38297,7 +38395,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-9-sentence-1-word-4-morpheme-1",
@@ -38332,7 +38432,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "feminine"
+              "gender": "feminine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -39379,7 +39480,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -40896,6 +40998,7 @@
             "lemma": "sē",
             "partOfSpeech": "determiner",
             "features": {
+              "case": "instrumental",
               "number": "singular",
               "gender": "neuter"
             },
@@ -41165,7 +41268,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-10-sentence-1-word-4-morpheme-1",
@@ -41201,7 +41306,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -41319,7 +41425,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-10-sentence-1-word-9-morpheme-1",
@@ -41354,7 +41462,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "feminine"
+              "gender": "feminine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -41471,7 +41580,8 @@
             "features": {
               "case": "dative",
               "number": "singular",
-              "gender": "feminine"
+              "gender": "feminine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -41699,7 +41809,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-10-sentence-2-word-4-morpheme-1",
@@ -41734,7 +41846,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -42008,7 +42121,8 @@
               "case": "nominative",
               "number": "plural",
               "gender": "neuter",
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -42240,7 +42354,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -42513,7 +42628,9 @@
           "analysis": {
             "lemma": "swīðe",
             "partOfSpeech": "adjective",
-            "features": {},
+            "features": {
+              "declension": "strong"
+            },
             "morphemes": [
               {
                 "id": "paragraph-10-sentence-3-word-3-morpheme-1",
@@ -42548,7 +42665,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -42810,7 +42928,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -42877,7 +42996,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -43103,7 +43223,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -43442,7 +43563,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -43470,9 +43592,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-11-sentence-1-word-12-morpheme-1",
@@ -43603,7 +43723,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -44081,7 +44202,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -44117,7 +44239,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -44338,8 +44461,7 @@
             "partOfSpeech": "noun",
             "features": {
               "case": "accusative",
-              "number": "plural",
-              "degree": "comparative"
+              "number": "plural"
             },
             "morphemes": [
               {
@@ -44482,7 +44604,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "feminine"
+              "gender": "feminine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -44540,9 +44663,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-11-sentence-1-word-45-morpheme-1",
@@ -44640,7 +44761,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -44950,7 +45072,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "feminine"
+              "gender": "feminine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -45655,6 +45778,7 @@
             "lemma": "sē",
             "partOfSpeech": "determiner",
             "features": {
+              "case": "instrumental",
               "number": "singular",
               "gender": "masculine"
             },
@@ -45685,8 +45809,10 @@
             "lemma": "ylcan",
             "partOfSpeech": "noun",
             "features": {
+              "case": "instrumental",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -46691,9 +46817,7 @@
           "analysis": {
             "lemma": "mā",
             "partOfSpeech": "noun",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-11-sentence-3-word-35-morpheme-1",
@@ -47179,7 +47303,8 @@
               "case": "accusative",
               "number": "singular",
               "gender": "masculine",
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -47369,7 +47494,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -47464,7 +47590,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -47524,9 +47651,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-11-sentence-4-word-20-morpheme-1",
@@ -47619,7 +47744,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -47951,7 +48077,8 @@
               "case": "nominative",
               "number": "singular",
               "gender": "masculine",
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -48024,7 +48151,8 @@
               "case": "nominative",
               "number": "singular",
               "gender": "masculine",
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -48184,7 +48312,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -48419,7 +48548,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -48470,7 +48600,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -48596,7 +48727,8 @@
               "case": "accusative",
               "number": "plural",
               "gender": "neuter",
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -49224,7 +49356,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -49543,7 +49676,8 @@
               "case": "accusative",
               "number": "singular",
               "gender": "neuter",
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -49710,7 +49844,8 @@
               "case": "dative",
               "number": "singular",
               "gender": "masculine",
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -49873,7 +50008,8 @@
               "case": "dative",
               "number": "singular",
               "gender": "masculine",
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -49968,7 +50104,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -50027,7 +50164,8 @@
             "features": {
               "case": "dative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -50190,7 +50328,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -50357,7 +50496,8 @@
               "case": "accusative",
               "number": "singular",
               "gender": "masculine",
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -50460,7 +50600,8 @@
               "case": "nominative",
               "number": "singular",
               "gender": "masculine",
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -50763,7 +50904,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -51163,6 +51305,7 @@
             "lemma": "sē",
             "partOfSpeech": "determiner",
             "features": {
+              "case": "instrumental",
               "number": "singular",
               "gender": "neuter"
             },
@@ -51288,7 +51431,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -51398,7 +51542,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -51652,7 +51797,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -52102,7 +52248,8 @@
             "lemma": "swīðost",
             "partOfSpeech": "noun",
             "features": {
-              "degree": "superlative"
+              "degree": "superlative",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -52372,7 +52519,8 @@
             "features": {
               "case": "dative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -52474,7 +52622,8 @@
             "features": {
               "case": "genitive",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -52888,7 +53037,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -53236,9 +53386,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-13-sentence-1-word-7-morpheme-1",
@@ -53327,7 +53475,8 @@
             "features": {
               "case": "genitive",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -53470,7 +53619,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -53720,7 +53870,8 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "feminine"
+              "gender": "feminine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -53866,7 +54017,8 @@
             "features": {
               "case": "dative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -54156,9 +54308,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-13-sentence-2-word-8-morpheme-1",
@@ -54357,6 +54507,7 @@
             "lemma": "sē",
             "partOfSpeech": "determiner",
             "features": {
+              "case": "instrumental",
               "number": "singular",
               "gender": "neuter"
             },
@@ -54483,7 +54634,8 @@
             "features": {
               "case": "nominative",
               "number": "plural",
-              "gender": "neuter"
+              "gender": "neuter",
+              "declension": "weak"
             },
             "morphemes": [
               {
@@ -54702,9 +54854,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-13-sentence-2-word-25-morpheme-1",
@@ -55126,7 +55276,8 @@
             "features": {
               "case": "accusative",
               "number": "plural",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -55325,9 +55476,7 @@
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": {},
             "morphemes": [
               {
                 "id": "paragraph-13-sentence-3-word-13-morpheme-1",
@@ -55357,7 +55506,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {
@@ -55425,7 +55575,8 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "masculine"
+              "gender": "masculine",
+              "declension": "strong"
             },
             "morphemes": [
               {

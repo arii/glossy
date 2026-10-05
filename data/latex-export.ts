@@ -6,7 +6,7 @@ export function exportToGb4eLatex(document: TextDocument, customSentences?: Read
 
   const title = document.title || "Untitled Document";
   const author = document.author ? `Translated and glossed by ${document.author}` : document.source || "";
-  const date = "September 30, 2026";
+  const date = document.date || "September 30, 2026";
 
   let tex = `%!TEX TS-program = xelatex
 % !BIB program = biber
@@ -44,8 +44,7 @@ export function exportToGb4eLatex(document: TextDocument, customSentences?: Read
 ${author ? `\\author{${escapeTex(author)}}` : ""}
 \\date{${date}}
 
-\\addbibresource{Voyages_of_Ohthere_Wulfstan.bib}
-
+${document.sourceFile?.includes("Voyages") ? "\\addbibresource{Voyages_of_Ohthere_Wulfstan.bib}\n" : ""}
 \\begin{document}
 \\maketitle
 

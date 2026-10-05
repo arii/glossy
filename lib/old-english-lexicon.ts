@@ -3,16 +3,26 @@
  * parts of speech, and verified Wiktionary URLs.
  */
 
-export interface LexiconEntry {
-  lemma: string;
-  pos: "noun" | "verb" | "adjective" | "adverb" | "pronoun" | "determiner" | "preposition" | "conjunction";
-  wiktionaryUrl: string;
-  definition?: string;
-  ipa?: string;
-}
+import type { LexiconEntry } from "./types.ts";
+
+export type { LexiconEntry };
 
 const OLD_ENGLISH_LEXICON: Record<string, LexiconEntry> = {
   // Verbs
+  "būan": {
+    lemma: "būan",
+    pos: "verb",
+    wiktionaryUrl: "https://en.wiktionary.org/wiki/buan#Old_English",
+    definition: "to dwell, inhabit",
+    ipa: "/ˈbuː.ɑn/",
+  },
+  "buan": {
+    lemma: "būan",
+    pos: "verb",
+    wiktionaryUrl: "https://en.wiktionary.org/wiki/buan#Old_English",
+    definition: "to dwell, inhabit",
+    ipa: "/ˈbuː.ɑn/",
+  },
   "sǣ-d-e": {
     lemma: "secgan",
     pos: "verb",
@@ -517,7 +527,7 @@ const OLD_ENGLISH_LEXICON: Record<string, LexiconEntry> = {
   },
 };
 
-export function resolveOldEnglishLexicon(rawSurface: string, gloss: string): LexiconEntry {
+export function resolveOldEnglishLexicon(rawSurface: string, gloss: string = ""): LexiconEntry {
   const nfc = rawSurface.normalize("NFC").toLowerCase().replace(/[.,;:!?]+$/, "").trim();
   const nfd = rawSurface.normalize("NFD").toLowerCase().replace(/[.,;:!?]+$/, "").trim();
   
@@ -560,10 +570,11 @@ export function resolveOldEnglishLexicon(rawSurface: string, gloss: string): Lex
 
   // Ensure clean ASCII/Unicode slug without combining decomposed marks
   const cleanWiktionarySlug = fallbackLemma.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const safeGloss = (gloss || "").toLowerCase();
   return {
     lemma: fallbackLemma,
-    pos: gloss.toLowerCase().includes("say") || gloss.toLowerCase().includes("travel") ? "verb" : "noun",
+    pos: safeGloss.includes("say") || safeGloss.includes("travel") ? "verb" : "noun",
     wiktionaryUrl: `https://en.wiktionary.org/wiki/${encodeURIComponent(cleanWiktionarySlug)}#Old_English`,
-    definition: gloss,
+    definition: gloss || fallbackLemma,
   };
 }

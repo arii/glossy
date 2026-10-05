@@ -7,16 +7,19 @@ export type PartOfSpeech =
   | "determiner"
   | "numeral"
   | "preposition"
-  | "conjunction";
+  | "conjunction"
+  | "interjection";
 
 export type InflectionFeatures = {
-  case?: "nominative" | "accusative" | "genitive" | "dative";
-  number?: "singular" | "plural";
+  case?: "nominative" | "accusative" | "genitive" | "dative" | "instrumental";
+  number?: "singular" | "plural" | "dual";
   gender?: "masculine" | "feminine" | "neuter";
   person?: 1 | 2 | 3;
   tense?: "present" | "past";
   mood?: "indicative" | "subjunctive" | "imperative" | "infinitive";
   degree?: "positive" | "comparative" | "superlative";
+  declension?: "strong" | "weak";
+  voice?: "active" | "passive";
 };
 
 export type Morpheme = {
@@ -126,11 +129,14 @@ export type DictionaryMorpheme = {
 export type DictionaryEntry = {
   id?: string;
   word: string;
+  lemma?: string;
+  pos?: PartOfSpeech;
   pronunciation?: string;
   sourceGloss?: string;
   morphemes?: DictionaryMorpheme[];
   inflection?: string;
   definition?: string;
+  wiktionaryUrl?: string;
   relativePath?: string;
 };
 
