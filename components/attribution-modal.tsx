@@ -20,12 +20,19 @@ export type AttributionConfig = {
   defaultEditorUrl?: string;
   editionDate?: string;
   booktitle?: string;
+  attributionLinguisticPackage?: string;
   linguisticPackage?: string;
+  attributionStandardsTitle?: string;
   standardsTitle?: string;
+  attributionStandardsStatement?: string;
   standardsStatement?: string;
+  bibtexCitationTemplate?: string;
   bibtexTemplate?: string;
+  unifiedLsaCitationTemplate?: string;
   unifiedTemplate?: string;
+  apaCitationTemplate?: string;
   apaTemplate?: string;
+  chicagoCitationTemplate?: string;
   chicagoTemplate?: string;
   [key: string]: unknown;
 };
@@ -41,6 +48,7 @@ export interface AttributionCardProps {
   author?: string;
   source?: string;
   config?: AttributionConfig;
+  content?: AttributionConfig;
   onDone?: () => void;
   showCloseButton?: boolean;
 }
@@ -50,25 +58,27 @@ export function AttributionCard({
   title = "The voyages of Ohthere and Wulfstan",
   author = "Tyler Lemon",
   source = "London, British Library, Additional MS 47967, ff. 5v–6r",
-  config = initialAttributionData,
+  config,
+  content,
   onDone,
   showCloseButton = false,
 }: AttributionCardProps) {
+  const activeConfig = content || config || initialAttributionData;
   const [copiedFormat, setCopiedFormat] = useState<CitationFormat | null>(null);
   const [activeTab, setActiveTab] = useState<CitationFormat>("bibtex");
 
   const builtIn = getBuiltInMetadata(slug);
   const isBuiltIn = Boolean(builtIn);
 
-  const activePlatformCreator = config.platformCreator || "Ariel Anders";
-  const activePlatformCreatorUrl = config.platformCreatorUrl || "https://boomtick.blog/services";
-  const activeDefaultEditor = builtIn?.editor || config.defaultEditor || "Tyler Lemon";
-  const activeDefaultEditorUrl = config.defaultEditorUrl || "https://sites.google.com/view/tyler-lemon";
-  const activeEditionDate = config.editionDate || "2026";
-  const activeBooktitle = config.booktitle || "Glossy: Digital Scholarly Editions of Old English Interlinear Texts";
-  const activeLinguisticPackage = config.linguisticPackage || "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing";
-  const activeStandardsTitle = config.standardsTitle || "Collaborative Development & Standards";
-  const activeStandardsStatement = config.standardsStatement ||
+  const activePlatformCreator = activeConfig.platformCreator || initialAttributionData.platformCreator || "Ariel Anders";
+  const activePlatformCreatorUrl = activeConfig.platformCreatorUrl || initialAttributionData.platformCreatorUrl || "https://boomtick.blog/services";
+  const activeDefaultEditor = builtIn?.editor || activeConfig.defaultEditor || initialAttributionData.defaultEditor || "Tyler Lemon";
+  const activeDefaultEditorUrl = activeConfig.defaultEditorUrl || initialAttributionData.defaultEditorUrl || "https://sites.google.com/view/tyler-lemon";
+  const activeEditionDate = activeConfig.editionDate || initialAttributionData.editionDate || "2026";
+  const activeBooktitle = activeConfig.booktitle || initialAttributionData.booktitle || "Glossy: Digital Scholarly Editions of Old English Interlinear Texts";
+  const activeLinguisticPackage = (activeConfig.attributionLinguisticPackage as string) || activeConfig.linguisticPackage || initialAttributionData.attributionLinguisticPackage || initialAttributionData.linguisticPackage || "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing";
+  const activeStandardsTitle = (activeConfig.attributionStandardsTitle as string) || activeConfig.standardsTitle || initialAttributionData.attributionStandardsTitle || initialAttributionData.standardsTitle || "Collaborative Development & Standards";
+  const activeStandardsStatement = (activeConfig.attributionStandardsStatement as string) || activeConfig.standardsStatement || initialAttributionData.attributionStandardsStatement || initialAttributionData.standardsStatement ||
     `Developed through the collaborative partnership of ${activePlatformCreator} (software architecture, digital platform, and automated verification suite) and ${activeDefaultEditor} (linguistic subject matter expertise, Old English glossing, and grammatical accuracy). Interlinear formatting conforms to the international Leipzig Glossing Rules with LaTeX gb4e alignment, canonical lemmatization referenced to Bosworth-Toller and Wiktionary, and visual gloss layout inspired by Peter S. Baker's Old English Aerobics (oldenglishaerobics.net).`;
 
   const provenanceData = builtIn
@@ -133,10 +143,26 @@ export function AttributionCard({
     linguisticPackage: activeLinguisticPackage,
   };
 
-  const bibtexTemplate = config.bibtexTemplate || initialAttributionData.bibtexTemplate;
-  const unifiedTemplate = config.unifiedTemplate || initialAttributionData.unifiedTemplate;
-  const apaTemplate = config.apaTemplate || initialAttributionData.apaTemplate;
-  const chicagoTemplate = config.chicagoTemplate || initialAttributionData.chicagoTemplate;
+  const bibtexTemplate =
+    (activeConfig.bibtexCitationTemplate as string) ||
+    activeConfig.bibtexTemplate ||
+    initialAttributionData.bibtexCitationTemplate ||
+    initialAttributionData.bibtexTemplate;
+  const unifiedTemplate =
+    (activeConfig.unifiedLsaCitationTemplate as string) ||
+    activeConfig.unifiedTemplate ||
+    initialAttributionData.unifiedLsaCitationTemplate ||
+    initialAttributionData.unifiedTemplate;
+  const apaTemplate =
+    (activeConfig.apaCitationTemplate as string) ||
+    activeConfig.apaTemplate ||
+    initialAttributionData.apaCitationTemplate ||
+    initialAttributionData.apaTemplate;
+  const chicagoTemplate =
+    (activeConfig.chicagoCitationTemplate as string) ||
+    activeConfig.chicagoTemplate ||
+    initialAttributionData.chicagoCitationTemplate ||
+    initialAttributionData.chicagoTemplate;
 
   const citations: Record<CitationFormat, string> = {
     bibtex: interpolateCitation(bibtexTemplate, { ...baseVars, author: bibtexAuthor }),
@@ -177,18 +203,18 @@ export function AttributionCard({
             <Scroll style={{ width: "1.2rem", height: "1.2rem", color: "var(--accent)" }} />
             <h2
               id="attribution-title"
-              data-tina-field={tinaField(config, "heading")}
+              data-tina-field={tinaField(activeConfig, "heading")}
               style={{ margin: 0, fontSize: "1.3rem", fontFamily: "'Charis SIL', Georgia, serif", color: "var(--ink)" }}
             >
-              {config.heading || "Scholarly Attribution & Citation"}
+              {activeConfig.heading || "Scholarly Attribution & Citation"}
             </h2>
           </div>
           <p
-            data-tina-field={tinaField(config, "description")}
+            data-tina-field={tinaField(activeConfig, "description")}
             style={{ margin: "0.25rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)" }}
           >
-            {config.description ? (
-              <span>{config.description} (<em>{title}</em>)</span>
+            {activeConfig.description ? (
+              <span>{activeConfig.description} (<em>{title}</em>)</span>
             ) : (
               <span>Provenance, manuscript shelfmarks, and academic citation formats for <em>{title}</em></span>
             )}
@@ -221,7 +247,7 @@ export function AttributionCard({
             <User style={{ width: "0.75rem", height: "0.75rem" }} /> Digital Platform Creator
           </span>
           <p
-            data-tina-field={tinaField(config, "platformCreator")}
+            data-tina-field={tinaField(activeConfig, "platformCreator")}
             style={{ margin: "0.2rem 0 0", fontSize: "0.88rem", fontWeight: 600, color: "var(--ink)" }}
           >
             {activePlatformCreatorUrl ? (
@@ -245,7 +271,7 @@ export function AttributionCard({
             <User style={{ width: "0.75rem", height: "0.75rem" }} /> Linguistic Subject Matter Expert
           </span>
           <p
-            data-tina-field={tinaField(config, "defaultEditor")}
+            data-tina-field={tinaField(activeConfig, "defaultEditor")}
             style={{ margin: "0.2rem 0 0", fontSize: "0.88rem", fontWeight: 600, color: "var(--ink)" }}
           >
             {isBuiltIn ? (
@@ -290,13 +316,13 @@ export function AttributionCard({
         {/* Tile 5: Collaborative Development & Standards */}
         <div style={{ gridColumn: "1 / -1" }}>
           <span
-            data-tina-field={tinaField(config, "standardsTitle")}
+            data-tina-field={tinaField(activeConfig, activeConfig.attributionStandardsTitle ? "attributionStandardsTitle" : "standardsTitle")}
             style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}
           >
             <ShieldCheck style={{ width: "0.75rem", height: "0.75rem" }} /> {activeStandardsTitle}
           </span>
           <p
-            data-tina-field={tinaField(config, "standardsStatement")}
+            data-tina-field={tinaField(activeConfig, activeConfig.attributionStandardsStatement ? "attributionStandardsStatement" : "standardsStatement")}
             style={{ margin: "0.2rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)", lineHeight: 1.5 }}
           >
             {activeStandardsStatement}
@@ -337,10 +363,10 @@ export function AttributionCard({
         <div style={{ position: "relative", background: "#1c1917", color: "#fafaf9", borderRadius: "0.4rem", padding: "1rem 1.25rem", fontFamily: "monospace", fontSize: "0.82rem", border: "1px solid #332d29" }}>
           <pre
             data-tina-field={
-              activeTab === "bibtex" ? tinaField(config, "bibtexTemplate") :
-              activeTab === "unified" ? tinaField(config, "unifiedTemplate") :
-              activeTab === "apa" ? tinaField(config, "apaTemplate") :
-              tinaField(config, "chicagoTemplate")
+              activeTab === "bibtex" ? tinaField(activeConfig, activeConfig.bibtexCitationTemplate ? "bibtexCitationTemplate" : "bibtexTemplate") :
+              activeTab === "unified" ? tinaField(activeConfig, activeConfig.unifiedLsaCitationTemplate ? "unifiedLsaCitationTemplate" : "unifiedTemplate") :
+              activeTab === "apa" ? tinaField(activeConfig, activeConfig.apaCitationTemplate ? "apaCitationTemplate" : "apaTemplate") :
+              tinaField(activeConfig, activeConfig.chicagoCitationTemplate ? "chicagoCitationTemplate" : "chicagoTemplate")
             }
             style={{ margin: 0, whiteSpace: "pre-wrap", wordBreak: "break-word", lineHeight: 1.5 }}
           >
@@ -413,6 +439,7 @@ export interface AttributionModalProps {
   author?: string;
   source?: string;
   config?: AttributionConfig;
+  content?: AttributionConfig;
 }
 
 export function AttributionModal({
@@ -423,8 +450,10 @@ export function AttributionModal({
   author = "Tyler Lemon",
   source = "London, British Library, Additional MS 47967, ff. 5v–6r",
   config,
+  content,
 }: AttributionModalProps) {
   if (!isOpen) return null;
+  const resolvedConfig = content || config;
 
   return (
     <div
@@ -449,10 +478,11 @@ export function AttributionModal({
         title={title}
         author={author}
         source={source}
-        config={config}
+        config={resolvedConfig}
         onDone={onClose}
         showCloseButton={true}
       />
     </div>
   );
 }
+

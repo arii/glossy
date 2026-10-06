@@ -20,13 +20,13 @@ const ATTRIBUTION_PAGE_QUERY = `
       defaultEditorUrl
       editionDate
       booktitle
-      linguisticPackage
-      standardsTitle
-      standardsStatement
-      bibtexTemplate
-      unifiedTemplate
-      apaTemplate
-      chicagoTemplate
+      attributionLinguisticPackage
+      attributionStandardsTitle
+      attributionStandardsStatement
+      bibtexCitationTemplate
+      unifiedLsaCitationTemplate
+      apaCitationTemplate
+      chicagoCitationTemplate
     }
   }
 `;

@@ -11,7 +11,7 @@ import {
   Search,
   Lock,
 } from "lucide-react";
-import { AttributionModal } from "./attribution-modal";
+import { AttributionModal, type AttributionConfig } from "./attribution-modal";
 import {
   listLocalDrafts,
   deleteLocalDraft,
@@ -33,7 +33,13 @@ export type TextChoice = {
   hasLocalDraft?: boolean;
 };
 
-export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[] }) {
+export function TextDirectory({
+  initialChoices,
+  attributionConfig,
+}: {
+  initialChoices: TextChoice[];
+  attributionConfig?: AttributionConfig;
+}) {
   const [choices, setChoices] = useState<TextChoice[]>(initialChoices);
   const [activeModalChoice, setActiveModalChoice] = useState<TextChoice | null>(null);
   const [openMenuSlug, setOpenMenuSlug] = useState<string | null>(null);
@@ -514,6 +520,8 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
           title={activeModalChoice.title}
           author={activeModalChoice.author}
           source={activeModalChoice.witness || activeModalChoice.source}
+          config={attributionConfig}
+          content={attributionConfig}
         />
       )}
     </div>
