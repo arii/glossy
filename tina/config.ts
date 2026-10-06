@@ -58,6 +58,29 @@ export default defineConfig({
               { type: "string", name: "footnotes", label: "Footnotes", list: true, ui: { component: "textarea" } },
               {
                 type: "object",
+                name: "notes",
+                label: "Structured Notes / Apparatus",
+                list: true,
+                ui: {
+                  itemProps: (item) => ({
+                    label: `${item?.marker || item?.id || "Note"}: ${item?.type || "general"}`,
+                  }),
+                },
+                fields: [
+                  { type: "string", name: "id", label: "Note ID", required: true },
+                  { type: "number", name: "targetWordIndex", label: "Target Word Index (1-based, optional)" },
+                  { type: "string", name: "marker", label: "Custom Marker (optional)" },
+                  {
+                    type: "string",
+                    name: "type",
+                    label: "Category / Type",
+                    options: ["manuscript_variant", "grammatical_note", "source_reference", "general"],
+                  },
+                  { type: "string", name: "text", label: "Note Text", required: true, ui: { component: "textarea" } },
+                ],
+              },
+              {
+                type: "object",
                 name: "words",
                 label: "Words",
                 list: true,
@@ -567,10 +590,19 @@ export default defineConfig({
         });
 
         const footnotesRaw = Array.isArray(s.footnotes) ? s.footnotes : [];
+        const notesRaw = Array.isArray(s.notes) ? s.notes : [];
+        const notes = notesRaw.map((n: Record<string, unknown>) => ({
+          id: String(n.id || ""),
+          targetWordIndex: n.targetWordIndex != null ? Number(n.targetWordIndex) : undefined,
+          marker: n.marker ? String(n.marker) : undefined,
+          type: String(n.type || "general"),
+          text: String(n.text || ""),
+        }));
         return {
           id: String(s.id || ""),
           translation: String(s.translation || ""),
           footnotes: footnotesRaw.map((fn: unknown) => String(fn)),
+          notes,
           words,
         };
       });

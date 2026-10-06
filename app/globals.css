@@ -1,6 +1,6 @@
 :root {
   --ink: #25231f;
-  --muted-ink: #6d685f;
+  --muted-ink: #544e45;
   --paper: #f7f3ea;
   --surface: #fffdf8;
   --rule: #d8d0c1;
@@ -42,6 +42,7 @@ body {
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
+  position: relative;
 }
 
 .site-brand-link {
@@ -51,6 +52,10 @@ body {
   color: var(--accent);
   text-decoration: none;
   letter-spacing: -0.01em;
+}
+
+.mobile-menu-toggle {
+  display: none;
 }
 
 .site-nav {
@@ -81,19 +86,212 @@ body {
   border-bottom-color: var(--accent);
 }
 
-/* Site Brand */
+/* Mobile Header & Navigation Drawer */
 
 @media (max-width: 48rem) {
   .global-site-header-inner {
-    padding: 0.65rem 1rem;
-    gap: 0.75rem;
-    flex-wrap: wrap;
+    padding: 0.5rem 1rem;
+    min-height: 3.5rem;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .mobile-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    border: 1px solid var(--rule);
+    border-radius: 0.35rem;
+    background: transparent;
+    color: var(--accent);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .mobile-menu-toggle:hover,
+  .mobile-menu-toggle:focus-visible {
+    background: rgba(123, 63, 42, 0.08);
+    border-color: var(--accent);
+    outline: none;
   }
 
   .site-nav {
-    gap: 1rem;
-    font-size: 0.82rem;
-    flex-wrap: wrap;
+    display: none;
+  }
+
+  .site-nav.is-open {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--rule);
+    box-shadow: 0 8px 24px rgba(64, 47, 29, 0.12);
+    padding: 0.5rem 1rem 1rem;
+    gap: 0;
+    z-index: 100;
+    animation: mobile-drawer-slide 0.18s ease-out;
+  }
+
+  .site-nav a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.6rem 0.5rem;
+    font-size: 0.95rem;
+    color: var(--ink);
+    border-bottom: 1px solid rgba(216, 208, 193, 0.5);
+    border-left: 3px solid transparent;
+    border-right: none;
+    border-top: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .site-nav a:last-child {
+    border-bottom: none;
+  }
+
+  .site-nav a:hover {
+    background: rgba(123, 63, 42, 0.05);
+    color: var(--accent);
+  }
+
+  .site-nav a[aria-current="page"] {
+    color: var(--accent);
+    font-weight: 700;
+    border-bottom: 1px solid rgba(216, 208, 193, 0.5);
+    border-left-color: var(--accent);
+    background: rgba(123, 63, 42, 0.06);
+    padding-left: 0.75rem;
+  }
+}
+
+@keyframes mobile-drawer-slide {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Site Footer Styles */
+.site-footer {
+  margin-top: 4rem;
+  border-top: 1px solid var(--rule);
+  background: var(--surface);
+  color: var(--ink);
+  padding: 1.75rem 1.5rem 2rem;
+}
+
+.site-footer-inner {
+  max-width: 76rem;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.25rem 2rem;
+  font-size: 0.82rem;
+  color: var(--muted-ink);
+}
+
+.site-footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.site-footer-title {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.site-footer-name {
+  font-family: "Charis SIL", "Noto Serif", Georgia, serif;
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.site-footer-tagline {
+  color: var(--muted-ink);
+}
+
+.site-footer-credits {
+  font-size: 0.8rem;
+  color: var(--muted-ink);
+}
+
+.site-footer-author-link {
+  color: var(--accent);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.site-footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1.25rem;
+  font-size: 0.82rem;
+}
+
+.site-footer-link {
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 0.15s ease;
+  white-space: nowrap;
+}
+
+.site-footer-link:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.site-footer-admin-link {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+@media (max-width: 48rem) {
+  .site-footer {
+    padding-bottom: 5.5rem;
+    text-align: center;
+  }
+
+  .site-footer-inner {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .site-footer-brand {
+    align-items: center;
+  }
+
+  .site-footer-title {
+    justify-content: center;
+  }
+
+  .site-footer-nav {
+    justify-content: center;
+    gap: 0.75rem 1rem;
+    margin-top: 0.25rem;
   }
 }
 
@@ -118,17 +316,91 @@ body {
   box-shadow: none;
 }
 
-.page-header {
-  padding-bottom: 1.5rem;
+.page-header,
+.page-hero {
+  padding: 1.5rem 0 2rem;
+  margin-bottom: 2rem;
   border-bottom: 1px solid var(--rule);
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.eyebrow {
-  margin: 0 0 0.75rem;
+.page-hero-split-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .page-hero-split-grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.15fr);
+    gap: 3.5rem;
+    align-items: center;
+  }
+}
+
+.page-hero-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.eyebrow,
+.page-hero-eyebrow {
+  margin: 0 0 0.5rem;
   color: var(--accent);
-  font: 700 0.75rem/1.4 Arial, sans-serif;
-  letter-spacing: 0.14em;
+  font: 700 0.78rem/1.4 Arial, sans-serif;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  display: inline-block;
+}
+
+.page-hero-badge {
+  display: inline-flex;
+  align-items: center;
+}
+
+.page-hero-title {
+  font-family: "Charis SIL", "Doulos SIL", "Noto Serif", Georgia, serif;
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.18;
+  color: var(--ink);
+  margin: 0 0 0.75rem;
+  max-width: 52rem;
+  text-wrap: balance;
+}
+
+.page-hero-description {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--muted-ink);
+  margin: 0 0 1.25rem;
+  max-width: 46rem;
+}
+
+.page-hero-description p {
+  margin: 0 0 0.5rem;
+}
+
+.page-hero-description p:last-child {
+  margin-bottom: 0;
+}
+
+.page-hero-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.page-hero-aside {
+  width: 100%;
 }
 
 .hero-two-column {
@@ -136,7 +408,7 @@ body {
   grid-template-columns: 1fr;
   gap: 2.5rem;
   align-items: center;
-  padding: 2rem 0 3.5rem;
+  padding: 1.5rem 0 2rem;
   border-bottom: 1px solid var(--rule);
 }
 
@@ -878,7 +1150,7 @@ h2 {
 .editor-steps { margin: 0.5rem 0 1rem; padding-left: 1.25rem; color: #57534e; font-size: 0.95rem; }
 .editor-dirty { align-self: center; font-size: 0.9rem; }
 .editor-dirty.is-dirty { color: #b45309; font-weight: 600; }
-.editor-dirty.is-clean { color: #78716c; }
+.editor-dirty.is-clean { color: var(--muted-ink); }
 
 .editor-import { width: 100%; margin-top: 2.5rem; clear: both; }
 .editor-import textarea { font-family: monospace; width: 100%; }
@@ -1598,6 +1870,26 @@ h2 {
   color: var(--ink);
 }
 
+.docs-accordion-content {
+  padding: 1.25rem;
+}
+
+.docs-step-card {
+  gap: 0.75rem;
+  padding: 1rem;
+  align-items: flex-start;
+}
+
+.docs-step-num {
+  font-family: "Charis SIL", Georgia, serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--muted-ink);
+  user-select: none;
+  flex-shrink: 0;
+  margin-top: -0.1rem;
+}
+
 .docs-callout-box h4 {
   margin: 0 0 0.4rem;
   font: 700 0.8rem Arial, sans-serif;
@@ -1655,11 +1947,14 @@ h2 {
 
 .docs-section-h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: clamp(1.15rem, 3.5vw, 1.5rem);
   font-family: "Charis SIL", "Noto Serif", Georgia, serif;
   font-weight: 700;
   color: var(--ink);
-  line-height: 1.3;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .docs-body {
@@ -1690,7 +1985,7 @@ h2 {
   padding-bottom: 0.6rem;
   border-bottom: 1px solid #332d29;
   margin-bottom: 0.85rem;
-  color: #a8a29e;
+  color: #d6d3d1;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -1840,12 +2135,30 @@ h2 {
   display: none;
 }
 
+/* Responsive Ingestion Form Grid */
+.ingest-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .ingest-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+input, textarea, select, label {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
 /* Mobile Layout Optimizations: Workspace Choice and Documentation Pages */
 @media (max-width: 48rem) {
   .workspace-choice {
     width: 100%;
     max-width: 100%;
-    padding: 1.25rem 1rem;
+    padding: clamp(0.85rem, 3vw, 1.25rem);
     margin: 1.5rem auto;
     box-sizing: border-box;
   }
@@ -1891,7 +2204,7 @@ h2 {
   }
 
   .docs-section {
-    padding: 1.25rem 1rem !important;
+    padding: 1.25rem 0.85rem !important;
     max-width: 100% !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
@@ -1901,15 +2214,16 @@ h2 {
   .docs-section-heading {
     flex-wrap: wrap;
     gap: 0.75rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
   }
 
   .docs-section-h2 {
-    font-size: 1.25rem;
-    word-break: break-word;
+    letter-spacing: -0.01em;
   }
 
   .docs-code-tier {
-    padding: 1rem 0.75rem;
+    padding: 0.85rem 0.75rem;
     max-width: 100%;
     min-width: 0;
     overflow-x: auto;
@@ -1920,6 +2234,33 @@ h2 {
   .docs-tier-grid,
   .docs-tier-glosses {
     min-width: 18rem;
+    gap: 0.75rem;
+  }
+
+  .docs-callout-box {
+    padding: 0.85rem 0.85rem;
+  }
+
+  .docs-tier-card {
+    padding: 0.85rem 0.85rem;
+  }
+
+  .docs-accordion-btn {
+    padding: 0.75rem 0.85rem;
+  }
+
+  .docs-accordion-content {
+    padding: 0.85rem 0.75rem;
+  }
+
+  .docs-step-card {
+    padding: 0.75rem 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .docs-table th,
+  .docs-table td {
+    padding: 0.5rem 0.6rem;
   }
 
   .docs-table-wrapper {
@@ -1934,4 +2275,3 @@ h2 {
     gap: 0.75rem !important;
   }
 }
-

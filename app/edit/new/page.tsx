@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SiteNav } from "../../../components/site-nav";
+import { PageHero } from "../../../components/page-hero";
 import { SiteFooter } from "../../../components/site-footer";
 import { tokenizeAndLemmatizeSentence } from "../../../lib/lemmatizer";
 import { parseGb4e } from "../../../lib/gb4e";
@@ -471,27 +472,22 @@ export default function NewTextPage() {
     <>
       <SiteNav current="new" slug="ohthere" />
       <main className="site-shell">
-        <header className="page-header" style={{ marginBottom: "2rem" }}>
-          <p className="eyebrow" data-tina-field={tinaField(page, "eyebrow")}>
-            {page.eyebrow || "Glossy · Corpus Ingestion"}
-          </p>
-          <h1 data-tina-field={tinaField(page, "heading")}>
-            {page.heading || "Gloss a New Old English Text"}
-          </h1>
-          <p
-            className="source-line"
-            data-tina-field={tinaField(page, "description")}
-            style={{ maxWidth: "48rem", fontSize: "1.05rem", lineHeight: 1.6 }}
-          >
-            {page.description || (
+        <PageHero
+          eyebrow={page.eyebrow || "Glossy · Corpus Ingestion"}
+          eyebrowDataTinaField={tinaField(page, "eyebrow")}
+          title={page.heading || "Gloss a New Old English Text"}
+          titleDataTinaField={tinaField(page, "heading")}
+          description={
+            page.description || (
               <>
                 Paste raw Old English sentences, choose a classic preset (such as <em>Beowulf</em> or{" "}
                 <em>Cædmon&apos;s Hymn</em>), or paste LaTeX <code>gb4e</code> code. The ingestion engine will
                 automatically tokenize, lemmatize, and initialize your interlinear glosses.
               </>
-            )}
-          </p>
-        </header>
+            )
+          }
+          descriptionDataTinaField={tinaField(page, "description")}
+        />
 
         {/* Workspace Card */}
         <section
@@ -503,7 +499,7 @@ export default function NewTextPage() {
             background: "var(--surface)",
             border: "1px solid var(--rule)",
             borderRadius: "0.5rem",
-            padding: "clamp(1.5rem, 3vw, 2.5rem)",
+            padding: "clamp(0.85rem, 3vw, 2.5rem)",
             boxShadow: "0 0.5rem 2rem rgba(64, 47, 29, 0.04)",
           }}
         >
@@ -617,7 +613,7 @@ export default function NewTextPage() {
             <div
               style={{
                 marginBottom: "1.75rem",
-                padding: "1.25rem",
+                padding: "clamp(0.85rem, 2vw, 1.25rem)",
                 background: "#fbf7ee",
                 borderRadius: "0.45rem",
                 border: "1px solid #dfcfb8",
@@ -747,7 +743,7 @@ export default function NewTextPage() {
             <div
               style={{
                 marginBottom: "1.75rem",
-                padding: "1.5rem",
+                padding: "clamp(0.85rem, 2vw, 1.5rem)",
                 background: isDragging ? "rgba(123, 63, 42, 0.08)" : "#fbf7ee",
                 borderRadius: "0.45rem",
                 border: isDragging ? "2px dashed var(--accent)" : "1px solid #dfcfb8",
@@ -949,7 +945,7 @@ export default function NewTextPage() {
               )}
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+            <div className="ingest-form-grid" style={{ marginBottom: "1rem" }}>
               <div>
                 <label
                   htmlFor="text-title"
@@ -965,6 +961,8 @@ export default function NewTextPage() {
                   placeholder="e.g. Beowulf: Prologue, Cædmon's Hymn, or custom title"
                   style={{
                     width: "100%",
+                    maxWidth: "100%",
+                    boxSizing: "border-box",
                     padding: "0.55rem 0.75rem",
                     borderRadius: "6px",
                     border: "1px solid var(--color-border, #cbd5e1)",
@@ -989,6 +987,8 @@ export default function NewTextPage() {
                   placeholder="e.g. beowulf-prologue or custom-slug"
                   style={{
                     width: "100%",
+                    maxWidth: "100%",
+                    boxSizing: "border-box",
                     padding: "0.55rem 0.75rem",
                     borderRadius: "6px",
                     border: "1px solid var(--color-border, #cbd5e1)",
@@ -1000,7 +1000,7 @@ export default function NewTextPage() {
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+            <div className="ingest-form-grid">
               <div>
                 <label
                   htmlFor="text-author"
@@ -1016,6 +1016,8 @@ export default function NewTextPage() {
                   placeholder="e.g. Anonymous, King Alfred, Cynewulf"
                   style={{
                     width: "100%",
+                    maxWidth: "100%",
+                    boxSizing: "border-box",
                     padding: "0.55rem 0.75rem",
                     borderRadius: "6px",
                     border: "1px solid var(--color-border, #cbd5e1)",
@@ -1040,6 +1042,8 @@ export default function NewTextPage() {
                   placeholder="e.g. Cotton MS Vitellius A. xv, Exeter Book"
                   style={{
                     width: "100%",
+                    maxWidth: "100%",
+                    boxSizing: "border-box",
                     padding: "0.55rem 0.75rem",
                     borderRadius: "6px",
                     border: "1px solid var(--color-border, #cbd5e1)",

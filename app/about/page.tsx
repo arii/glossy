@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { SiteNav } from "../../components/site-nav";
+import { PageHero } from "../../components/page-hero";
 import { SiteFooter } from "../../components/site-footer";
 import { ExternalLink, BookOpen, Edit3, Code2 } from "lucide-react";
 import aboutData from "../../content/pages/about.json";
@@ -66,38 +67,14 @@ export default function AboutPage() {
           }}
         >
           {/* Header */}
-          <header style={{ borderBottom: "1px solid var(--rule)", paddingBottom: "1.5rem", marginBottom: "2rem" }}>
-            <span
-              data-tina-field={tinaField(page, "eyebrow")}
-              style={{
-                display: "inline-block",
-                fontSize: "0.75rem",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                fontWeight: 700,
-                color: "var(--accent)",
-                marginBottom: "0.5rem",
-              }}
-            >
-              {page.eyebrow || "About the Project"}
-            </span>
-            <h1
-              data-tina-field={tinaField(page, "heading")}
-              style={{
-                margin: "0 0 0.75rem",
-                fontFamily: "'Charis SIL', Georgia, serif",
-                fontSize: "2.25rem",
-                fontWeight: 700,
-                lineHeight: 1.2,
-                color: "var(--ink)",
-              }}
-            >
-              {page.heading || "Glossy · Digital Interlinear Philology"}
-            </h1>
-            <p data-tina-field={tinaField(page, "description")} style={{ margin: 0, fontSize: "1.05rem", color: "var(--muted-ink)", lineHeight: 1.6 }}>
-              {page.description || "An open-access digital humanities platform dedicated to historical linguistic annotation, standardized Leipzig interlinear glossing, and accessible manuscript reading."}
-            </p>
-          </header>
+          <PageHero
+            eyebrow={page.eyebrow || "About the Project"}
+            eyebrowDataTinaField={tinaField(page, "eyebrow")}
+            title={page.heading || "Glossy · Digital Interlinear Philology"}
+            titleDataTinaField={tinaField(page, "heading")}
+            description={page.description || "An open-access digital humanities platform dedicated to historical linguistic annotation, standardized Leipzig interlinear glossing, and accessible manuscript reading."}
+            descriptionDataTinaField={tinaField(page, "description")}
+          />
 
           {/* Section: Mission */}
           <section style={{ marginBottom: "2.25rem" }}>
