@@ -38,6 +38,13 @@ export async function syncDocumentToTina(
           id: sent.id,
           translation: sent.translation || "",
           footnotes: sent.footnotes || [],
+          notes: (sent.notes || []).map((n) => ({
+            id: n.id,
+            targetWordIndex: n.targetWordIndex,
+            marker: n.marker,
+            type: n.type,
+            text: n.text,
+          })),
           words: (sent.words || []).map((w) => ({
             id: w.id,
             originalWord: w.originalWord,

@@ -138,7 +138,7 @@ export default function Home() {
   return (
     <>
       <SiteNav current="home" />
-      <main className="site-shell" style={{ maxWidth: "76rem", margin: "0 auto", padding: "2rem 1.5rem 0" }}>
+      <main className="site-shell" style={{ maxWidth: "76rem", margin: "0 auto" }}>
         
         {/* ================================================================ */}
         {/* HERO SECTION: Split-Screen Two-Column Value Prop + Preview */}
@@ -437,7 +437,7 @@ export default function Home() {
                     marginBottom: "0.85rem",
                   }}
                 >
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginBottom: "0.75rem" }}>
+                  <div className="hero-breakdown-grid">
                     <div>
                       <label style={{ display: "block", fontSize: "0.68rem", textTransform: "uppercase", color: "#a8a29e", marginBottom: "0.25rem" }}>
                         Surface Form

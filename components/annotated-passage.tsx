@@ -1,12 +1,14 @@
-import type { GlossRecord, PassageSegment } from "../lib/types";
+import type { GlossRecord, NoteItem, PassageSegment } from "../lib/types";
 
 type AnnotatedPassageProps = {
   segments: PassageSegment[];
   records: Record<string, GlossRecord>;
+  notes?: NoteItem[];
   selectedId: string | null;
   onHover: (id: string) => void;
   onSelect: (id: string) => void;
   onTriggerFocus: (id: string) => void;
+  onNoteClick?: (noteId: string) => void;
 };
 
 export function renderLinguisticGloss(sourceGloss: string) {
@@ -43,16 +45,21 @@ export function renderLinguisticGloss(sourceGloss: string) {
 export function AnnotatedPassage({
   segments,
   records,
+  notes = [],
   selectedId,
   onHover,
   onSelect,
   onTriggerFocus,
+  onNoteClick,
 }: AnnotatedPassageProps) {
   const handleHover = (id: string) => {
     if (typeof window !== "undefined" && window.matchMedia("(hover: hover)").matches) {
       onHover(id);
     }
   };
+
+  // Find sentence-level notes without specific target word
+  const generalSentenceNotes = notes.filter((n) => n.targetWordIndex == null);
 
   return (
     <div className="interlinear-block">
@@ -75,6 +82,10 @@ export function AnnotatedPassage({
           }
 
           const isSelected = selectedId === record.id;
+          const wordIndex = index + 1;
+          const wordNotes = notes.filter(
+            (n) => n.targetWordIndex === wordIndex || n.targetWordIndex === index,
+          );
 
           return (
             <span
@@ -102,10 +113,69 @@ export function AnnotatedPassage({
               >
                 {segment.value}
               </button>
+              {wordNotes.map((note) => (
+                <button
+                  key={note.id}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onNoteClick) {
+                      onNoteClick(note.id);
+                    } else {
+                      const el = document.getElementById(note.id);
+                      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }
+                  }}
+                  title={`[${note.type}] ${note.text}`}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: "0 1px",
+                    fontSize: "0.72rem",
+                    fontWeight: 800,
+                    color: "#b45309",
+                    cursor: "pointer",
+                    verticalAlign: "super",
+                    lineHeight: 1,
+                  }}
+                >
+                  <sup>{note.marker || "*"}</sup>
+                </button>
+              ))}
               {renderLinguisticGloss(record.sourceGloss)}
             </span>
           );
         })}
+
+        {generalSentenceNotes.map((note) => (
+          <button
+            key={note.id}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onNoteClick) {
+                onNoteClick(note.id);
+              } else {
+                const el = document.getElementById(note.id);
+                if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+              }
+            }}
+            title={`[${note.type}] ${note.text}`}
+            style={{
+              background: "transparent",
+              border: "none",
+              padding: "0 2px",
+              fontSize: "0.75rem",
+              fontWeight: 800,
+              color: "#92400e",
+              cursor: "pointer",
+              verticalAlign: "super",
+              marginLeft: "2px",
+            }}
+          >
+            <sup>{note.marker || "fn"}</sup>
+          </button>
+        ))}
       </div>
     </div>
   );

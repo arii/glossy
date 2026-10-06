@@ -1,4 +1,4 @@
-import type { TextDocument, PartOfSpeech } from "./types";
+import type { TextDocument, PartOfSpeech, NoteItem } from "./types";
 import { safeJsonStringify } from "./safe-json";
 import {
   isBuiltInSlug,
@@ -125,6 +125,7 @@ export function readDraft(slug: string): StoredDraft | null {
                 id: (sent.id as string) || `sent-${sIdx + 1}`,
                 translation: (sent.freeTranslation as string) || (sent.translation as string) || "",
                 footnotes: sent.footnotes as string[] | undefined,
+                notes: sent.notes as NoteItem[] | undefined,
                 words: (
                   ((sent.tokens || sent.words || []) as Array<Record<string, unknown>>)
                 ).map((tok, tIdx: number) => ({
