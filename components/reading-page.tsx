@@ -213,6 +213,38 @@ export function ReadingPage({
     lastTriggerId.current = id;
   };
 
+  // Aggregate all notes across sentences
+  const aggregatedApparatus = (selectedText?.sentences || []).flatMap((sent, sIdx) => {
+    const sNum = sent.id.match(/\d+$/)?.[0] || String(sIdx + 1);
+    const itemNotes = (sent.notes || []).map((note) => {
+      let targetWordForm = "";
+      if (note.targetWordIndex != null && sent.words[note.targetWordIndex - 1]) {
+        targetWordForm = sent.words[note.targetWordIndex - 1].originalWord;
+      }
+      return {
+        id: note.id,
+        sentenceId: sent.id,
+        sentenceLabel: `Sentence ${sNum}${note.targetWordIndex ? `.${note.targetWordIndex}` : ""}`,
+        wordForm: targetWordForm,
+        marker: note.marker || "*",
+        type: note.type || "general",
+        text: note.text,
+      };
+    });
+
+    const stringNotes = (sent.footnotes || []).map((fnText, fnIdx) => ({
+      id: `fn-legacy-${sent.id}-${fnIdx + 1}`,
+      sentenceId: sent.id,
+      sentenceLabel: `Sentence ${sNum}`,
+      wordForm: "",
+      marker: String(fnIdx + 1),
+      type: "general" as const,
+      text: fnText,
+    }));
+
+    return [...itemNotes, ...stringNotes];
+  });
+
   return (
     <>
       <SiteNav current="read" slug={texts.some((text) => text.slug === selectedSlug) ? selectedSlug : (texts[0]?.slug ?? "ohthere-wulfstan")} />
@@ -284,6 +316,7 @@ export function ReadingPage({
                   <AnnotatedPassage
                     segments={block.segments}
                     records={glossRecords}
+                    notes={block.notes}
                     selectedId={selectedId}
                     onHover={selectOnHover}
                     onSelect={pinSelection}
@@ -313,6 +346,78 @@ export function ReadingPage({
             )}
           </section>
         </div>
+
+        {aggregatedApparatus.length > 0 && (
+          <section
+            id="critical-apparatus"
+            style={{
+              marginTop: "3rem",
+              paddingTop: "2rem",
+              borderTop: "2px solid var(--rule)",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "1.25rem",
+                fontFamily: "'Charis SIL', Georgia, serif",
+                color: "var(--ink)",
+                marginBottom: "1rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+              }}
+            >
+              Critical Apparatus &amp; References
+            </h2>
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.75rem",
+                background: "var(--surface)",
+                border: "1px solid var(--rule)",
+                borderRadius: "0.5rem",
+                padding: "1.25rem 1.5rem",
+              }}
+            >
+              {aggregatedApparatus.map((item) => (
+                <div
+                  key={item.id}
+                  id={item.id}
+                  style={{
+                    fontSize: "0.92rem",
+                    lineHeight: 1.5,
+                    color: "var(--ink)",
+                    display: "flex",
+                    gap: "0.5rem",
+                    alignItems: "baseline",
+                  }}
+                >
+                  <strong style={{ color: "#7b3f2a", fontFamily: "monospace", minWidth: "4rem" }}>
+                    {item.sentenceLabel}
+                    {item.wordForm ? ` (${item.wordForm})` : ""}:
+                  </strong>
+                  <span>{item.text}</span>
+                  <span
+                    style={{
+                      fontSize: "0.7rem",
+                      fontWeight: 600,
+                      background: "#fef3c7",
+                      color: "#92400e",
+                      borderRadius: "0.25rem",
+                      padding: "0.1rem 0.4rem",
+                      marginLeft: "auto",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {item.type.replace("_", " ")}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
       <SiteFooter />
     </>
