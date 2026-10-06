@@ -107,22 +107,21 @@ export default function DocsPage() {
   };
 
   return (
-    <main className="docs-shell">
-      {/* Top Header Card */}
-      <header className="docs-header">
-        <SiteNav current="docs" slug="ohthere-wulfstan" />
-        <div style={{ marginTop: "1.25rem", paddingTop: "1.25rem", borderTop: "1px solid var(--rule)" }}>
+    <>
+      <SiteNav current="docs" slug="ohthere-wulfstan" />
+      <main className="site-shell">
+        <header className="page-header" style={{ marginBottom: "2rem" }}>
+          <p className="eyebrow">Technical Documentation &amp; Linguistic Guide</p>
           <h1 className="docs-title">
             Architecture &amp; Linguistic Glossing FAQ
           </h1>
-          <p className="docs-subtitle">
+          <p className="source-line" style={{ maxWidth: "52rem", fontSize: "1.05rem", lineHeight: 1.6 }}>
             Complete reference guide to Leipzig interlinear glossing, the 37 original LaTeX abbreviations, canonical Old English lemma standards (adjectives, verbs, nouns, numerals), and dual-write storage architecture.
           </p>
-        </div>
-      </header>
+        </header>
 
-      {/* Two-Column Grid: Sticky TOC on Left, Content on Right */}
-      <div className="docs-grid">
+        {/* Two-Column Grid: Sticky TOC on Left, Content on Right */}
+        <div className="docs-grid">
         {/* Sticky Sidebar */}
         <aside className="docs-sidebar">
           <div className="docs-card">
@@ -690,5 +689,6 @@ export default function DocsPage() {
         </div>
       </div>
     </main>
+  </>
   );
 }

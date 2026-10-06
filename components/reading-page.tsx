@@ -180,29 +180,33 @@ function ReadingPageInner({
   };
 
   return (
-    <main className="page-shell">
-      <article className="reading-surface">
-        <header className="page-header">
-          <SiteNav current="read" slug={selectedSlug} canEdit={texts.some((text) => text.slug === selectedSlug)} />
+    <>
+      <SiteNav current="read" slug={selectedSlug} canEdit={texts.some((text) => text.slug === selectedSlug)} />
+      <main className="site-shell">
+        <header className="page-header" style={{ marginBottom: "2rem" }}>
           <p className="eyebrow">Old English visual gloss</p>
-          {allItems.length > 1 && (
-            <div className="text-picker">
-              <label htmlFor="text-select">Text</label>
-              <select
-                id="text-select"
-                value={selectedSlug}
-                onChange={(event) => changeText(event.target.value)}
-              >
-                {allItems.map((entry) => (
-                  <option key={entry.slug} value={entry.slug}>
-                    {entry.title}
-                  </option>
-                ))}
-              </select>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1.5rem" }}>
+            <div>
+              <h1 data-tina-field={activeManuscript?._tina_metadata?.title}>{currentTitle}</h1>
+              <p className="source-line" data-tina-field={activeManuscript?._tina_metadata?.source}>{currentSource}</p>
             </div>
-          )}
-          <h1 data-tina-field={activeManuscript?._tina_metadata?.title}>{currentTitle}</h1>
-          <p className="source-line" data-tina-field={activeManuscript?._tina_metadata?.source}>{currentSource}</p>
+            {allItems.length > 1 && (
+              <div className="text-picker" style={{ margin: 0 }}>
+                <label htmlFor="text-select">Switch text:</label>
+                <select
+                  id="text-select"
+                  value={selectedSlug}
+                  onChange={(event) => changeText(event.target.value)}
+                >
+                  {allItems.map((entry) => (
+                    <option key={entry.slug} value={entry.slug}>
+                      {entry.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
         </header>
 
         <div className="reading-layout">
@@ -288,9 +292,8 @@ function ReadingPageInner({
             )}
           </section>
         </div>
-
-      </article>
-    </main>
+      </main>
+    </>
   );
 }
 

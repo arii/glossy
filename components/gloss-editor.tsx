@@ -21,6 +21,7 @@ import {
   RefreshCw,
   Save,
   Upload,
+  Trash2,
 } from "lucide-react";
 
 export interface EditorToken {
@@ -227,6 +228,7 @@ export function GlossEditor({
   });
   const [autosaveStatus, setAutosaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [latexImportSource, setLatexImportSource] = useState("");
   const [importPreview, setImportPreview] = useState<EditorSentence[] | null>(null);
 
@@ -606,6 +608,43 @@ export function GlossEditor({
     URL.revokeObjectURL(url);
   };
 
+  const isProtectedText =
+    initialDocument.slug === "ohthere-wulfstan" ||
+    initialDocument.slug === "ohthere" ||
+    initialDocument.fileName === "ohthere";
+
+  const handleDeleteText = async () => {
+    if (isProtectedText) return;
+    setIsDeleting(true);
+    try {
+      const res = await fetch("/api/delete-document", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug: initialDocument.slug,
+          fileName: initialDocument.fileName || initialDocument.textId,
+        }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || "Failed to delete text.");
+      }
+
+      try {
+        localStorage.removeItem(storageKey);
+      } catch {}
+
+      router.push("/");
+    } catch (err) {
+      setSaveStatus({
+        kind: "error",
+        message: err instanceof Error ? err.message : "Failed to delete text.",
+      });
+      setIsDeleting(false);
+    }
+  };
+
   const syncMorphemesAndToken = (newMorphemes: Morpheme[]) => {
     if (!activeToken) return;
     const punct = activeToken.sourceForm.match(/[,.;:!?]+$/)?.[0] || "";
@@ -730,12 +769,12 @@ export function GlossEditor({
     : "";
 
   return (
-    <main className="workspace-shell">
-      <div className="workspace">
-        {/* Header with SiteNav and Workspace Actions */}
-        <header className="workspace-header">
+    <>
+      <SiteNav current="edit" slug={initialDocument.slug} />
+      <main className="site-shell">
+        {/* Header with Workspace Actions */}
+        <header className="page-header" style={{ marginBottom: "1.5rem" }}>
           <div>
-            <SiteNav current="edit" slug={initialDocument.slug} />
             <span className="sr-only">Editing workspace</span>
             <h1>{documentState.title}</h1>
             <p className="source-line" style={{ margin: "0.25rem 0 0" }}>
@@ -813,6 +852,31 @@ export function GlossEditor({
               <Save style={{ width: "0.9rem", height: "0.9rem", marginRight: "0.35rem" }} />
               {isSaving ? "Saving..." : "Save to TinaCMS"}
             </button>
+
+            {!isProtectedText && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      `Are you sure you want to remove "${documentState.title}" from Glossy? This will delete its JSON data, LaTeX files, and local drafts.`,
+                    )
+                  ) {
+                    handleDeleteText();
+                  }
+                }}
+                disabled={isDeleting}
+                className="workspace-link"
+                style={{
+                  background: "rgba(220, 38, 38, 0.08)",
+                  color: "#b91c1c",
+                  borderColor: "#fca5a5",
+                }}
+              >
+                <Trash2 style={{ width: "0.9rem", height: "0.9rem", marginRight: "0.35rem" }} />
+                {isDeleting ? "Deleting..." : "Delete Text"}
+              </button>
+            )}
           </div>
         </header>
 
@@ -1364,7 +1428,7 @@ export function GlossEditor({
             )}
           </div>
         </section>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
