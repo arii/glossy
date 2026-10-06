@@ -20,15 +20,13 @@ const HERO_PREVIEW_TOKENS = [
     gloss: "Ohthere.NOM",
     pos: "proper noun",
     lemma: "Ōhthere",
-    analysis: "Nominative Singular Masculine personal name",
     wiktionary: "https://en.wiktionary.org/wiki/Ohthere#Old_English",
   },
   {
-    word: "sǣde",
+    word: "sǣ-d-e",
     gloss: "say-PST-IND.3SG",
     pos: "verb (Class 3 weak)",
     lemma: "secgan",
-    analysis: "Past Indicative 3rd Person Singular from infinitive secgan",
     wiktionary: "https://en.wiktionary.org/wiki/secgan#Old_English",
   },
   {
@@ -36,15 +34,13 @@ const HERO_PREVIEW_TOKENS = [
     gloss: "3SG.M.GEN",
     pos: "pronoun",
     lemma: "hē",
-    analysis: "Genitive Singular Masculine possessive pronoun",
     wiktionary: "https://en.wiktionary.org/wiki/he#Old_English",
   },
   {
-    word: "hlāforde,",
+    word: "hlāford-e,",
     gloss: "lord-DAT.SG",
-    pos: "noun (masculine)",
+    pos: "noun, masculine",
     lemma: "hlāford",
-    analysis: "Dative Singular Masculine indirect object",
     wiktionary: "https://en.wiktionary.org/wiki/hlaford#Old_English",
   },
   {
@@ -52,15 +48,13 @@ const HERO_PREVIEW_TOKENS = [
     gloss: "Alfred-DAT.SG",
     pos: "proper noun",
     lemma: "Ælfrēd",
-    analysis: "Dative Singular Masculine personal name in apposition",
     wiktionary: "https://en.wiktionary.org/wiki/%C3%86lfred#Old_English",
   },
   {
     word: "cyninge,",
     gloss: "king-DAT.SG",
-    pos: "noun (masculine)",
+    pos: "noun, masculine",
     lemma: "cyning",
-    analysis: "Dative Singular Masculine royal title in apposition",
     wiktionary: "https://en.wiktionary.org/wiki/cyning#Old_English",
   },
 ];
@@ -75,10 +69,6 @@ const DEFAULT_HOME_CONTENT = {
   primaryAction: {
     label: "+ Gloss a New Text",
     href: "/edit/new",
-  },
-  secondaryAction: {
-    label: "Explore Corpus ↓",
-    href: "#corpus-directory",
   },
 };
 
@@ -95,10 +85,6 @@ const HOME_PAGE_QUERY = `
       heading
       description
       primaryAction {
-        label
-        href
-      }
-      secondaryAction {
         label
         href
       }
@@ -172,26 +158,6 @@ export default function Home() {
                 }}
               >
                 <span>{page.primaryAction?.label || "+ Gloss a New Text"}</span>
-              </Link>
-              <Link
-                href={page.secondaryAction?.href || "#corpus-directory"}
-                data-tina-field={page.secondaryAction ? tinaField(page.secondaryAction, "label") : undefined}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "0.45rem",
-                  padding: "0.7rem 1.25rem",
-                  borderRadius: "0.35rem",
-                  background: "#fbf7ee",
-                  border: "1px solid var(--rule)",
-                  color: "var(--ink)",
-                  fontSize: "0.95rem",
-                  fontWeight: 600,
-                  textDecoration: "none",
-                  transition: "all 0.15s ease",
-                }}
-              >
-                <span>{page.secondaryAction?.label || "Explore Corpus ↓"}</span>
               </Link>
             </div>
           }
@@ -293,10 +259,6 @@ export default function Home() {
             {previewMode === "reader" && (
               <div>
                 <div style={{ marginBottom: "1.25rem" }}>
-                  <p style={{ margin: "0 0 0.5rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "#a8a29e" }}>
-                    Click any word to inspect grammatical features:
-                  </p>
-                  
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "0.65rem 0.85rem" }}>
                     {HERO_PREVIEW_TOKENS.map((token, idx) => {
                       const isSelected = selectedTokenIdx === idx;
@@ -372,7 +334,7 @@ export default function Home() {
                       padding: "0.85rem 1rem",
                     }}
                   >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.35rem" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div>
                         <span style={{ fontSize: "1rem", fontFamily: "'Charis SIL', Georgia, serif", fontWeight: 700, color: "#fbbf24" }}>
                           {activeToken.word.replace(/[.,]/g, "")}
@@ -398,10 +360,6 @@ export default function Home() {
                         Wiktionary <ExternalLink style={{ width: "0.65rem", height: "0.65rem" }} />
                       </a>
                     </div>
-
-                    <p style={{ margin: 0, fontSize: "0.78rem", color: "#e7e5e4", lineHeight: 1.4 }}>
-                      {activeToken.analysis}
-                    </p>
                   </div>
                 )}
               </div>
@@ -454,7 +412,7 @@ export default function Home() {
                           color: "#fbbf24",
                         }}
                       >
-                        hlāforde
+                        hlāford-e
                       </div>
                     </div>
 
@@ -552,7 +510,7 @@ export default function Home() {
                     <span>Compiles with pdfLaTeX / XeLaTeX</span>
                   </div>
                   <pre style={{ margin: 0, color: "#d6d3d1" }}>
-{`\\gll Ōhthere sǣde his hlāforde \\\\
+{`\\gll Ōhthere sǣ-d-e his hlāford-e \\\\
      Ohthere.NOM say-PST-IND.3SG 3SG.M.GEN ${editedGloss} \\\\
 \\glt \`Ohthere said to his lord, King Alfred...\'`}
                   </pre>

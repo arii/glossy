@@ -7,9 +7,5 @@
   "primaryAction": {
     "label": "Gloss a New Text",
     "href": "/edit/new"
-  },
-  "secondaryAction": {
-    "label": "Explore Corpus",
-    "href": "#corpus-directory"
   }
 }
