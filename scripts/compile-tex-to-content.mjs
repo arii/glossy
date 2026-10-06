@@ -1,7 +1,6 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { parseGb4eToTextDocument } from "../lib/gb4e.ts";
-import { exportToGb4eLatex } from "../data/latex-export.ts";
 
 const texPath = join(process.cwd(), "references", "Voyages_of_Ohthere_Wulfstan.tex");
 if (!existsSync(texPath)) {
