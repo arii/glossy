@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { SiteNav } from "../../components/site-nav";
+import { PageHero } from "../../components/page-hero";
 import { SiteFooter } from "../../components/site-footer";
 import {
   BookOpen,
@@ -160,10 +161,14 @@ export default function DocsPage() {
     <>
       <SiteNav current="docs" slug="ohthere-wulfstan" />
       <main className="site-shell">
-        <header className="page-header" style={{ marginBottom: "2rem" }}>
-          <p className="eyebrow" data-tina-field={tinaField(docs, "eyebrow")}>{pageEyebrow}</p>
-          <h1 className="docs-title" data-tina-field={tinaField(docs, "title")}>{pageTitle}</h1>
-        </header>
+        <PageHero
+          eyebrow={pageEyebrow}
+          eyebrowDataTinaField={tinaField(docs, "eyebrow")}
+          title={pageTitle}
+          titleDataTinaField={tinaField(docs, "title")}
+          description={docs.description || "Comprehensive guide to Leipzig interlinear glossing standards, morphological tagging, Wiktionary citation rules, and system architecture."}
+          descriptionDataTinaField={tinaField(docs, "description")}
+        />
 
         {/* Mobile Collapsible TOC (Visible only on mobile screens <= 48rem) */}
         <div className="docs-mobile-toc">
