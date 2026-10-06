@@ -181,7 +181,7 @@ function ReadingPageInner({
 
   return (
     <>
-      <SiteNav current="read" slug={selectedSlug} canEdit={texts.some((text) => text.slug === selectedSlug)} />
+      <SiteNav current="read" slug={texts.some((text) => text.slug === selectedSlug) ? selectedSlug : (texts[0]?.slug ?? "ohthere-wulfstan")} />
       <main className="site-shell">
         <header className="page-header" style={{ marginBottom: "2rem" }}>
           <p className="eyebrow">Old English visual gloss</p>

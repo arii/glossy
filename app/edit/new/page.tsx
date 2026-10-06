@@ -269,7 +269,7 @@ export default function NewTextPage() {
 
   return (
     <>
-      <SiteNav current="new" slug="" canEdit={false} />
+      <SiteNav current="new" slug="ohthere-wulfstan" />
       <main className="site-shell">
         <header className="page-header" style={{ marginBottom: "2rem" }}>
           <p className="eyebrow">Glossy · Corpus Ingestion</p>

@@ -81,6 +81,20 @@ body {
   border-bottom-color: var(--accent);
 }
 
+@media (max-width: 48rem) {
+  .global-site-header-inner {
+    padding: 0.65rem 1rem;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .site-nav {
+    gap: 1rem;
+    font-size: 0.82rem;
+    flex-wrap: wrap;
+  }
+}
+
 .page-shell,
 .workspace-shell,
 .docs-shell,
@@ -752,8 +766,11 @@ h2 {
 }
 
 @media (max-width: 42rem) {
-  .page-shell {
-    padding: 1rem 0.75rem;
+  .page-shell,
+  .workspace-shell,
+  .docs-shell,
+  .site-shell {
+    padding: 1rem 0.75rem 3rem;
   }
 
   .reading-surface {

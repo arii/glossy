@@ -3,11 +3,10 @@ import Link from "next/link";
 type SiteNavProps = {
   current?: "home" | "read" | "edit" | "docs" | "new";
   slug?: string;
-  canEdit?: boolean;
 };
 
-export function SiteNav({ current, slug = "ohthere-wulfstan", canEdit = true }: SiteNavProps) {
-  const activeSlug = slug || "ohthere-wulfstan";
+export function SiteNav({ current, slug = "ohthere-wulfstan" }: SiteNavProps) {
+  const activeSlug = slug && slug.trim().length > 0 ? slug : "ohthere-wulfstan";
 
   return (
     <header className="global-site-header">
@@ -28,14 +27,12 @@ export function SiteNav({ current, slug = "ohthere-wulfstan", canEdit = true }: 
           >
             Read
           </Link>
-          {canEdit && (
-            <Link
-              href={`/edit/${activeSlug}`}
-              aria-current={current === "edit" ? "page" : undefined}
-            >
-              Edit
-            </Link>
-          )}
+          <Link
+            href={`/edit/${activeSlug}`}
+            aria-current={current === "edit" ? "page" : undefined}
+          >
+            Edit
+          </Link>
           <Link
             href="/edit/new"
             aria-current={current === "new" ? "page" : undefined}
