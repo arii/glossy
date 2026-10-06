@@ -1,16 +1,22 @@
 import type { TextDocument } from "./types";
-import { readDraft, listPending, markDraftAsSynced } from "./local-drafts";
+import { readDraft, listPending, markDraftAsSynced, computeDocumentHash } from "./local-drafts";
+import { TINA_LOCAL_GRAPHQL_URL, getTinaCloudUrl } from "./tina-config";
+
+export type CommitOutcome = "committed" | "needs-login" | "unreachable" | "rejected";
 
 export interface CommitResult {
+  outcome: CommitOutcome;
   ok: boolean;
   slug: string;
   error?: string;
+  errors?: string[];
 }
 
 export interface BatchCommitResult {
   committedSlugs: string[];
   failedSlugs: string[];
   errors: Record<string, string>;
+  outcomes: Record<string, CommitOutcome>;
 }
 
 export function sanitizeDraftForTinaMutation(
@@ -156,7 +162,7 @@ export function isTinaAuthenticated(cms?: unknown): boolean {
   return Boolean(token);
 }
 
-const UPDATE_TEXT_MUTATION = `
+export const UPDATE_TEXT_MUTATION = `
   mutation UpdateText($relativePath: String!, $params: TextMutation!) {
     updateText(relativePath: $relativePath, params: $params) {
       id
@@ -171,14 +177,21 @@ export async function commitPendingDraft(
   options?: { cms?: unknown },
 ): Promise<CommitResult> {
   if (typeof window === "undefined") {
-    return { ok: false, slug, error: "Window object unavailable." };
+    return {
+      outcome: "unreachable",
+      ok: false,
+      slug,
+      error: "Window object unavailable.",
+    };
   }
 
   let draftDoc: Record<string, unknown> | null = null;
+  let textDoc: TextDocument | null = null;
 
   // 1. Try reading via local-drafts module
   const storedDraft = readDraft(slug);
   if (storedDraft?.doc) {
+    textDoc = storedDraft.doc;
     draftDoc = storedDraft.doc as unknown as Record<string, unknown>;
   } else {
     // 2. Direct localStorage fallback
@@ -200,10 +213,16 @@ export async function commitPendingDraft(
   }
 
   if (!draftDoc) {
-    return { ok: false, slug, error: `No local draft document found for slug: ${slug}` };
+    return {
+      outcome: "rejected",
+      ok: false,
+      slug,
+      error: `No local draft document found for slug: ${slug}`,
+    };
   }
 
   const sanitizedParams = sanitizeDraftForTinaMutation(draftDoc);
+  const contentHash = textDoc ? computeDocumentHash(textDoc) : computeDocumentHash(sanitizedParams as unknown as TextDocument);
   const fileName = (draftDoc.fileName || draftDoc.textId || slug) as string;
   const relativePath = `${fileName.endsWith(".json") ? fileName : `${fileName}.json`}`;
 
@@ -215,23 +234,38 @@ export async function commitPendingDraft(
           request: (
             query: string,
             options?: { variables: Record<string, unknown> },
-          ) => Promise<unknown>;
+          ) => Promise<{ data?: unknown; errors?: Array<{ message: string }> }>;
         };
       };
     })?.api?.tina;
 
     if (tinaApi?.request) {
       try {
-        await tinaApi.request(UPDATE_TEXT_MUTATION, {
+        const res = await tinaApi.request(UPDATE_TEXT_MUTATION, {
           variables: { relativePath, params: sanitizedParams },
         });
-        markDraftAsSynced(slug);
-        return { ok: true, slug };
+
+        if (res?.errors && res.errors.length > 0) {
+          const errMsgs = res.errors.map((e) => e.message);
+          return {
+            outcome: "rejected",
+            ok: false,
+            slug,
+            error: errMsgs[0] || "GraphQL mutation rejected",
+            errors: errMsgs,
+          };
+        }
+
+        markDraftAsSynced(slug, contentHash);
+        return { outcome: "committed", ok: true, slug };
       } catch (err) {
+        const msg = err instanceof Error ? err.message : "Tina API client request failed";
+        const isAuthErr = msg.toLowerCase().includes("auth") || msg.toLowerCase().includes("unauthorized");
         return {
+          outcome: isAuthErr ? "needs-login" : "rejected",
           ok: false,
           slug,
-          error: err instanceof Error ? err.message : "Tina API client request failed",
+          error: msg,
         };
       }
     }
@@ -240,9 +274,7 @@ export async function commitPendingDraft(
   // Attempt 2: Localhost GraphQL endpoint
   if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
     try {
-      const localUrl =
-        process.env.NEXT_PUBLIC_TINA_LOCAL_URL || "http://localhost:4001/graphql";
-      const res = await fetch(localUrl, {
+      const res = await fetch(TINA_LOCAL_GRAPHQL_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -250,16 +282,34 @@ export async function commitPendingDraft(
           variables: { relativePath, params: sanitizedParams },
         }),
       });
+
+      if (res.status === 401 || res.status === 403) {
+        return {
+          outcome: "needs-login",
+          ok: false,
+          slug,
+          error: "TinaCMS authentication required.",
+        };
+      }
+
       const json = await res.json();
       if (json.errors && json.errors.length > 0) {
-        throw new Error(json.errors[0]?.message || "GraphQL mutation error");
+        const errMsgs = json.errors.map((e: { message: string }) => e.message);
+        return {
+          outcome: "rejected",
+          ok: false,
+          slug,
+          error: errMsgs[0] || "GraphQL mutation rejected",
+          errors: errMsgs,
+        };
       }
+
       if (json.data?.updateText || json.data?.updateDocument) {
-        markDraftAsSynced(slug);
-        return { ok: true, slug };
+        markDraftAsSynced(slug, contentHash);
+        return { outcome: "committed", ok: true, slug };
       }
     } catch (err) {
-      // Fallthrough to TinaCloud if localhost request fails
+      // Fallthrough to TinaCloud if localhost connection failed
       console.warn("[tina-sync] Localhost GraphQL request failed:", err);
     }
   }
@@ -268,14 +318,7 @@ export async function commitPendingDraft(
   const authToken = window.localStorage.getItem("tinacms-auth");
   if (authToken) {
     try {
-      const clientId =
-        process.env.NEXT_PUBLIC_TINA_CLIENT_ID || "7cf6793a-dfc2-4a6b-ae23-c2665e22f286";
-      const branch =
-        process.env.NEXT_PUBLIC_TINA_BRANCH ||
-        process.env.TINA_BRANCH ||
-        "main";
-      const cloudUrl = `https://content.tinajs.io/3.0/content/${clientId}/github/${branch}`;
-
+      const cloudUrl = getTinaCloudUrl();
       const res = await fetch(cloudUrl, {
         method: "POST",
         headers: {
@@ -288,24 +331,43 @@ export async function commitPendingDraft(
         }),
       });
 
+      if (res.status === 401 || res.status === 403) {
+        return {
+          outcome: "needs-login",
+          ok: false,
+          slug,
+          error: "TinaCloud authentication token invalid or expired. Please log in again.",
+        };
+      }
+
       const json = await res.json();
       if (json.errors && json.errors.length > 0) {
-        throw new Error(json.errors[0]?.message || "TinaCloud GraphQL error");
+        const errMsgs = json.errors.map((e: { message: string }) => e.message);
+        return {
+          outcome: "rejected",
+          ok: false,
+          slug,
+          error: errMsgs[0] || "TinaCloud GraphQL error",
+          errors: errMsgs,
+        };
       }
+
       if (json.data?.updateText || json.data?.updateDocument) {
-        markDraftAsSynced(slug);
-        return { ok: true, slug };
+        markDraftAsSynced(slug, contentHash);
+        return { outcome: "committed", ok: true, slug };
       }
     } catch (err) {
       return {
+        outcome: "unreachable",
         ok: false,
         slug,
-        error: err instanceof Error ? err.message : "TinaCloud commit failed",
+        error: err instanceof Error ? err.message : "TinaCloud commit network failure",
       };
     }
   }
 
   return {
+    outcome: "needs-login",
     ok: false,
     slug,
     error: "TinaCMS authentication required. Please sign in to Tina Admin to commit.",
@@ -321,9 +383,11 @@ export async function commitAllPendingDrafts(
   const committedSlugs: string[] = [];
   const failedSlugs: string[] = [];
   const errors: Record<string, string> = {};
+  const outcomes: Record<string, CommitOutcome> = {};
 
   for (const slug of unsyncedSlugs) {
     const res = await commitPendingDraft(slug, options);
+    outcomes[slug] = res.outcome;
     if (res.ok) {
       committedSlugs.push(slug);
     } else {
@@ -334,5 +398,5 @@ export async function commitAllPendingDrafts(
     }
   }
 
-  return { committedSlugs, failedSlugs, errors };
+  return { committedSlugs, failedSlugs, errors, outcomes };
 }
