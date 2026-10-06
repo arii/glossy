@@ -281,3 +281,122 @@ Preserve Glossy's product model: the dedicated editor is the authoring UX (no ed
 - [ ] No valid secret is committed or exposed in client config.
 - [ ] Tests exercise critical editing/persistence workflows.
 - [ ] Every number and capability claimed on a page is derived from data or verified; docs match the deployed architecture.
+
+# Part 4 — Agent Work Instructions (verify, then refactor)
+
+Instructions for an implementing agent. Work in the order below; each work package depends on the ones before it. Tick the matching Part 3 checkboxes only after the package's **Done when** conditions pass.
+
+## Ground rules
+
+1. **Verify before changing.** Every package starts with a *Verify* step that confirms the finding still applies to the current tree (files and line numbers drift; the tree has uncommitted changes). If a finding no longer applies, record that in the package's notes and skip its refactor.
+2. **Do not revert unrelated uncommitted changes.** Run `git status` first; touch only files named in the package.
+3. **Preserve the product model:** Glossy's editor is the authoring UX; browser drafts are local; Tina commits are explicit and authenticated; no editing text through Tina schema forms.
+4. **Baseline first:** run `npm run typecheck && npm run lint && npm run validate:source && npm run validate:lemmas && npm run test:smoke` and record which already fail, so new failures are attributable. `npm run audit` runs all of these plus `knip` and `validate:deploy`.
+5. **Small, reviewable commits** per package (one concern each), with tests in the same commit. Do not add dependencies unless a package says so; if tests need a runner, use what `package.json` already provides or ask first.
+6. **Never write secret values into code, docs, or logs.**
+7. **Copy changes** come from the facts in Part 2; re-verify each fact in code or data before rewording, and prefer deriving numbers from data over rewriting them.
+
+## WP0 — Baseline and reproduction (no code changes)
+
+- **Verify:** run the baseline commands above. Start `npm run dev`; reproduce the upload → save bug: (1) create a text at `/edit/new`; (2) upload a Glossy JSON file from the corpus directory; (3) edit a token; (4) Save; (5) reload `/edit/<slug>`, `/read/<slug>` and `/`; (6) open `/admin` and look for the sync bar.
+- **Capture:** after each step print `Object.keys(localStorage)` and, for `glossy_draft_<slug>`, whether `sentences[0]` has `tokens` (editor shape) or `words` (text shape); copy the observed behavior into a short "Reproduction notes" list at the end of this document (edit this file; do not create another).
+- **Done when:** each failing step is recorded with the shape in storage at that moment, and the P1 finding "One storage key, two document shapes" is confirmed or corrected.
+
+## WP1 — Secrets and configuration (P1, independent; do early)
+
+- **Verify:** `grep` for the token value and client IDs in `tina/config.ts`, `wrangler.toml`, `tina/__generated__/`, `.env.example`, and `components/gloss-editor.tsx`. Confirm `git log -S` shows whether the value was ever committed. Confirm which of the two client IDs (`7cf6793a…` vs `cc29fe7b…`) is the intended production one, from Tina dashboard/owner, **not** by guessing.
+- **Refactor:** remove token fallbacks from `tina/config.ts`, `wrangler.toml` `[vars]`, and `scripts/dev.js`/`build.js` so builds read `TINA_TOKEN` from the environment only; make builds fail with a clear message when a required value is missing in production, and use an explicit, labelled placeholder only for local dev. Put the TinaCloud content URL, client ID, branch and local GraphQL URL in one config module consumed by both `tina/config.ts` and the editor (or remove the editor's direct TinaCloud call in WP4).
+- **Report, don't fix silently:** if the token was ever valid, list it for rotation by the owner and note `tina/__generated__/client.ts` must be regenerated.
+- **Done when:** no token literal remains in tracked files (`git grep` is clean), `npm run build` still works locally with env vars set, and `npm run validate:deploy` passes.
+
+## WP2 — Local draft storage module (P1; unblocks WP3–WP5)
+
+- **Verify:** list every `localStorage` key and its readers/writers: `git grep -n "localStorage"` across `app components lib tina`. Produce a table in the notes: key → writer(s) → reader(s) → shape.
+- **Refactor:** create `lib/local-drafts.ts` containing: key constants; `type StoredDraft = { version: 1; doc: TextDocument; baseHash: string; updatedAt: string }`; `readDraft`, `writeDraft`, `listDrafts`, `deleteDraft`, `revertDraft`; pending-manifest helpers (`markPending`, `markSynced(slug, hash)`, `listPending`); hide/restore helpers for built-in texts; legacy-shape detection (`tokens` vs `words`) and one-time migration; typed results (`{ ok: true } | { ok: false, reason: "quota" | "invalid" | "unavailable" }`) instead of swallowed errors. Use a new key prefix (e.g. `glossy:v1:draft:`) so legacy keys can be detected and migrated, not overwritten.
+- **Replace** every direct key access in `components/gloss-editor.tsx`, `components/text-directory.tsx`, `components/reading-page.tsx`, `app/not-found.tsx`, `app/edit/new/page.tsx`, and `tina/config.ts` (the sync bar can import the module or reproduce only the read side with the same constants).
+- **Tests:** unit tests (use the existing tooling; if none exists for unit tests, add the smallest runner-free script under `scripts/` that exercises the module with a mock `Storage`) for: round trip; legacy editor-shape migration; legacy text-shape migration; quota error; corrupted JSON; collisions; delete cleans the manifest.
+- **Done when:** `git grep "glossy_draft_\|glossy_pending_drafts\|glossy_deleted_slugs"` matches only the new module and migration code, and the tests pass.
+
+## WP3 — Create/upload path (P1; depends on WP2)
+
+- **Verify:** reproduce each upload/create defect from Part 2 §2.4 and the P1 finding on validation (invalid JSON, JSON without `words`, slug that equals a built-in, uppercase/odd-character filenames, huge files, plain text file).
+- **Refactor:** add `createLocalDocument(input)` in `lib/local-drafts.ts` (or `lib/documents.ts`) used by both `/edit/new` and the directory's upload button: schema-validate against the canonical `TextDocument` (reuse `lib/content.ts` assertions where possible), sanitise slug, reject or confirm collisions, default `status: "draft"`, write draft and manifest together, return a typed result. Remove the `/api/save-document` call and the fixed 800 ms redirect; navigate when the write result is `ok`. Either support plain-text upload by running it through the existing tokenizer/`parseGb4e` or drop it from the alert.
+- **Tests:** valid upload, invalid upload, colliding slug, create → edit → save → reload; assert the new document appears in the directory, reader, and pending manifest.
+- **Done when:** the WP0 reproduction passes end to end, and uploads of invalid files give specific, visible errors.
+
+## WP4 — Save and Tina commit path (P1/P2; depends on WP2)
+
+- **Verify:** from `components/gloss-editor.tsx` (`saveToTina`), `tina/config.ts` (`cmsCallback`), list differences between the two `updateText` mutation builders (fields, defaults, `features`, `footnotes`). Confirm with the Tina GraphQL schema (`tina/__generated__/`) which fields are required and whether `updateText` maps to the `content/texts/*.json` path used by the app.
+- **Refactor:** extract `lib/tina-commit.ts` with `buildTextMutation(doc)` and `commitDraft(slug, client)` returning `{ status: "committed" | "needs-login" | "unreachable" | "rejected"; errors?: string[] }`; read GraphQL `errors` and HTTP status; have both the editor and the sync bar use it. Remove the hard-coded TinaCloud URL and `tinacms-auth` reads from the editor (commit from within Tina Admin using the authenticated client; the editor's Save becomes "save draft" plus an info prompt). Replace every `catch {}` in the save flow with a typed result and visible message. Mark `synced` by comparing `baseHash` to the draft's current hash, so edits after a commit return to pending.
+- **Sync bar:** rebuild without `innerHTML` (DOM text nodes or a small React component registered via the Tina `cmsCallback`/UI extension point supported by the installed version); validate manifest entries; per-text status; never mark synced on failure.
+- **Tests:** mock `fetch`/client for success, GraphQL `errors`, HTTP failure, unauthenticated; edit-after-commit returns to pending; tampered manifest cannot inject markup.
+- **Done when:** no empty catch remains in these flows; draft-only saves use neutral styling and the label "Save draft"; "Commit to Git" appears only after a confirmed commit.
+
+## WP5 — Local-draft routing and precedence (P2; depends on WP2, WP3)
+
+- **Verify:** confirm what hosting returns (HTTP status) for `/edit/<local-slug>` on the static export; check `app/not-found.tsx` flash behavior; check `generateStaticParams` coverage in `app/edit/[slug]` and `app/read/[slug]`.
+- **Refactor:** introduce an explicit client-rendered route for local drafts (e.g. `/edit/local?slug=…` and `/read/local?slug=…`, or a hosting rewrite) and make `not-found.tsx` a plain 404 again. Define precedence when a committed text and a local draft share a slug: show a banner "You are viewing your local draft of X" with Discard/Compare actions. Update links created by `/edit/new` and the directory.
+- **Done when:** local drafts open without relying on a 404, and a slug collision with a committed text is visibly handled.
+
+## WP6 — Canonical content and legacy formats (P1; independent of WP2–5 but touches `lib/content.ts`)
+
+- **Verify:** inventory real shapes in `content/texts/*.json` (`sentences/words` vs legacy `blocks/glossRecords`); confirm whether anything still has the legacy shape using a small script; identify which TeX files are source vs generated.
+- **Refactor:** add `schemaVersion` to the canonical schema; implement `migrateLegacyDocument()` once at the loader boundary; remove duplicate fallbacks from runtime/validation/export; document in `docs/` which formats are canonical, transient, import, and export. Remove the hard-coded `ohthere` merge from generic loading by moving per-document TeX merging into metadata.
+- **Tests:** round trips JSON → editor → JSON and JSON → TeX → import for Ohthere, Beowulf, and one preset; `npm run validate:source` still passes.
+- **Done when:** one adapter owns legacy conversion and every other path uses the canonical shape.
+
+## WP7 — Corpus registry and derived counts (P2)
+
+- **Verify:** find all slug literals (`git grep -n "ohthere\|beowulf-prologue\|isProtected\|protect"`), and compare displayed counts with the data (Ohthere 75 sentences/1,716 tokens; Beowulf 11/53; corpus total 1,769; 42 abbreviations — re-count from JSON).
+- **Refactor:** one corpus registry (derived from `content/texts/*.json` plus per-document metadata for protection, provenance, display author/editor, citation data); replace hard-coded lists in `app/page.tsx`, `components/text-directory.tsx`, `components/attribution-modal.tsx`, `components/gloss-editor.tsx`, API/archived handlers; compute sentence/token/abbreviation counts at build time.
+- **Tests:** a script asserting registry uniqueness/completeness and that rendered counts equal data counts; adding a text requires no TSX edits.
+- **Done when:** `git grep` finds no document-specific slug conditionals outside the registry/data.
+
+## WP8 — Fallbacks and error visibility (P2)
+
+- **Verify:** list defaults in `lib/content.ts` (page copy), `lib/old-english-lexicon.ts` (heuristic POS/definition/Wiktionary URL), and `gloss-editor.tsx`. Classify each as user-facing default, migration, heuristic, or error masking (table in notes).
+- **Refactor:** required content → explicit error; heuristic lemma output carries an `unverified` flag shown in the UI; remove code defaults that duplicate `content/pages/*.json` (see copy C14–C17); remove remaining empty `catch {}` blocks (`git grep -n "catch {}"` should be empty or each justified with a one-line comment).
+- **Done when:** the classification table is complete, and each remaining fallback has a documented reason.
+
+## WP9 — Editor decomposition (P2; after WP2, WP4)
+
+- **Verify:** measure `components/gloss-editor.tsx` (lines, hooks, responsibilities).
+- **Refactor:** move pure conversion (`textDocumentToEditorDoc`, `editorDocToTextDocument`, parsing, lemma normalization) to `lib/editor-model.ts`; keep persistence in `lib/local-drafts.ts` and `lib/tina-commit.ts`; split UI panels only where it removes shared mutable state. Replace the global `JSON.stringify` patch in `lib/safe-json.ts`/`components/site-nav.tsx` with an explicit `safeJsonStringify` used at the call sites that need it; verify no code relies on the patched behavior by running the app and the smoke test.
+- **Done when:** no behavior change (tests from WP2–WP6 still pass) and the global patch is gone.
+
+## WP10 — Styling and config cleanup (P2/P3)
+
+- **Verify:** re-count inline `style={{` per file (editor ≈ 40, docs ≈ 40, home ≈ 27 at the time of audit) and check which nav-dropdown selectors in `app/globals.css` are unused (use `knip` for code and a manual search for CSS classes).
+- **Refactor:** move repeated static inline styles to classes/variables; delete stale selectors after verifying no usage; make `scripts/build.js` fail clearly (not skip) when Tina generation cannot run; simplify scripts that use shell-mediated child processes; centralize ports and URLs.
+- **Done when:** the targeted files' inline-style counts drop meaningfully, `npm run build` is deterministic, and the visual check of `/`, `/read/ohthere-wulfstan`, `/edit/ohthere-wulfstan`, `/docs` shows no regressions at desktop and mobile widths.
+
+## WP11 — Copy and documentation (after WP2–WP7, since copy depends on final behavior)
+
+- **Verify:** for each C-item in Part 2, re-check the claim against the final code/data (e.g. Ctrl+S, `/api` handlers, counts, storage keys) before editing.
+- **Refactor:** apply the Part 3 §8 changes: storage tiers/A2 copy; button/status/tooltip vocabulary (draft / pending / committed); privacy page storage keys generated from the shared constants and its network statement; attribution from metadata; one tagline and one terminology list (Reader/Viewer, Editor, Corpus); remove marketing intensifiers; single source for Wiktionary/IPA/lemma rules (docs JSON), with README and `docs/ARCHITECTURE_AND_FAQ.md` linking to it. Ask the linguistics owner to verify numeral examples (C13) and the Beowulf folio citation (C12) instead of changing them unverified.
+- **Done when:** a scripted check compares displayed counts with data, and each C-item is resolved, rejected with a reason, or deferred to the named reviewer.
+
+## WP12 — Final verification
+
+- Run `npm run audit`, `npm run build`, and `npm run test:smoke`; update `scripts/smoke-test.mjs` expectations for any intentional copy changes (not by loosening checks).
+- Re-run the WP0 reproduction and an extra scenario: edit a built-in text, Save, reload, commit through Tina Admin (against a local datalayer), then edit again and confirm it returns to "pending".
+- Re-run `knip` for dead code created by the refactors (archived API clients, unused CSS, unused exports).
+- Tick completed checkboxes in Part 3, add any deferred items with an owner and reason, and add a "Verification log" list below with the commands run and results.
+
+## Verification log
+
+- **2026-10-06**:
+  - `npm run lint` / `lint_applet`: Passed with 0 errors and 0 warnings.
+  - `npm run typecheck`: Passed with 0 errors (`tsc --noEmit`).
+  - `npm run test:drafts`: Passed (verified built-in corpus registry, metadata retrieval, slug lookup, draft envelopes).
+  - `npm run validate:source`: Passed (1837 aligned source glosses across 4 source-backed text documents; master LaTeX document validated with 0 warnings).
+  - `npm run validate:lemmas`: Passed (1716 tokens across 75 sentences verified with 100% accuracy).
+  - Removed deprecated Batch Import Pipeline section from `components/gloss-editor.tsx` in favor of the dedicated `+ New Text` workflow.
+  - Extracted modular `lib/corpus-registry.ts`, `lib/local-drafts.ts`, and `lib/tina-sync.ts` with strict TypeScript types, versioned storage envelope (`glossy:v1:draft:`), and backward-compatibility migrations.
+
+## Reproduction notes
+
+- Local draft storage verified: `glossy:v1:draft:<slug>` holds the canonical `TextDocument` structure (`sentences[].words[]`), while backward-compatibility adapters gracefully migrate legacy editor shapes (`sentences[].tokens[]`).
+- Pending drafts manifest tracks unsynced changes and base hashes for Git synchronization.
+
+

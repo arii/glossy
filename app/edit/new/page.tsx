@@ -7,8 +7,8 @@ import { SiteNav } from "../../../components/site-nav";
 import { SiteFooter } from "../../../components/site-footer";
 import { tokenizeAndLemmatizeSentence } from "../../../lib/lemmatizer";
 import { parseGb4e } from "../../../lib/gb4e";
-import { safeJsonStringify } from "../../../lib/safe-json";
-import type { TextDocument, ReadingSentence } from "../../../lib/types";
+import { createLocalDocument } from "../../../lib/local-drafts";
+import type { ReadingSentence } from "../../../lib/types";
 import ingestPageData from "../../../content/pages/ingest.json";
 import { useTina, tinaField } from "tinacms/dist/react";
 import {
@@ -46,7 +46,7 @@ const PRESETS: Preset[] = [
     title: "Beowulf: Prologue (Lines 1–11)",
     slug: "beowulf-prologue",
     author: "Anonymous (Nowell Codex)",
-    source: "London, British Library, Cotton MS Vitellius A. xv, ff. 129r–198v",
+    source: "London, British Library, Cotton MS Vitellius A. xv (Nowell Codex), f. 129r",
     sourceFile: "references/Beowulf_Prologue.tex",
     period: "Heroic Epic Poetry (ca. 8th–11th c.)",
     lines: [
@@ -343,45 +343,32 @@ export default function NewTextPage() {
         });
       }
 
-      const documentPayload: TextDocument = {
-        textId: slug,
-        slug: slug,
+      const result = createLocalDocument({
         title: title.trim(),
+        slug: slug.trim(),
         author: author.trim() || "Anonymous",
         source: source.trim() || "Historical Manuscript",
         sourceFile: sourceFile.trim() || `references/${slug}.tex`,
-        language: "Old English",
-        status: "published",
         sentences: sentences,
-        blocks: [],
-      };
+        texSource: latexSource.trim() || undefined,
+        overwrite: true,
+      });
 
-      // 1. Try local server-side save if available (e.g. running local dev server)
-      try {
-        await fetch("/api/save-document", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: safeJsonStringify({
-            slug: slug,
-            fileName: slug,
-            document: documentPayload,
-          }),
+      if (!result.ok) {
+        setStatusMessage({
+          kind: "error",
+          text: result.error || "Failed to create local draft.",
         });
-      } catch {}
-
-      // 2. Persist to browser storage
-      try {
-        window.localStorage.setItem(`glossy_draft_${slug}`, safeJsonStringify(documentPayload));
-      } catch {}
+        setIsSubmitting(false);
+        return;
+      }
 
       setStatusMessage({
         kind: "success",
-        text: `Successfully created "${title}"! Redirecting to the live gloss editor...`,
+        text: `Created local draft "${title}". Redirecting to editor...`,
       });
 
-      setTimeout(() => {
-        router.push(`/edit/${slug}`);
-      }, 800);
+      router.push(`/edit/${slug}`);
     } catch (err) {
       setStatusMessage({
         kind: "error",
@@ -397,7 +384,7 @@ export default function NewTextPage() {
 
   return (
     <>
-      <SiteNav current="new" slug="ohthere-wulfstan" />
+      <SiteNav current="new" slug="ohthere" />
       <main className="site-shell">
         <header className="page-header" style={{ marginBottom: "2rem" }}>
           <p className="eyebrow" data-tina-field={tinaField(page, "eyebrow")}>

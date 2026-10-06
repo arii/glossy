@@ -9,16 +9,14 @@ type SiteNavProps = {
   slug?: string;
 };
 
-const DEFAULT_SLUG = "ohthere-wulfstan";
+const DEFAULT_SLUG = "ohthere";
 const SLUG_STORAGE_KEY = "glossy_active_slug";
 
 export function SiteNav({ current, slug }: SiteNavProps) {
   const [activeSlug, setActiveSlug] = useState<string>(slug || DEFAULT_SLUG);
 
-  // Sync active slug with localStorage and props
   useEffect(() => {
     installSafeJsonGlobal();
-
     if (slug && slug.trim()) {
       setActiveSlug(slug);
       try {
@@ -34,7 +32,7 @@ export function SiteNav({ current, slug }: SiteNavProps) {
     }
   }, [slug]);
 
-  const targetSlug = activeSlug || DEFAULT_SLUG;
+  const targetSlug = slug || activeSlug || DEFAULT_SLUG;
 
   return (
     <header className="global-site-header">
@@ -59,7 +57,7 @@ export function SiteNav({ current, slug }: SiteNavProps) {
             href={`/read/${targetSlug}`}
             aria-current={current === "read" ? "page" : undefined}
           >
-            Viewer
+            Reader
           </Link>
           <Link
             href={`/edit/${targetSlug}`}
@@ -85,4 +83,3 @@ export function SiteNav({ current, slug }: SiteNavProps) {
     </header>
   );
 }
-

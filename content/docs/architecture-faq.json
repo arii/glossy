@@ -1,11 +1,11 @@
 {
   "title": "Documentation & Reference Guides",
   "eyebrow": "Linguistic Standards & System Architecture",
-  "description": "Comprehensive reference guide split into linguistic editorial standards (Leipzig glossing, canonical OE headwords, Wiktionary/IPA) and system engineering architecture (dual-write storage, automated QA test suites).",
+  "description": "Comprehensive reference guide split into linguistic editorial standards (Leipzig glossing, canonical OE headwords, Wiktionary/IPA) and system engineering architecture (local-first draft persistence, TinaCMS Git synchronization, automated QA test suites).",
   "canonicalRuleTitle": "Quick Canonical Rule",
   "canonicalRuleDescription": "All Old English adjectives default to Masculine Nominative Singular Strong citation form. Numerals 2 & 3 default to twēgen and þrīe.",
   "architectureSpecTitle": "Data Pipeline & Verification",
-  "architectureSpecDescription": "Dual-write storage syncs localStorage (Tier 1), .tex and .json files (Tier 2), and TinaCMS working trees (Tier 3) with zero data loss.",
+  "architectureSpecDescription": "Edits autosave locally to versioned draft envelopes (glossy:draft:v1:<slug>), deliberate saves register in the pending manifest, and authenticated TinaCMS sessions commit drafts to the Git repository.",
   "sections": [
     {
       "id": "section-l1",
@@ -53,7 +53,7 @@
       "domainNum": "A2",
       "num": "2",
       "eyebrow": "Architecture & Storage",
-      "title": "Local Session Drafts, Autosave, & Dual-Write CMS Integration"
+      "title": "Local Drafts, Manifest Tracking, & TinaCMS Publishing"
     },
     {
       "id": "section-a3",
@@ -98,46 +98,31 @@
     { "abbr": "PL", "name": "plural number", "desc": "More than one entity", "category": "Person & Number" },
     { "abbr": "POSS", "name": "possessive", "desc": "Possessive pronoun or determiner", "category": "Part of Speech" },
     { "abbr": "PROX", "name": "proximate", "desc": "Proximate demonstrative (this / these here)", "category": "Part of Speech" },
-    { "abbr": "PRS", "name": "present tense", "desc": "Action taking place in the present", "category": "Gender & Mood" },
-    { "abbr": "PST", "name": "past tense", "desc": "Action completed in past time (preterite)", "category": "Gender & Mood" },
+    { "abbr": "PRS", "name": "present tense", "desc": "Action taking place in the present", "category": "Tense & Aspect" },
+    { "abbr": "PST", "name": "past tense", "desc": "Action completed in past time (preterite)", "category": "Tense & Aspect" },
     { "abbr": "REL", "name": "relativizer", "desc": "Relative clause marker (þe, sē þe)", "category": "Part of Speech" },
     { "abbr": "SG", "name": "singular number", "desc": "Exactly one entity", "category": "Person & Number" },
     { "abbr": "SJV", "name": "subjunctive mood", "desc": "Hypothetical, counterfactual, or indirect clause", "category": "Gender & Mood" },
-    { "abbr": "STR", "name": "strong declension (indef.)", "desc": "Strong adjectival inflection (alone without article)", "category": "Gender & Mood" },
+    { "abbr": "STR", "name": "strong declension (indef.)", "desc": "Strong adjectival inflection (alone without article)", "category": "Declension" },
     { "abbr": "SUP", "name": "superlative", "desc": "Superlative degree (-ost, -est, -mest, e.g. norþmest)", "category": "Gender & Mood" },
     { "abbr": "THM", "name": "theme vowel", "desc": "Formative thematic vowel in Class 2 weak verbs (-i-, -o-)", "category": "Affixes & Morphemes" },
-    { "abbr": "WK", "name": "weak declension (def.)", "desc": "Weak adjectival or nominal inflection (after article)", "category": "Gender & Mood" }
-  ],
-  "numeralCards": [
-    {
-      "badge": "Plural Nominals",
-      "title": "1 vs. 2 & 3 (Inherent Plurals)",
-      "description": "1 (ān) declines with a masculine nominative singular form. However, 2 (twēgen/twā) and 3 (þrīe/þrēo) are inherently plural. Their canonical citation headwords are strictly the Masculine Nominative forms: twēgen and þrīe.",
-      "isFullWidth": false
-    },
-    {
-      "badge": "Cardinals",
-      "title": "4 to 19 (Indeclinable Cardinals)",
-      "description": "Numbers from 4 (fēower) to 19 are largely indeclinable when modifying nouns and do not have distinct gender forms. Their citation headword is simply the base cardinal stem (fīf, siex, eahta, tīen).",
-      "isFullWidth": false
-    },
-    {
-      "badge": "Quantifiers",
-      "title": "Decades & Hundreds (Noun Quantifiers)",
-      "description": "Decades and hundreds like twēntig (20), syxtig (60), and hundtēontiġ (100) behave grammatically as neuter nouns that govern a dependent genitive plural (e.g. syxtig hrāna = “sixty of reindeers”). Their dictionary headwords are the base cardinal noun forms.",
-      "isFullWidth": true
-    }
+    { "abbr": "WK", "name": "weak declension (def.)", "desc": "Weak adjectival or nominal inflection (after article)", "category": "Declension" }
   ],
   "verificationTools": [
     {
       "name": "Lemma Accuracy Audit",
-      "command": "node scripts/validate-lemmas.mjs",
-      "target": "Audits all tokens verifying 100% compliance across verbs, nouns, adjectives, determiners, and numerals."
+      "command": "npm run validate:lemmas",
+      "target": "Audits tokens in the corpus verifying canonical lemma compliance and Wiktionary targets."
     },
     {
       "name": "Source Alignment Validator",
       "command": "npm run validate:source",
-      "target": "Validates 100% token and gloss alignment across all sentences with zero warnings."
+      "target": "Validates token and gloss alignment across source-backed texts."
+    },
+    {
+      "name": "Draft Persistence Unit Tests",
+      "command": "npm run test:drafts",
+      "target": "Validates draft envelope storage, slug sanitization, and collision prevention."
     },
     {
       "name": "Dictionary Sync",
@@ -147,17 +132,35 @@
     {
       "name": "Content Pre-compiler",
       "command": "npm run compile:content",
-      "target": "Pre-compiles master TeX source into content/texts/ohthere.json."
-    },
-    {
-      "name": "Dead Code Audit",
-      "command": "npm run audit:deadcode",
-      "target": "Automated Knip analysis verifying zero dead code or unlisted dependencies."
+      "target": "Pre-compiles master TeX source into structured JSON."
     },
     {
       "name": "TypeScript Typecheck",
       "command": "npm run typecheck",
       "target": "Strict type safety validation across the entire application codebase."
+    }
+  ],
+  "numeralCards": [
+    {
+      "badge": "2 & 3",
+      "title": "Nominal Plurals (twēgen & þrīe)",
+      "description": "Numbers 2 and 3 declension paradigms cite the masculine nominative (twēgen resolving twā/tū/twǣm, and þrīe resolving þrēo/þrim)."
+    },
+    {
+      "badge": "1, 4–19",
+      "title": "Cardinals (ān, fēower, fīf)",
+      "description": "Numbers with masculine nominative citation: ān (1), fēower (4), fīf (5), siex (6), seofon (7), eahta (8), nigon (9), tīen (10)."
+    },
+    {
+      "badge": "20–100",
+      "title": "Decades & Hundreds (twēntig, syxtig)",
+      "description": "Decades ending in -tig (e.g. twēntig 20, syxtig 60) and hundreds (hund, hundtēontiġ) are treated as neuter noun quantifiers."
+    },
+    {
+      "badge": "Verification",
+      "title": "Corpus Numeral Audit",
+      "description": "All numerals in the corpus are audited for canonical headword citation and Wiktionary URL targets.",
+      "isFullWidth": true
     }
   ],
   "ingestionSteps": [
@@ -211,21 +214,21 @@
   "storageTiers": [
     {
       "tier": "Tier 1",
-      "timing": "300ms debounce",
-      "title": "Browser Local Storage",
-      "description": "Every edit is automatically saved with a 300ms debounce to localStorage under unique slug keys, protecting work against accidental reloads or closing tabs."
+      "timing": "300ms autosave",
+      "title": "Browser Local Draft",
+      "description": "Every edit is automatically saved with a 300ms debounce to localStorage as a versioned draft envelope (glossy:draft:v1:<slug>), protecting working edits against accidental reloads."
     },
     {
       "tier": "Tier 2",
-      "timing": "Ctrl+S Hotkey",
-      "title": "Filesystem Dual-Write",
-      "description": "Clicking Save to TinaCMS or pressing Ctrl+S writes updated .tex to references/ and structured JSON to content/texts/."
+      "timing": "Save Action",
+      "title": "Pending Draft Manifest",
+      "description": "Clicking Save draft records the document in the glossy_pending_drafts manifest with an updated content hash and timestamp."
     },
     {
       "tier": "Tier 3",
-      "timing": "GraphQL Bridge",
-      "title": "TinaCMS GraphQL Bridge",
-      "description": "The updated document is dispatched to TinaCMS GraphQL repository working trees, ensuring instant editorial synchronization and visual authoring fidelity."
+      "timing": "Authenticated Sign-In",
+      "title": "TinaCMS Git Commit",
+      "description": "Signing in through Tina Admin allows committing pending drafts directly to the Git-backed repository."
     }
   ]
 }

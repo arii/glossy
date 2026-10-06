@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Copy, Check, X, BookOpen, ShieldCheck, Scroll, Calendar, User } from "lucide-react";
+import { getBuiltInMetadata } from "../lib/corpus-registry";
 
 type CitationFormat = "bibtex" | "unified" | "apa" | "chicago";
 
@@ -17,71 +18,64 @@ interface AttributionModalProps {
 export function AttributionModal({
   isOpen,
   onClose,
-  slug = "ohthere-wulfstan",
+  slug = "ohthere",
   title = "The voyages of Ohthere and Wulfstan",
   author = "Tyler Lemon",
-  source = "London, British Library, Cotton MS Tiberius B. i",
+  source = "London, British Library, Additional MS 47967, ff. 5v–6r",
 }: AttributionModalProps) {
   const [copiedFormat, setCopiedFormat] = useState<CitationFormat | null>(null);
   const [activeTab, setActiveTab] = useState<CitationFormat>("bibtex");
 
   if (!isOpen) return null;
 
-  const isOhthere = slug === "ohthere-wulfstan" || slug === "ohthere";
-  const isBeowulf = slug === "beowulf-prologue";
+  const builtIn = getBuiltInMetadata(slug);
+  const isBuiltIn = Boolean(builtIn);
 
-  const provenanceData = isOhthere
+  const provenanceData = builtIn
     ? {
         platformCreator: "Ariel Anders",
-        subjectMatterExpert: "Tyler Lemon",
-        modernEditor: "Ariel Anders and Tyler Lemon",
-        editionDate: "September 30, 2026",
-        historicalAuthor: "King Alfred's Court (adaptation of Paulus Orosius)",
-        historicalPeriod: "Late 9th Century (ca. 890 CE, West Saxon)",
-        manuscriptShelfmark: "London, British Library, Cotton MS Tiberius B. i (ff. 5v–11v)",
-        secondaryManuscript: "London, British Library, Additional MS 47967 (Lauderdale / Tollemache MS)",
-        linguisticPackage: "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing",
-        bibtexKey: "AndersLemon2026Voyages",
-      }
-    : isBeowulf
-    ? {
-        platformCreator: "Ariel Anders",
-        subjectMatterExpert: "Tyler Lemon",
-        modernEditor: "Ariel Anders and Tyler Lemon (after Klaeber / Dobbie)",
+        subjectMatterExpert: builtIn.editor || "Tyler Lemon",
+        modernEditor: `Ariel Anders and ${builtIn.editor || "Tyler Lemon"}`,
         editionDate: "2026",
-        historicalAuthor: "Anonymous Anglo-Saxon Poet",
-        historicalPeriod: "Late West Saxon (ca. 8th–11th Century)",
-        manuscriptShelfmark: "London, British Library, Cotton MS Vitellius A. xv (Nowell Codex, ff. 129r–198v)",
-        secondaryManuscript: "Thorkelin Transcripts A and B (1787)",
+        historicalAuthor: builtIn.author,
+        historicalPeriod: builtIn.origDate || "Old English",
+        manuscriptShelfmark: builtIn.witness || builtIn.source,
+        secondaryManuscript: "Tollemache / Cotton transcripts",
         linguisticPackage: "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing",
-        bibtexKey: "AndersLemon2026Beowulf",
+        bibtexKey: `AndersLemon2026${slug.replace(/[^a-zA-Z0-9]/g, "")}`,
       }
     : {
         platformCreator: "Ariel Anders",
-        subjectMatterExpert: author || "Tyler Lemon",
-        modernEditor: `Ariel Anders and ${author || "Tyler Lemon"}`,
+        subjectMatterExpert: author || "Custom Editor",
+        modernEditor: author || "Local Editor",
         editionDate: "2026",
-        historicalAuthor: "Historical Anglo-Saxon Scribe",
-        historicalPeriod: "Old English (ca. 700–1100 CE)",
-        manuscriptShelfmark: source || "Historical Manuscript",
+        historicalAuthor: author || "Unknown",
+        historicalPeriod: "Old English",
+        manuscriptShelfmark: source || "Local Draft / Custom Source",
         secondaryManuscript: "N/A",
         linguisticPackage: "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing",
-        bibtexKey: `AndersLemon2026${(slug || "text").replace(/[^a-zA-Z0-9]/g, "")}`,
+        bibtexKey: `GlossyDraft2026${(slug || "text").replace(/[^a-zA-Z0-9]/g, "")}`,
       };
+
+  const bibtexAuthor = isBuiltIn
+    ? "Anders, Ariel and Lemon, Tyler"
+    : author
+    ? author
+    : "Anders, Ariel";
 
   const citations: Record<CitationFormat, string> = {
     bibtex: `@incollection{${provenanceData.bibtexKey},
-  author       = {Anders, Ariel and Lemon, Tyler},
+  author       = {${bibtexAuthor}},
   title        = {{${title}}},
   booktitle    = {Glossy: Digital Scholarly Editions of Old English Interlinear Texts},
   year         = {2026},
-  origdate     = {ca. 890},
-  note         = {Digital platform created by Ariel Anders; linguistic glossing and annotation by Tyler Lemon. Manuscript witness: ${provenanceData.manuscriptShelfmark}. Interlinear glossing following Leipzig standards with gb4e LaTeX formatting},
+  ${builtIn?.origDate ? `origdate     = {${builtIn.origDate}},` : ""}
+  note         = {Digital platform created by Ariel Anders; ${isBuiltIn ? "linguistic glossing and annotation by Tyler Lemon" : `source: ${provenanceData.manuscriptShelfmark}`}. Interlinear glossing following Leipzig standards with gb4e LaTeX formatting},
   url          = {https://glossed.pages.dev/read/${slug}}
 }`,
-    unified: `Anders, Ariel & Tyler Lemon. 2026. ${title}. In Glossy: Digital Scholarly Editions of Old English Interlinear Texts. Digital platform created by Ariel Anders; linguistic glossing by Tyler Lemon. London: British Library witness (${provenanceData.manuscriptShelfmark}). Leipzig interlinear glossing in gb4e.`,
-    apa: `Anders, A., & Lemon, T. (2026). ${title} [Digital interlinear edition]. Glossy Old English Corpus. Platform created by Ariel Anders; linguistic glossing by Tyler Lemon. ${provenanceData.manuscriptShelfmark}.`,
-    chicago: `Anders, Ariel, and Tyler Lemon, eds. 2026. "${title}." Glossy: Digital Scholarly Editions of Old English Interlinear Texts. Platform created by Ariel Anders; linguistic glossing by Tyler Lemon. Manuscript: ${provenanceData.manuscriptShelfmark}.`,
+    unified: `${isBuiltIn ? "Anders, Ariel & Tyler Lemon" : (author || "Anonymous")}. 2026. ${title}. In Glossy: Digital Scholarly Editions of Old English Interlinear Texts. Digital platform created by Ariel Anders. Source/Witness: ${provenanceData.manuscriptShelfmark}. Leipzig interlinear glossing in gb4e.`,
+    apa: `${isBuiltIn ? "Anders, A., & Lemon, T." : (author || "Anonymous")}. (2026). ${title} [Digital interlinear edition]. Glossy Old English Corpus. Platform created by Ariel Anders. ${provenanceData.manuscriptShelfmark}.`,
+    chicago: `${isBuiltIn ? "Anders, Ariel, and Tyler Lemon, eds." : `${author || "Anonymous"}, ed.`} 2026. "${title}." Glossy: Digital Scholarly Editions of Old English Interlinear Texts. Platform created by Ariel Anders. Source: ${provenanceData.manuscriptShelfmark}.`,
   };
 
   const copyToClipboard = async (format: CitationFormat) => {
@@ -170,8 +164,7 @@ export function AttributionModal({
                 style={{ color: "inherit", textDecoration: "underline" }}
               >
                 Ariel Anders
-              </a>{" "}
-              (Ariel Anders Consulting)
+              </a>
             </p>
           </div>
 
@@ -180,15 +173,18 @@ export function AttributionModal({
               <User style={{ width: "0.75rem", height: "0.75rem" }} /> Linguistic Subject Matter Expert
             </span>
             <p style={{ margin: "0.2rem 0 0", fontSize: "0.88rem", fontWeight: 600, color: "var(--ink)" }}>
-              <a
-                href="https://sites.google.com/view/tyler-lemon"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "inherit", textDecoration: "underline" }}
-              >
-                Tyler Lemon
-              </a>{" "}
-              ({provenanceData.editionDate})
+              {isBuiltIn ? (
+                <a
+                  href="https://sites.google.com/view/tyler-lemon"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "inherit", textDecoration: "underline" }}
+                >
+                  Tyler Lemon
+                </a>
+              ) : (
+                author || "User Contribution"
+              )}
             </p>
           </div>
 

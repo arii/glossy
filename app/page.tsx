@@ -8,6 +8,7 @@ import { SiteFooter } from "../components/site-footer";
 import { ExternalLink, BookOpen, Edit3, Code2 } from "lucide-react";
 import { useTina, tinaField } from "tinacms/dist/react";
 import homeContentData from "../content/pages/home.json";
+import { BUILT_IN_CORPUS } from "../lib/corpus-registry";
 
 // Mock interactive token data for live hero preview widget
 const HERO_PREVIEW_TOKENS = [
@@ -116,53 +117,18 @@ export default function Home() {
   const [editedLemma, setEditedLemma] = useState<string>("hlāford");
   const [editedGloss, setEditedGloss] = useState<string>("lord-DAT.SG");
 
-  // Pre-configured choices with complete attribution and metrics
-  const choices: TextChoice[] = [
-    {
-      slug: "ohthere-wulfstan",
-      title: "The voyages of Ohthere and Wulfstan",
-      kind: "text",
-      author: "Tyler Lemon (ed.) / King Alfred's Court",
-      source: "London, British Library, Cotton MS Tiberius B. i",
-      sentenceCount: 75,
-      tokenCount: 1716,
-      status: "published",
-      isProtected: true,
-    },
-    {
-      slug: "beowulf-prologue",
-      title: "Beowulf: Prologue (Lines 1–11)",
-      kind: "text",
-      author: "Anonymous Anglo-Saxon Poet",
-      source: "London, British Library, Cotton MS Vitellius A. xv (Nowell Codex)",
-      sentenceCount: 11,
-      tokenCount: 53,
-      status: "published",
-      isProtected: false,
-    },
-    {
-      slug: "caedmon-hymn",
-      title: "Cædmon's Hymn",
-      kind: "text",
-      author: "Cædmon (Bede's Historia Ecclesiastica)",
-      source: "Cambridge, University Library, MS Kk. 5. 16 (Moore Bede)",
-      sentenceCount: 2,
-      tokenCount: 42,
-      status: "published",
-      isProtected: false,
-    },
-    {
-      slug: "the-wanderer",
-      title: "The Wanderer (Opening)",
-      kind: "text",
-      author: "Anonymous (Exeter Book)",
-      source: "Exeter, Cathedral Library, MS 3501, ff. 76v–79r",
-      sentenceCount: 2,
-      tokenCount: 26,
-      status: "published",
-      isProtected: false,
-    },
-  ];
+  // Derive choices from centralized corpus metadata
+  const choices: TextChoice[] = Object.values(BUILT_IN_CORPUS).map((c) => ({
+    slug: c.slug,
+    title: c.title,
+    kind: "text",
+    author: c.author,
+    source: c.source,
+    sentenceCount: c.defaultSentenceCount,
+    tokenCount: c.defaultTokenCount,
+    status: "published",
+    isProtected: c.protected,
+  }));
 
   const activeToken = HERO_PREVIEW_TOKENS[selectedTokenIdx];
 
@@ -470,7 +436,7 @@ export default function Home() {
                     Sentence 1 of 75 · Morphological Segmentation
                   </span>
                   <Link
-                    href="/edit/ohthere-wulfstan"
+                    href="/edit/ohthere"
                     style={{
                       fontSize: "0.75rem",
                       color: "#fbbf24",
@@ -617,11 +583,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="corpus-directory" style={{ padding: "2.5rem 0 1rem" }}>
-          <h2 style={{ margin: "0 0 1.5rem", fontSize: "1.65rem", fontFamily: "'Charis SIL', Georgia, serif", color: "var(--ink)" }}>
-            Old English Corpus &amp; Editions
-          </h2>
-
+        <section id="corpus-directory" style={{ padding: "1rem 0 1rem" }}>
           <TextDirectory initialChoices={choices} />
         </section>
 

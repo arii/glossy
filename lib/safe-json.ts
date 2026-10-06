@@ -59,7 +59,10 @@ export function safeJsonStringify(
   );
 }
 
-export function safeJsonParse<T = unknown>(json: string): T | null {
+export function safeJsonParse<T = unknown>(json: string | null | undefined): T | null {
+  if (!json || typeof json !== "string" || json === "undefined" || json === "null" || json.trim() === "") {
+    return null;
+  }
   try {
     return JSON.parse(json) as T;
   } catch {

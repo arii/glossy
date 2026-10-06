@@ -1,19 +1,25 @@
-# Glossy — Implementation Status and Next Steps
+# Glossy — Architecture Plan & Status
 
-## Current Architecture
+## Current Architecture: JSON as the Single Source of Truth
 
-Glossy is a local Next.js app with separate reader (`/read/<slug>`) and editor (`/edit/<slug>`) routes, a route-choice home page, an architecture FAQ (`/docs`), and the Tina admin (`/admin/index.html`). Text data is stored in Git under `content/texts/`; the supplied LaTeX manuscript remains the source for transcription and is parsed into the reader/editor model.
+Glossy is a modern Next.js application with dedicated Reader (`/read/<slug>`) and Editor (`/edit/<slug>`) routes, an Old English corpus directory (`/`), a new text ingestion pipeline (`/edit/new`), documentation (`/docs`), and Tina Admin (`/admin/index.html`).
 
-The app uses `lib/types.ts` for unified shared content types (`TextDocument`, `ReadingSentence`, `InterlinearWord`, `LinguisticAnalysis`, `Morpheme`, `InflectionFeatures`, `PartOfSpeech`) across both the reader and editor workspaces, completing full type unification.
+### Key Principles:
+1. **JSON as Source of Truth**: All text documents, glosses, morphemes, translations, and grammatical metadata are stored canonically as structured JSON files (`content/texts/<slug>.json`) conforming to `TextDocument` (`lib/types.ts`).
+2. **Decoupled TeX Persistence**: Saving drafts and committing via TinaCMS updates only the JSON data model. No `.tex` files are written during authoring or CMS updates.
+3. **On-Demand Dynamic LaTeX Export**: Users can export full, compilable `gb4e` LaTeX (`.tex`) documents on demand. TeX is generated dynamically in memory from the canonical JSON model (`data/latex-export.ts`).
+4. **Flexible Ingestion**: Ingestion (`/edit/new`) accepts plain Old English text with parallel modern translations or `gb4e` LaTeX snippets, converting them directly into canonical `TextDocument` JSON.
+5. **Local Drafts & Change Tracking**: Local drafts use versioned storage envelopes (`glossy:v1:draft:<slug>`). Comparing `baseHash` against the current document hash enables change tracking and future visual diffing.
 
-## Implemented & Verified
- 
-- `lib/gb4e.ts` parses supported `gb4e` examples, paragraph labels, aligned surface/gloss tokens, multi-morpheme compounds, translations, and footnotes; it resolves analyses through `lib/lemmatizer.ts`, which combines curated verb/noun/adjective/pronoun/numeral rules with `lib/old-english-lexicon.ts`.
-- `scripts/compile-tex-to-content.mjs` converts the master manuscript to `content/texts/ohthere.json` (75 sentences). `scripts/compile-beowulf.mjs` compiles all 11 lines of Beowulf Prologue into `content/texts/beowulf-prologue.json` and `references/Beowulf_Prologue.tex`. `scripts/sync-dictionary.mjs` generates entries under `content/dictionary/`. All run automatically via `prebuild`.
-- The reader (`/read/<slug>`) renders Old English, a separate source-gloss line, translation, and interactive word details with multi-morpheme chips (`Gār-Den-a`, `ġeār-dag-um`, `þēod-cyning-a`). The editor (`/edit/<slug>`) provides a live preview, bidirectional morpheme inspector (`[N morphs]`), cross-text switcher dropdown, pasted-TeX parse/preview/append flow, local draft persistence with automatic stale-cache invalidation, and normalized `.tex` download.
-- The dual-write Save action calls `/api/save-document`, which writes the exported TeX to `references/<slug>.tex` and the JSON document to `content/texts/<slug>.json`, then notifies TinaCMS.
-- The source validator (`npm run validate:source`) validates 1,769 aligned glosses across all texts with 0 warnings. Knip (`npm run audit:deadcode`) confirms 0 dead files or unused exports. `tsc --noEmit` and `eslint .` pass with 0 errors. The smoke test (`npm run test:smoke`) verifies all reader, editor, new text ingestion, and admin routes.
+See `docs/JSON_SOURCE_OF_TRUTH_PLAN.md` for the detailed simplification roadmap and diffing specification.
 
-## Completed Milestones
+## Verification Suite
 
-All acceptance criteria across Slices 1–8, Follow-up Requirements, and Final Review have been implemented, verified live via `browser-mcp`, and pushed to production.
+| Check | Tool / Command | Target |
+|---|---|---|
+| Linting | `npm run lint` | ESLint (zero errors/warnings) |
+| Type Safety | `npm run typecheck` | TypeScript (`tsc --noEmit`) |
+| Source Validation | `npm run validate:source` | 1,837 aligned glosses verified |
+| Lemma Accuracy | `npm run validate:lemmas` | 1,716 tokens verified against dictionary |
+| Draft Tests | `npm run test:drafts` | Registry, envelopes, and hash tests |
+| Smoke Tests | `npm run test:smoke` | Full route verification |

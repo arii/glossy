@@ -23,6 +23,7 @@
     "lint": "eslint .",
     "audit:deadcode": "knip",
     "test:smoke": "node scripts/smoke-test.mjs",
+    "test:drafts": "tsx scripts/test-drafts.mjs",
     "typecheck": "tsc --noEmit",
     "validate:lemmas": "tsx scripts/validate-lemmas.mjs",
     "validate:source": "tsx scripts/validate-source.mjs",

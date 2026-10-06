@@ -8,8 +8,20 @@ export default function ErrorPage({
   reset,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  reset?: () => void;
 }) {
+  const handleReset = () => {
+    if (typeof reset === "function") {
+      try {
+        reset();
+      } catch {
+        window.location.reload();
+      }
+    } else if (typeof window !== "undefined") {
+      window.location.reload();
+    }
+  };
+
   return (
     <>
       <SiteNav slug="ohthere-wulfstan" />
@@ -18,7 +30,7 @@ export default function ErrorPage({
           <h1>Something went wrong</h1>
           <p>An unexpected error occurred while rendering the page.</p>
           <p style={{ marginTop: "1.5rem" }}>
-            <button className="workspace-button" type="button" onClick={() => reset()}>
+            <button className="workspace-button" type="button" onClick={handleReset}>
               Try again
             </button>{" "}
             <Link href="/" className="workspace-link">

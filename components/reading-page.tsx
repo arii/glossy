@@ -8,8 +8,7 @@ import Link from "next/link";
 import { TinaMarkdown, type Components } from "tinacms/dist/rich-text";
 import { getGlossRecords, getReadingPassage } from "../lib/passage-utils";
 import type { DictionaryEntry, ManuscriptDocument, TextDocument } from "../lib/types";
-import { safeJsonParse } from "../lib/safe-json";
-import { editorDocToTextDocument, type EditorDocument } from "./gloss-editor";
+import { getLocalDraft, getHiddenSlugs, restoreHiddenText } from "../lib/local-drafts";
 import { AnnotatedPassage } from "./annotated-passage";
 import { GlossPopup } from "./gloss-popup";
 import { GlossaryPanel, GlossWord, GlossaryProvider, useGlossary } from "./glossary";
@@ -77,25 +76,14 @@ function ReadingPageInner({
 
   useEffect(() => {
     try {
-      const rawDeleted = window.localStorage.getItem("glossy_deleted_slugs");
-      if (rawDeleted) {
-        const parsed = safeJsonParse<string[]>(rawDeleted);
-        if (parsed) setDeletedSlugs(parsed);
-      }
+      const hidden = getHiddenSlugs();
+      setDeletedSlugs(hidden);
     } catch {}
 
     try {
-      const draftRaw = window.localStorage.getItem(`glossy_draft_${selectedSlug}`);
-      if (draftRaw) {
-        const parsed = safeJsonParse<EditorDocument | TextDocument>(draftRaw);
-        if (parsed && typeof parsed === "object" && "sentences" in parsed && Array.isArray(parsed.sentences) && parsed.sentences.length > 0) {
-          const firstSentence = parsed.sentences[0];
-          if (firstSentence && "tokens" in firstSentence) {
-            setLocalDraftText(editorDocToTextDocument(parsed as EditorDocument));
-          } else if (firstSentence && "words" in firstSentence) {
-            setLocalDraftText(parsed as TextDocument);
-          }
-        }
+      const draftEnv = getLocalDraft(selectedSlug);
+      if (draftEnv?.doc) {
+        setLocalDraftText(draftEnv.doc);
       } else {
         setLocalDraftText(null);
       }
@@ -157,13 +145,8 @@ function ReadingPageInner({
 
   const handleRestore = () => {
     try {
-      const raw = window.localStorage.getItem("glossy_deleted_slugs");
-      if (raw) {
-        const parsed = safeJsonParse<string[]>(raw) || [];
-        const updated = parsed.filter((s) => s !== selectedSlug);
-        window.localStorage.setItem("glossy_deleted_slugs", JSON.stringify(updated));
-        setDeletedSlugs(updated);
-      }
+      restoreHiddenText(selectedSlug);
+      setDeletedSlugs((prev) => prev.filter((s) => s !== selectedSlug));
     } catch {}
   };
 

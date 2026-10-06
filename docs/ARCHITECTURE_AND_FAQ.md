@@ -1,6 +1,6 @@
 # Glossy Documentation & Reference Guide
 
-This document describes the linguistic data model, canonical lemma citation standards, and technical architecture of Glossy (audited 2026-10-05). Product requirements and specifications are tracked in `devpost/prd.md`, `devpost/spec.md`, and `plan.md`.
+This document describes the linguistic data model, canonical lemma citation standards, and technical architecture of Glossy (audited 2026-10-06). Product requirements and specifications are tracked in `devpost/prd.md`, `devpost/spec.md`, and `CODE_QUALITY_AUDIT.md`.
 
 ---
 
@@ -10,7 +10,7 @@ This document describes the linguistic data model, canonical lemma citation stan
 
 ## L1. Authentic Glossing Abbreviations from the Master Manuscript
 
-The 42 abbreviations defined in Section 2 (*Glossing abbreviations*) of `references/Voyages_of_Ohthere_Wulfstan.tex`:
+The 42 Leipzig-compliant abbreviations defined in Section 2 (*Glossing abbreviations*) of `references/Voyages_of_Ohthere_Wulfstan.tex`:
 
 | Tag | Full Name / Description | Role in Old English Glossing |
 | :--- | :--- | :--- |
@@ -98,31 +98,31 @@ In standard Old English lexicography (Bosworth-Toller, Sweet, Clark Hall, DOE, W
 
 *For software engineers, developers, and pipeline contributors.*
 
-## A1. Corpus Ingestion & Expansion Pipeline (`/edit/new`)
+## A1. Dedicated Authoring Architecture & Persistence Flow
 
-1. **Automatic Tokenization & Compound Splitting**:
-   - Punctuation is cleanly isolated and bound morphemes (e.g. `ġeār-dag-um`) are segmented into glossable lexical units.
-2. **Contextual Lemmatization Engine**:
-   - Every token is evaluated through `lib/lemmatizer.ts`, assigning canonical masculine nominative singular strong adjective lemmas, infinitive verb lemmas, nominative noun lemmas, and direct Wiktionary etymological links.
-3. **Dual-Write Persistence & LaTeX Export**:
-   - Saving writes structured JSON to `content/texts/<slug>.json` and compilable LaTeX to `references/<slug>.tex`.
+Glossy separates client-side authoring from Git-backed publishing:
 
-## A2. Local Drafts & Dual-Write Architecture
+1. **Client-Side Authoring (Glossy Editor UX)**:
+   - Editors work within Glossy's specialized interlinear editor (`/edit/[slug]` and `/edit/new`).
+   - Edits autosave in real-time to browser `localStorage` as versioned envelopes (`glossy:draft:v1:<slug>`).
+2. **Pending Manifest (`glossy_pending_drafts`)**:
+   - Every saved or modified draft is atomically registered in the pending manifest with content hash, timestamp, and word count.
+3. **TinaCMS Git Propagation**:
+   - TinaCMS is configured for simple site copy editing (`home.json`, FAQs) and provides an authenticated commit bridge.
+   - When authenticated, pending drafts can be committed to the Git repository via Tina's GraphQL client.
+4. **Data Portability & Compilable Exports**:
+   - The editor provides instant client-side downloads for complete **JSON** text documents and compilable **LaTeX (`gb4e`)** packages.
 
-Glossy maintains a three-tier data synchronization model:
-
-- **Tier 1: Browser Local Storage** (300ms debounce autosave to localStorage under slug keys).
-- **Tier 2: Filesystem Dual-Write** (`references/<slug>.tex` + `content/texts/<slug>.json` written synchronously via `/api/save-document`).
-- **Tier 3: TinaCMS GraphQL Bridge** (dispatched to working trees for visual CMS authoring).
-
-## A3. Automated Quality Verification Suite
+## A2. Automated Quality Verification Suite
 
 | Command | Function & Verification Target |
 |---|---|
-| `node scripts/validate-lemmas.mjs` | Audits every token in the corpus asserting 100% compliance across verbs, nouns, adjectives, determiners, and numerals. |
-| `npm run validate:source` | Validates 100% token and gloss alignment across all 75 sentences (1,716 tokens). |
-| `npm run sync:dictionary` | Generates clean, normalized dictionary records in `content/dictionary/`. |
-| `npm run compile:content` | Pre-compiles master TeX source into `content/texts/ohthere.json` with embedded `texSource`. |
-| `npm run audit:deadcode` | Runs Knip dead code audit asserting zero dead files, unlisted dependencies, or unused exports. |
+| `npm run validate:lemmas` | Audits token lemmas asserting compliance with canonical dictionary headwords. |
+| `npm run validate:source` | Validates token and gloss alignment across source-backed texts. |
+| `npm run sync:dictionary` | Normalizes dictionary records in `content/dictionary/`. |
+| `npm run compile:content` | Pre-compiles master TeX source into structured JSON. |
+| `npm run test:drafts` | Runs unit tests for local draft envelopes, slug sanitization, and collision prevention. |
+| `npm run test:smoke` | Validates all public routes, reader views, and editor endpoints. |
 | `npm run typecheck` | Validates TypeScript type safety across the entire codebase. |
-| `npm run build` | Runs `prebuild` (sync:dictionary + compile:content + build:tina) and generates production Next.js application. |
+| `npm run lint` | Runs ESLint asserting zero syntax errors, missing imports, or unused variables. |
+| `npm run build` | Generates production Next.js application. |

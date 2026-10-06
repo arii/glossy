@@ -9,9 +9,7 @@ const branch =
 const clientId =
   process.env.NEXT_PUBLIC_TINA_CLIENT_ID ||
   "7cf6793a-dfc2-4a6b-ae23-c2665e22f286";
-const token =
-  process.env.TINA_TOKEN ||
-  "1003b7a92c90f98a00ad4e6cf8e2ad87fb2455d9";
+const token = process.env.TINA_TOKEN || "";
 
 export default defineConfig({
   branch,
@@ -290,7 +288,7 @@ export default defineConfig({
           {
             type: "object",
             name: "abbreviations",
-            label: "37 Leipzig Glossing Abbreviations",
+            label: "42 Leipzig Glossing Abbreviations",
             list: true,
             ui: {
               itemProps: (item) => ({ label: `${item?.abbr || "TAG"}: ${item?.name || "Term"}` }),
@@ -379,15 +377,15 @@ export default defineConfig({
           {
             type: "object",
             name: "storageTiers",
-            label: "Dual-Write Storage Architecture Tiers",
+            label: "Storage Architecture Stages",
             list: true,
             ui: {
-              itemProps: (item) => ({ label: `${item?.tier || "Tier"}: ${item?.title || "Storage"}` }),
+              itemProps: (item) => ({ label: `${item?.tier || "Stage"}: ${item?.title || "Storage"}` }),
             },
             fields: [
-              { type: "string", name: "tier", label: "Tier Label (e.g. Tier 1)", required: true },
-              { type: "string", name: "timing", label: "Timing / Trigger (e.g. 300ms debounce)", required: true },
-              { type: "string", name: "title", label: "Tier Title", required: true },
+              { type: "string", name: "tier", label: "Stage Label (e.g. Stage 1)", required: true },
+              { type: "string", name: "timing", label: "Timing / Trigger", required: true },
+              { type: "string", name: "title", label: "Stage Title", required: true },
               { type: "string", name: "description", label: "Description", ui: { component: "textarea" } },
             ],
           },
@@ -396,15 +394,6 @@ export default defineConfig({
     ],
   },
   cmsCallback: (cms: TinaCMS) => {
-    function escapeForHtml(str: string): string {
-      return str
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
     function sanitizeDraftForTinaMutation(draftDoc: Record<string, unknown>) {
       const sentencesRaw = Array.isArray(draftDoc.sentences) ? draftDoc.sentences : [];
       const sentences = sentencesRaw.map((s: Record<string, unknown>) => {
@@ -497,155 +486,6 @@ export default defineConfig({
       };
     }
 
-    function showDraftErrorModal(options: {
-      title: string;
-      summary: string;
-      rawError: unknown;
-      draftJson?: string;
-      slug?: string;
-    }) {
-      if (typeof window === "undefined" || typeof document === "undefined") return;
-
-      const { title, summary, rawError, draftJson, slug } = options;
-
-      let errorDetailsText = "";
-      if (rawError instanceof Error) {
-        errorDetailsText = rawError.stack
-          ? `${rawError.name}: ${rawError.message}\n\nStack:\n${rawError.stack}`
-          : `${rawError.name}: ${rawError.message}`;
-      } else if (typeof rawError === "object" && rawError !== null) {
-        try {
-          errorDetailsText = JSON.stringify(rawError, Object.getOwnPropertyNames(rawError), 2);
-        } catch {
-          errorDetailsText = String(rawError);
-        }
-      } else {
-        errorDetailsText = String(rawError);
-      }
-
-      const errObj = rawError as {
-        errors?: Array<{ message: string }>;
-      };
-      if (errObj?.errors && Array.isArray(errObj.errors)) {
-        const messages = errObj.errors.map((e, idx) => `[Error ${idx + 1}] ${e.message}`).join("\n\n");
-        errorDetailsText = `${messages}\n\n--- Full Details ---\n${errorDetailsText}`;
-      }
-
-      document.getElementById("tina-error-modal-overlay")?.remove();
-
-      const overlay = document.createElement("div");
-      overlay.id = "tina-error-modal-overlay";
-      overlay.style.cssText =
-        "position:fixed;inset:0;z-index:999999;background:rgba(15,23,42,0.8);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:1.25rem;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;";
-
-      const modal = document.createElement("div");
-      modal.style.cssText =
-        "background:#18181b;color:#fafafa;border:1px solid #3f3f46;border-radius:0.75rem;width:100%;max-width:44rem;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 25px 50px -12px rgba(0,0,0,0.7);overflow:hidden;";
-
-      modal.innerHTML = `
-        <div style="padding:1.25rem 1.5rem;border-bottom:1px solid #27272a;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;">
-          <div>
-            <div style="display:flex;align-items:center;gap:0.5rem;">
-              <span style="display:inline-flex;align-items:center;justify-content:center;width:1.75rem;height:1.75rem;border-radius:9999px;background:rgba(239,68,68,0.2);color:#ef4444;font-weight:bold;font-size:1rem;">✕</span>
-              <h3 style="margin:0;font-size:1.15rem;font-weight:600;color:#f43f5e;">
-                ${escapeForHtml(title)}
-              </h3>
-            </div>
-            <p style="margin:0.4rem 0 0;font-size:0.85rem;color:#a1a1aa;line-height:1.4;">
-              ${escapeForHtml(summary)}
-            </p>
-          </div>
-          <button id="tina-modal-close-x" style="background:transparent;border:none;color:#71717a;font-size:1.6rem;line-height:1;cursor:pointer;padding:0.2rem 0.5rem;border-radius:0.25rem;" title="Close">&times;</button>
-        </div>
-
-        <div style="padding:1.25rem 1.5rem;overflow-y:auto;display:flex;flex-direction:column;gap:1rem;">
-          <div style="background:#27272a;padding:0.75rem 1rem;border-radius:0.5rem;font-size:0.82rem;color:#d4d4d8;line-height:1.45;">
-            <strong style="color:#fafafa;">What this means:</strong> Your visual edits are safely retained in browser localStorage. If TinaCloud session authentication is expired or unauthorized, log in again at <a href="/admin/index.html" style="color:#38bdf8;text-decoration:underline;">/admin</a>. You can also download your JSON draft directly below.
-          </div>
-
-          <div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
-              <span style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#a1a1aa;">
-                Error Details (Selectable &amp; Copyable)
-              </span>
-              <button id="tina-modal-copy-link" style="background:transparent;border:none;color:#38bdf8;font-size:0.75rem;cursor:pointer;text-decoration:underline;padding:0;">
-                Copy error text
-              </button>
-            </div>
-            <textarea id="tina-error-textarea" readonly style="user-select:text;-webkit-user-select:text;background:#09090b;color:#fca5a5;padding:0.85rem 1rem;border-radius:0.5rem;font-size:0.8rem;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.5;height:12rem;width:100%;border:1px solid #27272a;box-sizing:border-box;resize:vertical;outline:none;">${escapeForHtml(errorDetailsText)}</textarea>
-          </div>
-        </div>
-
-        <div style="padding:1rem 1.5rem;border-top:1px solid #27272a;background:#121215;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">
-          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-            <button id="tina-copy-error-btn" style="background:#27272a;color:#fafafa;border:1px solid #52525b;padding:0.5rem 0.9rem;border-radius:0.375rem;font-size:0.825rem;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:0.4rem;">
-              📋 Copy Error Details
-            </button>
-            ${
-              draftJson
-                ? `<button id="tina-download-draft-btn" style="background:#27272a;color:#fafafa;border:1px solid #52525b;padding:0.5rem 0.9rem;border-radius:0.375rem;font-size:0.825rem;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:0.4rem;">
-                    💾 Download Draft JSON
-                  </button>`
-                : ""
-            }
-          </div>
-          <button id="tina-modal-close-btn" style="background:#7b3f2a;color:#fff;border:none;padding:0.5rem 1.1rem;border-radius:0.375rem;font-size:0.825rem;font-weight:600;cursor:pointer;">
-            Dismiss
-          </button>
-        </div>
-      `;
-
-      overlay.appendChild(modal);
-      document.body.appendChild(overlay);
-
-      const closeModal = () => overlay.remove();
-      document.getElementById("tina-modal-close-x")?.addEventListener("click", closeModal);
-      document.getElementById("tina-modal-close-btn")?.addEventListener("click", closeModal);
-      overlay.addEventListener("click", (e) => {
-        if (e.target === overlay) closeModal();
-      });
-
-      const handleCopy = async () => {
-        const copyBtn = document.getElementById("tina-copy-error-btn");
-        const copyLink = document.getElementById("tina-modal-copy-link");
-        try {
-          if (navigator.clipboard?.writeText) {
-            await navigator.clipboard.writeText(errorDetailsText);
-          } else {
-            const textarea = document.getElementById("tina-error-textarea") as HTMLTextAreaElement | null;
-            if (textarea) {
-              textarea.focus();
-              textarea.select();
-              document.execCommand("copy");
-            }
-          }
-          if (copyBtn) copyBtn.textContent = "✅ Copied to Clipboard!";
-          if (copyLink) copyLink.textContent = "Copied!";
-          setTimeout(() => {
-            if (copyBtn) copyBtn.textContent = "📋 Copy Error Details";
-            if (copyLink) copyLink.textContent = "Copy error text";
-          }, 2500);
-        } catch {
-          if (copyBtn) copyBtn.textContent = "Selected (Press Ctrl+C)";
-        }
-      };
-
-      document.getElementById("tina-copy-error-btn")?.addEventListener("click", handleCopy);
-      document.getElementById("tina-modal-copy-link")?.addEventListener("click", handleCopy);
-
-      if (draftJson) {
-        document.getElementById("tina-download-draft-btn")?.addEventListener("click", () => {
-          const blob = new Blob([draftJson], { type: "application/json;charset=utf-8" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `${slug || "draft"}-backup.json`;
-          a.click();
-          URL.revokeObjectURL(url);
-        });
-      }
-    }
-
     if (typeof window !== "undefined") {
       const checkAndRenderSyncBar = () => {
         try {
@@ -660,35 +500,52 @@ export default defineConfig({
           const bar = document.createElement("div");
           bar.id = "tina-draft-sync-bar";
           bar.style.cssText =
-            "position:fixed;bottom:1.5rem;right:1.5rem;z-index:99999;background:#1c1917;color:#fafaf9;padding:1rem 1.25rem;border-radius:0.5rem;box-shadow:0 12px 30px rgba(0,0,0,0.35);border:1px solid #44403c;font-family:sans-serif;font-size:0.875rem;max-width:30rem;display:flex;flex-direction:column;gap:0.65rem;";
+            "position:fixed;bottom:1.5rem;right:1.5rem;z-index:99999;background:#1c1917;color:#fafaf9;padding:1rem 1.25rem;border-radius:0.5rem;box-shadow:0 12px 30px rgba(0,0,0,0.35);border:1px solid #44403c;font-family:sans-serif;font-size:0.875rem;max-width:32rem;display:flex;flex-direction:column;gap:0.65rem;";
 
-          bar.innerHTML = `
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-weight:600;color:#eab308;display:flex;align-items:center;gap:0.4rem;">
-                📥 Local Storage Draft Detected
-              </span>
-              <button id="tina-draft-sync-close" style="background:transparent;border:none;color:#a8a29e;cursor:pointer;font-size:1.2rem;line-height:1;" title="Dismiss">&times;</button>
-            </div>
-            <div style="font-size:0.82rem;color:#d6d3d1;line-height:1.4;">
-              Found unsynced working draft from the visual editor for <strong>${unsyncedSlugs.join(", ")}</strong>. Commit this draft directly to TinaCMS & Git repository:
-            </div>
-            <div style="display:flex;gap:0.5rem;margin-top:0.25rem;">
-              <button id="tina-draft-sync-action" style="background:#7b3f2a;color:#fff;border:none;padding:0.45rem 0.9rem;border-radius:0.3rem;font-weight:600;cursor:pointer;font-size:0.82rem;">Commit Draft to Git</button>
-              <a href="/edit/${unsyncedSlugs[0]}" target="_blank" style="background:#292524;color:#d6d3d1;padding:0.45rem 0.9rem;border-radius:0.3rem;text-decoration:none;font-size:0.82rem;display:inline-flex;align-items:center;border:1px solid #44403c;">Open Editor ↗</a>
-            </div>
-          `;
+          const headerRow = document.createElement("div");
+          headerRow.style.cssText = "display:flex;justify-content:space-between;align-items:center;";
 
-          document.body.appendChild(bar);
+          const headerTitle = document.createElement("span");
+          headerTitle.style.cssText = "font-weight:600;color:#eab308;display:flex;align-items:center;gap:0.4rem;";
+          headerTitle.textContent = "📥 Unpublished Drafts Detected";
 
-          document.getElementById("tina-draft-sync-close")?.addEventListener("click", () => {
-            bar.remove();
-          });
+          const closeBtn = document.createElement("button");
+          closeBtn.style.cssText = "background:transparent;border:none;color:#a8a29e;cursor:pointer;font-size:1.2rem;line-height:1;";
+          closeBtn.textContent = "×";
+          closeBtn.title = "Dismiss";
+          closeBtn.onclick = () => bar.remove();
 
-          document.getElementById("tina-draft-sync-action")?.addEventListener("click", async () => {
-            const btn = document.getElementById("tina-draft-sync-action");
-            if (btn) btn.textContent = "Committing to Git...";
-            let currentSlug = unsyncedSlugs[0] || "";
-            let currentDraftRaw = "";
+          headerRow.appendChild(headerTitle);
+          headerRow.appendChild(closeBtn);
+          bar.appendChild(headerRow);
+
+          const desc = document.createElement("div");
+          desc.style.cssText = "font-size:0.82rem;color:#d6d3d1;line-height:1.4;";
+          const titlesList = unsyncedSlugs.map((s) => pending[s].title || s).join(", ");
+          desc.textContent = `Found unpublished local drafts in this browser for: ${titlesList}. Sign in to commit them to the Git repository.`;
+          bar.appendChild(desc);
+
+          const actionsRow = document.createElement("div");
+          actionsRow.style.cssText = "display:flex;gap:0.5rem;margin-top:0.25rem;";
+
+          const commitBtn = document.createElement("button");
+          commitBtn.style.cssText = "background:#7b3f2a;color:#fff;border:none;padding:0.45rem 0.9rem;border-radius:0.3rem;font-weight:600;cursor:pointer;font-size:0.82rem;";
+          commitBtn.textContent = "Commit Drafts to Git";
+
+          const openEditorLink = document.createElement("a");
+          openEditorLink.href = `/edit/${unsyncedSlugs[0]}`;
+          openEditorLink.target = "_blank";
+          openEditorLink.style.cssText = "background:#292524;color:#d6d3d1;padding:0.45rem 0.9rem;border-radius:0.3rem;text-decoration:none;font-size:0.82rem;display:inline-flex;align-items:center;border:1px solid #44403c;";
+          openEditorLink.textContent = "Open Editor ↗";
+
+          actionsRow.appendChild(commitBtn);
+          actionsRow.appendChild(openEditorLink);
+          bar.appendChild(actionsRow);
+
+          commitBtn.onclick = async () => {
+            commitBtn.textContent = "Committing to Git...";
+            commitBtn.disabled = true;
+
             try {
               const tinaApi = (cms.api as {
                 tina?: {
@@ -698,16 +555,24 @@ export default defineConfig({
                   ) => Promise<unknown>;
                 };
               })?.tina;
+
               if (!tinaApi?.request) {
-                throw new Error("Tina API client is not initialized.");
+                throw new Error("Tina API client is not authenticated. Please sign in to TinaCMS first.");
               }
 
               for (const slug of unsyncedSlugs) {
-                currentSlug = slug;
-                const draftDataRaw = window.localStorage.getItem(`glossy_draft_${slug}`);
-                if (!draftDataRaw) continue;
-                currentDraftRaw = draftDataRaw;
-                const draftDoc = JSON.parse(draftDataRaw);
+                let draftDoc: Record<string, unknown> | null = null;
+                const v1Key = `glossy:draft:v1:${slug}`;
+                const rawV1 = window.localStorage.getItem(v1Key);
+                if (rawV1) {
+                  const env = JSON.parse(rawV1);
+                  draftDoc = env.doc || env;
+                } else {
+                  const legacyRaw = window.localStorage.getItem(`glossy_draft_${slug}`);
+                  if (legacyRaw) draftDoc = JSON.parse(legacyRaw);
+                }
+
+                if (!draftDoc) continue;
                 const sanitizedParams = sanitizeDraftForTinaMutation(draftDoc);
 
                 await tinaApi.request(
@@ -726,22 +591,22 @@ export default defineConfig({
                   }
                 );
 
-                pending[slug].synced = true;
+                if (pending[slug]) {
+                  pending[slug].synced = true;
+                }
               }
+
               window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
-              if (btn) btn.textContent = "✅ Committed!";
+              commitBtn.textContent = "✅ Committed!";
               setTimeout(() => bar.remove(), 2500);
             } catch (err: unknown) {
-              if (btn) btn.textContent = "Sync Failed";
-              showDraftErrorModal({
-                title: "Could Not Commit Draft to TinaCMS",
-                summary: `Failed while attempting to commit draft changes for "${currentSlug}". Your draft is safely preserved in browser storage.`,
-                rawError: err,
-                draftJson: currentDraftRaw,
-                slug: currentSlug,
-              });
+              commitBtn.textContent = "Commit Failed (Sign in required)";
+              commitBtn.disabled = false;
+              console.error("[Tina Sync Bar] Error committing drafts:", err);
             }
-          });
+          };
+
+          document.body.appendChild(bar);
         } catch (e) {
           console.error("Draft sync check error", e);
         }

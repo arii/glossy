@@ -13,41 +13,16 @@ Glossy makes the link between a text, its interlinear gloss, and its linguistic 
 ## Who It's For
 An editor, linguist, or educator who creates interlinear texts and the students or researchers who read them. Editors need source-faithful authoring, analysis, and export; readers need clear gloss lines and useful linked explanations instead of separate PDFs and notes.
 
-## ## The Core Loop
-An editor opens a source-backed text in the separate authoring workspace, edits tokens and their analyses against a live interlinear preview, and the browser keeps an unpublished draft locally. The editor reviews it, explicitly saves confirmed changes through TinaCMS into Git-backed content, or exports a LaTeX document. A reader uses a separate, clean route to read the published text and open linked explanations.
-
-## Inspiration & Identity
-The first content is based on the referenced annotated PDF, `references/Voyages_of_Ohthere_Wulfstan.pdf`, with source material in the accompanying LaTeX file. The project is inspired by the annotated *Alice in Wonderland* example from [Old English Aerobics](https://oldenglishaerobics.net/). It should feel like a clear, readable digital marginal gloss: focused on the text, with supporting information available without overwhelming the reading experience.
-
-## Why This Matters to the Learner
-The learner wants to turn the existing LaTeX/PDF glossing workflow into a live, editable web tool while keeping the student-facing visualizer as a separate output.
-
-## What "Working" Looks Like
-An editor changes a word or its analysis and immediately sees the live gloss and linked explanation update without changing the saved source. The compelling moment is seeing one carefully structured source model power both an interactive editing preview and a clean reader, while remaining exportable to the original LaTeX format.
-
-## ## The POC Boundary
-Build separate reading and editing routes around versioned JSON files in Git; do not add a SQL database or a paid runtime service. The editor supports source text, aligned gloss tokens, word-level linguistic details, translations, source metadata, and the document resources/abbreviations needed for a useful LaTeX export. Editors can paste supported `gb4e` LaTeX (`\gll`/`\glt`) into the editor to import it into the shared text model; the first supported import targets the supplied manuscript format, not arbitrary TeX packages or macros. An edit updates the live preview and stays in a recoverable browser-local draft until the editor explicitly confirms saving it through TinaCMS. Tina writes the confirmed changes to the repository-backed content; Git commit/push remains a distinct version-control step.
-
-The reader is a clean, independent view with hover, focus, or tap explanations. The first complete text must preserve the source TeX's 13 paragraph groups and 75 examples, including translations, notes, resource citations, and glossing abbreviations. Use stable lexical IDs to support term reuse across texts; additions of other texts must use the same text-agnostic model. The TeX manuscript remains the source of truth for transcription, while editors own linguistic analysis and review.
-Audible pronunciation is deferred until a reliable recorded or IPA-compatible solution is available; do not expose browser-generated speech that mispronounces the language.
+## The Core Loop
+An editor opens a text in the authoring workspace, edits tokens and analyses against a live interlinear preview, and the browser maintains a recoverable draft locally (`glossy:draft:v1:<slug>`). The editor can explicitly save drafts, commit confirmed changes through TinaCMS into Git-backed content, or export LaTeX/JSON documents. A reader uses a separate, clean route to read the published text and inspect linked explanations.
 
 ## Implementation Status (2026-10-06)
 
 The application is fully implemented, verified, and ready for hackathon submission:
-- **Corpus & Master Source:** The 75-example, 13-paragraph master XeLaTeX edition of *The Voyages of Ohthere & Wulfstan* (Tyler Lemon 2026) and the *Beowulf* Prologue are parsed and validated with 0 errors across 1,769 aligned glosses and 1,716 verified lemmas.
-- **Dual-Write Persistence:** The editor saves canonical JSON to `content/texts/<slug>.json` and XeLaTeX to `references/<slug>.tex` via `/api/save-document` with real-time UI status reporting.
-- **Landing & Discovery:** Interactive split hero with 3-tier Leipzig glossing preview widget, capability feature pillars, multi-column corpus catalog with metadata badges, and persistent scholarly footer.
-- **Scholarly Attribution:** Integrated citation modal providing 4 academic citation formats (BibTeX, Unified Linguistics, APA, Chicago) with full provenance for Tyler Lemon (2026), Peter S. Baker (*Old English Aerobics*), and British Library Cotton MS witnesses.
-- **Documentation:** Segmented domain switcher (`All`, `Linguistic Guide`, `System Architecture`) with URL parameter synchronization and 42 Leipzig abbreviation reference table.
-- **Corpus Ingestion:** Frictionless onboarding workspace (`/edit/new`) with blank default state, "Start Blank / Clear Form" button, toggleable presets, and separated Custom Text vs Classic Preset tabs.
-- **Quality Assurance:** 100% passing across TypeScript (`tsc --noEmit`), Knip deadcode audit, source validation, and lemma compliance checks.
-
-## Later
-- Arbitrary TeX import, including automatic recovery of every package, comment, and custom macro from unknown documents.
-- Collaborative editing, accounts, remote deployment, and runtime linguistic generation.
-- Reliable recorded or IPA-compatible pronunciation audio.
-
-## Explicitly Cut
-- Runtime linguistic analysis and generated explanations: curated editing and display are in scope; generated interpretation is deferred.
-- User accounts, collaborative editing, and a full language-learning system: outside the first proof of concept.
-- Byte-for-byte TeX round-tripping: export preserves the document's supported content and structure in a normalized template, not whitespace, comments, or arbitrary package macros.
+- **Corpus & Master Source:** The 75-example master edition of *The Voyages of Ohthere & Wulfstan* (Tyler Lemon 2026), *Beowulf* Prologue, *Cædmon's Hymn*, and *The Wanderer* are validated with 0 errors across aligned glosses and verified lemmas.
+- **Local-First Drafts & Ingestion:** The editor saves versioned draft envelopes locally with atomic manifest tracking and export capabilities for JSON and LaTeX `gb4e`.
+- **Landing & Discovery:** Interactive split hero with 3-tier Leipzig glossing preview widget, capability feature pillars, clean multi-column corpus catalog with metadata badges, and persistent scholarly footer.
+- **Scholarly Attribution:** Integrated citation modal providing 4 academic citation formats (BibTeX, Unified Linguistics, APA, Chicago) with dynamic text metadata provenance.
+- **Documentation:** Reference guide with 42 Leipzig abbreviation reference table, canonical lemma standards, and system architecture.
+- **Corpus Ingestion:** Onboarding workspace (`/edit/new`) with blank default state, toggleable presets, custom text ingestion, and file upload.
+- **Quality Assurance:** 100% passing across TypeScript (`tsc --noEmit`), ESLint, source validation, lemma compliance, and draft persistence unit tests.

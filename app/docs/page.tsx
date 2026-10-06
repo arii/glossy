@@ -703,15 +703,14 @@ export default function DocsPage() {
                         Architecture &amp; Storage
                       </p>
                       <h2 className="docs-section-h2">
-                        Local Session Drafts, Autosave, &amp; Dual-Write CMS Integration
+                        Local Drafts, Manifest Tracking, &amp; TinaCMS Publishing
                       </h2>
                     </div>
                   </div>
 
                   <div className="docs-body">
                     <p>
-                      Glossy provides a robust three-tier data synchronization model to prevent accidental data loss
-                      while ensuring seamless Git and LaTeX interoperability:
+                      Glossy provides a reliable local-first persistence and publishing workflow to ensure seamless editing and Git-backed content management:
                     </p>
 
                     <div className="docs-tier-cards-grid">

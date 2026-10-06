@@ -17,6 +17,15 @@ import {
 import { AttributionModal } from "./attribution-modal";
 import { safeJsonParse } from "../lib/safe-json";
 import type { TextDocument } from "../lib/types";
+import {
+  listLocalDrafts,
+  deleteLocalDraft,
+  hideBuiltInText,
+  getHiddenSlugs,
+  restoreAllHiddenTexts,
+  createLocalDocument,
+} from "../lib/local-drafts";
+import { isProtectedSlug, getBuiltInMetadata } from "../lib/corpus-registry";
 
 export type TextChoice = {
   slug: string;
@@ -24,6 +33,7 @@ export type TextChoice = {
   kind: "manuscript" | "text";
   author?: string;
   source?: string;
+  witness?: string;
   sentenceCount?: number;
   tokenCount?: number;
   status?: string;
@@ -40,75 +50,58 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
   const [hiddenDefaultCount, setHiddenDefaultCount] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const isProtected = useCallback(
-    (slug: string) => slug === "ohthere-wulfstan" || slug === "ohthere",
-    []
-  );
-
   const reloadCorpus = useCallback(() => {
     if (typeof window === "undefined") return;
 
     try {
-      // 1. Read deleted default slugs from localStorage
-      const rawDeleted = window.localStorage.getItem("glossy_deleted_slugs");
-      const deletedSlugs = new Set<string>(
-        rawDeleted ? safeJsonParse<string[]>(rawDeleted) || [] : []
-      );
+      const deletedSlugs = new Set<string>(getHiddenSlugs());
       setHiddenDefaultCount(deletedSlugs.size);
 
-      // 2. Discover custom drafts or local modifications from localStorage
+      const drafts = listLocalDrafts();
       const customChoices: TextChoice[] = [];
       const localSlugsWithEdits = new Set<string>();
 
-      for (let i = 0; i < window.localStorage.length; i++) {
-        const key = window.localStorage.key(i);
-        if (key && key.startsWith("glossy_draft_")) {
-          const slug = key.replace(/^glossy_draft_/, "");
-          const raw = window.localStorage.getItem(key);
-          if (!raw) continue;
+      for (const envelope of drafts) {
+        const doc = envelope.doc;
+        const slug = doc.slug || doc.textId;
+        const existsInInitial = initialChoices.some(
+          (c) => c.slug === slug || (doc.textId && c.slug === doc.textId)
+        );
 
-          const parsed = safeJsonParse<TextDocument>(raw);
-          if (!parsed) continue;
-
-          const existsInInitial = initialChoices.some(
-            (c) => c.slug === slug || (parsed.textId && c.slug === parsed.textId)
-          );
-
-          if (existsInInitial) {
-            localSlugsWithEdits.add(slug);
-            if (parsed.textId) localSlugsWithEdits.add(parsed.textId);
-          } else {
-            const totalTokens = (parsed.sentences || []).reduce(
-              (acc, s) => acc + (s.words ? s.words.length : 0),
-              0
-            );
-            customChoices.push({
-              slug,
-              title: parsed.title || slug,
-              kind: "text",
-              author: parsed.author || "Custom Ingested Text",
-              source: parsed.source || "Local Browser Workspace",
-              sentenceCount: parsed.sentences?.length || 0,
-              tokenCount: totalTokens,
-              status: "draft",
-              isProtected: false,
-              isLocalOnly: true,
-            });
-          }
+        if (existsInInitial) {
+          localSlugsWithEdits.add(slug);
+          if (doc.textId) localSlugsWithEdits.add(doc.textId);
+        } else {
+          customChoices.push({
+            slug,
+            title: doc.title || slug,
+            kind: "text",
+            author: doc.author || "Custom Ingested Text",
+            source: doc.source || "Local Browser Workspace",
+            witness: doc.source || "Local Browser Draft",
+            status: "draft",
+            isProtected: false,
+            isLocalOnly: true,
+            hasLocalDraft: true,
+          });
         }
       }
 
-      // 3. Assemble visible choices (filter out locally deleted default texts)
       const visibleInitial = initialChoices
         .filter((c) => !deletedSlugs.has(c.slug))
-        .map((c) => ({
-          ...c,
-          hasLocalDraft: localSlugsWithEdits.has(c.slug),
-        }));
+        .map((c) => {
+          const meta = getBuiltInMetadata(c.slug);
+          return {
+            ...c,
+            author: c.author || meta?.author,
+            witness: c.witness || meta?.witness || c.source,
+            hasLocalDraft: localSlugsWithEdits.has(c.slug) || localSlugsWithEdits.has(meta?.slug || "") || localSlugsWithEdits.has(meta?.textId || ""),
+          };
+        });
 
       setChoices([...customChoices, ...visibleInitial]);
     } catch {
-      // Ignore localStorage errors
+      // Ignore localStorage read errors
     }
   }, [initialChoices]);
 
@@ -116,40 +109,36 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
     reloadCorpus();
   }, [reloadCorpus]);
 
+  // Close context menu on outside click
+  useEffect(() => {
+    const handleOutsideClick = () => setOpenMenuSlug(null);
+    window.addEventListener("click", handleOutsideClick);
+    return () => window.removeEventListener("click", handleOutsideClick);
+  }, []);
+
   const handleDelete = (choice: TextChoice) => {
-    if (isProtected(choice.slug)) {
-      alert("The Voyages of Ohthere is the permanent reference example text and cannot be removed.");
+    if (isProtectedSlug(choice.slug)) {
+      alert("This canonical text is part of the core corpus and cannot be deleted.");
       return;
     }
 
-    const confirmed = window.confirm(
-      `Remove "${choice.title}" from your local corpus? (You can restore default texts at any time.)`
-    );
-    if (!confirmed) return;
-
-    try {
-      if (choice.isLocalOnly) {
-        // Remove custom text from localStorage
-        localStorage.removeItem(`glossy-editor-snapshot-v2-${choice.slug}`);
-        localStorage.removeItem(`glossy_draft_${choice.slug}`);
-      } else {
-        // Record default text as locally hidden
-        const rawDeleted = localStorage.getItem("glossy_deleted_slugs");
-        const currentDeleted = rawDeleted ? safeJsonParse<string[]>(rawDeleted) || [] : [];
-        if (!currentDeleted.includes(choice.slug)) {
-          currentDeleted.push(choice.slug);
-          localStorage.setItem("glossy_deleted_slugs", JSON.stringify(currentDeleted));
-        }
-        localStorage.removeItem(`glossy-editor-snapshot-v2-${choice.slug}`);
-        localStorage.removeItem(`glossy_draft_${choice.slug}`);
-        setHiddenDefaultCount(currentDeleted.length);
-      }
-
-      // Immediately update React state with zero page reload
-      setChoices((prev) => prev.filter((item) => item.slug !== choice.slug));
-    } catch {
-      alert("Error while removing text.");
+    if (choice.isLocalOnly) {
+      const confirmed = window.confirm(
+        `Delete local draft "${choice.title}"? This cannot be undone.`
+      );
+      if (!confirmed) return;
+      deleteLocalDraft(choice.slug);
+    } else {
+      const confirmed = window.confirm(
+        `Hide "${choice.title}" on this device? (You can restore default texts at any time.)`
+      );
+      if (!confirmed) return;
+      hideBuiltInText(choice.slug);
+      deleteLocalDraft(choice.slug);
+      setHiddenDefaultCount((prev) => prev + 1);
     }
+
+    setChoices((prev) => prev.filter((item) => item.slug !== choice.slug));
   };
 
   const handleRevertDraft = (choice: TextChoice) => {
@@ -158,20 +147,15 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
     );
     if (!confirmed) return;
 
-    try {
-      localStorage.removeItem(`glossy_draft_${choice.slug}`);
-      localStorage.removeItem(`glossy-editor-snapshot-v2-${choice.slug}`);
-      setChoices((prev) =>
-        prev.map((c) => (c.slug === choice.slug ? { ...c, hasLocalDraft: false } : c))
-      );
-    } catch {
-      alert("Error while reverting edits.");
-    }
+    deleteLocalDraft(choice.slug);
+    setChoices((prev) =>
+      prev.map((c) => (c.slug === choice.slug ? { ...c, hasLocalDraft: false } : c))
+    );
   };
 
   const handleRestoreDefaults = () => {
     try {
-      localStorage.removeItem("glossy_deleted_slugs");
+      restoreAllHiddenTexts();
       setHiddenDefaultCount(0);
       reloadCorpus();
     } catch {
@@ -189,18 +173,17 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
         const content = event.target?.result as string;
         if (!content) return;
 
-        let doc: TextDocument | null = null;
+        let parsedDoc: TextDocument | null = null;
         if (file.name.endsWith(".json")) {
-          doc = safeJsonParse<TextDocument>(content);
+          parsedDoc = safeJsonParse<TextDocument>(content);
         } else {
-          // Plain text line-by-line format
           const lines = content.split(/\r?\n/).filter((l) => l.trim().length > 0);
           const rawSlug = file.name
             .replace(/\.[^/.]+$/, "")
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, "-")
             .replace(/^-+|-+$/g, "");
-          doc = {
+          parsedDoc = {
             title: file.name.replace(/\.[^/.]+$/, ""),
             slug: rawSlug,
             textId: rawSlug,
@@ -222,23 +205,27 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
           };
         }
 
-        if (!doc || !doc.title || !doc.sentences) {
+        if (!parsedDoc || !parsedDoc.title || !parsedDoc.sentences) {
           alert("Invalid file format. Please upload a valid Glossy JSON document or plain text file.");
           return;
         }
 
-        const slug =
-          doc.slug ||
-          doc.textId ||
-          file.name
-            .replace(/\.[^/.]+$/, "")
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/^-+|-+$/g, "");
+        const res = createLocalDocument({
+          title: parsedDoc.title,
+          slug: parsedDoc.slug || parsedDoc.textId,
+          author: parsedDoc.author,
+          source: parsedDoc.source || "Local Upload",
+          sentences: parsedDoc.sentences,
+          texSource: parsedDoc.texSource,
+          overwrite: true,
+        });
 
-        doc.slug = slug;
-        localStorage.setItem(`glossy_draft_${slug}`, JSON.stringify(doc));
-        alert(`Successfully uploaded "${doc.title}" to your corpus!`);
+        if (!res.ok) {
+          alert(`Upload failed: ${res.error}`);
+          return;
+        }
+
+        alert(`Added "${parsedDoc.title}" to this browser's local drafts. (To publish, sign in via Tina Admin.)`);
         reloadCorpus();
       } catch {
         alert("Failed to parse uploaded file.");
@@ -255,439 +242,485 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
       c.title.toLowerCase().includes(q) ||
       (c.author && c.author.toLowerCase().includes(q)) ||
       (c.source && c.source.toLowerCase().includes(q)) ||
+      (c.witness && c.witness.toLowerCase().includes(q)) ||
       c.slug.toLowerCase().includes(q)
     );
   });
 
   return (
-    <>
-      {/* Corpus Toolbar: Search, Ingest Link, Upload JSON, and Restore Defaults */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "0.75rem",
-          marginBottom: "1.5rem",
-          padding: "0.75rem 1rem",
-          background: "var(--surface)",
-          border: "1px solid var(--rule)",
-          borderRadius: "0.5rem",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flex: "1 1 14rem" }}>
-          <Search style={{ width: "1rem", height: "1rem", color: "var(--muted-ink)" }} />
-          <input
-            type="text"
-            placeholder="Search corpus texts..."
-            value={filterQuery}
-            onChange={(e) => setFilterQuery(e.target.value)}
-            style={{
-              width: "100%",
-              border: "none",
-              background: "transparent",
-              outline: "none",
-              fontSize: "0.88rem",
-              color: "var(--ink)",
-            }}
-          />
-        </div>
+    <div id="corpus-directory" className="corpus-directory-container" style={{ marginTop: "3.5rem" }}>
+      {/* Section Header */}
+      <div style={{ marginBottom: "1.25rem" }}>
+        <h2
+          style={{
+            fontFamily: "'Charis SIL', Georgia, serif",
+            fontSize: "1.35rem",
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "var(--ink)",
+            margin: "0 0 1.25rem",
+          }}
+        >
+          Old English Corpus &amp; Editions
+        </h2>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap" }}>
-          {hiddenDefaultCount > 0 && (
+        {/* Search & Actions Bar */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "0.75rem",
+          }}
+        >
+          <div style={{ position: "relative", minWidth: "16rem", flex: 1, maxWidth: "24rem" }}>
+            <Search
+              style={{
+                position: "absolute",
+                left: "0.75rem",
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: "0.95rem",
+                height: "0.95rem",
+                color: "var(--muted-ink)",
+              }}
+            />
+            <input
+              type="text"
+              placeholder="Search corpus texts..."
+              value={filterQuery}
+              onChange={(e) => setFilterQuery(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "0.5rem 0.75rem 0.5rem 2.1rem",
+                borderRadius: "0.35rem",
+                border: "1px solid var(--rule)",
+                background: "var(--surface)",
+                fontSize: "0.875rem",
+                color: "var(--ink)",
+                outline: "none",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
+              }}
+            />
+          </div>
+
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
+            {hiddenDefaultCount > 0 && (
+              <button
+                type="button"
+                onClick={handleRestoreDefaults}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.35rem",
+                  padding: "0.5rem 0.75rem",
+                  borderRadius: "0.35rem",
+                  border: "1px solid var(--rule)",
+                  background: "#fbf7ee",
+                  color: "var(--ink)",
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+                title="Restore hidden canonical texts"
+              >
+                <RotateCcw style={{ width: "0.8rem", height: "0.8rem" }} /> Restore Hidden ({hiddenDefaultCount})
+              </button>
+            )}
+
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileUpload}
+              accept=".json,.txt"
+              style={{ display: "none" }}
+            />
+
             <button
               type="button"
-              onClick={handleRestoreDefaults}
+              onClick={() => fileInputRef.current?.click()}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: "0.35rem",
-                padding: "0.4rem 0.75rem",
-                fontSize: "0.8rem",
+                gap: "0.4rem",
+                padding: "0.5rem 0.85rem",
+                borderRadius: "0.35rem",
+                border: "1px solid var(--rule)",
+                background: "#ffffff",
+                color: "var(--ink)",
+                fontSize: "0.82rem",
                 fontWeight: 600,
-                color: "#1e3a8a",
-                background: "#dbeafe",
-                border: "1px solid #bfdbfe",
-                borderRadius: "0.3rem",
                 cursor: "pointer",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
               }}
-              title="Restore hidden canonical corpus texts"
+              title="Upload a JSON or plain text file into your local browser workspace"
             >
-              <RotateCcw style={{ width: "0.8rem", height: "0.8rem" }} />
-              Restore {hiddenDefaultCount} Default Text{hiddenDefaultCount > 1 ? "s" : ""}
+              <Upload style={{ width: "0.85rem", height: "0.85rem" }} /> Upload JSON / File
             </button>
-          )}
 
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".json,.txt"
-            style={{ display: "none" }}
-            onChange={handleFileUpload}
-          />
-
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.35rem",
-              padding: "0.4rem 0.75rem",
-              fontSize: "0.8rem",
-              fontWeight: 600,
-              color: "var(--ink)",
-              background: "#fbf7ee",
-              border: "1px solid var(--rule)",
-              borderRadius: "0.3rem",
-              cursor: "pointer",
-            }}
-            title="Upload a local JSON text or plain text file into your workspace"
-          >
-            <Upload style={{ width: "0.8rem", height: "0.8rem" }} />
-            Upload JSON / File
-          </button>
-
-          <Link
-            href="/edit/new"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.35rem",
-              padding: "0.4rem 0.75rem",
-              fontSize: "0.8rem",
-              fontWeight: 600,
-              color: "#ffffff",
-              background: "var(--accent)",
-              border: "1px solid var(--accent)",
-              borderRadius: "0.3rem",
-              textDecoration: "none",
-            }}
-          >
-            <Plus style={{ width: "0.8rem", height: "0.8rem" }} />
-            Ingest New Text
-          </Link>
+            <Link
+              href="/edit/new"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                padding: "0.5rem 0.95rem",
+                borderRadius: "0.35rem",
+                background: "var(--accent)",
+                color: "#ffffff",
+                fontSize: "0.82rem",
+                fontWeight: 600,
+                textDecoration: "none",
+                boxShadow: "0 1px 3px rgba(123, 63, 42, 0.2)",
+              }}
+            >
+              <Plus style={{ width: "0.85rem", height: "0.85rem" }} /> + Ingest New Text
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* Grid Container for Cards */}
+      {/* Grid of Texts */}
       <div
-        className="workspace-choice-list"
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 20rem), 1fr))",
-          justifyContent: "center",
-          width: "100%",
-          maxWidth: "100%",
-          boxSizing: "border-box",
+          gridTemplateColumns: "repeat(auto-fill, minmax(21rem, 1fr))",
           gap: "1.25rem",
         }}
       >
         {filteredChoices.map((choice) => {
-          const protectedText = isProtected(choice.slug);
-          const displayAuthor =
-            choice.author ||
-            (protectedText ? "King Alfred's Court / Tyler Lemon" : "Anonymous");
-          const displaySource =
-            choice.source ||
-            (protectedText
-              ? "London, British Library, Cotton MS Tiberius B. i"
-              : "Historical Manuscript Witness");
+          const isMenuOpen = openMenuSlug === choice.slug;
+          const isItemProtected = isProtectedSlug(choice.slug);
+          const meta = getBuiltInMetadata(choice.slug);
+          const displayAuthor = choice.author || meta?.author || "Anonymous";
+          const displayWitness = choice.witness || meta?.witness || choice.source || "";
 
           return (
-            <article
+            <div
+              key={choice.slug}
               className="workspace-choice-card"
-              key={`${choice.kind}-${choice.slug}`}
               style={{
+                background: "#ffffff",
+                border: "1px solid var(--rule)",
+                borderRadius: "0.5rem",
+                padding: "1.25rem",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-                width: "100%",
-                maxWidth: "100%",
-                minWidth: 0,
-                boxSizing: "border-box",
-                padding: "1.25rem",
-                borderRadius: "0.5rem",
-                border: "1px solid var(--rule)",
-                background: "var(--surface)",
-                boxShadow: "0 0.25rem 1.5rem rgba(64, 47, 29, 0.04)",
-                transition: "all 0.15s ease",
+                minHeight: "13rem",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+                position: "relative",
               }}
             >
               <div>
-                {/* Header Row: Title & Badges */}
+                {/* Top row: Title and Badges */}
                 <div
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "flex-start",
-                    gap: "0.5rem",
+                    gap: "0.75rem",
                     marginBottom: "0.5rem",
                   }}
                 >
-                  <h2
+                  <h3
                     style={{
                       margin: 0,
-                      fontSize: "1.2rem",
+                      fontSize: "1.125rem",
                       fontFamily: "'Charis SIL', Georgia, serif",
-                      lineHeight: 1.3,
+                      fontWeight: 700,
+                      lineHeight: 1.25,
                       color: "var(--ink)",
-                      wordBreak: "break-word",
                     }}
                   >
                     {choice.title}
-                  </h2>
+                  </h3>
 
-                  <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap", justifyContent: "flex-end" }}>
-                    {protectedText && (
+                  {/* Badges on Top Right */}
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-end",
+                      gap: "0.25rem",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {isItemProtected && (
                       <span
                         style={{
+                          fontSize: "0.65rem",
+                          fontWeight: 600,
+                          border: "1px solid #86efac",
+                          background: "#f0fdf4",
+                          color: "#15803d",
+                          padding: "0.15rem 0.45rem",
+                          borderRadius: "0.25rem",
                           display: "inline-flex",
                           alignItems: "center",
-                          gap: "0.2rem",
-                          fontSize: "0.68rem",
-                          padding: "0.15rem 0.45rem",
-                          borderRadius: "0.25rem",
-                          background: "#ecfdf5",
-                          color: "#065f46",
-                          border: "1px solid #a7f3d0",
-                          fontWeight: 600,
-                          whiteSpace: "nowrap",
+                          gap: "0.25rem",
                         }}
-                        title="Permanent Canonical Reference Text"
                       >
-                        <Lock style={{ width: "0.65rem", height: "0.65rem" }} />
-                        Protected
+                        <Lock style={{ width: "0.65rem", height: "0.65rem" }} /> Protected
                       </span>
                     )}
-
-                    {choice.isLocalOnly ? (
+                    {choice.hasLocalDraft && (
                       <span
                         style={{
-                          fontSize: "0.68rem",
-                          padding: "0.15rem 0.45rem",
-                          borderRadius: "0.25rem",
-                          background: "#fef3c7",
-                          color: "#92400e",
-                          border: "1px solid #fde68a",
+                          fontSize: "0.65rem",
                           fontWeight: 600,
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        Local Only
-                      </span>
-                    ) : choice.hasLocalDraft ? (
-                      <span
-                        style={{
-                          fontSize: "0.68rem",
-                          padding: "0.15rem 0.45rem",
-                          borderRadius: "0.25rem",
+                          border: "1px solid #c7d2fe",
                           background: "#e0e7ff",
                           color: "#3730a3",
-                          border: "1px solid #c7d2fe",
-                          fontWeight: 600,
-                          whiteSpace: "nowrap",
+                          padding: "0.15rem 0.45rem",
+                          borderRadius: "0.25rem",
+                          display: "inline-flex",
+                          alignItems: "center",
                         }}
                       >
                         Edited (Draft)
                       </span>
-                    ) : null}
+                    )}
+                    {choice.isLocalOnly && !choice.hasLocalDraft && (
+                      <span
+                        style={{
+                          fontSize: "0.65rem",
+                          fontWeight: 600,
+                          border: "1px solid #fed7aa",
+                          background: "#fff7ed",
+                          color: "#9a3412",
+                          padding: "0.15rem 0.45rem",
+                          borderRadius: "0.25rem",
+                        }}
+                      >
+                        Local Draft
+                      </span>
+                    )}
                   </div>
                 </div>
 
-                {/* Attribution & Manuscript Provenance */}
-                <div
+                {/* Author line in bold */}
+                <p
                   style={{
-                    marginBottom: "0.75rem",
-                    fontSize: "0.82rem",
-                    color: "var(--muted-ink)",
-                    lineHeight: 1.5,
+                    margin: "0.5rem 0 0.25rem",
+                    fontSize: "0.85rem",
+                    fontWeight: 700,
+                    color: "var(--ink)",
+                    lineHeight: 1.35,
                   }}
                 >
-                  <p style={{ margin: "0 0 0.25rem", fontWeight: 600, color: "var(--ink)" }}>
-                    {displayAuthor}
+                  {displayAuthor}
+                </p>
+
+                {/* Witness / Manuscript line */}
+                {displayWitness && (
+                  <p
+                    style={{
+                      margin: "0 0 1rem",
+                      fontSize: "0.78rem",
+                      color: "var(--muted-ink)",
+                      lineHeight: 1.35,
+                    }}
+                  >
+                    {displayWitness}
                   </p>
-                  <p style={{ margin: 0, fontSize: "0.78rem" }}>{displaySource}</p>
-                </div>
+                )}
               </div>
 
               {/* Action Buttons Row */}
               <div
                 style={{
-                  paddingTop: "0.85rem",
-                  borderTop: "1px solid var(--rule)",
                   display: "flex",
-                  justifyContent: "space-between",
                   alignItems: "center",
-                  flexWrap: "wrap",
-                  gap: "0.5rem",
+                  gap: "0.4rem",
+                  marginTop: "auto",
+                  paddingTop: "0.75rem",
+                  position: "relative",
                 }}
               >
-                <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
-                  <Link
-                    href={`/read/${choice.slug}`}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.35rem",
-                      fontWeight: 600,
-                      fontSize: "0.85rem",
-                      padding: "0.35rem 0.75rem",
-                      borderRadius: "0.3rem",
-                      background: "var(--accent)",
-                      color: "#ffffff",
-                      textDecoration: "none",
-                    }}
-                  >
-                    <BookOpen style={{ width: "0.85rem", height: "0.85rem" }} /> Read
-                  </Link>
+                <Link
+                  href={`/read/${choice.slug}`}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.35rem",
+                    padding: "0.38rem 0.75rem",
+                    borderRadius: "0.25rem",
+                    background: "var(--accent)",
+                    color: "#ffffff",
+                    fontSize: "0.82rem",
+                    fontWeight: 600,
+                    textDecoration: "none",
+                  }}
+                >
+                  <BookOpen style={{ width: "0.82rem", height: "0.82rem" }} /> Read
+                </Link>
 
-                  <Link
-                    href={`/edit/${choice.slug}`}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.35rem",
-                      fontWeight: 600,
-                      fontSize: "0.85rem",
-                      padding: "0.35rem 0.75rem",
-                      borderRadius: "0.3rem",
-                      background: "#fbf7ee",
-                      border: "1px solid var(--rule)",
-                      color: "var(--ink)",
-                      textDecoration: "none",
-                    }}
-                  >
-                    <Edit3 style={{ width: "0.85rem", height: "0.85rem" }} /> Edit
-                  </Link>
+                <Link
+                  href={`/edit/${choice.slug}`}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.35rem",
+                    padding: "0.38rem 0.75rem",
+                    borderRadius: "0.25rem",
+                    background: "#ffffff",
+                    border: "1px solid var(--rule)",
+                    color: "var(--ink)",
+                    fontSize: "0.82rem",
+                    fontWeight: 600,
+                    textDecoration: "none",
+                  }}
+                >
+                  <Edit3 style={{ width: "0.82rem", height: "0.82rem" }} /> Edit
+                </Link>
 
+                <button
+                  type="button"
+                  onClick={() => setActiveModalChoice(choice)}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.35rem",
+                    padding: "0.38rem 0.75rem",
+                    borderRadius: "0.25rem",
+                    background: "#ffffff",
+                    border: "1px solid var(--rule)",
+                    color: "var(--ink)",
+                    fontSize: "0.82rem",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
+                  <Info style={{ width: "0.82rem", height: "0.82rem" }} /> Cite
+                </button>
+
+                {/* 3-dot context menu */}
+                <div style={{ marginLeft: "auto", position: "relative" }}>
                   <button
                     type="button"
-                    onClick={() => setActiveModalChoice(choice)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenMenuSlug(isMenuOpen ? null : choice.slug);
+                    }}
                     style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.25rem",
-                      background: "transparent",
-                      border: "none",
+                      background: "#ffffff",
+                      border: "1px solid var(--rule)",
+                      borderRadius: "0.25rem",
                       color: "var(--muted-ink)",
                       cursor: "pointer",
-                      fontSize: "0.78rem",
-                      padding: "0.35rem",
+                      padding: "0.38rem 0.45rem",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
-                    title="View manuscript provenance & copy citation"
+                    title="More actions"
                   >
-                    <Info style={{ width: "0.85rem", height: "0.85rem" }} /> Cite
+                    <MoreVertical style={{ width: "0.85rem", height: "0.85rem" }} />
                   </button>
-                </div>
 
-                {/* More Options Menu (Revert edits or Delete) */}
-                {(!protectedText || choice.hasLocalDraft) && (
-                  <div style={{ position: "relative" }}>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setOpenMenuSlug(openMenuSlug === choice.slug ? null : choice.slug)
-                      }
+                  {isMenuOpen && (
+                    <div
+                      onClick={(e) => e.stopPropagation()}
                       style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        background: "transparent",
+                        position: "absolute",
+                        right: 0,
+                        bottom: "100%",
+                        marginBottom: "0.35rem",
+                        background: "#ffffff",
                         border: "1px solid var(--rule)",
-                        color: "var(--muted-ink)",
-                        cursor: "pointer",
-                        padding: "0.35rem 0.45rem",
-                        borderRadius: "0.25rem",
+                        borderRadius: "0.35rem",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+                        zIndex: 100,
+                        minWidth: "11rem",
+                        padding: "0.25rem 0",
                       }}
-                      title="More options"
-                      aria-label="More options"
                     >
-                      <MoreVertical style={{ width: "0.85rem", height: "0.85rem" }} />
-                    </button>
-
-                    {openMenuSlug === choice.slug && (
-                      <div
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveModalChoice(choice);
+                          setOpenMenuSlug(null);
+                        }}
                         style={{
-                          position: "absolute",
-                          right: 0,
-                          bottom: "100%",
-                          marginBottom: "0.35rem",
-                          background: "var(--surface)",
-                          border: "1px solid var(--rule)",
-                          borderRadius: "0.35rem",
-                          boxShadow: "0 4px 14px rgba(0, 0, 0, 0.12)",
-                          zIndex: 20,
-                          minWidth: "10rem",
-                          padding: "0.3rem",
+                          width: "100%",
+                          textAlign: "left",
+                          padding: "0.45rem 0.75rem",
+                          fontSize: "0.8rem",
+                          background: "transparent",
+                          border: "none",
+                          color: "var(--ink)",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.4rem",
                         }}
                       >
-                        {choice.hasLocalDraft && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setOpenMenuSlug(null);
-                              handleRevertDraft(choice);
-                            }}
-                            style={{
-                              width: "100%",
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: "0.4rem",
-                              padding: "0.4rem 0.6rem",
-                              fontSize: "0.78rem",
-                              fontWeight: 500,
-                              color: "#3730a3",
-                              background: "transparent",
-                              border: "none",
-                              borderRadius: "0.25rem",
-                              cursor: "pointer",
-                              textAlign: "left",
-                            }}
-                          >
-                            <RotateCcw style={{ width: "0.75rem", height: "0.75rem" }} />
-                            Revert to original
-                          </button>
-                        )}
+                        <Info style={{ width: "0.8rem", height: "0.8rem" }} /> Scholarly Citation
+                      </button>
 
-                        {!protectedText && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setOpenMenuSlug(null);
-                              handleDelete(choice);
-                            }}
-                            style={{
-                              width: "100%",
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: "0.4rem",
-                              padding: "0.4rem 0.6rem",
-                              fontSize: "0.78rem",
-                              fontWeight: 500,
-                              color: "#b91c1c",
-                              background: "transparent",
-                              border: "none",
-                              borderRadius: "0.25rem",
-                              cursor: "pointer",
-                              textAlign: "left",
-                            }}
-                          >
-                            <Trash2 style={{ width: "0.75rem", height: "0.75rem" }} />
-                            Remove from corpus
-                          </button>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
+                      {choice.hasLocalDraft && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleRevertDraft(choice);
+                            setOpenMenuSlug(null);
+                          }}
+                          style={{
+                            width: "100%",
+                            textAlign: "left",
+                            padding: "0.45rem 0.75rem",
+                            fontSize: "0.8rem",
+                            background: "transparent",
+                            border: "none",
+                            color: "var(--accent)",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.4rem",
+                          }}
+                        >
+                          <RotateCcw style={{ width: "0.8rem", height: "0.8rem" }} /> Discard Local Draft
+                        </button>
+                      )}
+
+                      {!isItemProtected && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleDelete(choice);
+                            setOpenMenuSlug(null);
+                          }}
+                          style={{
+                            width: "100%",
+                            textAlign: "left",
+                            padding: "0.45rem 0.75rem",
+                            fontSize: "0.8rem",
+                            background: "transparent",
+                            border: "none",
+                            color: "#b91c1c",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.4rem",
+                          }}
+                        >
+                          <Trash2 style={{ width: "0.8rem", height: "0.8rem" }} />{" "}
+                          {choice.isLocalOnly ? "Delete Local Draft" : "Hide on This Device"}
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
-            </article>
+            </div>
           );
         })}
       </div>
 
+      {/* Attribution Modal */}
       {activeModalChoice && (
         <AttributionModal
           isOpen={Boolean(activeModalChoice)}
@@ -695,9 +728,9 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
           slug={activeModalChoice.slug}
           title={activeModalChoice.title}
           author={activeModalChoice.author}
-          source={activeModalChoice.source}
+          source={activeModalChoice.witness || activeModalChoice.source}
         />
       )}
-    </>
+    </div>
   );
 }

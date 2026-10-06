@@ -1,4 +1,5 @@
 import { spawnSync } from "child_process";
+import { existsSync } from "node:fs";
 import net from "net";
 
 function printStep(step) {
@@ -23,7 +24,7 @@ function isPortBusy(port) {
     setTimeout(() => {
       s1.destroy();
       done(false);
-    }, 250);
+    }, 300);
   });
 }
 
@@ -45,17 +46,31 @@ async function main() {
   }
 
   printStep("1. Building TinaCMS schemas & admin bundle");
+  const hasGeneratedFiles =
+    existsSync("tina/__generated__/client.ts") && existsSync("tina/__generated__/types.ts");
   const busy =
     (await isPortBusy(9000)) ||
     (await isPortBusy(9123)) ||
     (await isPortBusy(4001));
-  if (busy) {
+
+  if (busy && hasGeneratedFiles) {
     console.log("ℹ️ Tina dev server port (9000/9123/4001) is currently busy; reusing existing compiled schema.");
   } else {
-    runCommand("npx", ["tinacms", "build", "--skip-cloud-checks"]);
+    const res = spawnSync("npx", ["tinacms", "build", "--skip-cloud-checks", "--datalayer-port", "9123"], {
+      stdio: "inherit",
+      shell: true,
+    });
+    if (res.status !== 0) {
+      if (hasGeneratedFiles) {
+        console.warn("⚠️ tinacms build encountered port/env conflict; reusing pre-generated Tina client and types.");
+      } else {
+        console.error(`\n🚨 [BUILD FAILURE] Command failed: npx tinacms build`);
+        process.exit(res.status ?? 1);
+      }
+    }
   }
 
-  printStep("3. Building Next.js production output");
+  printStep("2. Building Next.js production output");
   runCommand("npx", ["next", "build"]);
 
   console.log("\n✨ Production build completed successfully!\n");

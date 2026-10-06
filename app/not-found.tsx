@@ -6,7 +6,7 @@ import { SiteNav } from "../components/site-nav";
 import { SiteFooter } from "../components/site-footer";
 import { GlossEditor } from "../components/gloss-editor";
 import { ReadingPage } from "../components/reading-page";
-import { safeJsonParse } from "../lib/safe-json";
+import { getLocalDraft } from "../lib/local-drafts";
 import type { TextDocument } from "../lib/types";
 
 export default function NotFound() {
@@ -29,13 +29,10 @@ export default function NotFound() {
     }
 
     if (slug) {
-      const raw = window.localStorage.getItem(`glossy_draft_${slug}`);
-      if (raw) {
-        const parsed = safeJsonParse<TextDocument>(raw);
-        if (parsed && Array.isArray(parsed.sentences) && parsed.sentences.length > 0) {
-          setDraftDoc(parsed);
-          setRouteMode(mode);
-        }
+      const envelope = getLocalDraft(slug);
+      if (envelope?.doc && Array.isArray(envelope.doc.sentences) && envelope.doc.sentences.length > 0) {
+        setDraftDoc(envelope.doc);
+        setRouteMode(mode);
       }
     }
   }, []);

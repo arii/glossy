@@ -20,9 +20,9 @@ export default function AdminRedirectPage() {
         fontFamily: "var(--font-system)",
       }}
     >
-      <h1 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>TinaCMS Admin Dashboard</h1>
+      <h1 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>TinaCMS Draft Commit &amp; Admin Suite</h1>
       <p style={{ color: "var(--muted-ink)", marginBottom: "1.5rem" }}>
-        Redirecting to TinaCMS editorial suite...
+        Redirecting to TinaCMS draft commit and admin interface...
       </p>
       <a
         href="/admin/index.html"
@@ -36,7 +36,7 @@ export default function AdminRedirectPage() {
           fontWeight: 600,
         }}
       >
-        Open Tina CMS Admin
+        Open TinaCMS Admin
       </a>
     </main>
   );

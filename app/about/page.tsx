@@ -105,7 +105,7 @@ export default function AboutPage() {
                   <strong style={{ fontSize: "0.95rem" }}>Live Editor Studio</strong>
                 </div>
                 <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
-                  Client-side token editor with lemma normalization, quick tag pickers, offline autosave to browser localStorage, and custom text ingestion.
+                  Client-side token editor with lemma normalization, quick tag pickers, local browser draft storage, and custom text ingestion.
                 </p>
               </div>
 
@@ -238,7 +238,7 @@ export default function AboutPage() {
             <ul style={{ paddingLeft: "1.25rem", margin: 0, lineHeight: 1.7, color: "var(--ink)" }}>
               <li><strong>Framework</strong>: Next.js with React 19 and TypeScript, configured for static HTML export (<code>output: &apos;export&apos;</code>).</li>
               <li><strong>Hosting</strong>: Cloudflare Pages edge static delivery.</li>
-              <li><strong>Content Management</strong>: TinaCMS git-backed editorial interface.</li>
+              <li><strong>Content Management</strong>: TinaCMS Git-backed draft commit integration.</li>
               <li><strong>Privacy</strong>: Zero tracking cookies, zero analytics scripts, and client-side offline storage.</li>
             </ul>
           </section>

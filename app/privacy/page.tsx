@@ -117,12 +117,13 @@ export default function PrivacyPage() {
               To ensure that your work is not lost when refreshing the page or working offline, Glossy stores draft documents and editing snapshots in your web browser&apos;s <code>localStorage</code> under keys prefixed with:
             </p>
             <ul style={{ paddingLeft: "1.25rem", margin: "0 0 1rem", lineHeight: 1.7, color: "var(--ink)" }}>
-              <li><code>glossy_draft_[slug]</code>: Holds your custom text or working draft data in standard JSON format.</li>
-              <li><code>glossy-editor-snapshot-v2-[slug]</code>: Holds editor undo history, cursor position, and active tab state.</li>
-              <li><code>glossy_last_slug</code>: Remembers the last document you viewed to preserve your reading context.</li>
+              <li><code>glossy:draft:v1:[slug]</code> (and compatibility key <code>glossy_draft_[slug]</code>): Holds local draft envelopes and working text documents in canonical schema format.</li>
+              <li><code>glossy_pending_drafts</code>: Manages the local manifest of drafts pending repository commit.</li>
+              <li><code>glossy_deleted_slugs</code>: Remembers built-in corpus texts you have chosen to hide locally on this device.</li>
+              <li><code>glossy_active_slug</code>: Remembers the last document you viewed or edited.</li>
             </ul>
             <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: 0 }}>
-              This data resides exclusively on your local device. It is never transmitted across the network unless you explicitly download a file (JSON or LaTeX) or authenticate to commit changes to GitHub via the TinaCMS admin interface.
+              This data resides exclusively in your browser storage on this device. Drafts are not published to the repository until you explicitly commit them through an authenticated TinaCMS session, or download them manually via JSON/LaTeX export.
             </p>
           </section>
 

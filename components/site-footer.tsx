@@ -1,26 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export function SiteFooter() {
-  const [currentUrl, setCurrentUrl] = useState<string>("");
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setCurrentUrl(window.location.href);
-    }
-  }, []);
-
-  const feedbackUrl = (() => {
-    const base = "https://github.com/arii/glossy/issues/new?template=feedback.yml";
-    const title = encodeURIComponent("Feedback / Report");
-    const context = encodeURIComponent(currentUrl || "https://glossed.pages.dev");
-    const body = encodeURIComponent(
-      `### Context\n- Page URL: ${currentUrl || "N/A"}\n- Timestamp: ${new Date().toISOString()}\n\n### Feedback Details\n`
-    );
-    return `${base}&title=${title}&context_url=${context}&body=${body}`;
-  })();
+  const feedbackUrl = "https://github.com/arii/glossy/issues/new?template=feedback.yml&title=Feedback%20%2F%20Report";
 
   return (
     <footer

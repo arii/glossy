@@ -111,9 +111,9 @@ try {
     "Live preview",
     "Source form",
     "Explanation",
-    "Viewer",
-    "Paste one or more gb4e",
-    "Save to TinaCMS",
+    "Export JSON",
+    "Export LaTeX",
+    "Save draft",
   ]);
   if (editorOhthere.includes("Tina Admin ↗")) {
     throw new Error("The editor header should not contain a redundant Tina Admin button.");

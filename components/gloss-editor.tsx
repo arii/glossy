@@ -5,10 +5,9 @@ import { useRouter } from "next/navigation";
 import { SiteNav } from "./site-nav";
 import { SiteFooter } from "./site-footer";
 import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
-import { parseGb4e } from "../lib/gb4e";
 import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
-import { tokenizeAndLemmatizeSentence } from "../lib/lemmatizer";
 import { safeJsonStringify } from "../lib/safe-json";
+import { isProtectedSlug } from "../lib/corpus-registry";
 import type {
   TextDocument,
   ReadingSentence,
@@ -21,7 +20,6 @@ import {
   BookOpen,
   RefreshCw,
   Save,
-  Upload,
   Trash2,
 } from "lucide-react";
 
@@ -234,8 +232,6 @@ export function GlossEditor({
   const [autosaveStatus, setAutosaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [latexImportSource, setLatexImportSource] = useState("");
-  const [importPreview, setImportPreview] = useState<EditorSentence[] | null>(null);
 
   // Backup snapshot for "Discard Changes" comparison
   const [savedSnapshot, setSavedSnapshot] = useState<string>(() =>
@@ -354,61 +350,6 @@ export function GlossEditor({
 
     return () => window.clearTimeout(timer);
   }, [documentState, isLoading, storageKey]);
-
-  // Ingestion parsing function for multi-sentence gb4e input or plain Old English text
-  const parseMultiSentenceGb4e = (rawInput: string): EditorSentence[] => {
-    const isLatex =
-      rawInput.includes("\\begin{exe}") || rawInput.includes("\\gll") || rawInput.includes("\\ex");
-    if (isLatex) {
-      const parsed = parseGb4e(rawInput);
-      return parsed.sentences.map((sent, sIdx) => ({
-        id: sent.id || `imported-sentence-${Date.now()}-${sIdx + 1}`,
-        freeTranslation: sent.translation,
-        footnotes: sent.footnotes,
-        tokens: sent.words.map((w, tIdx) => wordToEditorToken(w, sIdx, tIdx)),
-      }));
-    }
-
-    const lines = rawInput.split("\n").map((l) => l.trim()).filter(Boolean);
-    return lines.map((line, sIdx) => {
-      const words = tokenizeAndLemmatizeSentence(line, sIdx + 1);
-      return {
-        id: `imported-sentence-${Date.now()}-${sIdx + 1}`,
-        freeTranslation: `[Translation for appended sentence ${sIdx + 1}]`,
-        tokens: words.map((w, tIdx) => ({
-          id: `imported-token-${Date.now()}-${tIdx + 1}`,
-          sourceForm: w.sourceForm,
-          sourceGloss: w.sourceGloss,
-          literalTexGloss: w.literalTexGloss,
-          lemma: w.lemma,
-          pos: w.pos,
-          explanation: w.explanation,
-          inflections: w.inflections ? { ...w.inflections } : {},
-          morphemes: (w.morphemes || []).map((m) => ({
-            id: m.id,
-            form: m.morpheme || "",
-            gloss: m.gloss || "",
-          })),
-          ipa: w.ipa || "",
-          wiktionaryUrl: w.wiktionaryUrl,
-        })),
-      };
-    });
-  };
-
-  const applyImportedSentences = () => {
-    if (!importPreview || importPreview.length === 0) return;
-    setDocumentState((prev) => ({
-      ...prev,
-      sentences: [...prev.sentences, ...importPreview],
-    }));
-    setSaveStatus({
-      kind: "success",
-      message: `Successfully appended ${importPreview.length} sentences to the active document feed!`,
-    });
-    setLatexImportSource("");
-    setImportPreview(null);
-  };
 
   // Find active sentence and active token
   const activeSentence = documentState?.sentences.find((s) => s.id === activeSentenceId);
@@ -751,10 +692,9 @@ export function GlossEditor({
     URL.revokeObjectURL(url);
   };
 
-  const isProtectedText =
-    initialDocument.slug === "ohthere-wulfstan" ||
-    initialDocument.slug === "ohthere" ||
-    initialDocument.fileName === "ohthere";
+  const isProtectedText = isProtectedSlug(
+    initialDocument.slug || initialDocument.textId || initialDocument.fileName || ""
+  );
 
   const handleDeleteText = async () => {
     if (isProtectedText) return;
@@ -1019,10 +959,10 @@ export function GlossEditor({
               disabled={isSaving}
               className="workspace-button"
               style={{ background: "var(--accent)", color: "#fff", borderColor: "var(--accent)", padding: "0.45rem 1.1rem" }}
-              title="Save working draft to browser storage and sync to TinaCMS / Git"
+              title="Save working draft to browser storage (and sync to Git if connected)"
             >
               <Save style={{ width: "0.9rem", height: "0.9rem", marginRight: "0.35rem" }} />
-              {isSaving ? "Saving..." : "Save to TinaCMS"}
+              {isSaving ? "Saving..." : "Save draft"}
             </button>
           </div>
         </header>
@@ -1549,98 +1489,6 @@ export function GlossEditor({
             )}
           </aside>
         </div>
-
-        {/* Batch Importer (Document-level section below workspace grid) */}
-        <section
-          id="batch-import-section"
-          className="workspace-panel"
-          style={{
-            marginTop: "2.5rem",
-            borderTop: "2px solid var(--rule)",
-            paddingTop: "1.5rem",
-          }}
-        >
-          <div className="editor-feed-header">
-            <div>
-              <p className="workspace-eyebrow" style={{ margin: 0, fontSize: "0.72rem" }}>Batch Import Pipeline</p>
-              <h2 style={{ fontSize: "1.1rem", margin: "0.2rem 0 0" }}>
-                Paste one or more gb4e LaTeX Blocks or Plain Old English Text
-              </h2>
-            </div>
-
-            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-              <label className="workspace-link" style={{ cursor: "pointer", fontSize: "0.8rem", padding: "0.4rem 0.75rem" }}>
-                <Upload style={{ width: "0.85rem", height: "0.85rem", marginRight: "0.35rem" }} />
-                <span>Upload .tex file</span>
-                <input
-                  type="file"
-                  accept=".tex,.txt"
-                  className="hidden"
-                  style={{ display: "none" }}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                      const text = event.target?.result as string;
-                      if (text) {
-                        setLatexImportSource(text);
-                        setImportPreview(parseMultiSentenceGb4e(text));
-                      }
-                    };
-                    reader.readAsText(file);
-                  }}
-                />
-              </label>
-            </div>
-          </div>
-
-          <div style={{ display: "grid", gap: "0.75rem" }}>
-            <textarea
-              rows={4}
-              value={latexImportSource}
-              onChange={(e) => {
-                setLatexImportSource(e.target.value);
-                setImportPreview(null);
-              }}
-              placeholder="\ex{\gll Ōhthere sǣ-d-e his hlāford-e ...\\&#10;Ohthere say-\textsc{pst}-\textsc{ind.3sg} his lord-\textsc{dat.sg} ...\\&#10;\glt `Ohthere said to his lord...'}"
-              style={{ width: "100%", padding: "0.75rem", fontFamily: "monospace", fontSize: "0.85rem", border: "1px solid var(--rule)", borderRadius: "0.35rem", background: "var(--surface)", color: "var(--ink)" }}
-            />
-
-            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-              <button
-                type="button"
-                disabled={!latexImportSource.trim()}
-                onClick={() => setImportPreview(parseMultiSentenceGb4e(latexImportSource))}
-                className="workspace-button"
-                style={{ padding: "0.4rem 0.8rem", fontSize: "0.82rem" }}
-              >
-                Preview Import
-              </button>
-
-              {importPreview && (
-                <button
-                  type="button"
-                  onClick={applyImportedSentences}
-                  className="workspace-button"
-                  style={{ background: "var(--accent)", color: "#fff", borderColor: "var(--accent)", padding: "0.4rem 0.8rem", fontSize: "0.82rem" }}
-                >
-                  Apply {importPreview.length} sentences to document
-                </button>
-              )}
-            </div>
-
-            {importPreview && (
-              <div style={{ padding: "0.6rem 0.85rem", background: "rgba(123, 63, 42, 0.08)", border: "1px solid var(--rule)", borderRadius: "0.35rem", fontSize: "0.85rem", color: "var(--ink)" }}>
-                <span>
-                  Found <strong>{importPreview.length}</strong> sentences with{" "}
-                  <strong>{importPreview.reduce((acc, curr) => acc + curr.tokens.length, 0)}</strong>{" "}
-                  total tokens ready to append.
-                </span>
-              </div>
-            )}
-          </div>
-        </section>
       </main>
       <SiteFooter />
     </>
