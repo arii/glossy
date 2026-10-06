@@ -80,13 +80,13 @@ const DEFAULT_HOME_CONTENT = {
 };
 
 const INITIAL_HOME_PAGE_DATA = {
-  page: (homeContentData as typeof DEFAULT_HOME_CONTENT) || DEFAULT_HOME_CONTENT,
+  homePage: (homeContentData as typeof DEFAULT_HOME_CONTENT) || DEFAULT_HOME_CONTENT,
 };
 const HOME_PAGE_VARS = { relativePath: "home.json" };
 
 const HOME_PAGE_QUERY = `
   query HomePageQuery($relativePath: String!) {
-    page(relativePath: $relativePath) {
+    homePage(relativePath: $relativePath) {
       title
       eyebrow
       heading
@@ -110,7 +110,7 @@ export default function Home() {
     data: INITIAL_HOME_PAGE_DATA,
   });
 
-  const page = pageData?.page || (homeContentData as typeof DEFAULT_HOME_CONTENT) || DEFAULT_HOME_CONTENT;
+  const page = pageData?.homePage || (homeContentData as typeof DEFAULT_HOME_CONTENT) || DEFAULT_HOME_CONTENT;
 
   const [previewMode, setPreviewMode] = useState<"reader" | "editor">("reader");
   const [selectedTokenIdx, setSelectedTokenIdx] = useState<number>(3); // default to 'hlāforde'
@@ -143,6 +143,21 @@ export default function Home() {
         <section className="hero-two-column">
           {/* Left Column: Headline & Primary CTAs */}
           <div>
+            {page.eyebrow ? (
+              <p
+                data-tina-field={tinaField(page, "eyebrow")}
+                style={{
+                  fontSize: "0.82rem",
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  fontWeight: 700,
+                  color: "var(--accent)",
+                  margin: "0 0 0.5rem",
+                }}
+              >
+                {page.eyebrow}
+              </p>
+            ) : null}
             <h1
               data-tina-field={tinaField(page, "heading")}
               style={{

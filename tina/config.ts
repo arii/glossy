@@ -144,19 +144,19 @@ export default defineConfig({
         ],
       },
       {
-        name: "page",
-        label: "Pages",
+        name: "homePage",
+        label: "Page: Home",
         path: "content/pages",
         format: "json",
+        match: {
+          include: "home",
+        },
         ui: {
-          router: ({ document }) => {
-            if (document._sys.filename === "home") return "/";
-            if (document._sys.filename === "ingest") return "/edit/new";
-            if (document._sys.filename === "privacy") return "/privacy";
-            if (document._sys.filename === "about") return "/about";
-            if (document._sys.filename === "attribution") return "/about";
-            return `/${document._sys.filename}`;
+          allowedActions: {
+            create: false,
+            delete: false,
           },
+          router: () => "/",
         },
         fields: [
           { type: "string", name: "pageId", label: "Page Identifier", required: true, isTitle: true },
@@ -182,6 +182,75 @@ export default defineConfig({
               { type: "string", name: "href", label: "Link URL" },
             ],
           },
+        ],
+      },
+      {
+        name: "aboutPage",
+        label: "Page: About",
+        path: "content/pages",
+        format: "json",
+        match: {
+          include: "about",
+        },
+        ui: {
+          allowedActions: {
+            create: false,
+            delete: false,
+          },
+          router: () => "/about",
+        },
+        fields: [
+          { type: "string", name: "pageId", label: "Page Identifier", required: true, isTitle: true },
+          { type: "string", name: "title", label: "Page Title" },
+          { type: "string", name: "eyebrow", label: "Eyebrow Text" },
+          { type: "string", name: "heading", label: "Main Heading" },
+          { type: "string", name: "description", label: "Description", ui: { component: "textarea" } },
+          { type: "string", name: "missionTitle", label: "Mission Title" },
+          { type: "string", name: "missionText", label: "Mission Text (Paragraph 1)", ui: { component: "textarea" } },
+          { type: "string", name: "missionText2", label: "Mission Text (Paragraph 2)", ui: { component: "textarea" } },
+          { type: "string", name: "capabilitiesTitle", label: "Capabilities Title" },
+          {
+            type: "object",
+            name: "capabilities",
+            label: "Capabilities",
+            list: true,
+            ui: {
+              itemProps: (item) => ({ label: item?.title || "Capability" }),
+            },
+            fields: [
+              { type: "string", name: "title", label: "Title" },
+              { type: "string", name: "description", label: "Description", ui: { component: "textarea" } },
+            ],
+          },
+          { type: "string", name: "maintainersTitle", label: "Maintainers Title" },
+          { type: "string", name: "maintainerAriel", label: "Maintainer: Ariel Anders", ui: { component: "textarea" } },
+          { type: "string", name: "maintainerTyler", label: "Maintainer: Tyler Lemon", ui: { component: "textarea" } },
+          { type: "string", name: "maintainerLicense", label: "Maintainer: License", ui: { component: "textarea" } },
+          { type: "string", name: "architectureTitle", label: "Architecture Title" },
+          { type: "string", name: "architectureItems", label: "Architecture Items", list: true },
+        ],
+      },
+      {
+        name: "privacyPage",
+        label: "Page: Privacy",
+        path: "content/pages",
+        format: "json",
+        match: {
+          include: "privacy",
+        },
+        ui: {
+          allowedActions: {
+            create: false,
+            delete: false,
+          },
+          router: () => "/privacy",
+        },
+        fields: [
+          { type: "string", name: "pageId", label: "Page Identifier", required: true, isTitle: true },
+          { type: "string", name: "title", label: "Page Title" },
+          { type: "string", name: "eyebrow", label: "Eyebrow Text" },
+          { type: "string", name: "heading", label: "Main Heading" },
+          { type: "string", name: "description", label: "Description", ui: { component: "textarea" } },
           { type: "string", name: "privacySummaryTitle", label: "Privacy Summary Title" },
           { type: "string", name: "privacySummaryText", label: "Privacy Summary Text", ui: { component: "textarea" } },
           {
@@ -199,34 +268,38 @@ export default defineConfig({
               { type: "string", name: "bullets", label: "Bullet Points", list: true },
             ],
           },
-          { type: "string", name: "missionTitle", label: "About: Mission Title" },
-          { type: "string", name: "missionText", label: "About: Mission Text Paragraph 1", ui: { component: "textarea" } },
-          { type: "string", name: "missionText2", label: "About: Mission Text Paragraph 2", ui: { component: "textarea" } },
-          { type: "string", name: "capabilitiesTitle", label: "About: Capabilities Title" },
-          {
-            type: "object",
-            name: "capabilities",
-            label: "About: Capabilities",
-            list: true,
-            ui: {
-              itemProps: (item) => ({ label: item?.title || "Capability" }),
-            },
-            fields: [
-              { type: "string", name: "title", label: "Title" },
-              { type: "string", name: "description", label: "Description", ui: { component: "textarea" } },
-            ],
+        ],
+      },
+      {
+        name: "attributionPage",
+        label: "Page: Attribution",
+        path: "content/pages",
+        format: "json",
+        match: {
+          include: "attribution",
+        },
+        ui: {
+          allowedActions: {
+            create: false,
+            delete: false,
           },
-          { type: "string", name: "maintainersTitle", label: "About: Maintainers Title" },
-          { type: "string", name: "maintainerAriel", label: "About: Maintainer Ariel", ui: { component: "textarea" } },
-          { type: "string", name: "maintainerTyler", label: "About: Maintainer Tyler", ui: { component: "textarea" } },
-          { type: "string", name: "maintainerLicense", label: "About: License", ui: { component: "textarea" } },
-          { type: "string", name: "architectureTitle", label: "About: Architecture Title" },
-          { type: "string", name: "architectureItems", label: "About: Architecture Items", list: true },
-          { type: "string", name: "platformCreator", label: "Attribution: Platform Creator" },
-          { type: "string", name: "defaultEditor", label: "Attribution: Default Editor" },
-          { type: "string", name: "editionDate", label: "Attribution: Edition Date" },
-          { type: "string", name: "booktitle", label: "Attribution: Book Title / Corpus Name" },
-          { type: "string", name: "linguisticPackage", label: "Attribution: Linguistic Package" },
+          router: () => "/attribution",
+        },
+        fields: [
+          { type: "string", name: "pageId", label: "Page Identifier", required: true, isTitle: true },
+          { type: "string", name: "title", label: "Page Title" },
+          { type: "string", name: "eyebrow", label: "Eyebrow Text" },
+          { type: "string", name: "heading", label: "Main Heading" },
+          { type: "string", name: "description", label: "Description", ui: { component: "textarea" } },
+          { type: "string", name: "platformCreator", label: "Platform Creator" },
+          { type: "string", name: "platformCreatorUrl", label: "Platform Creator URL" },
+          { type: "string", name: "defaultEditor", label: "Default Editor" },
+          { type: "string", name: "defaultEditorUrl", label: "Default Editor URL" },
+          { type: "string", name: "editionDate", label: "Edition Date" },
+          { type: "string", name: "booktitle", label: "Book Title / Corpus Name" },
+          { type: "string", name: "linguisticPackage", label: "Linguistic Package" },
+          { type: "string", name: "standardsTitle", label: "Standards Title" },
+          { type: "string", name: "standardsStatement", label: "Standards Statement", ui: { component: "textarea" } },
           { type: "string", name: "bibtexTemplate", label: "BibTeX Citation Template", ui: { component: "textarea" } },
           { type: "string", name: "unifiedTemplate", label: "Unified / LSA Citation Template", ui: { component: "textarea" } },
           { type: "string", name: "apaTemplate", label: "APA Citation Template", ui: { component: "textarea" } },
@@ -234,11 +307,41 @@ export default defineConfig({
         ],
       },
       {
+        name: "ingestPage",
+        label: "Page: Ingest New Text",
+        path: "content/pages",
+        format: "json",
+        match: {
+          include: "ingest",
+        },
+        ui: {
+          allowedActions: {
+            create: false,
+            delete: false,
+          },
+          router: () => "/edit/new",
+        },
+        fields: [
+          { type: "string", name: "pageId", label: "Page Identifier", required: true, isTitle: true },
+          { type: "string", name: "title", label: "Page Title" },
+          { type: "string", name: "eyebrow", label: "Eyebrow Text" },
+          { type: "string", name: "heading", label: "Main Heading" },
+          { type: "string", name: "description", label: "Description", ui: { component: "textarea" } },
+        ],
+      },
+      {
         name: "docs",
         label: "Documentation & FAQ",
         path: "content/docs",
         format: "json",
+        match: {
+          include: "architecture-faq",
+        },
         ui: {
+          allowedActions: {
+            create: false,
+            delete: false,
+          },
           router: () => "/docs",
         },
         fields: [

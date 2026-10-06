@@ -148,6 +148,17 @@ try {
     "MIT License",
   ]);
   await check("/privacy", ["Privacy Policy", "We do not track you"]);
+  await check("/attribution", [
+    "Scholarly Attribution &amp; Citation",
+    "Digital Platform Creator",
+    "Linguistic Subject Matter Expert",
+    "Historical Date &amp; Dialect",
+    "Primary Manuscript Shelfmark",
+    "Collaborative Development &amp; Standards",
+    "Cite This Edition",
+    "Ariel Anders",
+    "Tyler Lemon",
+  ]);
 
   // 404 Not Found Page check
   const notFoundRes = await fetch(`${baseUrl}/non-existent-page`);

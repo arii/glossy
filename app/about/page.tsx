@@ -9,7 +9,7 @@ import { useTina, tinaField } from "tinacms/dist/react";
 
 const ABOUT_PAGE_QUERY = `
   query AboutPageQuery($relativePath: String!) {
-    page(relativePath: $relativePath) {
+    aboutPage(relativePath: $relativePath) {
       title
       eyebrow
       heading
@@ -32,7 +32,7 @@ const ABOUT_PAGE_QUERY = `
   }
 `;
 
-const INITIAL_ABOUT_DATA = { page: aboutData };
+const INITIAL_ABOUT_DATA = { aboutPage: aboutData };
 const ABOUT_PAGE_VARS = { relativePath: "about.json" };
 
 export default function AboutPage() {
@@ -42,7 +42,7 @@ export default function AboutPage() {
     data: INITIAL_ABOUT_DATA,
   });
 
-  const page = pageData?.page || aboutData;
+  const page = pageData?.aboutPage || aboutData;
   const capabilities = (page.capabilities as Array<{
     title: string;
     description: string;

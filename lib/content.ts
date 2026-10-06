@@ -4,6 +4,9 @@ import type {
   TextDocument,
   HomePageContent,
   IngestPageContent,
+  AboutPageContent,
+  PrivacyPageContent,
+  AttributionPageContent,
   DocsPageContent,
 } from "./types";
 
@@ -60,6 +63,42 @@ export function loadIngestPageContent(): IngestPageContent {
   } catch (err) {
     console.error("Failed reading content/pages/ingest.json", err);
     return defaults;
+  }
+}
+
+export function loadAboutPageContent(): AboutPageContent {
+  const filePath = path.join(process.cwd(), "content", "pages", "about.json");
+  if (!fs.existsSync(filePath)) return {};
+  try {
+    const raw = fs.readFileSync(filePath, "utf8");
+    return JSON.parse(raw) as AboutPageContent;
+  } catch (err) {
+    console.error("Failed reading content/pages/about.json", err);
+    return {};
+  }
+}
+
+export function loadPrivacyPageContent(): PrivacyPageContent {
+  const filePath = path.join(process.cwd(), "content", "pages", "privacy.json");
+  if (!fs.existsSync(filePath)) return {};
+  try {
+    const raw = fs.readFileSync(filePath, "utf8");
+    return JSON.parse(raw) as PrivacyPageContent;
+  } catch (err) {
+    console.error("Failed reading content/pages/privacy.json", err);
+    return {};
+  }
+}
+
+export function loadAttributionPageContent(): AttributionPageContent {
+  const filePath = path.join(process.cwd(), "content", "pages", "attribution.json");
+  if (!fs.existsSync(filePath)) return {};
+  try {
+    const raw = fs.readFileSync(filePath, "utf8");
+    return JSON.parse(raw) as AttributionPageContent;
+  } catch (err) {
+    console.error("Failed reading content/pages/attribution.json", err);
+    return {};
   }
 }
 

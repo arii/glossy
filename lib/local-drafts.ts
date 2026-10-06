@@ -203,7 +203,7 @@ export function writeDraft(slug: string, doc: TextDocument): StorageResult<Store
   }
 }
 
-export function deleteDraft(slug: string): boolean {
+export function deleteLocalDraft(slug: string): boolean {
   const storage = getStorage();
   if (!storage || !slug) return false;
 
@@ -229,8 +229,6 @@ export function deleteDraft(slug: string): boolean {
     return false;
   }
 }
-
-export const deleteLocalDraft = deleteDraft;
 
 export function listLocalDrafts(): StoredDraft[] {
   const storage = getStorage();

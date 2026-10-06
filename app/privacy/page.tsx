@@ -8,7 +8,7 @@ import { useTina, tinaField } from "tinacms/dist/react";
 
 const PRIVACY_PAGE_QUERY = `
   query PrivacyPageQuery($relativePath: String!) {
-    page(relativePath: $relativePath) {
+    privacyPage(relativePath: $relativePath) {
       title
       eyebrow
       heading
@@ -25,7 +25,7 @@ const PRIVACY_PAGE_QUERY = `
   }
 `;
 
-const INITIAL_PRIVACY_DATA = { page: privacyData };
+const INITIAL_PRIVACY_DATA = { privacyPage: privacyData };
 const PRIVACY_PAGE_VARS = { relativePath: "privacy.json" };
 
 export default function PrivacyPage() {
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
     data: INITIAL_PRIVACY_DATA,
   });
 
-  const page = pageData?.page || privacyData;
+  const page = pageData?.privacyPage || privacyData;
   const sections = (page.privacySections as Array<{
     num?: string;
     title: string;

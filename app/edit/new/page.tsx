@@ -23,7 +23,7 @@ import {
 
 const INGEST_PAGE_QUERY = `
   query IngestPageQuery($relativePath: String!) {
-    page(relativePath: $relativePath) {
+    ingestPage(relativePath: $relativePath) {
       title
       eyebrow
       heading
@@ -139,7 +139,7 @@ const PRESETS: Preset[] = [
   },
 ];
 
-const INITIAL_INGEST_DATA = { page: ingestPageData };
+const INITIAL_INGEST_DATA = { ingestPage: ingestPageData };
 const INGEST_PAGE_VARS = { relativePath: "ingest.json" };
 
 export default function NewTextPage() {
@@ -151,7 +151,7 @@ export default function NewTextPage() {
     data: INITIAL_INGEST_DATA,
   });
 
-  const page = pageData?.page || ingestPageData;
+  const page = pageData?.ingestPage || ingestPageData;
 
   // Top-level workflow tab: "custom" vs "upload" vs "preset"
   const [workflowTab, setWorkflowTab] = useState<"custom" | "upload" | "preset">("custom");

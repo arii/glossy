@@ -89,6 +89,17 @@ export function SiteFooter() {
           </Link>
           <span style={{ color: "var(--rule)" }}>·</span>
           <Link
+            href="/attribution"
+            style={{
+              color: "var(--ink)",
+              textDecoration: "none",
+              transition: "color 0.15s ease",
+            }}
+          >
+            Attribution
+          </Link>
+          <span style={{ color: "var(--rule)" }}>·</span>
+          <Link
             href="/privacy"
             style={{
               color: "var(--ink)",

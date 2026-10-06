@@ -181,6 +181,69 @@ export type IngestPageContent = {
   description?: string;
 };
 
+export type AboutPageCapability = {
+  title: string;
+  description: string;
+};
+
+export type AboutPageContent = {
+  pageId?: string;
+  title?: string;
+  eyebrow?: string;
+  heading?: string;
+  description?: string;
+  missionTitle?: string;
+  missionText?: string;
+  missionText2?: string;
+  capabilitiesTitle?: string;
+  capabilities?: AboutPageCapability[];
+  maintainersTitle?: string;
+  maintainerAriel?: string;
+  maintainerTyler?: string;
+  maintainerLicense?: string;
+  architectureTitle?: string;
+  architectureItems?: string[];
+};
+
+export type PrivacySectionItem = {
+  num?: string;
+  title: string;
+  content?: string;
+  bullets?: string[];
+};
+
+export type PrivacyPageContent = {
+  pageId?: string;
+  title?: string;
+  eyebrow?: string;
+  heading?: string;
+  description?: string;
+  privacySummaryTitle?: string;
+  privacySummaryText?: string;
+  privacySections?: PrivacySectionItem[];
+};
+
+export type AttributionPageContent = {
+  pageId?: string;
+  title?: string;
+  eyebrow?: string;
+  heading?: string;
+  description?: string;
+  platformCreator?: string;
+  platformCreatorUrl?: string;
+  defaultEditor?: string;
+  defaultEditorUrl?: string;
+  editionDate?: string;
+  booktitle?: string;
+  linguisticPackage?: string;
+  standardsTitle?: string;
+  standardsStatement?: string;
+  bibtexTemplate?: string;
+  unifiedTemplate?: string;
+  apaTemplate?: string;
+  chicagoTemplate?: string;
+};
+
 export type DocsDomain = "all" | "linguistics" | "architecture";
 
 export type GlossingAbbreviationItem = {

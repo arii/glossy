@@ -2,80 +2,147 @@
 
 import { useState } from "react";
 import { Copy, Check, X, BookOpen, ShieldCheck, Scroll, Calendar, User } from "lucide-react";
+import { tinaField } from "tinacms/dist/react";
 import { getBuiltInMetadata } from "../lib/corpus-registry";
+import initialAttributionData from "../content/pages/attribution.json";
 
-type CitationFormat = "bibtex" | "unified" | "apa" | "chicago";
+export type CitationFormat = "bibtex" | "unified" | "apa" | "chicago";
 
-interface AttributionModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+export type AttributionConfig = {
+  pageId?: string;
+  title?: string;
+  eyebrow?: string;
+  heading?: string;
+  description?: string;
+  platformCreator?: string;
+  platformCreatorUrl?: string;
+  defaultEditor?: string;
+  defaultEditorUrl?: string;
+  editionDate?: string;
+  booktitle?: string;
+  linguisticPackage?: string;
+  standardsTitle?: string;
+  standardsStatement?: string;
+  bibtexTemplate?: string;
+  unifiedTemplate?: string;
+  apaTemplate?: string;
+  chicagoTemplate?: string;
+  [key: string]: unknown;
+};
+
+export function interpolateCitation(template: string, vars: Record<string, string>): string {
+  if (!template) return "";
+  return template.replace(/\{\{([a-zA-Z0-9_]+)\}\}/g, (_, key) => vars[key] ?? "");
+}
+
+export interface AttributionCardProps {
   slug?: string;
   title?: string;
   author?: string;
   source?: string;
+  config?: AttributionConfig;
+  onDone?: () => void;
+  showCloseButton?: boolean;
 }
 
-export function AttributionModal({
-  isOpen,
-  onClose,
+export function AttributionCard({
   slug = "ohthere",
   title = "The voyages of Ohthere and Wulfstan",
   author = "Tyler Lemon",
   source = "London, British Library, Additional MS 47967, ff. 5v–6r",
-}: AttributionModalProps) {
+  config = initialAttributionData,
+  onDone,
+  showCloseButton = false,
+}: AttributionCardProps) {
   const [copiedFormat, setCopiedFormat] = useState<CitationFormat | null>(null);
   const [activeTab, setActiveTab] = useState<CitationFormat>("bibtex");
-
-  if (!isOpen) return null;
 
   const builtIn = getBuiltInMetadata(slug);
   const isBuiltIn = Boolean(builtIn);
 
+  const activePlatformCreator = config.platformCreator || "Ariel Anders";
+  const activePlatformCreatorUrl = config.platformCreatorUrl || "https://boomtick.blog/services";
+  const activeDefaultEditor = builtIn?.editor || config.defaultEditor || "Tyler Lemon";
+  const activeDefaultEditorUrl = config.defaultEditorUrl || "https://sites.google.com/view/tyler-lemon";
+  const activeEditionDate = config.editionDate || "2026";
+  const activeBooktitle = config.booktitle || "Glossy: Digital Scholarly Editions of Old English Interlinear Texts";
+  const activeLinguisticPackage = config.linguisticPackage || "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing";
+  const activeStandardsTitle = config.standardsTitle || "Collaborative Development & Standards";
+  const activeStandardsStatement = config.standardsStatement ||
+    `Developed through the collaborative partnership of ${activePlatformCreator} (software architecture, digital platform, and automated verification suite) and ${activeDefaultEditor} (linguistic subject matter expertise, Old English glossing, and grammatical accuracy). Interlinear formatting conforms to the international Leipzig Glossing Rules with LaTeX gb4e alignment, canonical lemmatization referenced to Bosworth-Toller and Wiktionary, and visual gloss layout inspired by Peter S. Baker's Old English Aerobics (oldenglishaerobics.net).`;
+
   const provenanceData = builtIn
     ? {
-        platformCreator: "Ariel Anders",
-        subjectMatterExpert: builtIn.editor || "Tyler Lemon",
-        modernEditor: `Ariel Anders and ${builtIn.editor || "Tyler Lemon"}`,
-        editionDate: "2026",
+        platformCreator: activePlatformCreator,
+        subjectMatterExpert: activeDefaultEditor,
+        modernEditor: `${activePlatformCreator} and ${activeDefaultEditor}`,
+        editionDate: activeEditionDate,
         historicalAuthor: builtIn.author,
-        historicalPeriod: builtIn.origDate || "Old English",
+        historicalPeriod: builtIn.origDate || "c. 890–900 AD",
         manuscriptShelfmark: builtIn.witness || builtIn.source,
         secondaryManuscript: "Tollemache / Cotton transcripts",
-        linguisticPackage: "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing",
-        bibtexKey: `AndersLemon2026${slug.replace(/[^a-zA-Z0-9]/g, "")}`,
+        linguisticPackage: activeLinguisticPackage,
+        bibtexKey: `AndersLemon${activeEditionDate}${slug.replace(/[^a-zA-Z0-9]/g, "")}`,
       }
     : {
-        platformCreator: "Ariel Anders",
+        platformCreator: activePlatformCreator,
         subjectMatterExpert: author || "Custom Editor",
         modernEditor: author || "Local Editor",
-        editionDate: "2026",
+        editionDate: activeEditionDate,
         historicalAuthor: author || "Unknown",
         historicalPeriod: "Old English",
         manuscriptShelfmark: source || "Local Draft / Custom Source",
         secondaryManuscript: "N/A",
-        linguisticPackage: "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing",
-        bibtexKey: `GlossyDraft2026${(slug || "text").replace(/[^a-zA-Z0-9]/g, "")}`,
+        linguisticPackage: activeLinguisticPackage,
+        bibtexKey: `GlossyDraft${activeEditionDate}${(slug || "text").replace(/[^a-zA-Z0-9]/g, "")}`,
       };
 
+  const creatorSurname = activePlatformCreator.split(" ").slice(-1)[0];
+  const creatorGiven = activePlatformCreator.split(" ").slice(0, -1).join(" ") || activePlatformCreator;
+  const editorSurname = activeDefaultEditor.split(" ").slice(-1)[0];
+  const editorGiven = activeDefaultEditor.split(" ").slice(0, -1).join(" ") || activeDefaultEditor;
+
   const bibtexAuthor = isBuiltIn
-    ? "Anders, Ariel and Lemon, Tyler"
-    : author
-    ? author
-    : "Anders, Ariel";
+    ? `${creatorSurname}, ${creatorGiven} and ${editorSurname}, ${editorGiven}`
+    : author || activePlatformCreator;
+
+  const unifiedAuthor = isBuiltIn
+    ? `${creatorSurname}, ${creatorGiven} & ${activeDefaultEditor}`
+    : author || "Anonymous";
+
+  const apaAuthor = isBuiltIn
+    ? `${creatorSurname}, ${creatorGiven.charAt(0)}., & ${editorSurname}, ${editorGiven.charAt(0)}.`
+    : author || "Anonymous";
+
+  const chicagoAuthor = isBuiltIn
+    ? `${creatorSurname}, ${creatorGiven}, and ${activeDefaultEditor}`
+    : author || "Anonymous";
+
+  const baseVars = {
+    bibtexKey: provenanceData.bibtexKey,
+    title,
+    booktitle: activeBooktitle,
+    year: activeEditionDate,
+    platformCreator: activePlatformCreator,
+    defaultEditor: activeDefaultEditor,
+    editorNote: isBuiltIn
+      ? `linguistic glossing and annotation by ${activeDefaultEditor}`
+      : `source: ${provenanceData.manuscriptShelfmark}`,
+    url: `https://glossed.pages.dev/read/${slug}`,
+    source: provenanceData.manuscriptShelfmark,
+    linguisticPackage: activeLinguisticPackage,
+  };
+
+  const bibtexTemplate = config.bibtexTemplate || initialAttributionData.bibtexTemplate;
+  const unifiedTemplate = config.unifiedTemplate || initialAttributionData.unifiedTemplate;
+  const apaTemplate = config.apaTemplate || initialAttributionData.apaTemplate;
+  const chicagoTemplate = config.chicagoTemplate || initialAttributionData.chicagoTemplate;
 
   const citations: Record<CitationFormat, string> = {
-    bibtex: `@incollection{${provenanceData.bibtexKey},
-  author       = {${bibtexAuthor}},
-  title        = {{${title}}},
-  booktitle    = {Glossy: Digital Scholarly Editions of Old English Interlinear Texts},
-  year         = {2026},
-  ${builtIn?.origDate ? `origdate     = {${builtIn.origDate}},` : ""}
-  note         = {Digital platform created by Ariel Anders; ${isBuiltIn ? "linguistic glossing and annotation by Tyler Lemon" : `source: ${provenanceData.manuscriptShelfmark}`}. Interlinear glossing following Leipzig standards with gb4e LaTeX formatting},
-  url          = {https://glossed.pages.dev/read/${slug}}
-}`,
-    unified: `${isBuiltIn ? "Anders, Ariel & Tyler Lemon" : (author || "Anonymous")}. 2026. ${title}. In Glossy: Digital Scholarly Editions of Old English Interlinear Texts. Digital platform created by Ariel Anders. Source/Witness: ${provenanceData.manuscriptShelfmark}. Leipzig interlinear glossing in gb4e.`,
-    apa: `${isBuiltIn ? "Anders, A., & Lemon, T." : (author || "Anonymous")}. (2026). ${title} [Digital interlinear edition]. Glossy Old English Corpus. Platform created by Ariel Anders. ${provenanceData.manuscriptShelfmark}.`,
-    chicago: `${isBuiltIn ? "Anders, Ariel, and Tyler Lemon, eds." : `${author || "Anonymous"}, ed.`} 2026. "${title}." Glossy: Digital Scholarly Editions of Old English Interlinear Texts. Platform created by Ariel Anders. Source: ${provenanceData.manuscriptShelfmark}.`,
+    bibtex: interpolateCitation(bibtexTemplate, { ...baseVars, author: bibtexAuthor }),
+    unified: interpolateCitation(unifiedTemplate, { ...baseVars, author: unifiedAuthor }),
+    apa: interpolateCitation(apaTemplate, { ...baseVars, author: apaAuthor }),
+    chicago: interpolateCitation(chicagoTemplate, { ...baseVars, author: chicagoAuthor }),
   };
 
   const copyToClipboard = async (format: CitationFormat) => {
@@ -87,6 +154,277 @@ export function AttributionModal({
       // Fallback
     }
   };
+
+  return (
+    <div
+      style={{
+        background: "var(--surface)",
+        border: "1px solid var(--rule)",
+        borderRadius: "0.6rem",
+        maxWidth: "44rem",
+        width: "100%",
+        maxHeight: "90vh",
+        overflowY: "auto",
+        boxShadow: "0 1.5rem 3rem rgba(0, 0, 0, 0.25)",
+        padding: "1.75rem",
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", paddingBottom: "1rem", borderBottom: "1px solid var(--rule)", marginBottom: "1.25rem" }}>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <Scroll style={{ width: "1.2rem", height: "1.2rem", color: "var(--accent)" }} />
+            <h2
+              id="attribution-title"
+              data-tina-field={tinaField(config, "heading")}
+              style={{ margin: 0, fontSize: "1.3rem", fontFamily: "'Charis SIL', Georgia, serif", color: "var(--ink)" }}
+            >
+              {config.heading || "Scholarly Attribution & Citation"}
+            </h2>
+          </div>
+          <p
+            data-tina-field={tinaField(config, "description")}
+            style={{ margin: "0.25rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)" }}
+          >
+            {config.description ? (
+              <span>{config.description} (<em>{title}</em>)</span>
+            ) : (
+              <span>Provenance, manuscript shelfmarks, and academic citation formats for <em>{title}</em></span>
+            )}
+          </p>
+        </div>
+        {showCloseButton && onDone && (
+          <button
+            type="button"
+            onClick={onDone}
+            aria-label="Close attribution dialog"
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "var(--muted-ink)",
+              cursor: "pointer",
+              padding: "0.25rem",
+              borderRadius: "0.25rem",
+            }}
+          >
+            <X style={{ width: "1.25rem", height: "1.25rem" }} />
+          </button>
+        )}
+      </div>
+
+      {/* Provenance Metadata Grid (Tiles) */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.5rem", background: "#fbf7ee", padding: "1rem", borderRadius: "0.4rem", border: "1px solid #dfcfb8" }}>
+        {/* Tile 1: Digital Platform Creator */}
+        <div>
+          <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}>
+            <User style={{ width: "0.75rem", height: "0.75rem" }} /> Digital Platform Creator
+          </span>
+          <p
+            data-tina-field={tinaField(config, "platformCreator")}
+            style={{ margin: "0.2rem 0 0", fontSize: "0.88rem", fontWeight: 600, color: "var(--ink)" }}
+          >
+            {activePlatformCreatorUrl ? (
+              <a
+                href={activePlatformCreatorUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "inherit", textDecoration: "underline" }}
+              >
+                {activePlatformCreator}
+              </a>
+            ) : (
+              activePlatformCreator
+            )}
+          </p>
+        </div>
+
+        {/* Tile 2: Linguistic Subject Matter Expert */}
+        <div>
+          <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}>
+            <User style={{ width: "0.75rem", height: "0.75rem" }} /> Linguistic Subject Matter Expert
+          </span>
+          <p
+            data-tina-field={tinaField(config, "defaultEditor")}
+            style={{ margin: "0.2rem 0 0", fontSize: "0.88rem", fontWeight: 600, color: "var(--ink)" }}
+          >
+            {isBuiltIn ? (
+              activeDefaultEditorUrl ? (
+                <a
+                  href={activeDefaultEditorUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "inherit", textDecoration: "underline" }}
+                >
+                  {activeDefaultEditor}
+                </a>
+              ) : (
+                activeDefaultEditor
+              )
+            ) : (
+              author || "User Contribution"
+            )}
+          </p>
+        </div>
+
+        {/* Tile 3: Historical Date & Dialect */}
+        <div>
+          <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}>
+            <Calendar style={{ width: "0.75rem", height: "0.75rem" }} /> Historical Date &amp; Dialect
+          </span>
+          <p style={{ margin: "0.2rem 0 0", fontSize: "0.88rem", fontWeight: 600, color: "var(--ink)" }}>
+            {provenanceData.historicalPeriod}
+          </p>
+        </div>
+
+        {/* Tile 4: Primary Manuscript Shelfmark */}
+        <div>
+          <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}>
+            <BookOpen style={{ width: "0.75rem", height: "0.75rem" }} /> Primary Manuscript Shelfmark
+          </span>
+          <p style={{ margin: "0.2rem 0 0", fontSize: "0.85rem", color: "var(--ink)" }}>
+            {provenanceData.manuscriptShelfmark}
+          </p>
+        </div>
+
+        {/* Tile 5: Collaborative Development & Standards */}
+        <div style={{ gridColumn: "1 / -1" }}>
+          <span
+            data-tina-field={tinaField(config, "standardsTitle")}
+            style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}
+          >
+            <ShieldCheck style={{ width: "0.75rem", height: "0.75rem" }} /> {activeStandardsTitle}
+          </span>
+          <p
+            data-tina-field={tinaField(config, "standardsStatement")}
+            style={{ margin: "0.2rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)", lineHeight: 1.5 }}
+          >
+            {activeStandardsStatement}
+          </p>
+        </div>
+      </div>
+
+      {/* Tabbed Citation Formats */}
+      <div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+          <span style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 700, color: "var(--accent)" }}>
+            Cite This Edition
+          </span>
+          <div style={{ display: "flex", gap: "0.35rem" }}>
+            {(["bibtex", "unified", "apa", "chicago"] as const).map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setActiveTab(tab)}
+                style={{
+                  padding: "0.2rem 0.55rem",
+                  borderRadius: "0.25rem",
+                  fontSize: "0.72rem",
+                  fontWeight: activeTab === tab ? 700 : 500,
+                  background: activeTab === tab ? "var(--accent)" : "#fbf7ee",
+                  color: activeTab === tab ? "#ffffff" : "var(--ink)",
+                  border: "1px solid var(--rule)",
+                  cursor: "pointer",
+                  textTransform: "uppercase",
+                }}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ position: "relative", background: "#1c1917", color: "#fafaf9", borderRadius: "0.4rem", padding: "1rem 1.25rem", fontFamily: "monospace", fontSize: "0.82rem", border: "1px solid #332d29" }}>
+          <pre
+            data-tina-field={
+              activeTab === "bibtex" ? tinaField(config, "bibtexTemplate") :
+              activeTab === "unified" ? tinaField(config, "unifiedTemplate") :
+              activeTab === "apa" ? tinaField(config, "apaTemplate") :
+              tinaField(config, "chicagoTemplate")
+            }
+            style={{ margin: 0, whiteSpace: "pre-wrap", wordBreak: "break-word", lineHeight: 1.5 }}
+          >
+            {citations[activeTab]}
+          </pre>
+          <button
+            type="button"
+            onClick={() => copyToClipboard(activeTab)}
+            style={{
+              position: "absolute",
+              top: "0.75rem",
+              right: "0.75rem",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.3rem",
+              background: copiedFormat === activeTab ? "#15803d" : "#44403c",
+              color: "#ffffff",
+              border: "none",
+              borderRadius: "0.25rem",
+              padding: "0.35rem 0.65rem",
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "background 0.15s ease",
+            }}
+          >
+            {copiedFormat === activeTab ? (
+              <>
+                <Check style={{ width: "0.8rem", height: "0.8rem" }} /> Copied!
+              </>
+            ) : (
+              <>
+                <Copy style={{ width: "0.8rem", height: "0.8rem" }} /> Copy {activeTab.toUpperCase()}
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Footer info */}
+      {onDone && (
+        <div style={{ marginTop: "1.25rem", paddingTop: "0.75rem", borderTop: "1px solid var(--rule)", display: "flex", justifyContent: "flex-end" }}>
+          <button
+            type="button"
+            onClick={onDone}
+            style={{
+              padding: "0.45rem 1.1rem",
+              background: "var(--accent)",
+              color: "#ffffff",
+              border: "none",
+              borderRadius: "0.35rem",
+              fontSize: "0.85rem",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            Done
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export interface AttributionModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  slug?: string;
+  title?: string;
+  author?: string;
+  source?: string;
+  config?: AttributionConfig;
+}
+
+export function AttributionModal({
+  isOpen,
+  onClose,
+  slug = "ohthere",
+  title = "The voyages of Ohthere and Wulfstan",
+  author = "Tyler Lemon",
+  source = "London, British Library, Additional MS 47967, ff. 5v–6r",
+  config,
+}: AttributionModalProps) {
+  if (!isOpen) return null;
 
   return (
     <div
@@ -106,204 +444,15 @@ export function AttributionModal({
       }}
       onClick={onClose}
     >
-      <div
-        style={{
-          background: "var(--surface)",
-          border: "1px solid var(--rule)",
-          borderRadius: "0.6rem",
-          maxWidth: "44rem",
-          width: "100%",
-          maxHeight: "90vh",
-          overflowY: "auto",
-          boxShadow: "0 1.5rem 3rem rgba(0, 0, 0, 0.25)",
-          padding: "1.75rem",
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Modal Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", paddingBottom: "1rem", borderBottom: "1px solid var(--rule)", marginBottom: "1.25rem" }}>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <Scroll style={{ width: "1.2rem", height: "1.2rem", color: "var(--accent)" }} />
-              <h2 id="attribution-title" style={{ margin: 0, fontSize: "1.3rem", fontFamily: "'Charis SIL', Georgia, serif", color: "var(--ink)" }}>
-                Scholarly Attribution &amp; Citation
-              </h2>
-            </div>
-            <p style={{ margin: "0.25rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)" }}>
-              Provenance, manuscript shelfmarks, and academic citation formats for <em>{title}</em>
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close attribution dialog"
-            style={{
-              background: "transparent",
-              border: "none",
-              color: "var(--muted-ink)",
-              cursor: "pointer",
-              padding: "0.25rem",
-              borderRadius: "0.25rem",
-            }}
-          >
-            <X style={{ width: "1.25rem", height: "1.25rem" }} />
-          </button>
-        </div>
-
-        {/* Provenance Metadata Grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.5rem", background: "#fbf7ee", padding: "1rem", borderRadius: "0.4rem", border: "1px solid #dfcfb8" }}>
-          <div>
-            <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}>
-              <User style={{ width: "0.75rem", height: "0.75rem" }} /> Digital Platform Creator
-            </span>
-            <p style={{ margin: "0.2rem 0 0", fontSize: "0.88rem", fontWeight: 600, color: "var(--ink)" }}>
-              <a
-                href="https://boomtick.blog/services"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "inherit", textDecoration: "underline" }}
-              >
-                Ariel Anders
-              </a>
-            </p>
-          </div>
-
-          <div>
-            <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}>
-              <User style={{ width: "0.75rem", height: "0.75rem" }} /> Linguistic Subject Matter Expert
-            </span>
-            <p style={{ margin: "0.2rem 0 0", fontSize: "0.88rem", fontWeight: 600, color: "var(--ink)" }}>
-              {isBuiltIn ? (
-                <a
-                  href="https://sites.google.com/view/tyler-lemon"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: "inherit", textDecoration: "underline" }}
-                >
-                  Tyler Lemon
-                </a>
-              ) : (
-                author || "User Contribution"
-              )}
-            </p>
-          </div>
-
-          <div>
-            <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}>
-              <Calendar style={{ width: "0.75rem", height: "0.75rem" }} /> Historical Date &amp; Dialect
-            </span>
-            <p style={{ margin: "0.2rem 0 0", fontSize: "0.88rem", fontWeight: 600, color: "var(--ink)" }}>
-              {provenanceData.historicalPeriod}
-            </p>
-          </div>
-
-          <div>
-            <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}>
-              <BookOpen style={{ width: "0.75rem", height: "0.75rem" }} /> Primary Manuscript Shelfmark
-            </span>
-            <p style={{ margin: "0.2rem 0 0", fontSize: "0.85rem", color: "var(--ink)" }}>
-              {provenanceData.manuscriptShelfmark}
-            </p>
-          </div>
-
-          <div style={{ gridColumn: "1 / -1" }}>
-            <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}>
-              <ShieldCheck style={{ width: "0.75rem", height: "0.75rem" }} /> Collaborative Development &amp; Standards
-            </span>
-            <p style={{ margin: "0.2rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
-              Developed through the collaborative partnership of <strong>Ariel Anders</strong> (software architecture, digital platform, and automated verification suite) and <strong>Tyler Lemon</strong> (linguistic subject matter expertise, Old English glossing, and grammatical accuracy). Interlinear formatting conforms to the international <em>Leipzig Glossing Rules</em> with LaTeX <code>gb4e</code> alignment, canonical lemmatization referenced to <em>Bosworth-Toller</em> and <em>Wiktionary</em>, and visual gloss layout inspired by Peter S. Baker&apos;s <em>Old English Aerobics</em> (oldenglishaerobics.net).
-            </p>
-          </div>
-        </div>
-
-        {/* Tabbed Citation Formats */}
-        <div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-            <span style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 700, color: "var(--accent)" }}>
-              Cite This Edition
-            </span>
-            <div style={{ display: "flex", gap: "0.35rem" }}>
-              {(["bibtex", "unified", "apa", "chicago"] as const).map((tab) => (
-                <button
-                  key={tab}
-                  type="button"
-                  onClick={() => setActiveTab(tab)}
-                  style={{
-                    padding: "0.2rem 0.55rem",
-                    borderRadius: "0.25rem",
-                    fontSize: "0.72rem",
-                    fontWeight: activeTab === tab ? 700 : 500,
-                    background: activeTab === tab ? "var(--accent)" : "#fbf7ee",
-                    color: activeTab === tab ? "#ffffff" : "var(--ink)",
-                    border: "1px solid var(--rule)",
-                    cursor: "pointer",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ position: "relative", background: "#1c1917", color: "#fafaf9", borderRadius: "0.4rem", padding: "1rem 1.25rem", fontFamily: "monospace", fontSize: "0.82rem", border: "1px solid #332d29" }}>
-            <pre style={{ margin: 0, whiteSpace: "pre-wrap", wordBreak: "break-word", lineHeight: 1.5 }}>
-              {citations[activeTab]}
-            </pre>
-            <button
-              type="button"
-              onClick={() => copyToClipboard(activeTab)}
-              style={{
-                position: "absolute",
-                top: "0.75rem",
-                right: "0.75rem",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.3rem",
-                background: copiedFormat === activeTab ? "#15803d" : "#44403c",
-                color: "#ffffff",
-                border: "none",
-                borderRadius: "0.25rem",
-                padding: "0.35rem 0.65rem",
-                fontSize: "0.75rem",
-                fontWeight: 600,
-                cursor: "pointer",
-                transition: "background 0.15s ease",
-              }}
-            >
-              {copiedFormat === activeTab ? (
-                <>
-                  <Check style={{ width: "0.8rem", height: "0.8rem" }} /> Copied!
-                </>
-              ) : (
-                <>
-                  <Copy style={{ width: "0.8rem", height: "0.8rem" }} /> Copy {activeTab.toUpperCase()}
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* Footer info */}
-        <div style={{ marginTop: "1.25rem", paddingTop: "0.75rem", borderTop: "1px solid var(--rule)", display: "flex", justifyContent: "flex-end" }}>
-          <button
-            type="button"
-            onClick={onClose}
-            style={{
-              padding: "0.45rem 1.1rem",
-              background: "var(--accent)",
-              color: "#ffffff",
-              border: "none",
-              borderRadius: "0.35rem",
-              fontSize: "0.85rem",
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            Done
-          </button>
-        </div>
-      </div>
+      <AttributionCard
+        slug={slug}
+        title={title}
+        author={author}
+        source={source}
+        config={config}
+        onDone={onClose}
+        showCloseButton={true}
+      />
     </div>
   );
 }

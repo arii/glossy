@@ -17,6 +17,7 @@
     "scripts/archive/**"
   ],
   "ignoreDependencies": [
-    "eslint-config-next"
+    "eslint-config-next",
+    "gray-matter"
   ]
 }
