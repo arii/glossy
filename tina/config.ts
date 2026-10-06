@@ -19,8 +19,61 @@ export default defineConfig({
     outputFolder: "admin",
     publicFolder: "public",
   },
+  media: {
+    tina: {
+      mediaRoot: "uploads",
+      publicFolder: "public",
+    },
+  },
   schema: {
     collections: [
+      {
+        name: "article",
+        label: "Articles / Blog",
+        path: "content/articles",
+        format: "md",
+        ui: {
+          router: ({ document }) => `/articles/${document._sys.filename}`,
+        },
+        fields: [
+          {
+            type: "string",
+            name: "title",
+            label: "Title",
+            isTitle: true,
+            required: true,
+          },
+          {
+            type: "string",
+            name: "author",
+            label: "Author",
+          },
+          {
+            type: "datetime",
+            name: "date",
+            label: "Published Date",
+          },
+          {
+            type: "image",
+            name: "coverImage",
+            label: "Cover Image",
+          },
+          {
+            type: "string",
+            name: "summary",
+            label: "Brief Summary / Excerpt",
+            ui: {
+              component: "textarea",
+            },
+          },
+          {
+            type: "rich-text",
+            name: "body",
+            label: "Article Content",
+            isBody: true,
+          },
+        ],
+      },
       {
         name: "text",
         label: "Texts",

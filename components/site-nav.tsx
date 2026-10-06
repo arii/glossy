@@ -7,7 +7,7 @@ import { installSafeJsonGlobal } from "../lib/safe-json";
 import { isWorkspaceSlug } from "../lib/local-drafts";
 
 type SiteNavProps = {
-  current?: "home" | "read" | "edit" | "docs" | "new";
+  current?: "home" | "read" | "edit" | "docs" | "new" | "articles";
   slug?: string;
 };
 
@@ -144,6 +144,12 @@ export function SiteNav({ current, slug }: SiteNavProps) {
             onClick={closeMobileMenu}
           >
             + New Text
+          </Link>
+          <Link
+            href="/articles"
+            aria-current={current === "articles" ? "page" : undefined}
+          >
+            Articles
           </Link>
           <Link
             href="/docs"
