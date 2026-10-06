@@ -1133,7 +1133,7 @@ export function GlossEditor({
                   </span>
                 )}
 
-                <div style={{ display: "inline-flex", gap: "0.4rem", flexWrap: "wrap", alignItems: "center" }}>
+                <div className="workspace-action-grid">
                   <button
                     type="button"
                     onClick={discardChanges}
@@ -1154,8 +1154,7 @@ export function GlossEditor({
                   <button
                     type="button"
                     onClick={handleExportLatex}
-                    className="workspace-link"
-                    style={{ background: "#f3eadb", color: "#7b3f2a" }}
+                    className="workspace-link workspace-link-latex"
                     title="Download gb4e LaTeX file"
                   >
                     Export LaTeX
@@ -1174,30 +1173,24 @@ export function GlossEditor({
                         }
                       }}
                       disabled={isDeleting}
-                      className="workspace-link"
-                      style={{
-                        background: "rgba(220, 38, 38, 0.08)",
-                        color: "#b91c1c",
-                        borderColor: "#fca5a5",
-                      }}
+                      className="workspace-link workspace-link-danger"
                     >
                       <Trash2 style={{ width: "0.85rem", height: "0.85rem", marginRight: "0.35rem" }} />
                       {isDeleting ? "Deleting..." : "Delete Text"}
                     </button>
                   )}
-                </div>
 
-                <button
-                  type="button"
-                  onClick={saveToTina}
-                  disabled={isSaving}
-                  className="workspace-button"
-                  style={{ background: "var(--accent)", color: "#fff", borderColor: "var(--accent)", padding: "0.45rem 1.1rem" }}
-                  title="Save working draft to browser storage (and sync to Git if connected)"
-                >
-                  <Save style={{ width: "0.9rem", height: "0.9rem", marginRight: "0.35rem" }} />
-                  {isSaving ? "Saving..." : "Save draft"}
-                </button>
+                  <button
+                    type="button"
+                    onClick={saveToTina}
+                    disabled={isSaving}
+                    className="workspace-button workspace-button-primary"
+                    title="Save working draft to browser storage (and sync to Git if connected)"
+                  >
+                    <Save style={{ width: "0.9rem", height: "0.9rem", marginRight: "0.35rem" }} />
+                    {isSaving ? "Saving..." : "Save draft"}
+                  </button>
+                </div>
               </div>
             </div>
           }
@@ -1455,7 +1448,7 @@ export function GlossEditor({
           </section>
 
           {/* Right Column: Selected Token Inspector */}
-          <aside className="editor-inspector-card" style={{ position: "sticky", top: "1rem", maxHeight: "calc(100vh - 3rem)", overflowY: "auto" }}>
+          <aside className="editor-inspector-card">
             <div className="editor-inspector-header">
               <p className="workspace-eyebrow" style={{ margin: 0, fontSize: "0.72rem", fontWeight: 700, color: "var(--accent)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
                 SELECTED TOKEN INSPECTOR
