@@ -16,7 +16,7 @@ export function SiteFooter() {
             </span>
           </div>
           <p style={{ fontSize: "0.85rem", lineHeight: 1.6, color: "var(--muted-ink)", margin: "0 0 1rem" }}>
-            A digital humanities platform for reading, morphologically annotating, and publishing Old English interlinear texts with Leipzig alignment and LaTeX <code>gb4e</code> export.
+            An interactive reading and live editing workspace for Old English interlinear texts with Leipzig alignment and LaTeX <code>gb4e</code> export.
           </p>
           <p style={{ fontSize: "0.8rem", color: "var(--muted-ink)", margin: 0 }}>
             Inspired by the pioneering Old English digital glosses of Peter S. Baker&apos;s{" "}
@@ -39,32 +39,32 @@ export function SiteFooter() {
           <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.5rem", fontSize: "0.85rem" }}>
             <li>
               <Link href="/read/ohthere-wulfstan" style={{ color: "var(--ink)", textDecoration: "none" }}>
-                📖 Read: <em>Voyages of Ohthere &amp; Wulfstan</em>
+                Read: <em>Voyages of Ohthere &amp; Wulfstan</em>
               </Link>
             </li>
             <li>
               <Link href="/read/beowulf-prologue" style={{ color: "var(--ink)", textDecoration: "none" }}>
-                📖 Read: <em>Beowulf: Prologue</em>
+                Read: <em>Beowulf: Prologue</em>
               </Link>
             </li>
             <li>
               <Link href="/edit/new" style={{ color: "var(--ink)", textDecoration: "none" }}>
-                ✍️ Ingest &amp; Lemmatize New Text
+                Ingest &amp; Lemmatize New Text
               </Link>
             </li>
             <li>
               <Link href="/docs?tab=linguistics" style={{ color: "var(--ink)", textDecoration: "none" }}>
-                📜 Linguistic &amp; Editorial Standards
+                Linguistic &amp; Editorial Standards
               </Link>
             </li>
             <li>
               <Link href="/docs?tab=architecture" style={{ color: "var(--ink)", textDecoration: "none" }}>
-                ⚙️ Technical Architecture &amp; Data Model
+                Technical Architecture &amp; Data Model
               </Link>
             </li>
             <li>
               <Link href="/admin" style={{ color: "var(--accent)", textDecoration: "none", fontWeight: 600 }}>
-                ✏️ TinaCMS Content Studio (/admin)
+                TinaCMS Content Studio (/admin)
               </Link>
             </li>
           </ul>

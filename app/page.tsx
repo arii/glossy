@@ -7,12 +7,12 @@ import { TextDirectory, type TextChoice } from "../components/text-directory";
 import { SiteFooter } from "../components/site-footer";
 import {
   BookOpen,
-  Sparkles,
   Code2,
   Database,
   ExternalLink,
 } from "lucide-react";
 import { useTina, tinaField } from "tinacms/dist/react";
+import homeContentData from "../content/pages/home.json";
 
 // Mock interactive token data for live hero preview widget
 const HERO_PREVIEW_TOKENS = [
@@ -69,7 +69,7 @@ const HERO_PREVIEW_TOKENS = [
 // Default seed content for home page
 const DEFAULT_HOME_CONTENT = {
   title: "Glossy · Interlinear Texts",
-  eyebrow: "Digital Humanities Platform",
+  eyebrow: "Interlinear Texts",
   heading: "Interlinear Glossing & Morphology for Old English",
   description:
     "Read, edit, and publish morphologically tagged historical texts with standardized Leipzig three-tier alignment, canonical dictionary headwords, and compilable LaTeX gb4e export.",
@@ -106,7 +106,7 @@ export default function Home() {
   const { data: pageData } = useTina({
     query: HOME_PAGE_QUERY,
     variables: { relativePath: "home.json" },
-    data: DEFAULT_HOME_CONTENT,
+    data: (homeContentData as typeof DEFAULT_HOME_CONTENT) || DEFAULT_HOME_CONTENT,
   });
 
   const [selectedTokenIdx, setSelectedTokenIdx] = useState<number>(1); // default to 'sǣde'
@@ -166,27 +166,13 @@ export default function Home() {
         >
           {/* Left Column: Headline & Primary CTAs */}
           <div>
-            <div
+            <p
+              className="eyebrow"
               data-tina-field={tinaField(pageData, "eyebrow")}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.4rem",
-                padding: "0.25rem 0.65rem",
-                borderRadius: "2rem",
-                background: "#f3eadb",
-                border: "1px solid #dfcfb8",
-                color: "var(--accent)",
-                fontSize: "0.75rem",
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.06em",
-                marginBottom: "1rem",
-              }}
+              style={{ margin: "0 0 0.5rem" }}
             >
-              <Sparkles style={{ width: "0.8rem", height: "0.8rem" }} />
-              <span>{pageData.eyebrow || "Digital Humanities Platform"}</span>
-            </div>
+              {pageData.eyebrow || "Interlinear Texts"}
+            </p>
 
             <h1
               data-tina-field={tinaField(pageData, "heading")}

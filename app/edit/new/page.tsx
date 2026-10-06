@@ -11,7 +11,7 @@ import ingestPageData from "../../../content/pages/ingest.json";
 import { useTina, tinaField } from "tinacms/dist/react";
 import {
   FileText,
-  Sparkles,
+  BookOpen,
   RotateCcw,
   Check,
 } from "lucide-react";
@@ -389,7 +389,7 @@ export default function NewTextPage() {
                 className={`docs-domain-tab ${workflowTab === "custom" ? "active" : ""}`}
               >
                 <FileText style={{ width: "0.95rem", height: "0.95rem" }} />
-                <span>✍️ Enter Custom Text</span>
+                <span>Enter Custom Text</span>
               </button>
 
               <button
@@ -399,8 +399,8 @@ export default function NewTextPage() {
                 onClick={() => setWorkflowTab("preset")}
                 className={`docs-domain-tab ${workflowTab === "preset" ? "active" : ""}`}
               >
-                <Sparkles style={{ width: "0.95rem", height: "0.95rem" }} />
-                <span>⚡ Load Classic Preset</span>
+                <BookOpen style={{ width: "0.95rem", height: "0.95rem" }} />
+                <span>Load Classic Preset</span>
                 {activePresetId && (
                   <span className="docs-tab-count" style={{ background: "#22c55e", color: "#fff" }}>
                     Active

@@ -11,7 +11,7 @@
     "compile:content": "node scripts/compile-tex-to-content.mjs",
     "compile:beowulf": "node scripts/compile-beowulf.mjs",
     "prebuild": "npm run sync:dictionary && npm run compile:content && npm run compile:beowulf && npm run build:tina",
-    "build": "NODE_ENV=production next build",
+    "build": "rm -rf .next && NODE_ENV=production next build",
     "build:tina": "tinacms build --skip-cloud-checks",
     "build:tina:cloud": "tinacms build",
     "lint": "eslint .",
