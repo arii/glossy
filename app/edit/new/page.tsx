@@ -170,6 +170,47 @@ export default function NewTextPage() {
   const oeCount = oeLinesList.length;
   const enCount = enLinesList.length;
   const isLineCountMatched = oeCount > 0 && oeCount === enCount;
+  const isLineCountMismatch = oeCount > 0 && enCount > 0 && oeCount !== enCount;
+
+  const getLineBadgeStyle = (): React.CSSProperties => {
+    if (isLineCountMatched) {
+      return {
+        fontSize: "0.75rem",
+        fontFamily: "monospace",
+        fontWeight: 700,
+        color: "#15803d",
+        background: "#dcfce7",
+        border: "1px solid #86efac",
+        padding: "0.15rem 0.45rem",
+        borderRadius: "0.25rem",
+        transition: "all 0.15s ease",
+      };
+    }
+    if (isLineCountMismatch) {
+      return {
+        fontSize: "0.75rem",
+        fontFamily: "monospace",
+        fontWeight: 700,
+        color: "#b91c1c",
+        background: "#fee2e2",
+        border: "1px solid #fca5a5",
+        padding: "0.15rem 0.45rem",
+        borderRadius: "0.25rem",
+        transition: "all 0.15s ease",
+      };
+    }
+    return {
+      fontSize: "0.75rem",
+      fontFamily: "monospace",
+      fontWeight: 600,
+      color: "var(--accent)",
+      background: "rgba(123, 63, 42, 0.08)",
+      border: "1px solid transparent",
+      padding: "0.15rem 0.45rem",
+      borderRadius: "0.25rem",
+      transition: "all 0.15s ease",
+    };
+  };
 
   // Clear all fields to return to a clean blank state
   const handleClearForm = () => {
@@ -369,24 +410,27 @@ export default function NewTextPage() {
         >
           {/* Top-Level Workflow Tabs */}
           <div
-            className="docs-domain-tabs"
             style={{
               marginTop: 0,
               marginBottom: "1.75rem",
-              borderTop: "none",
-              paddingTop: 0,
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
+              flexWrap: "wrap",
+              gap: "1rem",
             }}
           >
-            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+            <div
+              className="segmented-control-group"
+              role="tablist"
+              aria-label="Ingestion Mode"
+            >
               <button
                 type="button"
                 role="tab"
                 aria-selected={workflowTab === "custom"}
                 onClick={() => setWorkflowTab("custom")}
-                className={`docs-domain-tab ${workflowTab === "custom" ? "active" : ""}`}
+                className={`segmented-control-button ${workflowTab === "custom" ? "active" : ""}`}
               >
                 <FileText style={{ width: "0.95rem", height: "0.95rem" }} />
                 <span>Enter Custom Text</span>
@@ -397,12 +441,21 @@ export default function NewTextPage() {
                 role="tab"
                 aria-selected={workflowTab === "preset"}
                 onClick={() => setWorkflowTab("preset")}
-                className={`docs-domain-tab ${workflowTab === "preset" ? "active" : ""}`}
+                className={`segmented-control-button ${workflowTab === "preset" ? "active" : ""}`}
               >
                 <BookOpen style={{ width: "0.95rem", height: "0.95rem" }} />
                 <span>Load Classic Preset</span>
                 {activePresetId && (
-                  <span className="docs-tab-count" style={{ background: "#22c55e", color: "#fff" }}>
+                  <span
+                    style={{
+                      fontSize: "0.68rem",
+                      fontWeight: 700,
+                      padding: "0.1rem 0.4rem",
+                      borderRadius: "1rem",
+                      background: "#22c55e",
+                      color: "#ffffff",
+                    }}
+                  >
                     Active
                   </span>
                 )}
@@ -720,36 +773,29 @@ export default function NewTextPage() {
               </span>
 
               {/* Input Format Sub-tabs */}
-              <div style={{ display: "flex", gap: "0.35rem" }}>
+              <div
+                className="segmented-control-group"
+                style={{ padding: "2px", gap: "2px" }}
+                role="tablist"
+                aria-label="Input Format"
+              >
                 <button
                   type="button"
+                  role="tab"
+                  aria-selected={inputMode === "text"}
                   onClick={() => setInputMode("text")}
-                  style={{
-                    fontSize: "0.78rem",
-                    padding: "0.25rem 0.6rem",
-                    borderRadius: "0.25rem",
-                    border: "1px solid var(--rule)",
-                    background: inputMode === "text" ? "var(--accent)" : "#fbf7ee",
-                    color: inputMode === "text" ? "#ffffff" : "var(--ink)",
-                    fontWeight: inputMode === "text" ? 700 : 500,
-                    cursor: "pointer",
-                  }}
+                  className={`segmented-control-button ${inputMode === "text" ? "active" : ""}`}
+                  style={{ fontSize: "0.78rem", padding: "0.3rem 0.65rem" }}
                 >
                   Plain Text &amp; Parallel English
                 </button>
                 <button
                   type="button"
+                  role="tab"
+                  aria-selected={inputMode === "gb4e"}
                   onClick={() => setInputMode("gb4e")}
-                  style={{
-                    fontSize: "0.78rem",
-                    padding: "0.25rem 0.6rem",
-                    borderRadius: "0.25rem",
-                    border: "1px solid var(--rule)",
-                    background: inputMode === "gb4e" ? "var(--accent)" : "#fbf7ee",
-                    color: inputMode === "gb4e" ? "#ffffff" : "var(--ink)",
-                    fontWeight: inputMode === "gb4e" ? 700 : 500,
-                    cursor: "pointer",
-                  }}
+                  className={`segmented-control-button ${inputMode === "gb4e" ? "active" : ""}`}
+                  style={{ fontSize: "0.78rem", padding: "0.3rem 0.65rem" }}
                 >
                   LaTeX gb4e Macros
                 </button>
@@ -770,16 +816,7 @@ export default function NewTextPage() {
                     <label htmlFor="raw-oe" style={{ display: "block", fontWeight: 600, fontSize: "0.85rem", margin: 0 }}>
                       Old English Text (One sentence/clause per line)
                     </label>
-                    <span
-                      style={{
-                        fontSize: "0.75rem",
-                        fontFamily: "monospace",
-                        color: "var(--accent)",
-                        background: "rgba(123, 63, 42, 0.08)",
-                        padding: "0.1rem 0.4rem",
-                        borderRadius: "0.25rem",
-                      }}
-                    >
+                    <span style={getLineBadgeStyle()} title={isLineCountMatched ? "Line count matches English translations" : isLineCountMismatch ? "Line count does not match English translations" : undefined}>
                       {oeCount} {oeCount === 1 ? "line" : "lines"}
                     </span>
                   </div>
@@ -814,16 +851,7 @@ export default function NewTextPage() {
                     <label htmlFor="raw-en" style={{ display: "block", fontWeight: 600, fontSize: "0.85rem", margin: 0 }}>
                       Modern English Translations (One per line matching above)
                     </label>
-                    <span
-                      style={{
-                        fontSize: "0.75rem",
-                        fontFamily: "monospace",
-                        color: "var(--accent)",
-                        background: "rgba(123, 63, 42, 0.08)",
-                        padding: "0.1rem 0.4rem",
-                        borderRadius: "0.25rem",
-                      }}
-                    >
+                    <span style={getLineBadgeStyle()} title={isLineCountMatched ? "Line count matches Old English lines" : isLineCountMismatch ? "Line count does not match Old English lines" : undefined}>
                       {enCount} {enCount === 1 ? "line" : "lines"}
                     </span>
                   </div>

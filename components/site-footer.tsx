@@ -19,16 +19,8 @@ export function SiteFooter() {
             Linguistic Standards
           </Link>
           <Link href="/admin" style={{ color: "var(--accent)", textDecoration: "none", fontWeight: 600 }}>
-            TinaCMS Studio
+            Admin Login
           </Link>
-          <a
-            href="https://oldenglishaerobics.net/"
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: "var(--muted-ink)", textDecoration: "none" }}
-          >
-            Old English Aerobics ↗
-          </a>
         </nav>
       </div>
     </footer>

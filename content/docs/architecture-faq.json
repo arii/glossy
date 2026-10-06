@@ -170,11 +170,6 @@
       "num": "2",
       "title": "Contextual Lemmatization Engine",
       "description": "Every token is evaluated through the Old English linguistic engine, assigning canonical masculine nominative singular strong adjective lemmas, infinitive verb lemmas, nominative noun lemmas, and direct Wiktionary etymological links."
-    },
-    {
-      "num": "3",
-      "title": "Dual-Write Persistence & LaTeX Export",
-      "description": "Saving writes structured JSON to content/texts/<slug>.json and compilable LaTeX to references/<slug>.tex, immediately rendering the text available across the visual reader and live editor."
     }
   ],
   "wiktionaryGuidelines": [

@@ -140,18 +140,9 @@ export default function Home() {
       <main className="site-shell" style={{ maxWidth: "76rem", margin: "0 auto", padding: "2rem 1.5rem 0" }}>
         
         {/* ================================================================ */}
-        {/* HERO SECTION: Split-Screen Value Prop + Live Interactive Widget */}
+        {/* HERO SECTION: Split-Screen Two-Column Value Prop + Preview */}
         {/* ================================================================ */}
-        <section
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(20rem, 1fr))",
-            gap: "2.5rem",
-            alignItems: "center",
-            padding: "2rem 0 3.5rem",
-            borderBottom: "1px solid var(--rule)",
-          }}
-        >
+        <section className="hero-two-column">
           {/* Left Column: Headline & Primary CTAs */}
           <div>
             <p
@@ -191,7 +182,7 @@ export default function Home() {
               </p>
             ) : null}
 
-            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center", marginBottom: "1.5rem" }}>
+            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center" }}>
               <Link
                 href={pageData.primaryAction?.href || "/edit/new"}
                 data-tina-field={tinaField(pageData.primaryAction, "label")}
@@ -212,11 +203,31 @@ export default function Home() {
               >
                 <span>{pageData.primaryAction?.label || "+ Gloss a New Text"}</span>
               </Link>
+              <Link
+                href="#corpus-directory"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.45rem",
+                  padding: "0.7rem 1.25rem",
+                  borderRadius: "0.35rem",
+                  background: "#fbf7ee",
+                  border: "1px solid var(--rule)",
+                  color: "var(--ink)",
+                  fontSize: "0.95rem",
+                  fontWeight: 600,
+                  textDecoration: "none",
+                  transition: "all 0.15s ease",
+                }}
+              >
+                <span>Explore Corpus ↓</span>
+              </Link>
             </div>
           </div>
 
           {/* Right Column: Interactive Live Gloss Preview Widget */}
           <div
+            className="hero-preview-card"
             style={{
               background: "#1c1917",
               color: "#fafaf9",
@@ -224,6 +235,7 @@ export default function Home() {
               padding: "1.5rem",
               boxShadow: "0 1rem 3rem rgba(0, 0, 0, 0.15)",
               border: "1px solid #332d29",
+              width: "100%",
             }}
           >
             {/* Widget Header Bar */}
@@ -239,6 +251,19 @@ export default function Home() {
             >
               <span style={{ fontSize: "0.75rem", color: "#d6d3d1", fontFamily: "monospace", letterSpacing: "0.03em" }}>
                 Leipzig Interlinear Reader Preview
+              </span>
+              <span
+                style={{
+                  fontSize: "0.68rem",
+                  fontFamily: "monospace",
+                  background: "#292524",
+                  border: "1px solid #44403c",
+                  color: "#a8a29e",
+                  padding: "0.15rem 0.45rem",
+                  borderRadius: "0.25rem",
+                }}
+              >
+                Cotton MS Tiberius B. i
               </span>
             </div>
 

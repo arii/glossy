@@ -9,6 +9,7 @@ export default defineConfig([
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   globalIgnores([
     ".next/**",
+    ".open-next/**",
     "node_modules/**",
     "next-env.d.ts",
     "public/admin/**",

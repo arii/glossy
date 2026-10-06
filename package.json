@@ -14,7 +14,7 @@
     "build": "NODE_ENV=production next build",
     "build:tina": "tinacms build --skip-cloud-checks --datalayer-port 9123",
     "build:tina:cloud": "tinacms build",
-    "build:cf": "npm run prebuild && opennextjs-cloudflare build",
+    "build:cf": "opennextjs-cloudflare build",
     "preview": "npm run build:cf && opennextjs-cloudflare preview",
     "deploy": "npm run build:cf && wrangler deploy",
     "lint": "eslint .",

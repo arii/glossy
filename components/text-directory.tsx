@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Trash2, BookOpen, Edit3, ShieldCheck, FileCode, Info } from "lucide-react";
+import { Trash2, BookOpen, Edit3, Info, MoreVertical } from "lucide-react";
 import { AttributionModal } from "./attribution-modal";
 
 export type TextChoice = {
@@ -22,6 +22,7 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
   const [choices, setChoices] = useState<TextChoice[]>(initialChoices);
   const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
   const [activeModalChoice, setActiveModalChoice] = useState<TextChoice | null>(null);
+  const [openMenuSlug, setOpenMenuSlug] = useState<string | null>(null);
   const router = useRouter();
 
   const isProtected = (slug: string) =>
@@ -78,8 +79,6 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
           const isCurrentlyDeleting = deletingSlug === choice.slug;
           const displayAuthor = choice.author || (protectedText ? "King Alfred's Court / Tyler Lemon" : "Anonymous");
           const displaySource = choice.source || (protectedText ? "London, British Library, Cotton MS Tiberius B. i" : "Historical Manuscript Witness");
-          const sentenceNum = choice.sentenceCount ?? (protectedText ? 75 : choice.slug === "beowulf-prologue" ? 11 : 0);
-          const tokenNum = choice.tokenCount ?? (protectedText ? 1716 : choice.slug === "beowulf-prologue" ? 53 : 0);
 
           return (
             <article
@@ -98,16 +97,8 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
               }}
             >
               <div>
-                {/* Header Row: Title and Status Badge */}
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "flex-start",
-                    gap: "0.75rem",
-                    marginBottom: "0.5rem",
-                  }}
-                >
+                {/* Header Row: Title */}
+                <div style={{ marginBottom: "0.5rem" }}>
                   <h2
                     style={{
                       margin: 0,
@@ -119,104 +110,16 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
                   >
                     {choice.title}
                   </h2>
-                  {protectedText ? (
-                    <span
-                      style={{
-                        fontSize: "0.7rem",
-                        fontWeight: 700,
-                        color: "var(--accent)",
-                        background: "#f3eadb",
-                        border: "1px solid #dfcfb8",
-                        padding: "0.2rem 0.5rem",
-                        borderRadius: "0.25rem",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "0.3rem",
-                        whiteSpace: "nowrap",
-                        flexShrink: 0,
-                      }}
-                      title="Master authoritative gb4e reference text"
-                    >
-                      <ShieldCheck style={{ width: "0.8rem", height: "0.8rem" }} /> Master Text
-                    </span>
-                  ) : (
-                    <span
-                      style={{
-                        fontSize: "0.7rem",
-                        fontWeight: 600,
-                        color: "#0369a1",
-                        background: "#e0f2fe",
-                        border: "1px solid #bae6fd",
-                        padding: "0.2rem 0.5rem",
-                        borderRadius: "0.25rem",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "0.3rem",
-                        whiteSpace: "nowrap",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <FileCode style={{ width: "0.75rem", height: "0.75rem" }} /> Custom Text
-                    </span>
-                  )}
                 </div>
 
                 {/* Attribution & Manuscript Provenance */}
-                <div style={{ marginBottom: "1rem", fontSize: "0.82rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
+                <div style={{ marginBottom: "1.25rem", fontSize: "0.82rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
                   <p style={{ margin: "0 0 0.25rem", fontWeight: 600, color: "var(--ink)" }}>
                     {displayAuthor}
                   </p>
                   <p style={{ margin: 0, fontSize: "0.78rem" }}>
                     {displaySource}
                   </p>
-                </div>
-
-                {/* Metric Badges */}
-                <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", marginBottom: "1.25rem" }}>
-                  {sentenceNum > 0 && (
-                    <span
-                      style={{
-                        fontSize: "0.72rem",
-                        fontFamily: "monospace",
-                        background: "#fbf7ee",
-                        border: "1px solid var(--rule)",
-                        padding: "0.15rem 0.45rem",
-                        borderRadius: "0.25rem",
-                        color: "var(--ink)",
-                      }}
-                    >
-                      {sentenceNum} sentences
-                    </span>
-                  )}
-                  {tokenNum > 0 && (
-                    <span
-                      style={{
-                        fontSize: "0.72rem",
-                        fontFamily: "monospace",
-                        background: "#fbf7ee",
-                        border: "1px solid var(--rule)",
-                        padding: "0.15rem 0.45rem",
-                        borderRadius: "0.25rem",
-                        color: "var(--ink)",
-                      }}
-                    >
-                      {tokenNum} tokens
-                    </span>
-                  )}
-                  <span
-                    style={{
-                      fontSize: "0.72rem",
-                      fontFamily: "monospace",
-                      background: "#fbf7ee",
-                      border: "1px solid var(--rule)",
-                      padding: "0.15rem 0.45rem",
-                      borderRadius: "0.25rem",
-                      color: "var(--accent)",
-                      fontWeight: 600,
-                    }}
-                  >
-                    gb4e LaTeX
-                  </span>
                 </div>
               </div>
 
@@ -291,29 +194,72 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
                 </div>
 
                 {!protectedText && (
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(choice)}
-                    disabled={isCurrentlyDeleting}
-                    style={{
-                      border: "1px solid #fca5a5",
-                      background: "rgba(220, 38, 38, 0.06)",
-                      color: "#b91c1c",
-                      padding: "0.3rem 0.55rem",
-                      borderRadius: "0.25rem",
-                      fontSize: "0.75rem",
-                      fontWeight: 600,
-                      cursor: isCurrentlyDeleting ? "not-allowed" : "pointer",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.25rem",
-                    }}
-                    title={`Remove ${choice.title}`}
-                    aria-label={`Remove ${choice.title}`}
-                  >
-                    <Trash2 style={{ width: "0.75rem", height: "0.75rem" }} />
-                    {isCurrentlyDeleting ? "..." : "Delete"}
-                  </button>
+                  <div style={{ position: "relative" }}>
+                    <button
+                      type="button"
+                      onClick={() => setOpenMenuSlug(openMenuSlug === choice.slug ? null : choice.slug)}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: "transparent",
+                        border: "1px solid var(--rule)",
+                        color: "var(--muted-ink)",
+                        cursor: "pointer",
+                        padding: "0.35rem 0.45rem",
+                        borderRadius: "0.25rem",
+                      }}
+                      title="More options"
+                      aria-label="More options"
+                    >
+                      <MoreVertical style={{ width: "0.85rem", height: "0.85rem" }} />
+                    </button>
+
+                    {openMenuSlug === choice.slug && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          right: 0,
+                          bottom: "100%",
+                          marginBottom: "0.35rem",
+                          background: "var(--surface)",
+                          border: "1px solid var(--rule)",
+                          borderRadius: "0.35rem",
+                          boxShadow: "0 4px 14px rgba(0, 0, 0, 0.12)",
+                          zIndex: 20,
+                          minWidth: "8rem",
+                          padding: "0.3rem",
+                        }}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOpenMenuSlug(null);
+                            handleDelete(choice);
+                          }}
+                          disabled={isCurrentlyDeleting}
+                          style={{
+                            width: "100%",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "0.4rem",
+                            padding: "0.4rem 0.6rem",
+                            fontSize: "0.78rem",
+                            fontWeight: 500,
+                            color: "#b91c1c",
+                            background: "transparent",
+                            border: "none",
+                            borderRadius: "0.25rem",
+                            cursor: isCurrentlyDeleting ? "not-allowed" : "pointer",
+                            textAlign: "left",
+                          }}
+                        >
+                          <Trash2 style={{ width: "0.75rem", height: "0.75rem" }} />
+                          {isCurrentlyDeleting ? "Deleting..." : "Delete text"}
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
             </article>

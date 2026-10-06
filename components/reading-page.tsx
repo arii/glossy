@@ -51,20 +51,6 @@ function ReadingPageInner({
           normalizeTitle(text.title) === normalizeTitle(manuscript.title),
       ),
   );
-  const allItems = [
-    ...visibleManuscripts.map((m) => ({
-      type: "manuscript" as const,
-      slug: m.slug,
-      title: m.title,
-      item: m,
-    })),
-    ...texts.map((t) => ({
-      type: "text" as const,
-      slug: t.slug,
-      title: t.title,
-      item: t,
-    })),
-  ];
 
   const defaultSlug =
     initialSlug ??
@@ -72,7 +58,7 @@ function ReadingPageInner({
     visibleManuscripts[0]?.slug ??
     "";
 
-  const [selectedSlug, setSelectedSlug] = useState(defaultSlug);
+  const selectedSlug = defaultSlug;
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [pinnedId, setPinnedId] = useState<string | null>(null);
   const lastTriggerId = useRef<string | null>(null);
@@ -99,12 +85,7 @@ function ReadingPageInner({
     setPinnedId(id);
   };
 
-  const changeText = (slug: string) => {
-    setSelectedSlug(slug);
-    setSelectedId(null);
-    setPinnedId(null);
-    setActiveTerm(null);
-  };
+
 
   const rememberTrigger = (id: string) => {
     lastTriggerId.current = id;
@@ -198,27 +179,9 @@ function ReadingPageInner({
               Attribution &amp; Citation
             </button>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1.5rem" }}>
-            <div>
-              <h1 data-tina-field={activeManuscript?._tina_metadata?.title}>{currentTitle}</h1>
-              <p className="source-line" data-tina-field={activeManuscript?._tina_metadata?.source}>{currentSource}</p>
-            </div>
-            {allItems.length > 1 && (
-              <div className="text-picker" style={{ margin: 0 }}>
-                <label htmlFor="text-select">Switch text:</label>
-                <select
-                  id="text-select"
-                  value={selectedSlug}
-                  onChange={(event) => changeText(event.target.value)}
-                >
-                  {allItems.map((entry) => (
-                    <option key={entry.slug} value={entry.slug}>
-                      {entry.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
+          <div>
+            <h1 data-tina-field={activeManuscript?._tina_metadata?.title}>{currentTitle}</h1>
+            <p className="source-line" data-tina-field={activeManuscript?._tina_metadata?.source}>{currentSource}</p>
           </div>
         </header>
 

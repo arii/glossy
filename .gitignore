@@ -8,3 +8,5 @@ node_modules/
 /public/admin/
 /tina/__generated__/
 *.tsbuildinfo
+bun.lock
+bun.lockb

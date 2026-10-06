@@ -129,6 +129,23 @@ body {
   text-transform: uppercase;
 }
 
+.hero-two-column {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  align-items: center;
+  padding: 2rem 0 3.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+@media (min-width: 900px) {
+  .hero-two-column {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.15fr);
+    gap: 3.5rem;
+    align-items: center;
+  }
+}
+
 h1,
 h2,
 p {
@@ -312,16 +329,17 @@ h2 {
 }
 
 .translation {
-  margin: 1rem 0 0;
-  padding: 0.65rem 1rem;
+  max-width: 44rem;
+  margin: 1.25rem 0 1.5rem;
+  padding: 0.75rem 1.15rem;
   border-left: 3px solid var(--accent);
   background: rgba(123, 63, 42, 0.04);
-  border-radius: 0 0.25rem 0.25rem 0;
+  border-radius: 0 0.35rem 0.35rem 0;
   color: var(--ink);
   font-family: var(--font-serif, "Charis SIL", "Noto Serif", Georgia, serif);
   font-style: italic;
   font-size: 1.05rem;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .gloss-sidebar-container {
@@ -463,17 +481,6 @@ h2 {
   text-underline-offset: 0.2em;
 }
 
-.translation {
-  max-width: 44rem;
-  margin: 1rem 0 0;
-  padding: 0.7rem 0 0.7rem 1rem;
-  color: var(--muted-ink);
-  border-left: 2px solid var(--rule);
-  font-style: italic;
-  font-size: 1.1rem;
-  font-weight: 400;
-  line-height: 1.7;
-}
 
 .workspace {
   width: 100%;
@@ -1328,6 +1335,44 @@ h2 {
   line-height: 1.6;
   max-width: 52rem;
   margin: 0;
+}
+
+/* Connected Flush Segmented Tabs */
+.segmented-control-group {
+  display: inline-flex;
+  align-items: center;
+  background: #eee5d5;
+  padding: 3px;
+  border-radius: 0.5rem;
+  border: 1px solid #dfcfb8;
+  gap: 2px;
+}
+
+.segmented-control-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.95rem;
+  border-radius: 0.35rem;
+  border: none;
+  font: 600 0.85rem Arial, sans-serif;
+  color: var(--muted-ink);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.segmented-control-button:hover:not(.active) {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.segmented-control-button.active {
+  background: #ffffff;
+  color: var(--accent);
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(64, 47, 29, 0.12);
 }
 
 /* Domain Segmented Tabs */

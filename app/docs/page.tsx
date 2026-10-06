@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { SiteNav } from "../../components/site-nav";
 import {
   BookOpen,
@@ -9,11 +9,10 @@ import {
   ChevronDown,
   ChevronRight,
   ExternalLink,
-  Code2,
   Terminal,
 } from "lucide-react";
 import docsData from "../../content/docs/architecture-faq.json";
-import { DocsDomain, DocSectionItem } from "../../lib/types";
+import { DocSectionItem } from "../../lib/types";
 import { useTina, tinaField } from "tinacms/dist/react";
 
 const DOCS_PAGE_QUERY = `
@@ -55,48 +54,17 @@ export default function DocsPage() {
     data: docsData,
   });
 
-  const [activeDomain, setActiveDomain] = useState<DocsDomain>("all");
   const [abbrOpen, setAbbrOpen] = useState(true);
   const [abbrQuery, setAbbrQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [wiktionaryOpen, setWiktionaryOpen] = useState(true);
   const [ipaOpen, setIpaOpen] = useState(true);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const tabParam = params.get("tab");
-      if (tabParam === "linguistics" || tabParam === "architecture" || tabParam === "all") {
-        setActiveDomain(tabParam);
-      }
-    }
-  }, []);
-
-  const handleDomainChange = (domain: DocsDomain) => {
-    setActiveDomain(domain);
-    if (typeof window !== "undefined") {
-      const url = new URL(window.location.href);
-      if (domain === "all") {
-        url.searchParams.delete("tab");
-      } else {
-        url.searchParams.set("tab", domain);
-      }
-      window.history.replaceState(null, "", url.toString());
-    }
-  };
-
   const abbreviations: Abbreviation[] = (pageData.abbreviations as Abbreviation[]) || (docsData.abbreviations as Abbreviation[]);
   const sections: DocSectionItem[] = (pageData.sections as DocSectionItem[]) || (docsData.sections as DocSectionItem[]);
 
   const linguisticsSections = sections.filter((s) => s.domain === "linguistics");
   const architectureSections = sections.filter((s) => s.domain === "architecture");
-
-  const visibleSections =
-    activeDomain === "linguistics"
-      ? linguisticsSections
-      : activeDomain === "architecture"
-      ? architectureSections
-      : sections;
 
   const filteredAbbrs = abbreviations.filter((item) => {
     const matchCat = selectedCategory === "All" || item.category === selectedCategory;
@@ -118,10 +86,6 @@ export default function DocsPage() {
 
   const pageEyebrow = pageData.eyebrow || "Linguistic Standards & System Architecture";
   const pageTitle = pageData.title || "Documentation & Reference Guides";
-  const pageDesc =
-    pageData.description ||
-    "Comprehensive reference guide split into linguistic editorial standards (Leipzig glossing, canonical OE headwords, Wiktionary/IPA) and system engineering architecture (dual-write storage, automated QA test suites).";
-
 
   return (
     <>
@@ -130,46 +94,6 @@ export default function DocsPage() {
         <header className="page-header" style={{ marginBottom: "2rem" }}>
           <p className="eyebrow" data-tina-field={tinaField(pageData, "eyebrow")}>{pageEyebrow}</p>
           <h1 className="docs-title" data-tina-field={tinaField(pageData, "title")}>{pageTitle}</h1>
-          <p className="source-line" data-tina-field={tinaField(pageData, "description")} style={{ maxWidth: "52rem", fontSize: "1.05rem", lineHeight: 1.6 }}>
-            {pageDesc}
-          </p>
-
-          {/* Domain Segmented Tab Selector */}
-          <div className="docs-domain-tabs" role="tablist" aria-label="Documentation Categories">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeDomain === "all"}
-              onClick={() => handleDomainChange("all")}
-              className={`docs-domain-tab ${activeDomain === "all" ? "active" : ""}`}
-            >
-              <Layers style={{ width: "0.95rem", height: "0.95rem" }} />
-              <span>All Documentation</span>
-              <span className="docs-tab-count">7</span>
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeDomain === "linguistics"}
-              onClick={() => handleDomainChange("linguistics")}
-              className={`docs-domain-tab ${activeDomain === "linguistics" ? "active" : ""}`}
-            >
-              <BookOpen style={{ width: "0.95rem", height: "0.95rem" }} />
-              <span>Linguistic &amp; Editorial Guide</span>
-              <span className="docs-tab-count">4</span>
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeDomain === "architecture"}
-              onClick={() => handleDomainChange("architecture")}
-              className={`docs-domain-tab ${activeDomain === "architecture" ? "active" : ""}`}
-            >
-              <Code2 style={{ width: "0.95rem", height: "0.95rem" }} />
-              <span>Architecture &amp; Data Model</span>
-              <span className="docs-tab-count">3</span>
-            </button>
-          </div>
         </header>
 
         {/* Two-Column Grid: Sticky TOC on Left, Content on Right */}
@@ -193,83 +117,48 @@ export default function DocsPage() {
                     color: "var(--accent)",
                   }}
                 >
-                  {visibleSections.length} Sections
+                  {sections.length} Sections
                 </span>
               </div>
 
               {/* Grouped TOC Navigation */}
               <nav className="docs-nav-list">
-                {(activeDomain === "all" || activeDomain === "linguistics") && (
-                  <div className="docs-toc-group">
-                    {activeDomain === "all" && (
-                      <div className="docs-toc-group-header">
-                        <span>Linguistics &amp; Editorial</span>
-                        <span>4 Items</span>
-                      </div>
-                    )}
-                    {linguisticsSections.map((sec) => (
-                      <button
-                        key={sec.id}
-                        type="button"
-                        onClick={() => scrollToSection(sec.id)}
-                        className="docs-nav-item"
-                      >
-                        <span className="docs-nav-num">{sec.domainNum || sec.num}</span>
-                        <span>{sec.title}</span>
-                      </button>
-                    ))}
+                <div className="docs-toc-group">
+                  <div className="docs-toc-group-header">
+                    <span>Linguistics &amp; Editorial</span>
+                    <span>{linguisticsSections.length} Items</span>
                   </div>
-                )}
+                  {linguisticsSections.map((sec) => (
+                    <button
+                      key={sec.id}
+                      type="button"
+                      onClick={() => scrollToSection(sec.id)}
+                      className="docs-nav-item"
+                    >
+                      <span className="docs-nav-num">{sec.domainNum || sec.num}</span>
+                      <span>{sec.title}</span>
+                    </button>
+                  ))}
+                </div>
 
-                {(activeDomain === "all" || activeDomain === "architecture") && (
-                  <div className="docs-toc-group">
-                    {activeDomain === "all" && (
-                      <div className="docs-toc-group-header">
-                        <span>System Architecture</span>
-                        <span>3 Items</span>
-                      </div>
-                    )}
-                    {architectureSections.map((sec) => (
-                      <button
-                        key={sec.id}
-                        type="button"
-                        onClick={() => scrollToSection(sec.id)}
-                        className="docs-nav-item"
-                      >
-                        <span className="docs-nav-num arch">{sec.domainNum || sec.num}</span>
-                        <span>{sec.title}</span>
-                      </button>
-                    ))}
+                <div className="docs-toc-group">
+                  <div className="docs-toc-group-header">
+                    <span>System Architecture</span>
+                    <span>{architectureSections.length} Items</span>
                   </div>
-                )}
+                  {architectureSections.map((sec) => (
+                    <button
+                      key={sec.id}
+                      type="button"
+                      onClick={() => scrollToSection(sec.id)}
+                      className="docs-nav-item"
+                    >
+                      <span className="docs-nav-num arch">{sec.domainNum || sec.num}</span>
+                      <span>{sec.title}</span>
+                    </button>
+                  ))}
+                </div>
               </nav>
-
-              <div
-                style={{
-                  marginTop: "1.25rem",
-                  paddingTop: "0.85rem",
-                  borderTop: "1px solid var(--rule)",
-                  fontSize: "0.75rem",
-                  color: "var(--muted-ink)",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <span>Glossy Specification</span>
-                <span
-                  style={{
-                    fontFamily: "monospace",
-                    fontSize: "0.68rem",
-                    background: "#f3eadb",
-                    padding: "0.15rem 0.35rem",
-                    borderRadius: "0.2rem",
-                    color: "var(--ink)",
-                  }}
-                >
-                  gb4e + Next.js
-                </span>
-              </div>
             </div>
           </aside>
 
@@ -278,8 +167,6 @@ export default function DocsPage() {
             {/* ============================================================== */}
             {/* LINGUISTICS DOMAIN SECTIONS                                    */}
             {/* ============================================================== */}
-            {(activeDomain === "all" || activeDomain === "linguistics") && (
-              <>
                 {/* Section L1: Interlinear Glossing */}
                 <section id="section-l1" className="docs-section">
                   <div className="docs-section-heading">
@@ -710,14 +597,10 @@ export default function DocsPage() {
                     </div>
                   </div>
                 </section>
-              </>
-            )}
 
             {/* ============================================================== */}
             {/* ARCHITECTURE DOMAIN SECTIONS                                   */}
             {/* ============================================================== */}
-            {(activeDomain === "all" || activeDomain === "architecture") && (
-              <>
                 {/* Section A1: Ingesting New Texts */}
                 <section id="section-a1" className="docs-section">
                   <div className="docs-section-heading">
@@ -898,8 +781,6 @@ export default function DocsPage() {
                     </div>
                   </div>
                 </section>
-              </>
-            )}
           </div>
         </div>
       </main>
