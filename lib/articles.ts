@@ -5,6 +5,7 @@ import matter from "gray-matter";
 export interface LocalArticle {
   slug: string;
   title: string;
+  author?: string | null;
   date?: string | null;
   coverImage?: string | null;
   summary?: string | null;
@@ -31,6 +32,7 @@ export function getLocalArticleBySlug(slug: string): LocalArticle | null {
   return {
     slug,
     title: String(data.title || slug),
+    author: data.author ? String(data.author) : null,
     date: data.date ? String(data.date) : null,
     coverImage: data.coverImage ? String(data.coverImage) : null,
     summary: data.summary ? String(data.summary) : null,

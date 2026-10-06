@@ -70,20 +70,29 @@ export default function ArticlesIndexPage() {
                   gap: "0.75rem",
                 }}
               >
-                {art.date && (
-                  <time
+                {(art.author || art.date) && (
+                  <div
                     style={{
+                      display: "flex",
+                      gap: "0.6rem",
+                      alignItems: "center",
                       fontSize: "0.78rem",
                       color: "var(--muted-ink)",
                       fontFamily: "monospace",
                     }}
                   >
-                    {new Date(art.date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </time>
+                    {art.author && <span>By {art.author}</span>}
+                    {art.author && art.date && <span>•</span>}
+                    {art.date && (
+                      <time>
+                        {new Date(art.date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </time>
+                    )}
+                  </div>
                 )}
 
                 <h2 style={{ margin: 0, fontFamily: "'Charis SIL', Georgia, serif", fontSize: "1.4rem" }}>

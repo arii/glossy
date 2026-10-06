@@ -15,6 +15,7 @@ const ARTICLE_QUERY = `
     article(relativePath: $relativePath) {
       id
       title
+      author
       date
       coverImage
       summary
@@ -181,6 +182,7 @@ export function ArticleClient({
   const articleFromTina = data?.article;
 
   const title = articleFromTina?.title || initialArticle?.title;
+  const author = articleFromTina?.author || initialArticle?.author;
   const date = articleFromTina?.date || initialArticle?.date;
   const coverImage = articleFromTina?.coverImage || initialArticle?.coverImage;
   const summary = articleFromTina?.summary || initialArticle?.summary;
@@ -266,23 +268,34 @@ export function ArticleClient({
                 {title}
               </h1>
 
-              {date && (
-                <time
-                  data-tina-field={articleFromTina ? tinaField(articleFromTina, "date") : undefined}
+              {(author || date) && (
+                <div
                   style={{
-                    display: "block",
+                    display: "flex",
+                    gap: "0.75rem",
+                    alignItems: "center",
                     fontSize: "0.82rem",
                     color: "var(--muted-ink)",
                     fontFamily: "monospace",
                     marginBottom: summary ? "1rem" : 0,
                   }}
                 >
-                  Published on {new Date(date).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </time>
+                  {author && (
+                    <span data-tina-field={articleFromTina ? tinaField(articleFromTina, "author") : undefined}>
+                      By {author}
+                    </span>
+                  )}
+                  {author && date && <span>•</span>}
+                  {date && (
+                    <time data-tina-field={articleFromTina ? tinaField(articleFromTina, "date") : undefined}>
+                      Published on {new Date(date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </time>
+                  )}
+                </div>
               )}
 
               {summary && (

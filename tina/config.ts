@@ -44,6 +44,11 @@ export default defineConfig({
             required: true,
           },
           {
+            type: "string",
+            name: "author",
+            label: "Author",
+          },
+          {
             type: "datetime",
             name: "date",
             label: "Published Date",
