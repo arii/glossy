@@ -24,7 +24,8 @@
     "typecheck": "tsc --noEmit",
     "validate:lemmas": "node scripts/validate-lemmas.mjs",
     "validate:source": "node scripts/validate-source.mjs",
-    "audit": "npm run audit:deadcode && npm run lint && npm run typecheck && npm run validate:source && npm run validate:lemmas && npm run test:smoke"
+    "validate:deploy": "wrangler deploy --dry-run",
+    "audit": "npm run audit:deadcode && npm run lint && npm run typecheck && npm run validate:source && npm run validate:lemmas && npm run test:smoke && npm run validate:deploy"
   },
   "dependencies": {
     "@google/genai": "^2.27.0",
