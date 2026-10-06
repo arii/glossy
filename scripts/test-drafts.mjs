@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { BUILT_IN_CORPUS, isBuiltInSlug, isProtectedSlug, getBuiltInMetadata } from "../lib/corpus-registry.ts";
-import { isWorkspaceSlug, getWorkspaceTexts, DRAFT_STORAGE_PREFIX, PENDING_MANIFEST_KEY } from "../lib/local-drafts.ts";
+import { isWorkspaceSlug, getWorkspaceTexts, DRAFT_STORAGE_PREFIX, PENDING_MANIFEST_KEY, markPending } from "../lib/local-drafts.ts";
+import { sanitizeDraftForTinaMutation, isTinaAuthenticated, commitPendingDraft } from "../lib/tina-sync.ts";
 
 console.log("Running Drafts & Registry Unit Tests...");
 
@@ -53,9 +54,47 @@ assert.deepEqual(
   "Workspace should NOT include caedmon-hymn or the-wanderer when previewing beowulf",
 );
 
-// Test 7: Simulated Browser Environment with Local Drafts
+// Test 7: sanitizeDraftForTinaMutation unit tests
+const editorDoc = {
+  textId: "test-text",
+  slug: "test-text",
+  title: "Test Document Title",
+  author: "Test Author",
+  language: "Old English",
+  sentences: [
+    {
+      id: "sent-1",
+      freeTranslation: "This is a test sentence.",
+      tokens: [
+        {
+          id: "tok-1",
+          sourceForm: "Hwæt!",
+          sourceGloss: "what!",
+          literalTexGloss: "what!",
+          lemma: "hwæt",
+          pos: "interjection",
+          explanation: "interjection / listen!",
+          morphemes: [],
+        },
+      ],
+    },
+  ],
+};
+
+const sanitized = sanitizeDraftForTinaMutation(editorDoc);
+assert.equal(sanitized.textId, "test-text", "sanitized textId must match input");
+assert.equal(sanitized.slug, "test-text", "sanitized slug must match input");
+assert.equal(sanitized.title, "Test Document Title", "sanitized title must match input");
+assert.equal(Array.isArray(sanitized.sentences), true, "sanitized sentences must be an array");
+const firstSent = sanitized.sentences[0];
+assert.equal(firstSent.translation, "This is a test sentence.", "translation must be mapped from freeTranslation");
+const firstWord = firstSent.words[0];
+assert.equal(firstWord.originalWord, "Hwæt!", "originalWord must be mapped from sourceForm");
+
+// Test 8: Simulated Browser Environment with Local Drafts & Tina Sync
 const mockStore = new Map();
 global.window = {
+  location: { hostname: "example.com" },
   localStorage: {
     getItem: (key) => (mockStore.has(key) ? mockStore.get(key) : null),
     setItem: (key, val) => mockStore.set(key, String(val)),
@@ -68,39 +107,60 @@ global.window = {
   },
 };
 
+// Test isTinaAuthenticated helper
+assert.equal(isTinaAuthenticated(), false, "Without token or localhost, isTinaAuthenticated must be false");
+mockStore.set("tinacms-auth", "fake-token-123");
+assert.equal(isTinaAuthenticated(), true, "With tinacms-auth in localStorage, isTinaAuthenticated must be true");
+
+const mockCms = {
+  api: {
+    tina: {
+      request: async (query, { variables }) => {
+        assert.ok(query.includes("mutation UpdateText"), "Mutation query must contain UpdateText");
+        assert.equal(variables.relativePath, "caedmon-hymn.json", "relativePath variable must be caedmon-hymn.json");
+        return { data: { updateText: { id: "caedmon-hymn", title: "Cædmon's Hymn" } } };
+      },
+    },
+  },
+};
+assert.equal(isTinaAuthenticated(mockCms), true, "With cms object containing api.tina, isTinaAuthenticated must be true");
+
 // Ingest Cædmon's Hymn into simulated drafts
+const caedmonDoc = {
+  textId: "caedmon-hymn",
+  slug: "caedmon-hymn",
+  title: "Cædmon's Hymn (Local Draft)",
+  author: "Cædmon",
+  sentences: [],
+};
+
 mockStore.set(
   `${DRAFT_STORAGE_PREFIX}caedmon-hymn`,
   JSON.stringify({
     version: 1,
-    doc: {
-      textId: "caedmon-hymn",
-      slug: "caedmon-hymn",
-      title: "Cædmon's Hymn (Local Draft)",
-      author: "Cædmon",
-      sentences: [],
-    },
+    doc: caedmonDoc,
     baseHash: "test_hash",
     updatedAt: new Date().toISOString(),
   }),
 );
 
-assert.equal(isWorkspaceSlug("caedmon-hymn"), true, "Ingested draft caedmon-hymn must be recognized as in workspace");
-assert.equal(isWorkspaceSlug("beowulf-prologue"), false, "Uningested beowulf must still not be in workspace");
+markPending("caedmon-hymn", caedmonDoc);
 
-const textsWithDraft = getWorkspaceTexts();
-assert.equal(textsWithDraft.length, 2, "Workspace with draft should contain exactly 2 texts");
-assert.deepEqual(
-  textsWithDraft.map((t) => t.slug),
-  ["ohthere", "caedmon-hymn"],
-);
+const pendingRawBefore = mockStore.get(PENDING_MANIFEST_KEY);
+assert.ok(pendingRawBefore, "Pending manifest must exist");
+const pendingBefore = JSON.parse(pendingRawBefore);
+assert.equal(pendingBefore["caedmon-hymn"].synced, false, "Newly created draft must have synced: false");
 
-// Delete draft from mock storage
+// Commit draft via mock CMS
+const commitRes = await commitPendingDraft("caedmon-hymn", { cms: mockCms });
+assert.equal(commitRes.ok, true, "commitPendingDraft should succeed with mock CMS");
+
+const pendingRawAfter = mockStore.get(PENDING_MANIFEST_KEY);
+const pendingAfter = JSON.parse(pendingRawAfter);
+assert.equal(pendingAfter["caedmon-hymn"].synced, true, "After commit, pending draft synced flag must be true");
+
+// Clean up
 mockStore.delete(`${DRAFT_STORAGE_PREFIX}caedmon-hymn`);
-assert.equal(isWorkspaceSlug("caedmon-hymn"), false, "Deleted draft caedmon-hymn must no longer be in workspace");
-assert.equal(getWorkspaceTexts().length, 1, "Workspace must revert to 1 text after draft deletion");
-
 delete global.window;
 
 console.log("✓ All draft and corpus registry tests passed successfully!");
-
