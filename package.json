@@ -12,8 +12,11 @@
     "compile:beowulf": "node scripts/compile-beowulf.mjs",
     "prebuild": "npm run sync:dictionary && npm run compile:content && npm run compile:beowulf && npm run build:tina",
     "build": "NODE_ENV=production next build",
-    "build:tina": "tinacms build --skip-cloud-checks",
+    "build:tina": "tinacms build --skip-cloud-checks --datalayer-port 9123",
     "build:tina:cloud": "tinacms build",
+    "build:cf": "npm run prebuild && opennextjs-cloudflare build",
+    "preview": "npm run build:cf && opennextjs-cloudflare preview",
+    "deploy": "npm run build:cf && wrangler deploy",
     "lint": "eslint .",
     "audit:deadcode": "knip",
     "test:smoke": "node scripts/smoke-test.mjs",
@@ -34,12 +37,20 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.7",
+    "@opennextjs/cloudflare": "^1.20.8",
     "@types/node": "22.15.30",
     "@types/react": "19.1.6",
     "@types/react-dom": "19.1.2",
     "eslint": "9.35.0",
     "eslint-config-next": "15.5.27",
     "knip": "^6.39.0",
-    "typescript": "5.9.2"
+    "typescript": "5.9.2",
+    "wrangler": "^4.147.0"
+  },
+  "allowScripts": {
+    "esbuild@0.25.4": true,
+    "esbuild@0.28.2": true,
+    "esbuild@0.28.1": true,
+    "workerd@1.20261001.1": true
   }
 }

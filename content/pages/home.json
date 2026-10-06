@@ -3,7 +3,7 @@
   "title": "Glossy · Interlinear Texts",
   "eyebrow": "Interlinear Texts",
   "heading": "Read a text or work on its glosses.",
-  "description": "The reader and editing workspace are separate. Choose a text below to read the published version, open its live gloss editor, or start glossing a new Old English text (e.g. Beowulf, Cædmon's Hymn).",
+  "description": "",
   "primaryAction": {
     "label": "+ Gloss a New Text",
     "href": "/edit/new"

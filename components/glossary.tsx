@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, type ReactNode } from "react";
 import type { DictionaryEntry } from "../lib/types";
+import { renderLinguisticGloss } from "./annotated-passage";
 
 type GlossaryContextType = {
   activeTerm: DictionaryEntry | null;
@@ -88,11 +89,7 @@ export function GlossWord({ text, dictEntry }: GlossWordProps) {
       >
         {text}
       </button>
-      {sourceGloss ? (
-        <span className="source-gloss-token" aria-hidden="true">
-          {sourceGloss}
-        </span>
-      ) : null}
+      {sourceGloss ? renderLinguisticGloss(sourceGloss) : null}
     </span>
   );
 }
@@ -134,16 +131,9 @@ export function GlossaryPanel({
           </button>
         </div>
 
-        {activeTerm.sourceGloss ? (
+        {activeTerm.morphemes && activeTerm.morphemes.length > 1 ? (
           <div className="gloss-field">
-            <span className="field-label">Source gloss</span>
-            <p className="source-gloss-token">{activeTerm.sourceGloss}</p>
-          </div>
-        ) : null}
-
-        {activeTerm.morphemes && activeTerm.morphemes.length > 0 ? (
-          <div className="gloss-field">
-            <span className="field-label">Morphemes</span>
+            <span className="field-label">Morphological gloss</span>
             <div className="morpheme-line is-expanded">
               {activeTerm.morphemes.map((m, i) => (
                 <span key={i} className="morpheme-chip">
@@ -151,6 +141,11 @@ export function GlossaryPanel({
                 </span>
               ))}
             </div>
+          </div>
+        ) : activeTerm.sourceGloss ? (
+          <div className="gloss-field">
+            <span className="field-label">Morphological gloss</span>
+            <p>{renderLinguisticGloss(activeTerm.sourceGloss)}</p>
           </div>
         ) : null}
 
@@ -161,7 +156,9 @@ export function GlossaryPanel({
           </div>
         ) : null}
 
-        {activeTerm.definition ? (
+        {activeTerm.definition &&
+        activeTerm.definition.trim() !== activeTerm.sourceGloss?.trim() &&
+        !/^[A-Z0-9.\-\s]+$/.test(activeTerm.definition.trim()) ? (
           <div className="gloss-field">
             <span className="field-label">Definition</span>
             <p>{activeTerm.definition}</p>

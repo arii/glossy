@@ -1,4 +1,5 @@
 import type { GlossRecord } from "../lib/types";
+import { renderLinguisticGloss } from "./annotated-passage";
 
 type GlossPopupProps = {
   record: GlossRecord;
@@ -7,6 +8,18 @@ type GlossPopupProps = {
 
 export function GlossPopup({ record, onClose }: GlossPopupProps) {
   const { analysis } = record;
+  const isMultiMorpheme = analysis.morphemes.length > 1;
+  const formattedFeatures = formatFeatures(analysis.features);
+
+  // Hide definitions that merely restate the Leipzig gloss (e.g. "king-DAT.SG", "DET.DEF.DAT.SG.N")
+  const rawDef = analysis.definition?.trim() ?? "";
+  const isDefinitionRedundant =
+    !rawDef ||
+    rawDef === record.sourceGloss.trim() ||
+    rawDef === record.surface.trim() ||
+    /(^|[-.])[A-Z0-9]{2,}(?=$|[-.])/.test(rawDef);
+
+  const cleanDefinition = isDefinitionRedundant ? null : rawDef;
 
   return (
     <aside
@@ -29,6 +42,7 @@ export function GlossPopup({ record, onClose }: GlossPopupProps) {
           ×
         </button>
       </div>
+
       {analysis.phonetic && (
         <p className="phonetic">
           <span className="field-label">Pronunciation</span>
@@ -45,48 +59,50 @@ export function GlossPopup({ record, onClose }: GlossPopupProps) {
           )}
         </p>
       )}
+
+      {/* Morphological Analysis: Single consolidated line */}
       <div className="gloss-field">
-        <p className="field-label">Source gloss</p>
-        <p>{record.sourceGloss}</p>
+        <p className="field-label">Morphological gloss</p>
+        {isMultiMorpheme ? (
+          <div className="morpheme-line is-expanded">
+            {analysis.morphemes.map((morpheme, index) => (
+              <span
+                className="morpheme-chip"
+                key={`${morpheme.form}-${index}`}
+                title={explainGloss(morpheme.gloss)}
+              >
+                {morpheme.form} = {morpheme.gloss}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <p style={{ margin: "0.2rem 0 0", fontSize: "0.95rem" }}>
+            {renderLinguisticGloss(record.sourceGloss)}
+          </p>
+        )}
       </div>
-      <div className="gloss-field">
-        <p className="field-label">Morphemes</p>
-        <p
-          className={`morpheme-line${analysis.morphemes.length > 1 ? " is-expanded" : ""}`}
-          aria-label={
-            analysis.morphemes.length > 1
-              ? `${analysis.morphemes.length} morphemes`
-              : "One morpheme"
-          }
-        >
-          {analysis.morphemes.map((morpheme, index) => (
-            <span
-              className="morpheme-chip"
-              key={`${morpheme.form}-${index}`}
-              title={explainGloss(morpheme.gloss)}
-            >
-              {index > 0 && " · "}
-              {morpheme.form} = {morpheme.gloss}
-            </span>
-          ))}
-        </p>
-      </div>
-      <div className="gloss-field">
-        <p className="field-label">Inflection</p>
-        <p>{formatFeatures(analysis.features)}</p>
-      </div>
-      {analysis.definition && (
+
+      {formattedFeatures ? (
+        <div className="gloss-field">
+          <p className="field-label">Inflection</p>
+          <p>{formattedFeatures}</p>
+        </div>
+      ) : null}
+
+      {cleanDefinition && (
         <div className="gloss-field">
           <p className="field-label">Definition</p>
-          <p>{analysis.definition}</p>
+          <p>{cleanDefinition}</p>
         </div>
       )}
+
       {analysis.historicalNote && (
         <div className="gloss-field">
           <p className="field-label">Language note</p>
           <p>{analysis.historicalNote}</p>
         </div>
       )}
+
       {analysis.wiktionaryUrl && (
         <a className="reference-link" href={analysis.wiktionaryUrl} target="_blank" rel="noreferrer">
           Open in Wiktionary <span aria-hidden="true">↗</span>

@@ -9,6 +9,37 @@ type AnnotatedPassageProps = {
   onTriggerFocus: (id: string) => void;
 };
 
+export function renderLinguisticGloss(sourceGloss: string) {
+  if (!sourceGloss) return null;
+  const parts = sourceGloss.split(/([\-\.])/).filter(Boolean);
+  return (
+    <span className="source-gloss-token">
+      {parts.map((part, index) => {
+        if (part === "-" || part === ".") {
+          return (
+            <span key={index} className="gloss-punct">
+              {part}
+            </span>
+          );
+        }
+        const isGrammar = /^(?:[0-9]+[A-Z]+|[A-Z0-9]+)$/.test(part);
+        if (isGrammar) {
+          return (
+            <span key={index} className="gloss-tag">
+              {part}
+            </span>
+          );
+        }
+        return (
+          <span key={index} className="gloss-root">
+            {part}
+          </span>
+        );
+      })}
+    </span>
+  );
+}
+
 export function AnnotatedPassage({
   segments,
   records,
@@ -43,7 +74,6 @@ export function AnnotatedPassage({
             return <span key={`${segment.glossId}-${index}`}>{segment.value}</span>;
           }
 
-          const tags = record.sourceGloss.split(".");
           const isSelected = selectedId === record.id;
 
           return (
@@ -72,26 +102,11 @@ export function AnnotatedPassage({
               >
                 {segment.value}
               </button>
-              <span className="source-gloss-token">
-                {tags.map((tag, tagIndex) => {
-                  const isGrammar = /^[A-Z0-9\-]+$/.test(tag);
-                  return (
-                    <span
-                      key={tagIndex}
-                      className={`tag-badge ${isGrammar ? "is-grammatical" : "is-lexical"}`}
-                    >
-                      {tag}
-                    </span>
-                  );
-                })}
-              </span>
+              {renderLinguisticGloss(record.sourceGloss)}
             </span>
           );
         })}
       </div>
-      <p className="source-gloss-line sr-only" aria-label="Source gloss line">
-        Source gloss line
-      </p>
     </div>
   );
 }

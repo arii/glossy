@@ -5,11 +5,7 @@ import Link from "next/link";
 import { SiteNav } from "../components/site-nav";
 import { TextDirectory, type TextChoice } from "../components/text-directory";
 import { SiteFooter } from "../components/site-footer";
-import {
-  BookOpen,
-  Code2,
-  ExternalLink,
-} from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { useTina, tinaField } from "tinacms/dist/react";
 import homeContentData from "../content/pages/home.json";
 
@@ -138,13 +134,6 @@ export default function Home() {
 
   const activeToken = HERO_PREVIEW_TOKENS[selectedTokenIdx];
 
-  const scrollToCorpus = () => {
-    const el = document.getElementById("corpus-directory");
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
-
   return (
     <>
       <SiteNav current="home" />
@@ -187,20 +176,21 @@ export default function Home() {
               {pageData.heading || "Interlinear Glossing & Morphology for Old English"}
             </h1>
 
-            <p
-              data-tina-field={tinaField(pageData, "description")}
-              style={{
-                fontSize: "1.05rem",
-                lineHeight: 1.65,
-                color: "var(--muted-ink)",
-                margin: "0 0 1.5rem",
-                maxWidth: "34rem",
-              }}
-            >
-              {pageData.description || "Read, edit, and publish morphologically tagged historical texts with standardized Leipzig three-tier alignment, canonical dictionary headwords, and compilable LaTeX gb4e export."}
-            </p>
+            {pageData.description ? (
+              <p
+                data-tina-field={tinaField(pageData, "description")}
+                style={{
+                  fontSize: "1.05rem",
+                  lineHeight: 1.65,
+                  color: "var(--muted-ink)",
+                  margin: "0 0 1.5rem",
+                  maxWidth: "34rem",
+                }}
+              >
+                {pageData.description}
+              </p>
+            ) : null}
 
-            {/* Primary Action Button Row */}
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center", marginBottom: "1.5rem" }}>
               <Link
                 href={pageData.primaryAction?.href || "/edit/new"}
@@ -220,28 +210,8 @@ export default function Home() {
                   transition: "all 0.15s ease",
                 }}
               >
-                <span>{pageData.primaryAction?.label || "+ Ingest & Gloss New Text"}</span>
+                <span>{pageData.primaryAction?.label || "+ Gloss a New Text"}</span>
               </Link>
-
-              <button
-                type="button"
-                onClick={scrollToCorpus}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "0.4rem",
-                  padding: "0.7rem 1.25rem",
-                  borderRadius: "0.35rem",
-                  background: "#fbf7ee",
-                  border: "1px solid var(--rule)",
-                  color: "var(--ink)",
-                  fontSize: "0.95rem",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                }}
-              >
-                <span>Explore Corpus ↓</span>
-              </button>
             </div>
           </div>
 
@@ -384,77 +354,10 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ================================================================ */}
-        {/* CORE CAPABILITY PILLARS SECTION                                  */}
-        {/* ================================================================ */}
-        <section style={{ padding: "3rem 0", borderBottom: "1px solid var(--rule)" }}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(22rem, 1fr))",
-              gap: "1.5rem",
-            }}
-          >
-            {/* Pillar 1: Leipzig 3-Tier Morphology */}
-            <div
-              style={{
-                background: "var(--surface)",
-                border: "1px solid var(--rule)",
-                borderRadius: "0.5rem",
-                padding: "1.5rem",
-                boxShadow: "0 0.25rem 1rem rgba(64, 47, 29, 0.03)",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
-                <div style={{ background: "#f3eadb", padding: "0.45rem", borderRadius: "0.35rem", color: "var(--accent)" }}>
-                  <BookOpen style={{ width: "1.1rem", height: "1.1rem" }} />
-                </div>
-                <h3 style={{ margin: 0, fontSize: "1.05rem", fontFamily: "'Charis SIL', Georgia, serif", color: "var(--ink)" }}>
-                  Leipzig Three-Tier Glossing
-                </h3>
-              </div>
-              <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--muted-ink)", lineHeight: 1.6 }}>
-                Full alignment between surface Old English, morphological gloss tags (42 manuscript abbreviations), 
-                and free modern translations, with interactive chip inspection.
-              </p>
-            </div>
-
-            {/* Pillar 2: Canonical Old English Lemmatizer */}
-            <div
-              style={{
-                background: "var(--surface)",
-                border: "1px solid var(--rule)",
-                borderRadius: "0.5rem",
-                padding: "1.5rem",
-                boxShadow: "0 0.25rem 1rem rgba(64, 47, 29, 0.03)",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
-                <div style={{ background: "#f3eadb", padding: "0.45rem", borderRadius: "0.35rem", color: "var(--accent)" }}>
-                  <Code2 style={{ width: "1.1rem", height: "1.1rem" }} />
-                </div>
-                <h3 style={{ margin: 0, fontSize: "1.05rem", fontFamily: "'Charis SIL', Georgia, serif", color: "var(--ink)" }}>
-                  Canonical Lemmatization Engine
-                </h3>
-              </div>
-              <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--muted-ink)", lineHeight: 1.6 }}>
-                Strict lexicographical standards: masculine nominative strong adjectives, infinitive verbs, 
-                and direct Wiktionary etymological links validated across all 1,716 corpus tokens.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* ================================================================ */}
-        {/* CORPUS DIRECTORY: Responsive Multi-Column Card Grid              */}
-        {/* ================================================================ */}
-        <section id="corpus-directory" style={{ padding: "3rem 0 1rem" }}>
-          <div style={{ marginBottom: "1.5rem" }}>
-            <p className="eyebrow" style={{ margin: "0 0 0.25rem" }}>Digital Manuscripts</p>
-            <h2 style={{ margin: 0, fontSize: "1.65rem", fontFamily: "'Charis SIL', Georgia, serif", color: "var(--ink)" }}>
-              Old English Corpus &amp; Editions
-            </h2>
-          </div>
+        <section id="corpus-directory" style={{ padding: "2.5rem 0 1rem" }}>
+          <h2 style={{ margin: "0 0 1.5rem", fontSize: "1.65rem", fontFamily: "'Charis SIL', Georgia, serif", color: "var(--ink)" }}>
+            Old English Corpus &amp; Editions
+          </h2>
 
           <TextDirectory initialChoices={choices} />
         </section>

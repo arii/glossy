@@ -2,8 +2,9 @@
 .env
 .env.*
 !.env.example
-node_modules/
 .next/
-*.tsbuildinfo
+node_modules/
+.open-next
 /public/admin/
 /tina/__generated__/
+*.tsbuildinfo
