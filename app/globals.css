@@ -258,6 +258,10 @@ h2 {
   margin-right: 0.55em;
   margin-bottom: 0.9rem;
   line-height: 1.3;
+  break-inside: avoid;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .inline-gloss-unit .gloss-trigger {
@@ -296,7 +300,13 @@ h2 {
 }
 
 .gloss-trigger {
-  display: inline;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 44px;
+  min-width: 44px;
+  box-sizing: border-box;
+  position: relative;
   margin: 0;
   padding: 0 0.12em;
   color: inherit;
@@ -307,6 +317,18 @@ h2 {
   line-height: inherit;
   cursor: pointer;
   transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.gloss-trigger::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 44px;
+  min-height: 44px;
+  width: 100%;
+  height: 100%;
 }
 
 .gloss-trigger.is-multi-morpheme {
@@ -397,9 +419,18 @@ h2 {
   font-style: italic;
 }
 
+.sheet-handle {
+  display: none;
+}
+
 .close-button {
-  width: 2rem;
-  height: 2rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: var(--muted-ink);
   border: 1px solid #cdbba4;
   border-radius: 50%;
@@ -407,6 +438,7 @@ h2 {
   font-size: 1.4rem;
   line-height: 1;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .close-button:hover,
@@ -827,10 +859,41 @@ h2 {
     animation: sheet-in 180ms ease-out;
   }
 
+  .sheet-handle {
+    display: block;
+    width: 2.25rem;
+    height: 0.25rem;
+    background: #dfcfb8;
+    border-radius: 1rem;
+    margin: 0 auto 0.65rem;
+  }
+
   .gloss-sidebar-container.has-selection .gloss-popup {
-    max-height: min(70vh, 34rem);
+    max-height: min(42vh, 22rem);
     overflow-y: auto;
     border-radius: 0.75rem;
+    padding: 0.85rem 1rem;
+  }
+
+  .gloss-sidebar-container.has-selection .popup-heading {
+    padding-bottom: 0.5rem;
+  }
+
+  .gloss-sidebar-container.has-selection .popup-heading h2 {
+    font-size: 1.25rem;
+  }
+
+  .gloss-sidebar-container.has-selection .phonetic {
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .gloss-sidebar-container.has-selection .gloss-field {
+    margin-top: 0.5rem;
+  }
+
+  .gloss-sidebar-container.has-selection .reference-link {
+    margin-top: 0.75rem;
   }
 }
 
