@@ -23,7 +23,7 @@ try {
   serverProcess = spawn(
     "npx",
     serveOut ? ["serve", "out", "-p", "3000"] : ["next", "dev", "-p", "3000"],
-    { stdio: "ignore" }
+    { stdio: "inherit" }
   );
 
   let ready = false;
@@ -62,21 +62,15 @@ async function check(path, expectedText) {
 try {
   const landing = await check("/", [
     "Read a text or work on its glosses.",
-    "/read/ohthere-wulfstan",
-    "/edit/ohthere-wulfstan",
-    "/read/beowulf-prologue",
-    "/edit/beowulf-prologue",
-    "/read/caedmon-hymn",
-    "/edit/caedmon-hymn",
-    "/read/the-wanderer",
-    "/edit/the-wanderer",
+    "/read/ohthere",
+    "/edit/ohthere",
   ]);
   const cardCount = [...landing.matchAll(/class="workspace-choice-card"/gu)].length;
-  if (cardCount < 4) {
-    throw new Error(`Expected at least 4 texts on the landing page, found ${cardCount}.`);
+  if (cardCount < 1) {
+    throw new Error(`Expected at least 1 text on the landing page, found ${cardCount}.`);
   }
 
-  const reader = await check("/read/ohthere-wulfstan", [
+  const reader = await check("/read/ohthere", [
     "The voyages of Ohthere and Wulfstan",
     "Ohthere",
     "Ohthere said to his lord, King Alfred",
@@ -106,7 +100,7 @@ try {
     throw new Error("The unreliable browser speech control should not appear in the reader.");
   }
 
-  const editorOhthere = await check("/edit/ohthere-wulfstan", [
+  const editorOhthere = await check("/edit/ohthere", [
     "Editing workspace",
     "Live preview",
     "Source form",

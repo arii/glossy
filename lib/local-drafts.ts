@@ -127,8 +127,13 @@ export function readDraft(slug: string): StoredDraft | null {
                     definition: (tok.explanation as string) || (tok.definition as string) || "",
                     phonetic: (tok.ipa as string) || (tok.phonetic as string) || "",
                     wiktionaryUrl: tok.wiktionaryUrl as string | undefined,
-                    morphemes:
-                      (tok.morphemes as Array<{ original: string; gloss: string }>) || [],
+                    morphemes: (
+                      (tok.morphemes as Array<{ original?: string; form?: string; morpheme?: string; gloss: string }>) || []
+                    ).map((m, mIdx) => ({
+                      id: `${(tok.id as string) || "w"}-m-${mIdx}`,
+                      form: m.form || m.original || m.morpheme || "",
+                      gloss: m.gloss || "",
+                    })),
                     features: (tok.inflections as Record<string, string>) || {},
                   },
                 })),

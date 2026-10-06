@@ -29,9 +29,9 @@ export default function NotFound() {
     }
 
     if (slug) {
-      const envelope = getLocalDraft(slug);
-      if (envelope?.doc && Array.isArray(envelope.doc.sentences) && envelope.doc.sentences.length > 0) {
-        setDraftDoc(envelope.doc);
+      const doc = getLocalDraft(slug);
+      if (doc && Array.isArray(doc.sentences) && doc.sentences.length > 0) {
+        setDraftDoc(doc);
         setRouteMode(mode);
       }
     }

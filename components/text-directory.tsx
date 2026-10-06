@@ -9,10 +9,9 @@ import {
   Info,
   MoreVertical,
   Upload,
-  Plus,
-  RotateCcw,
-  Lock,
   Search,
+  Plus,
+  Lock,
 } from "lucide-react";
 import { AttributionModal } from "./attribution-modal";
 import { safeJsonParse } from "../lib/safe-json";
@@ -20,9 +19,6 @@ import type { TextDocument } from "../lib/types";
 import {
   listLocalDrafts,
   deleteLocalDraft,
-  hideBuiltInText,
-  getHiddenSlugs,
-  restoreAllHiddenTexts,
   createLocalDocument,
 } from "../lib/local-drafts";
 import { isProtectedSlug, getBuiltInMetadata } from "../lib/corpus-registry";
@@ -47,16 +43,12 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
   const [activeModalChoice, setActiveModalChoice] = useState<TextChoice | null>(null);
   const [openMenuSlug, setOpenMenuSlug] = useState<string | null>(null);
   const [filterQuery, setFilterQuery] = useState<string>("");
-  const [hiddenDefaultCount, setHiddenDefaultCount] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const reloadCorpus = useCallback(() => {
     if (typeof window === "undefined") return;
 
     try {
-      const deletedSlugs = new Set<string>(getHiddenSlugs());
-      setHiddenDefaultCount(deletedSlugs.size);
-
       const drafts = listLocalDrafts();
       const customChoices: TextChoice[] = [];
       const localSlugsWithEdits = new Set<string>();
@@ -87,17 +79,15 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
         }
       }
 
-      const visibleInitial = initialChoices
-        .filter((c) => !deletedSlugs.has(c.slug))
-        .map((c) => {
-          const meta = getBuiltInMetadata(c.slug);
-          return {
-            ...c,
-            author: c.author || meta?.author,
-            witness: c.witness || meta?.witness || c.source,
-            hasLocalDraft: localSlugsWithEdits.has(c.slug) || localSlugsWithEdits.has(meta?.slug || "") || localSlugsWithEdits.has(meta?.textId || ""),
-          };
-        });
+      const visibleInitial = initialChoices.map((c) => {
+        const meta = getBuiltInMetadata(c.slug);
+        return {
+          ...c,
+          author: c.author || meta?.author,
+          witness: c.witness || meta?.witness || c.source,
+          hasLocalDraft: localSlugsWithEdits.has(c.slug) || localSlugsWithEdits.has(meta?.slug || "") || localSlugsWithEdits.has(meta?.textId || ""),
+        };
+      });
 
       setChoices([...customChoices, ...visibleInitial]);
     } catch {
@@ -117,49 +107,24 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
   }, []);
 
   const handleDelete = (choice: TextChoice) => {
-    if (isProtectedSlug(choice.slug)) {
-      alert("This canonical text is part of the core corpus and cannot be deleted.");
-      return;
-    }
-
     if (choice.isLocalOnly) {
+      if (isProtectedSlug(choice.slug)) {
+        alert("This canonical text is part of the core corpus and cannot be deleted.");
+        return;
+      }
       const confirmed = window.confirm(
         `Delete local draft "${choice.title}"? This cannot be undone.`
       );
       if (!confirmed) return;
       deleteLocalDraft(choice.slug);
-    } else {
+      setChoices((prev) => prev.filter((item) => item.slug !== choice.slug));
+    } else if (choice.hasLocalDraft) {
       const confirmed = window.confirm(
-        `Hide "${choice.title}" on this device? (You can restore default texts at any time.)`
+        `Discard all local edits for "${choice.title}" and revert to the master edition?`
       );
       if (!confirmed) return;
-      hideBuiltInText(choice.slug);
       deleteLocalDraft(choice.slug);
-      setHiddenDefaultCount((prev) => prev + 1);
-    }
-
-    setChoices((prev) => prev.filter((item) => item.slug !== choice.slug));
-  };
-
-  const handleRevertDraft = (choice: TextChoice) => {
-    const confirmed = window.confirm(
-      `Discard local draft edits for "${choice.title}" and revert to the canonical edition?`
-    );
-    if (!confirmed) return;
-
-    deleteLocalDraft(choice.slug);
-    setChoices((prev) =>
-      prev.map((c) => (c.slug === choice.slug ? { ...c, hasLocalDraft: false } : c))
-    );
-  };
-
-  const handleRestoreDefaults = () => {
-    try {
-      restoreAllHiddenTexts();
-      setHiddenDefaultCount(0);
       reloadCorpus();
-    } catch {
-      alert("Error restoring default corpus texts.");
     }
   };
 
@@ -307,29 +272,6 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
           </div>
 
           <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
-            {hiddenDefaultCount > 0 && (
-              <button
-                type="button"
-                onClick={handleRestoreDefaults}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "0.35rem",
-                  padding: "0.5rem 0.75rem",
-                  borderRadius: "0.35rem",
-                  border: "1px solid var(--rule)",
-                  background: "#fbf7ee",
-                  color: "var(--ink)",
-                  fontSize: "0.82rem",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                }}
-                title="Restore hidden canonical texts"
-              >
-                <RotateCcw style={{ width: "0.8rem", height: "0.8rem" }} /> Restore Hidden ({hiddenDefaultCount})
-              </button>
-            )}
-
             <input
               type="file"
               ref={fileInputRef}
@@ -392,7 +334,7 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
       >
         {filteredChoices.map((choice) => {
           const isMenuOpen = openMenuSlug === choice.slug;
-          const isItemProtected = isProtectedSlug(choice.slug);
+          const isItemProtected = isProtectedSlug(choice.slug) && !choice.isLocalOnly;
           const meta = getBuiltInMetadata(choice.slug);
           const displayAuthor = choice.author || meta?.author || "Anonymous";
           const displayWitness = choice.witness || meta?.witness || choice.source || "";
@@ -661,32 +603,7 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
                         <Info style={{ width: "0.8rem", height: "0.8rem" }} /> Scholarly Citation
                       </button>
 
-                      {choice.hasLocalDraft && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleRevertDraft(choice);
-                            setOpenMenuSlug(null);
-                          }}
-                          style={{
-                            width: "100%",
-                            textAlign: "left",
-                            padding: "0.45rem 0.75rem",
-                            fontSize: "0.8rem",
-                            background: "transparent",
-                            border: "none",
-                            color: "var(--accent)",
-                            cursor: "pointer",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.4rem",
-                          }}
-                        >
-                          <RotateCcw style={{ width: "0.8rem", height: "0.8rem" }} /> Discard Local Draft
-                        </button>
-                      )}
-
-                      {!isItemProtected && (
+                      {(choice.isLocalOnly || choice.hasLocalDraft) && (
                         <button
                           type="button"
                           onClick={() => {
@@ -708,7 +625,7 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
                           }}
                         >
                           <Trash2 style={{ width: "0.8rem", height: "0.8rem" }} />{" "}
-                          {choice.isLocalOnly ? "Delete Local Draft" : "Hide on This Device"}
+                          {choice.isLocalOnly ? "Delete Local Draft" : "Revert edits / Discard Draft"}
                         </button>
                       )}
                     </div>

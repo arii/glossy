@@ -81,9 +81,9 @@ function ReadingPageInner({
     } catch {}
 
     try {
-      const draftEnv = getLocalDraft(selectedSlug);
-      if (draftEnv?.doc) {
-        setLocalDraftText(draftEnv.doc);
+      const draftDoc = getLocalDraft(selectedSlug);
+      if (draftDoc) {
+        setLocalDraftText(draftDoc);
       } else {
         setLocalDraftText(null);
       }

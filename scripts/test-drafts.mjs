@@ -5,7 +5,7 @@ console.log("Running Drafts & Registry Unit Tests...");
 
 // Test 1: Built-in corpus checks
 assert.ok(Array.isArray(BUILT_IN_CORPUS), "BUILT_IN_CORPUS must be an array");
-assert.equal(BUILT_IN_CORPUS.length, 4, "BUILT_IN_CORPUS should have exactly 4 core texts");
+assert.equal(BUILT_IN_CORPUS.length, 1, "BUILT_IN_CORPUS should have exactly 1 core text at startup");
 assert.equal(isBuiltInSlug("ohthere"), true, "ohthere should be recognized as built-in");
 assert.equal(isBuiltInSlug("ohthere-wulfstan"), true, "ohthere-wulfstan should be recognized as built-in");
 assert.equal(isBuiltInSlug("beowulf-prologue"), true, "beowulf-prologue should be recognized as built-in");

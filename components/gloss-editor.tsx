@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { SiteNav } from "./site-nav";
 import { SiteFooter } from "./site-footer";
@@ -8,6 +8,7 @@ import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
 import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
 import { safeJsonStringify } from "../lib/safe-json";
 import { isProtectedSlug } from "../lib/corpus-registry";
+import { computeDocumentHash } from "../lib/local-drafts";
 import type {
   TextDocument,
   ReadingSentence,
@@ -240,6 +241,16 @@ export function GlossEditor({
 
   const storageKey = `glossy_draft_${initialDocument.slug || initialDocument.textId || "ohthere"}`;
 
+  // Compute baseline hash from the normalized version of initialDocument
+  const baselineHash = useMemo(() => {
+    try {
+      const normalized = editorDocToTextDocument(textDocumentToEditorDoc(initialDocument));
+      return computeDocumentHash(normalized);
+    } catch {
+      return "";
+    }
+  }, [initialDocument]);
+
   // Restore from initial master document
   const loadFromMasterTex = useCallback(async () => {
     setIsLoading(true);
@@ -249,7 +260,17 @@ export function GlossEditor({
       const dataStr = safeJsonStringify(fallback);
       setSavedSnapshot(dataStr);
       try {
-        window.localStorage.setItem(storageKey, dataStr);
+        const slug = initialDocument.slug || initialDocument.textId || "ohthere";
+        window.localStorage.removeItem(storageKey);
+        window.localStorage.removeItem(`glossy_draft_${slug}`);
+        window.localStorage.removeItem(`glossy:v1:draft:${slug}`);
+        // Also remove from pending manifest
+        const pendingRaw = window.localStorage.getItem("glossy_pending_drafts");
+        if (pendingRaw) {
+          const pending = JSON.parse(pendingRaw);
+          delete pending[slug];
+          window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
+        }
       } catch {}
       if (fallback.sentences.length > 0) {
         setActiveSentenceId(fallback.sentences[0].id);
@@ -337,11 +358,42 @@ export function GlossEditor({
   useEffect(() => {
     if (!documentState || isLoading) return;
 
+    // Skip autosaving if no edits have actually been made compared to the baseline master edition
+    const currentDoc = editorDocToTextDocument(documentState);
+    const currentHash = computeDocumentHash(currentDoc);
+
+    if (currentHash === baselineHash) {
+      try {
+        const slug = documentState.slug || "ohthere";
+        window.localStorage.removeItem(storageKey);
+        window.localStorage.removeItem(`glossy_draft_${slug}`);
+        window.localStorage.removeItem(`glossy:v1:draft:${slug}`);
+        // Also remove from pending manifest if present
+        const pendingRaw = window.localStorage.getItem("glossy_pending_drafts");
+        if (pendingRaw) {
+          const pending = JSON.parse(pendingRaw);
+          if (pending[slug]) {
+            delete pending[slug];
+            window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
+          }
+        }
+      } catch {}
+      setAutosaveStatus("idle");
+      return;
+    }
+
+    const currentStr = safeJsonStringify(documentState);
+    if (currentStr === savedSnapshot) {
+      setAutosaveStatus("idle");
+      return;
+    }
+
     setAutosaveStatus("saving");
     const timer = window.setTimeout(() => {
-      const serialized = safeJsonStringify(documentState);
       try {
-        window.localStorage.setItem(storageKey, serialized);
+        window.localStorage.setItem(storageKey, currentStr);
+        // Also save text document format for sync consistency
+        window.localStorage.setItem(`glossy_draft_${documentState.slug}`, safeJsonStringify(currentDoc));
       } catch (e) {
         console.warn("LocalStorage quota exceeded, skipping local cache:", e);
       }
@@ -349,7 +401,7 @@ export function GlossEditor({
     }, 300);
 
     return () => window.clearTimeout(timer);
-  }, [documentState, isLoading, storageKey]);
+  }, [documentState, isLoading, storageKey, savedSnapshot, baselineHash]);
 
   // Find active sentence and active token
   const activeSentence = documentState?.sentences.find((s) => s.id === activeSentenceId);
@@ -435,23 +487,45 @@ export function GlossEditor({
     [activeTokenId],
   );
 
-  // Discard changes to restore initial snapshot
+  // Discard changes to restore initial snapshot and completely remove draft
   const discardChanges = () => {
+    const confirmed = window.confirm(
+      `Are you sure you want to discard all local edits and revert to the master edition? This will clear your local draft.`
+    );
+    if (!confirmed) return;
+
     try {
-      const parsed = JSON.parse(savedSnapshot) as EditorDocument;
-      setDocumentState(parsed);
-      if (parsed.sentences.length > 0) {
-        setActiveSentenceId(parsed.sentences[0].id);
-        setActiveTokenId(parsed.sentences[0].tokens[0]?.id || "");
+      const fallback = textDocumentToEditorDoc(initialDocument);
+      setDocumentState(fallback);
+      setSavedSnapshot(safeJsonStringify(fallback));
+
+      try {
+        const slug = initialDocument.slug || initialDocument.textId || "ohthere";
+        window.localStorage.removeItem(storageKey);
+        window.localStorage.removeItem(`glossy_draft_${slug}`);
+        window.localStorage.removeItem(`glossy:v1:draft:${slug}`);
+        // Also remove from pending manifest
+        const pendingRaw = window.localStorage.getItem("glossy_pending_drafts");
+        if (pendingRaw) {
+          const pending = JSON.parse(pendingRaw);
+          delete pending[slug];
+          window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
+        }
+      } catch {}
+
+      if (fallback.sentences.length > 0) {
+        setActiveSentenceId(fallback.sentences[0].id);
+        setActiveTokenId(fallback.sentences[0].tokens[0]?.id || "");
       }
       setSaveStatus({
         kind: "success",
-        message: "Edits successfully discarded. Reverted to previous save.",
+        message: "All local edits discarded. Reverted completely to the authoritative master edition.",
       });
+      setAutosaveStatus("idle");
     } catch {
       setSaveStatus({
         kind: "error",
-        message: "Failed to discard edits; saved state is invalid.",
+        message: "Failed to discard edits.",
       });
     }
   };
@@ -892,14 +966,6 @@ export function GlossEditor({
             )}
 
             <div style={{ display: "inline-flex", gap: "0.4rem", flexWrap: "wrap", alignItems: "center" }}>
-              <button
-                type="button"
-                onClick={() => loadFromMasterTex()}
-                className="workspace-link"
-              >
-                <RefreshCw style={{ width: "0.85rem", height: "0.85rem", marginRight: "0.35rem" }} /> Reload Master .tex
-              </button>
-
               <button
                 type="button"
                 onClick={discardChanges}

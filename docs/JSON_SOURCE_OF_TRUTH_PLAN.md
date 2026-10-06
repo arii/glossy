@@ -68,38 +68,53 @@ export interface LinguisticAnalysis {
 ## 3. Work Breakdown & Implementation Steps
 
 ### Phase 1: Pure JSON Persistence in TinaCMS & Local Drafts
-- **Step 1.1 — Remove TeX Dual-Write from Save / Commit**:
+- [x] **Step 1.1 — Remove TeX Dual-Write from Save / Commit**:
   - In `lib/tina-sync.ts` and `components/gloss-editor.tsx`, ensure the GraphQL mutation updates only the `content/texts/<slug>.json` file.
   - Remove all endpoints and routines attempting to write back to `references/<slug>.tex`.
-- **Step 1.2 — Unified Storage Envelopes**:
+- [x] **Step 1.2 — Unified Storage Envelopes**:
   - `lib/local-drafts.ts` stores only `StoredDraft = { version: 1; doc: TextDocument; baseHash: string; updatedAt: string }`.
   - Automatic migration cleanly transforms legacy storage shapes into `TextDocument`.
+- [x] **Step 1.3 — Remove Redundant UI Elements**:
+  - Removed "Reload Master .tex" button from the editoractions toolbar, streamlining UI focus entirely onto local draft status and active edits.
 
 ### Phase 2: On-Demand Dynamic LaTeX Export
-- **Step 2.1 — Deterministic `gb4e` Generator**:
+- [x] **Step 2.1 — Deterministic `gb4e` Generator**:
   - Maintain and test `data/latex-export.ts` (`exportToGb4eLatex(doc: TextDocument): string`).
   - When the user clicks **"Export LaTeX"**, the system generates the `.tex` payload dynamically in-memory and triggers a client-side blob download.
 
 ### Phase 3: Ingestion Pipeline for New Texts
-- **Step 3.1 — Multi-Mode Ingestion in `/edit/new`**:
+- [x] **Step 3.1 — Multi-Mode Ingestion in `/edit/new`**:
   - **Mode A: Plain Text & Parallel Translation**:
     - User provides Old English text lines and modern English translation lines.
     - System tokenizes, runs rule-based Old English lemmatization, and outputs valid `TextDocument` JSON.
   - **Mode B: LaTeX / `gb4e` Snippets**:
     - User pastes `\ex{\gll ... \\ ... \\ \glt ...}` blocks.
     - Parser (`lib/gb4e.ts`) extracts tokens, morphemes, glosses, and translations, outputting canonical `TextDocument` JSON.
-- **Step 3.2 — Direct Route to Editor**:
+- [x] **Step 3.2 — Direct Route to Editor**:
   - Once validated, the newly created JSON document is stored into `localStorage` (`glossy:v1:draft:<slug>`) and registered in `glossy_pending_drafts`.
 
 ### Phase 4: Change Tracking & Visual Diffing Architecture
-- **Step 4.1 — Baseline vs. Draft Hashing**:
+- [x] **Step 4.1 — Baseline vs. Draft Hashing**:
   - Each local draft stores `baseHash` (hash of the canonical JSON when opened).
   - When editing, the editor computes the current draft's hash. If `currentHash !== baseHash`, the document is marked dirty/pending.
-- **Step 4.2 — Granular Token-Level Diffing**:
+- [ ] **Step 4.2 — Granular Token-Level Diffing**:
   - Build a pure diff utility `diffDocuments(baseDoc: TextDocument, draftDoc: TextDocument): DocumentDiff`:
     - Identifies modified translations at the sentence level.
     - Identifies changed glosses, lemmas, POS tags, or morphemes at the word level (`words[i].morphologicalGloss`, `words[i].analysis.lemma`).
   - Future UI: A "Review Changes" modal displaying a side-by-side or inline diff prior to committing or exporting.
+
+### Phase 5: Verified Document Life-Cycle & Phantom-Edit Prevention
+- [x] **Step 5.1 — Canonical Startup Directory**:
+  - Only Ohthere (`/read/ohthere` and `/edit/ohthere`) is listed in the main corpus directory at startup.
+  - Example presets (Beowulf, Cædmon's Hymn, The Wanderer) only become workspace cards if and when explicitly ingested or uploaded by the user.
+- [x] **Step 5.2 — Elimination of Phantom Formatting Edits**:
+  - Opening the editor computes a baseline hash from the normalized document.
+  - If no actual linguistic or translational changes are made (`currentHash === baselineHash`), draft storage is bypassed, preventing pristine texts from being falsely tagged as "Edited (Draft)".
+  - Reverting edits or restoring master edition cleanly purges local drafts from `localStorage`.
+- [x] **Step 5.3 — Streamlined Action Model & Working Deletion**:
+  - Removed "hide on this device" complexity.
+  - Working delete/revert handlers in the card 3-dot menu and editor header cleanly remove the draft from `localStorage` (`glossy:v1:draft:<slug>`, `glossy_draft_<slug>`, and pending manifest).
+  - Core canonical Ohthere remains protected from accidental deletion while allowing users to discard working edits back to the pristine master copy.
 
 ---
 

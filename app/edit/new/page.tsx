@@ -159,7 +159,6 @@ export default function NewTextPage() {
   const [slug, setSlug] = useState("");
   const [author, setAuthor] = useState("");
   const [source, setSource] = useState("");
-  const [sourceFile, setSourceFile] = useState("");
 
   const [inputMode, setInputMode] = useState<"text" | "gb4e">("text");
   const [rawText, setRawText] = useState("");
@@ -239,7 +238,6 @@ export default function NewTextPage() {
     setSlug("");
     setAuthor("");
     setSource("");
-    setSourceFile("");
     setRawText("");
     setRawTranslations("");
     setLatexSource("");
@@ -265,7 +263,6 @@ export default function NewTextPage() {
       setSlug(preset.slug);
       setAuthor(preset.author);
       setSource(preset.source);
-      setSourceFile(preset.sourceFile);
       setRawText(preset.lines.map((l) => l.oe).join("\n"));
       setRawTranslations(preset.lines.map((l) => l.en).join("\n"));
       setInputMode("text");
@@ -285,7 +282,6 @@ export default function NewTextPage() {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
     setSlug(generatedSlug || "");
-    setSourceFile(val.trim() ? `references/${val.replace(/[^a-zA-Z0-9]+/g, "_")}.tex` : "");
   };
 
   const handleCreateDocument = async () => {
@@ -348,7 +344,6 @@ export default function NewTextPage() {
         slug: slug.trim(),
         author: author.trim() || "Anonymous",
         source: source.trim() || "Historical Manuscript",
-        sourceFile: sourceFile.trim() || `references/${slug}.tex`,
         sentences: sentences,
         texSource: latexSource.trim() || undefined,
         overwrite: true,

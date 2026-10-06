@@ -15,6 +15,9 @@ export interface BuiltInTextMetadata {
   defaultTokenCount?: number;
 }
 
+// Only Ohthere is listed as a default built-in corpus text at startup.
+// Other classic texts (Beowulf, Cædmon's Hymn, The Wanderer) are loaded on-demand
+// as presets from the "+ New Text" panel, becoming custom cards only after creation.
 export const BUILT_IN_CORPUS: BuiltInTextMetadata[] = [
   {
     textId: "ohthere",
@@ -32,7 +35,11 @@ export const BUILT_IN_CORPUS: BuiltInTextMetadata[] = [
     defaultSentenceCount: 75,
     defaultTokenCount: 1716,
   },
-  {
+];
+
+// Preserves metadata reference for other presets if/when they are ingested by the user.
+export const ALL_PRESETS_METADATA: Record<string, BuiltInTextMetadata> = {
+  "beowulf-prologue": {
     textId: "beowulf-prologue",
     slug: "beowulf-prologue",
     title: "Beowulf (Prologue)",
@@ -48,7 +55,7 @@ export const BUILT_IN_CORPUS: BuiltInTextMetadata[] = [
     defaultSentenceCount: 11,
     defaultTokenCount: 53,
   },
-  {
+  "caedmon-hymn": {
     textId: "caedmon-hymn",
     slug: "caedmon-hymn",
     title: "Cædmon's Hymn",
@@ -64,7 +71,7 @@ export const BUILT_IN_CORPUS: BuiltInTextMetadata[] = [
     defaultSentenceCount: 9,
     defaultTokenCount: 42,
   },
-  {
+  "the-wanderer": {
     textId: "the-wanderer",
     slug: "the-wanderer",
     title: "The Wanderer (Opening)",
@@ -80,7 +87,7 @@ export const BUILT_IN_CORPUS: BuiltInTextMetadata[] = [
     defaultSentenceCount: 5,
     defaultTokenCount: 26,
   },
-];
+};
 
 export function isProtectedSlug(slug: string): boolean {
   if (!slug) return false;
@@ -92,7 +99,10 @@ export function isBuiltInSlug(slug: string): boolean {
   if (!slug) return false;
   const s = slug.toLowerCase();
   if (s === "ohthere-wulfstan") return true;
-  return BUILT_IN_CORPUS.some((t) => t.slug.toLowerCase() === s || t.textId.toLowerCase() === s);
+  if (BUILT_IN_CORPUS.some((t) => t.slug.toLowerCase() === s || t.textId.toLowerCase() === s)) {
+    return true;
+  }
+  return s in ALL_PRESETS_METADATA;
 }
 
 export function getBuiltInMetadata(slug: string): BuiltInTextMetadata | undefined {
@@ -101,5 +111,7 @@ export function getBuiltInMetadata(slug: string): BuiltInTextMetadata | undefine
   if (s === "ohthere-wulfstan") {
     return BUILT_IN_CORPUS.find((t) => t.slug === "ohthere");
   }
-  return BUILT_IN_CORPUS.find((t) => t.slug.toLowerCase() === s || t.textId.toLowerCase() === s);
+  const defaultMeta = BUILT_IN_CORPUS.find((t) => t.slug.toLowerCase() === s || t.textId.toLowerCase() === s);
+  if (defaultMeta) return defaultMeta;
+  return ALL_PRESETS_METADATA[s];
 }
