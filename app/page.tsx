@@ -138,7 +138,7 @@ export default function Home() {
   return (
     <>
       <SiteNav current="home" />
-      <main className="site-shell" style={{ maxWidth: "76rem", margin: "0 auto", padding: "2rem 1.5rem 0" }}>
+      <main className="site-shell" style={{ maxWidth: "76rem", margin: "0 auto" }}>
         
         {/* ================================================================ */}
         {/* HERO SECTION: Split-Screen Two-Column Value Prop + Preview */}
@@ -196,18 +196,7 @@ export default function Home() {
             </div>
           }
           aside={
-            <div
-              className="hero-preview-card"
-              style={{
-                background: "#1c1917",
-                color: "#fafaf9",
-                borderRadius: "0.6rem",
-                padding: "1.5rem",
-                boxShadow: "0 1rem 3rem rgba(0, 0, 0, 0.15)",
-                border: "1px solid #332d29",
-                width: "100%",
-              }}
-            >
+            <div className="hero-preview-card">
             {/* Widget Header Bar with Mode Switcher */}
             <div
               style={{
@@ -437,7 +426,7 @@ export default function Home() {
                     marginBottom: "0.85rem",
                   }}
                 >
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginBottom: "0.75rem" }}>
+                  <div className="hero-breakdown-grid">
                     <div>
                       <label style={{ display: "block", fontSize: "0.68rem", textTransform: "uppercase", color: "#a8a29e", marginBottom: "0.25rem" }}>
                         Surface Form
