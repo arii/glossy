@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { SiteNav } from "../components/site-nav";
+import { PageHero } from "../components/page-hero";
 import { TextDirectory, type TextChoice } from "../components/text-directory";
 import { SiteFooter } from "../components/site-footer";
 import { ExternalLink, BookOpen, Edit3, Code2 } from "lucide-react";
@@ -142,53 +143,15 @@ export default function Home() {
         {/* ================================================================ */}
         {/* HERO SECTION: Split-Screen Two-Column Value Prop + Preview */}
         {/* ================================================================ */}
-        <section className="hero-two-column">
-          {/* Left Column: Headline & Primary CTAs */}
-          <div>
-            {page.eyebrow ? (
-              <p
-                data-tina-field={tinaField(page, "eyebrow")}
-                style={{
-                  fontSize: "0.82rem",
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  fontWeight: 700,
-                  color: "var(--accent)",
-                  margin: "0 0 0.5rem",
-                }}
-              >
-                {page.eyebrow}
-              </p>
-            ) : null}
-            <h1
-              data-tina-field={tinaField(page, "heading")}
-              style={{
-                fontSize: "clamp(2rem, 4vw, 2.75rem)",
-                fontFamily: "'Charis SIL', Georgia, serif",
-                fontWeight: 700,
-                lineHeight: 1.18,
-                color: "var(--ink)",
-                margin: "0 0 1rem",
-              }}
-            >
-              {page.heading || "Read a text or work on its glosses."}
-            </h1>
-
-            {page.description ? (
-              <p
-                data-tina-field={tinaField(page, "description")}
-                style={{
-                  fontSize: "1.05rem",
-                  lineHeight: 1.65,
-                  color: "var(--muted-ink)",
-                  margin: "0 0 1.5rem",
-                  maxWidth: "34rem",
-                }}
-              >
-                {page.description}
-              </p>
-            ) : null}
-
+        <PageHero
+          variant="split"
+          eyebrow={page.eyebrow}
+          eyebrowDataTinaField={tinaField(page, "eyebrow")}
+          title={page.heading || "Read a text or work on its glosses."}
+          titleDataTinaField={tinaField(page, "heading")}
+          description={page.description}
+          descriptionDataTinaField={tinaField(page, "description")}
+          actions={
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center" }}>
               <Link
                 href={page.primaryAction?.href || "/edit/new"}
@@ -231,21 +194,20 @@ export default function Home() {
                 <span>{page.secondaryAction?.label || "Explore Corpus ↓"}</span>
               </Link>
             </div>
-          </div>
-
-          {/* Right Column: Interactive Live Gloss & Morpheme Studio Preview */}
-          <div
-            className="hero-preview-card"
-            style={{
-              background: "#1c1917",
-              color: "#fafaf9",
-              borderRadius: "0.6rem",
-              padding: "1.5rem",
-              boxShadow: "0 1rem 3rem rgba(0, 0, 0, 0.15)",
-              border: "1px solid #332d29",
-              width: "100%",
-            }}
-          >
+          }
+          aside={
+            <div
+              className="hero-preview-card"
+              style={{
+                background: "#1c1917",
+                color: "#fafaf9",
+                borderRadius: "0.6rem",
+                padding: "1.5rem",
+                boxShadow: "0 1rem 3rem rgba(0, 0, 0, 0.15)",
+                border: "1px solid #332d29",
+                width: "100%",
+              }}
+            >
             {/* Widget Header Bar with Mode Switcher */}
             <div
               style={{
@@ -598,7 +560,8 @@ export default function Home() {
               </div>
             )}
           </div>
-        </section>
+        }
+      />
 
         <section id="corpus-directory" style={{ padding: "1rem 0 1rem" }}>
           <TextDirectory initialChoices={choices} attributionConfig={attributionData} />

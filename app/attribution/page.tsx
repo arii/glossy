@@ -1,6 +1,7 @@
 "use client";
 
 import { SiteNav } from "../../components/site-nav";
+import { PageHero } from "../../components/page-hero";
 import { SiteFooter } from "../../components/site-footer";
 import { AttributionCard } from "../../components/attribution-modal";
 import attributionData from "../../content/pages/attribution.json";
@@ -52,18 +53,23 @@ export default function AttributionPage() {
           maxWidth: "52rem",
           margin: "0 auto",
           padding: "2.5rem 1.5rem",
-          display: "flex",
-          justifyContent: "center",
         }}
       >
-        <AttributionCard
-          slug="ohthere"
-          title="The voyages of Ohthere and Wulfstan"
-          author={page.defaultEditor || "Tyler Lemon"}
-          source="London, British Library, Additional MS 47967, ff. 5v–6r"
-          config={page}
-          showCloseButton={false}
+        <PageHero
+          eyebrow={page.eyebrow || "Scholarly Attribution"}
+          title={page.heading || "Attribution & Citation"}
+          description={page.description || "Official bibliographical citations and platform credits for the Glossy Old English corpus."}
         />
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <AttributionCard
+            slug="ohthere"
+            title="The voyages of Ohthere and Wulfstan"
+            author={page.defaultEditor || "Tyler Lemon"}
+            source="London, British Library, Additional MS 47967, ff. 5v–6r"
+            config={page}
+            showCloseButton={false}
+          />
+        </div>
       </main>
       <SiteFooter />
     </>
