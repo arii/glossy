@@ -197,7 +197,7 @@ export default function DocsPage() {
                 </div>
                 <div className="docs-tier-glosses">
                   <div style={{ color: "#a8a29e" }}>Ohthere</div>
-                  <div style={{ color: "#fde68a" }}>say-PST-IND3SG</div>
+                  <div style={{ color: "#fde68a" }}>say-PST-IND.3SG</div>
                   <div style={{ color: "#fde68a" }}>his.GEN lord-DAT.SG</div>
                 </div>
                 <div className="docs-tier-trans">
@@ -245,22 +245,23 @@ export default function DocsPage() {
                         />
                       </div>
 
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem" }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
                         {categories.map((cat) => (
                           <button
                             key={cat}
                             type="button"
                             onClick={() => setSelectedCategory(cat)}
                             style={{
-                              padding: "0.25rem 0.55rem",
+                              padding: "0.3rem 0.65rem",
                               borderRadius: "0.25rem",
-                              fontSize: "0.72rem",
+                              fontSize: "0.74rem",
                               fontWeight: selectedCategory === cat ? 700 : 500,
-                              background: selectedCategory === cat ? "var(--accent)" : "#f3eadb",
-                              color: selectedCategory === cat ? "#fff" : "var(--ink)",
-                              border: "1px solid",
-                              borderColor: selectedCategory === cat ? "var(--accent)" : "var(--rule)",
+                              background: selectedCategory === cat ? "var(--accent)" : "#fbf7ee",
+                              color: selectedCategory === cat ? "#ffffff" : "var(--ink)",
+                              border: selectedCategory === cat ? "1px solid var(--accent)" : "1px solid var(--rule)",
+                              boxShadow: selectedCategory === cat ? "0 1px 3px rgba(123, 63, 42, 0.25)" : "none",
                               cursor: "pointer",
+                              transition: "all 0.15s ease",
                             }}
                           >
                             {cat}

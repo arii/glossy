@@ -28,7 +28,8 @@ export function parseGb4e(source: string): Gb4eImport {
 
   // Extract document metadata from LaTeX preamble using balanced brace extraction
   const title = extractLatexMacro(text, "title");
-  const author = extractLatexMacro(text, "author");
+  const rawAuthor = extractLatexMacro(text, "author");
+  const author = rawAuthor ? rawAuthor.replace(/^(Translated and glossed by\s*)+/gi, "").trim() : undefined;
   const date = extractLatexMacro(text, "date");
 
   const labelPattern = /\\label\{ex:paragraph\.(\d+)\}/g;

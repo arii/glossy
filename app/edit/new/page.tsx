@@ -113,6 +113,7 @@ const PRESETS: Preset[] = [
 
 export default function NewTextPage() {
   const router = useRouter();
+  const [activePresetId, setActivePresetId] = useState<string>("beowulf-prologue");
   const [title, setTitle] = useState("Beowulf: Prologue (Lines 1–11)");
   const [slug, setSlug] = useState("beowulf-prologue");
   const [author, setAuthor] = useState("Anonymous (Nowell Codex)");
@@ -134,7 +135,14 @@ export default function NewTextPage() {
     text: "",
   });
 
+  const oeLinesList = rawText.split("\n").map((l) => l.trim()).filter(Boolean);
+  const enLinesList = rawTranslations.split("\n").map((l) => l.trim()).filter(Boolean);
+  const oeCount = oeLinesList.length;
+  const enCount = enLinesList.length;
+  const isLineCountMatched = oeCount > 0 && oeCount === enCount;
+
   const loadPreset = (preset: Preset) => {
+    setActivePresetId(preset.id);
     setTitle(preset.title);
     setSlug(preset.slug);
     setAuthor(preset.author);
@@ -143,6 +151,10 @@ export default function NewTextPage() {
     setRawText(preset.lines.map((l) => l.oe).join("\n"));
     setRawTranslations(preset.lines.map((l) => l.en).join("\n"));
     setInputMode("text");
+    setStatusMessage({
+      kind: "success",
+      text: `✓ Loaded preset: ${preset.title} (${preset.lines.length} lines with Old English and English translation).`,
+    });
   };
 
   const handleTitleChange = (val: string) => {
@@ -176,6 +188,12 @@ export default function NewTextPage() {
 
         if (oeLines.length === 0) {
           throw new Error("Please enter at least one Old English sentence.");
+        }
+
+        if (oeLines.length !== enLines.filter(Boolean).length && enLines.filter(Boolean).length > 0) {
+          throw new Error(
+            `Line count mismatch: ${oeLines.length} Old English lines vs ${enLines.filter(Boolean).length} English translations. Please ensure each line matches.`,
+          );
         }
 
         sentences = oeLines.map((line, sIdx) => {
@@ -270,17 +288,31 @@ export default function NewTextPage() {
             ⚡ Quick-Load Classic Presets
           </strong>
           <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-            {PRESETS.map((preset) => (
-              <button
-                key={preset.id}
-                type="button"
-                className="btn btn-secondary"
-                style={{ fontSize: "0.85rem", padding: "0.4rem 0.8rem", cursor: "pointer" }}
-                onClick={() => loadPreset(preset)}
-              >
-                {preset.title}
-              </button>
-            ))}
+            {PRESETS.map((preset) => {
+              const isSelected = activePresetId === preset.id;
+              return (
+                <button
+                  key={preset.id}
+                  type="button"
+                  style={{
+                    fontSize: "0.85rem",
+                    padding: "0.4rem 0.85rem",
+                    cursor: "pointer",
+                    borderRadius: "0.25rem",
+                    border: "1px solid",
+                    borderColor: isSelected ? "var(--accent)" : "var(--rule)",
+                    background: isSelected ? "var(--accent)" : "#fff",
+                    color: isSelected ? "#fff" : "var(--ink)",
+                    fontWeight: isSelected ? 700 : 500,
+                    boxShadow: isSelected ? "0 1px 3px rgba(123, 63, 42, 0.25)" : "none",
+                    transition: "all 0.15s ease",
+                  }}
+                  onClick={() => loadPreset(preset)}
+                >
+                  {isSelected ? `✓ ${preset.title}` : preset.title}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -382,9 +414,14 @@ export default function NewTextPage() {
         {inputMode === "text" ? (
           <div>
             <div style={{ marginBottom: "1rem" }}>
-              <label htmlFor="raw-oe" style={{ display: "block", fontWeight: 600, fontSize: "0.85rem", marginBottom: "0.25rem" }}>
-                Old English Text (One sentence/clause per line)
-              </label>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+                <label htmlFor="raw-oe" style={{ display: "block", fontWeight: 600, fontSize: "0.85rem", margin: 0 }}>
+                  Old English Text (One sentence/clause per line)
+                </label>
+                <span style={{ fontSize: "0.75rem", fontFamily: "monospace", color: "var(--accent)", background: "rgba(123, 63, 42, 0.08)", padding: "0.1rem 0.4rem", borderRadius: "0.25rem" }}>
+                  {oeCount} {oeCount === 1 ? "line" : "lines"}
+                </span>
+              </div>
               <textarea
                 id="raw-oe"
                 rows={6}
@@ -395,9 +432,14 @@ export default function NewTextPage() {
               />
             </div>
             <div style={{ marginBottom: "1.5rem" }}>
-              <label htmlFor="raw-en" style={{ display: "block", fontWeight: 600, fontSize: "0.85rem", marginBottom: "0.25rem" }}>
-                Modern English Translations (One per line matching above)
-              </label>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+                <label htmlFor="raw-en" style={{ display: "block", fontWeight: 600, fontSize: "0.85rem", margin: 0 }}>
+                  Modern English Translations (One per line matching above)
+                </label>
+                <span style={{ fontSize: "0.75rem", fontFamily: "monospace", color: "var(--accent)", background: "rgba(123, 63, 42, 0.08)", padding: "0.1rem 0.4rem", borderRadius: "0.25rem" }}>
+                  {enCount} {enCount === 1 ? "line" : "lines"}
+                </span>
+              </div>
               <textarea
                 id="raw-en"
                 rows={5}
@@ -406,6 +448,20 @@ export default function NewTextPage() {
                 placeholder="Paste matching English translations here..."
                 style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-border, #cbd5e1)", fontSize: "0.95rem" }}
               />
+
+              {/* Line Count Sync Indicator */}
+              <div style={{ marginTop: "0.5rem" }}>
+                {oeCount > 0 && enCount > 0 && isLineCountMatched && (
+                  <span style={{ fontSize: "0.8rem", color: "#15803d", fontWeight: 600 }}>
+                    ✓ Perfect 1:1 line alignment ({oeCount} sentences paired)
+                  </span>
+                )}
+                {oeCount > 0 && enCount > 0 && !isLineCountMatched && (
+                  <span style={{ fontSize: "0.8rem", color: "#b91c1c", fontWeight: 600 }}>
+                    ⚠️ Line count mismatch: {oeCount} Old English lines vs {enCount} translations. Please ensure 1:1 sentence pairing.
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         ) : (
@@ -418,7 +474,7 @@ export default function NewTextPage() {
               rows={10}
               value={latexSource}
               onChange={(e) => setLatexSource(e.target.value)}
-              placeholder={`\\begin{exe}\n\\ex \\gll Hwæt! Wē Gār-Dena... \\\\\n     hear 1PL spear-Dane.GEN.PL ... \\\\\n\\glt "Listen! We have heard..."\n\\end{exe}`}
+              placeholder={`\\begin{exe}\n\\ex \\gll Hwæt! Wē Gār-Den-a... \\\\\n     \\textsc{listen} 1\\textsc{pl.nom} spear-Dane-\\textsc{gen.pl} ... \\\\\n\\glt \`Listen! We of the Spear-Danes...\'\n\\end{exe}`}
               style={{ width: "100%", padding: "0.75rem", borderRadius: "6px", border: "1px solid var(--color-border, #cbd5e1)", fontFamily: "monospace", fontSize: "0.9rem" }}
             />
           </div>

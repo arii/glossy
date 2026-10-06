@@ -51,11 +51,9 @@ export function AnnotatedPassage({
                 className={`gloss-trigger${record.analysis.morphemes.length > 1 ? " is-multi-morpheme" : ""}${selectedId === record.id ? " is-selected" : ""}${selectedId && selectedId !== record.id ? " is-dimmed" : ""}`}
                 type="button"
                 data-gloss-trigger={record.id}
-                aria-label={`Show ${record.analysis.morphemes.length > 1 ? "multi-morpheme " : ""}gloss for ${record.surface}`}
                 aria-pressed={selectedId === record.id}
                 aria-expanded={selectedId === record.id}
                 aria-controls="gloss-popup"
-                title={`Show gloss for ${record.surface}`}
                 data-selected={selectedId === record.id}
                 onPointerOver={() => handleHover(record.id)}
                 onMouseOver={() => handleHover(record.id)}

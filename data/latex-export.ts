@@ -5,7 +5,11 @@ export function exportToGb4eLatex(document: TextDocument, customSentences?: Read
   const paragraphs = groupSentencesByParagraph(sentences);
 
   const title = document.title || "Untitled Document";
-  const author = document.author ? `Translated and glossed by ${document.author}` : document.source || "";
+  const rawAuthor = document.author || document.source || "";
+  const cleanAuthor = rawAuthor.replace(/^(Translated and glossed by\s*)+/gi, "").trim();
+  const author = cleanAuthor
+    ? (cleanAuthor.toLowerCase().includes("anonymous") ? cleanAuthor : `Translated and glossed by ${cleanAuthor}`)
+    : "";
   const date = document.date || "September 30, 2026";
 
   let tex = `%!TEX TS-program = xelatex
@@ -91,6 +95,59 @@ ${document.sourceFile?.includes("Voyages") ? "\\addbibresource{Voyages_of_Ohther
     }
 
     tex += `\\end{xlist}\n\\end{exe}\n`;
+  }
+
+  if (document.slug?.includes("ohthere") || document.textId === "ohthere") {
+    tex += `\n\\section{Glossing abbreviations}\n
+\\begin{multicols}{2}
+\\begin{description}
+\\item[1] 1st person
+\\item[2] 2nd person
+\\item[3] 3rd person
+\\item[ACC] accusative case
+\\item[ADJ] adjective
+\\item[ADV] adverb
+\\item[AGT] agent
+\\item[CMP] comparative
+\\item[COMP] complementizer
+\\item[DAT] dative case
+\\item[DEF] definite
+\\item[DEM] demonstrative
+\\item[DET] determiner
+\\item[DIST] distal
+\\item[F] feminine gender
+\\item[GEN] genitive case
+\\item[HAB] habitual
+\\item[IMP] imperative mood
+\\item[IND] indicative mood
+\\item[INDF] indefinite
+\\item[INF] infinitive
+\\item[INS] instrumental case
+\\item[M] masculine gender
+\\item[N] neuter gender
+\\item[NEG] negative
+\\item[NMLZ] nominalizer
+\\item[NOM] nominative case
+\\item[PART] participle
+\\item[PASS] passive voice
+\\item[PFX] prefix
+\\item[PL] plural number
+\\item[POSS] possessive
+\\item[PROX] proximate
+\\item[PRS] present tense
+\\item[PST] past tense
+\\item[REL] relativizer
+\\item[SG] singular number
+\\item[SJV] subjunctive mood
+\\item[STR] strong declension
+\\item[SUP] superlative
+\\item[THM] theme vowel
+\\item[WK] weak declension
+\\end{description}
+\\end{multicols}
+
+\\printbibliography
+`;
   }
 
   tex += `\n\\end{document}\n`;

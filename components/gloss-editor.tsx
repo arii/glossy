@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SiteNav } from "./site-nav";
 import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
@@ -809,74 +808,80 @@ export function GlossEditor({
               </span>
             )}
 
-            <Link
-              href="/edit/new"
-              className="workspace-link"
-              style={{ background: "rgba(123, 63, 42, 0.08)" }}
-            >
-              + New Text
-            </Link>
+            <div style={{ display: "inline-flex", gap: "0.4rem", flexWrap: "wrap", alignItems: "center" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  const el = document.getElementById("batch-import-section");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="workspace-link"
+              >
+                <Upload style={{ width: "0.85rem", height: "0.85rem", marginRight: "0.35rem" }} />
+                Import gb4e
+              </button>
 
-            <button
-              type="button"
-              onClick={() => loadFromMasterTex()}
-              className="workspace-link"
-            >
-              <RefreshCw style={{ width: "0.9rem", height: "0.9rem", marginRight: "0.35rem" }} /> Reload Master .tex
-            </button>
+              <button
+                type="button"
+                onClick={() => loadFromMasterTex()}
+                className="workspace-link"
+              >
+                <RefreshCw style={{ width: "0.85rem", height: "0.85rem", marginRight: "0.35rem" }} /> Reload Master .tex
+              </button>
 
-            <button
-              type="button"
-              onClick={discardChanges}
-              className="workspace-link"
-            >
-              Discard edits
-            </button>
+              <button
+                type="button"
+                onClick={discardChanges}
+                className="workspace-link"
+              >
+                Discard edits
+              </button>
 
-            <button
-              type="button"
-              onClick={handleExportLatex}
-              className="workspace-link"
-              style={{ background: "#f3eadb", color: "#7b3f2a" }}
-            >
-              Export LaTeX
-            </button>
+              <button
+                type="button"
+                onClick={handleExportLatex}
+                className="workspace-link"
+                style={{ background: "#f3eadb", color: "#7b3f2a" }}
+              >
+                Export LaTeX
+              </button>
+
+              {!isProtectedText && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (
+                      window.confirm(
+                        `Are you sure you want to remove "${documentState.title}" from Glossy? This will delete its JSON data, LaTeX files, and local drafts.`,
+                      )
+                    ) {
+                      handleDeleteText();
+                    }
+                  }}
+                  disabled={isDeleting}
+                  className="workspace-link"
+                  style={{
+                    background: "rgba(220, 38, 38, 0.08)",
+                    color: "#b91c1c",
+                    borderColor: "#fca5a5",
+                  }}
+                >
+                  <Trash2 style={{ width: "0.85rem", height: "0.85rem", marginRight: "0.35rem" }} />
+                  {isDeleting ? "Deleting..." : "Delete Text"}
+                </button>
+              )}
+            </div>
 
             <button
               type="button"
               onClick={saveToTina}
               disabled={isSaving}
               className="workspace-button"
-              style={{ background: "var(--accent)", color: "#fff", borderColor: "var(--accent)" }}
+              style={{ background: "var(--accent)", color: "#fff", borderColor: "var(--accent)", padding: "0.45rem 1.1rem" }}
             >
               <Save style={{ width: "0.9rem", height: "0.9rem", marginRight: "0.35rem" }} />
               {isSaving ? "Saving..." : "Save to TinaCMS"}
             </button>
-
-            {!isProtectedText && (
-              <button
-                type="button"
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      `Are you sure you want to remove "${documentState.title}" from Glossy? This will delete its JSON data, LaTeX files, and local drafts.`,
-                    )
-                  ) {
-                    handleDeleteText();
-                  }
-                }}
-                disabled={isDeleting}
-                className="workspace-link"
-                style={{
-                  background: "rgba(220, 38, 38, 0.08)",
-                  color: "#b91c1c",
-                  borderColor: "#fca5a5",
-                }}
-              >
-                <Trash2 style={{ width: "0.9rem", height: "0.9rem", marginRight: "0.35rem" }} />
-                {isDeleting ? "Deleting..." : "Delete Text"}
-              </button>
-            )}
           </div>
         </header>
 
@@ -1347,8 +1352,16 @@ export function GlossEditor({
           </aside>
         </div>
 
-        {/* Batch Importer */}
-        <section className="workspace-panel" style={{ marginTop: "2rem" }}>
+        {/* Batch Importer (Document-level section below workspace grid) */}
+        <section
+          id="batch-import-section"
+          className="workspace-panel"
+          style={{
+            marginTop: "2.5rem",
+            borderTop: "2px solid var(--rule)",
+            paddingTop: "1.5rem",
+          }}
+        >
           <div className="editor-feed-header">
             <div>
               <p className="workspace-eyebrow" style={{ margin: 0, fontSize: "0.72rem" }}>Batch Import Pipeline</p>
@@ -1357,29 +1370,31 @@ export function GlossEditor({
               </h2>
             </div>
 
-            <label className="workspace-link" style={{ cursor: "pointer", fontSize: "0.8rem", padding: "0.4rem 0.75rem" }}>
-              <Upload style={{ width: "0.85rem", height: "0.85rem", marginRight: "0.35rem" }} />
-              <span>Upload .tex file</span>
-              <input
-                type="file"
-                accept=".tex,.txt"
-                className="hidden"
-                style={{ display: "none" }}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  const reader = new FileReader();
-                  reader.onload = (event) => {
-                    const text = event.target?.result as string;
-                    if (text) {
-                      setLatexImportSource(text);
-                      setImportPreview(parseMultiSentenceGb4e(text));
-                    }
-                  };
-                  reader.readAsText(file);
-                }}
-              />
-            </label>
+            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+              <label className="workspace-link" style={{ cursor: "pointer", fontSize: "0.8rem", padding: "0.4rem 0.75rem" }}>
+                <Upload style={{ width: "0.85rem", height: "0.85rem", marginRight: "0.35rem" }} />
+                <span>Upload .tex file</span>
+                <input
+                  type="file"
+                  accept=".tex,.txt"
+                  className="hidden"
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                      const text = event.target?.result as string;
+                      if (text) {
+                        setLatexImportSource(text);
+                        setImportPreview(parseMultiSentenceGb4e(text));
+                      }
+                    };
+                    reader.readAsText(file);
+                  }}
+                />
+              </label>
+            </div>
           </div>
 
           <div style={{ display: "grid", gap: "0.75rem" }}>
@@ -1390,7 +1405,7 @@ export function GlossEditor({
                 setLatexImportSource(e.target.value);
                 setImportPreview(null);
               }}
-              placeholder="\ex{\gll Ōhthere sǣ-d-e his hlāforde ...\\&#10;Ohthere say-\textsc{pst}-\textsc{ind}3\textsc{sg} his lord ...\\&#10;\glt `Ohthere said to his lord...'}"
+              placeholder="\ex{\gll Ōhthere sǣ-d-e his hlāford-e ...\\&#10;Ohthere say-\textsc{pst}-\textsc{ind.3sg} his lord-\textsc{dat.sg} ...\\&#10;\glt `Ohthere said to his lord...'}"
               style={{ width: "100%", padding: "0.75rem", fontFamily: "monospace", fontSize: "0.85rem", border: "1px solid var(--rule)", borderRadius: "0.35rem", background: "var(--surface)", color: "var(--ink)" }}
             />
 
