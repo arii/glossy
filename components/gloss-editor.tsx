@@ -27,6 +27,7 @@ import type {
 } from "../lib/types";
 import {
   BookOpen,
+  Edit,
   RefreshCw,
   Save,
   Trash2,
@@ -149,10 +150,11 @@ export function InlineEdit({
   return (
     <span
       onClick={() => setIsEditing(true)}
-      className={`cursor-pointer hover:underline hover:bg-stone-200/50 rounded px-1 -mx-1 ${className}`}
+      className={`group relative cursor-pointer inline-flex items-center gap-1 border-b border-stone-300 border-dashed hover:border-stone-800 hover:bg-stone-100 rounded px-1 -mx-1 transition-colors ${className}`}
       title="Click to edit"
     >
-      {value || placeholder}
+      <span>{value || placeholder}</span>
+      <Edit className="w-3 h-3 text-stone-400 group-hover:text-stone-700 transition-colors" />
     </span>
   );
 }
