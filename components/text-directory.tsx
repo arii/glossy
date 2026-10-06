@@ -202,7 +202,7 @@ export function TextDirectory({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(21rem, 1fr))",
+          gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 18rem), 1fr))",
           gap: "1.25rem",
         }}
       >
@@ -350,7 +350,8 @@ export function TextDirectory({
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "0.4rem",
+                  flexWrap: "wrap",
+                  gap: "0.5rem",
                   marginTop: "auto",
                   paddingTop: "0.75rem",
                   position: "relative",
@@ -361,17 +362,19 @@ export function TextDirectory({
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
+                    justifyContent: "center",
                     gap: "0.35rem",
-                    padding: "0.38rem 0.75rem",
+                    minHeight: "44px",
+                    padding: "0.5rem 0.85rem",
                     borderRadius: "0.25rem",
                     background: "var(--accent)",
                     color: "#ffffff",
-                    fontSize: "0.82rem",
+                    fontSize: "0.85rem",
                     fontWeight: 600,
                     textDecoration: "none",
                   }}
                 >
-                  <BookOpen style={{ width: "0.82rem", height: "0.82rem" }} /> Read
+                  <BookOpen style={{ width: "0.9rem", height: "0.9rem" }} /> Read
                 </Link>
 
                 <Link
@@ -379,18 +382,20 @@ export function TextDirectory({
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
+                    justifyContent: "center",
                     gap: "0.35rem",
-                    padding: "0.38rem 0.75rem",
+                    minHeight: "44px",
+                    padding: "0.5rem 0.85rem",
                     borderRadius: "0.25rem",
                     background: "#ffffff",
                     border: "1px solid var(--rule)",
                     color: "var(--ink)",
-                    fontSize: "0.82rem",
+                    fontSize: "0.85rem",
                     fontWeight: 600,
                     textDecoration: "none",
                   }}
                 >
-                  <Edit3 style={{ width: "0.82rem", height: "0.82rem" }} /> Edit
+                  <Edit3 style={{ width: "0.9rem", height: "0.9rem" }} /> Edit
                 </Link>
 
                 <button
@@ -399,18 +404,20 @@ export function TextDirectory({
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
+                    justifyContent: "center",
                     gap: "0.35rem",
-                    padding: "0.38rem 0.75rem",
+                    minHeight: "44px",
+                    padding: "0.5rem 0.85rem",
                     borderRadius: "0.25rem",
                     background: "#ffffff",
                     border: "1px solid var(--rule)",
                     color: "var(--ink)",
-                    fontSize: "0.82rem",
+                    fontSize: "0.85rem",
                     fontWeight: 600,
                     cursor: "pointer",
                   }}
                 >
-                  <Info style={{ width: "0.82rem", height: "0.82rem" }} /> Cite
+                  <Info style={{ width: "0.9rem", height: "0.9rem" }} /> Cite
                 </button>
 
                 {/* 3-dot context menu */}
@@ -427,14 +434,16 @@ export function TextDirectory({
                       borderRadius: "0.25rem",
                       color: "var(--muted-ink)",
                       cursor: "pointer",
-                      padding: "0.38rem 0.45rem",
+                      minHeight: "44px",
+                      minWidth: "44px",
+                      padding: "0.5rem",
                       display: "inline-flex",
                       alignItems: "center",
                       justifyContent: "center",
                     }}
                     title="More actions"
                   >
-                    <MoreVertical style={{ width: "0.85rem", height: "0.85rem" }} />
+                    <MoreVertical style={{ width: "0.95rem", height: "0.95rem" }} />
                   </button>
 
                   {isMenuOpen && (
@@ -463,8 +472,9 @@ export function TextDirectory({
                         style={{
                           width: "100%",
                           textAlign: "left",
-                          padding: "0.45rem 0.75rem",
-                          fontSize: "0.8rem",
+                          minHeight: "44px",
+                          padding: "0.5rem 0.85rem",
+                          fontSize: "0.82rem",
                           background: "transparent",
                           border: "none",
                           color: "var(--ink)",
@@ -474,7 +484,7 @@ export function TextDirectory({
                           gap: "0.4rem",
                         }}
                       >
-                        <Info style={{ width: "0.8rem", height: "0.8rem" }} /> Scholarly Citation
+                        <Info style={{ width: "0.85rem", height: "0.85rem" }} /> Scholarly Citation
                       </button>
 
                       {(choice.isLocalOnly || choice.hasLocalDraft) && (
@@ -487,8 +497,9 @@ export function TextDirectory({
                           style={{
                             width: "100%",
                             textAlign: "left",
-                            padding: "0.45rem 0.75rem",
-                            fontSize: "0.8rem",
+                            minHeight: "44px",
+                            padding: "0.5rem 0.85rem",
+                            fontSize: "0.82rem",
                             background: "transparent",
                             border: "none",
                             color: "#b91c1c",
@@ -498,7 +509,7 @@ export function TextDirectory({
                             gap: "0.4rem",
                           }}
                         >
-                          <Trash2 style={{ width: "0.8rem", height: "0.8rem" }} />{" "}
+                          <Trash2 style={{ width: "0.85rem", height: "0.85rem" }} />{" "}
                           {choice.isLocalOnly ? "Delete Local Draft" : "Revert edits / Discard Draft"}
                         </button>
                       )}
