@@ -1,4 +1,4 @@
-import type { TextDocument, PartOfSpeech } from "./types";
+import type { TextDocument, PartOfSpeech, NoteItem } from "./types";
 import { safeJsonStringify } from "./safe-json";
 import {
   isBuiltInSlug,
@@ -47,6 +47,11 @@ export function computeDocumentHash(doc: TextDocument): string {
   return computeSimpleHash({
     slug: doc.slug,
     title: doc.title,
+    author: doc.author,
+    historicalAuthor: doc.historicalAuthor,
+    glossedBy: doc.glossedBy,
+    date: doc.date,
+    sourceEdition: doc.sourceEdition,
     sentences: (doc.sentences || []).map((s) => ({
       translation: s.translation,
       words: (s.words || []).map((w) => ({
@@ -120,6 +125,7 @@ export function readDraft(slug: string): StoredDraft | null {
                 id: (sent.id as string) || `sent-${sIdx + 1}`,
                 translation: (sent.freeTranslation as string) || (sent.translation as string) || "",
                 footnotes: sent.footnotes as string[] | undefined,
+                notes: sent.notes as NoteItem[] | undefined,
                 words: (
                   ((sent.tokens || sent.words || []) as Array<Record<string, unknown>>)
                 ).map((tok, tIdx: number) => ({
@@ -303,6 +309,9 @@ export function markPending(slug: string, doc: TextDocument, currentHash?: strin
     };
 
     storage.setItem(PENDING_MANIFEST_KEY, JSON.stringify(manifest));
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("glossy:drafts-updated"));
+    }
   } catch {}
 }
 
@@ -318,6 +327,9 @@ export function markDraftAsSynced(slug: string, syncedHash?: string): void {
         manifest[slug].baseHash = syncedHash;
       }
       storage.setItem(PENDING_MANIFEST_KEY, JSON.stringify(manifest));
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("glossy:drafts-updated"));
+      }
     }
   } catch {}
 }

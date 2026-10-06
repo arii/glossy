@@ -1,134 +1,338 @@
 import type { TextDocument } from "./types";
-import { computeDocumentHash, markDraftAsSynced } from "./local-drafts";
+import { readDraft, listPending, markDraftAsSynced } from "./local-drafts";
 
-export interface TinaCommitResult {
-  status: "committed" | "needs_auth" | "error" | "draft_saved";
-  message: string;
-  errorDetails?: string;
+export interface CommitResult {
+  ok: boolean;
+  slug: string;
+  error?: string;
 }
 
-export async function syncDocumentToTina(
-  doc: TextDocument,
-  fileName?: string,
-): Promise<TinaCommitResult> {
-  const slug = doc.slug || doc.textId;
-  const targetFileName = `${fileName || slug}.json`;
+export interface BatchCommitResult {
+  committedSlugs: string[];
+  failedSlugs: string[];
+  errors: Record<string, string>;
+}
 
-  const payload = {
-    query: `
-      mutation UpdateTextMutation($relativePath: String!, $params: TextParams!) {
-        updateText(relativePath: $relativePath, params: $params) {
-          __typename
+export function sanitizeDraftForTinaMutation(
+  draftDoc: Record<string, unknown> | TextDocument,
+): Record<string, unknown> {
+  const doc = draftDoc as Record<string, unknown>;
+  const sentencesRaw = Array.isArray(doc.sentences) ? doc.sentences : [];
+
+  const sentences = sentencesRaw.map((s: Record<string, unknown>) => {
+    const wordsRaw = Array.isArray(s.words)
+      ? s.words
+      : Array.isArray(s.tokens)
+      ? s.tokens
+      : [];
+
+    const words = wordsRaw.map((w: Record<string, unknown>) => {
+      const wordObj: Record<string, unknown> = {
+        id: String(w.id || ""),
+        originalWord: String(w.originalWord || w.sourceForm || ""),
+        morphologicalGloss: String(w.morphologicalGloss || w.sourceGloss || ""),
+        trailingPunctuation: String(w.trailingPunctuation || ""),
+        sourceGlossTex: String(w.sourceGlossTex || w.literalTexGloss || ""),
+      };
+
+      if ((w.analysis && typeof w.analysis === "object") || w.lemma || w.pos || w.explanation) {
+        const a = (
+          w.analysis && typeof w.analysis === "object" ? w.analysis : {}
+        ) as Record<string, unknown>;
+
+        const analysisObj: Record<string, unknown> = {
+          lemma: String(a.lemma || w.lemma || ""),
+          partOfSpeech: String(a.partOfSpeech || w.pos || ""),
+          definition: String(a.definition || w.explanation || ""),
+          phonetic: String(a.phonetic || w.ipa || ""),
+          pronunciationSource: String(a.pronunciationSource || ""),
+          historicalNote: String(a.historicalNote || ""),
+          wiktionaryUrl: String(a.wiktionaryUrl || w.wiktionaryUrl || ""),
+        };
+
+        const featuresRaw = (a.features || w.inflections || {}) as Record<string, unknown>;
+        if (featuresRaw && typeof featuresRaw === "object") {
+          const featuresObj: Record<string, unknown> = {};
+          if (featuresRaw.case) featuresObj.case = String(featuresRaw.case);
+          if (featuresRaw.number) featuresObj.number = String(featuresRaw.number);
+          if (featuresRaw.gender) featuresObj.gender = String(featuresRaw.gender);
+          if (featuresRaw.person != null) {
+            const p = Number(featuresRaw.person);
+            if (!isNaN(p)) featuresObj.person = p;
+          }
+          if (featuresRaw.tense) featuresObj.tense = String(featuresRaw.tense);
+          if (featuresRaw.mood) featuresObj.mood = String(featuresRaw.mood);
+          if (featuresRaw.degree) featuresObj.degree = String(featuresRaw.degree);
+          analysisObj.features = featuresObj;
         }
+
+        const morphemesRaw = Array.isArray(a.morphemes)
+          ? a.morphemes
+          : Array.isArray(w.morphemes)
+          ? w.morphemes
+          : [];
+        analysisObj.morphemes = morphemesRaw.map((m: Record<string, unknown>) => ({
+          form: String(m.form || ""),
+          gloss: String(m.gloss || ""),
+          kind: String(m.kind || "stem"),
+        }));
+
+        wordObj.analysis = analysisObj;
       }
-    `,
-    variables: {
-      relativePath: targetFileName,
-      params: {
-        textId: doc.textId || slug,
-        slug: doc.slug || slug,
-        language: doc.language || "Old English",
-        author: doc.author || "",
-        editor: doc.editor || "",
-        shelfmark: doc.shelfmark || "",
-        dialect: doc.dialect || "",
-        historicalDate: doc.historicalDate || "",
-        title: doc.title || "",
-        source: doc.source || "",
-        sourceFile: doc.sourceFile || `${slug}.json`,
-        sourceEdition: doc.sourceEdition || "",
-        status: doc.status || "draft",
-        sentences: (doc.sentences || []).map((sent) => ({
-          id: sent.id,
-          translation: sent.translation || "",
-          footnotes: sent.footnotes || [],
-          words: (sent.words || []).map((w) => ({
-            id: w.id,
-            originalWord: w.originalWord,
-            morphologicalGloss: w.morphologicalGloss || "",
-            trailingPunctuation: w.trailingPunctuation || "",
-            sourceGlossTex: w.sourceGlossTex || "",
-            analysis: w.analysis
-              ? {
-                  lemma: w.analysis.lemma || "",
-                  partOfSpeech: w.analysis.partOfSpeech || "",
-                  definition: w.analysis.definition || "",
-                  phonetic: w.analysis.phonetic || "",
-                  pronunciationSource: w.analysis.pronunciationSource || "",
-                  historicalNote: w.analysis.historicalNote || "",
-                  wiktionaryUrl: w.analysis.wiktionaryUrl || "",
-                  features: w.analysis.features
-                    ? {
-                        case: w.analysis.features.case,
-                        number: w.analysis.features.number,
-                        gender: w.analysis.features.gender,
-                        person:
-                          w.analysis.features.person != null
-                            ? Number(w.analysis.features.person)
-                            : undefined,
-                        tense: w.analysis.features.tense,
-                        mood: w.analysis.features.mood,
-                        degree: w.analysis.features.degree,
-                      }
-                    : undefined,
-                  morphemes: (w.analysis.morphemes || []).map((m) => ({
-                    form: m.form || "",
-                    gloss: m.gloss || "",
-                    kind: m.kind || "stem",
-                  })),
-                }
-              : undefined,
-          })),
-        })),
-      },
-    },
-  };
 
-  try {
-    const res = await fetch("/admin/index.html", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!res.ok) {
-      if (res.status === 401 || res.status === 403) {
-        return {
-          status: "needs_auth",
-          message: "TinaCMS authentication required to commit to Git repository. Please sign in via Tina Admin.",
+      if (w.review && typeof w.review === "object") {
+        const r = w.review as Record<string, unknown>;
+        const src = (
+          r.source && typeof r.source === "object" ? r.source : {}
+        ) as Record<string, unknown>;
+        wordObj.review = {
+          status: String(r.status || "source-checked"),
+          notes: String(r.notes || ""),
+          source: {
+            file: String(src.file || ""),
+            locator: String(src.locator || ""),
+          },
         };
       }
-      return {
-        status: "error",
-        message: `TinaCMS GraphQL server returned HTTP ${res.status}. Draft preserved locally.`,
-      };
-    }
 
-    const json = (await res.json()) as { errors?: Array<{ message?: string }> };
-    if (json.errors && json.errors.length > 0) {
-      const errMsg = json.errors
-        .map((e) => e.message || "Unknown error")
-        .join("; ");
-      return {
-        status: "error",
-        message: `TinaCMS mutation failed: ${errMsg}`,
-        errorDetails: errMsg,
-      };
-    }
+      return wordObj;
+    });
 
-    const currentHash = computeDocumentHash(doc);
-    markDraftAsSynced(slug, currentHash);
+    const footnotesRaw = Array.isArray(s.footnotes) ? s.footnotes : [];
+    const notesRaw = Array.isArray(s.notes) ? s.notes : [];
+    const notes = notesRaw.map((n: Record<string, unknown>) => ({
+      id: String(n.id || ""),
+      targetWordIndex: n.targetWordIndex != null ? Number(n.targetWordIndex) : undefined,
+      marker: n.marker ? String(n.marker) : undefined,
+      type: String(n.type || "general"),
+      text: String(n.text || ""),
+    }));
 
     return {
-      status: "committed",
-      message: `Successfully committed "${doc.title}" to TinaCMS / Git repository!`,
+      id: String(s.id || ""),
+      translation: String(s.translation || s.freeTranslation || ""),
+      footnotes: footnotesRaw.map((fn: unknown) => String(fn)),
+      notes,
+      words,
     };
-  } catch {
-    return {
-      status: "draft_saved",
-      message: "Saved working draft to browser storage. (GraphQL backend unreachable; sign in via Tina Admin to commit.)",
-    };
+  });
+
+  return {
+    textId: String(doc.textId || doc.slug || ""),
+    slug: String(doc.slug || doc.textId || ""),
+    language: String(doc.language || "Old English"),
+    author: String(doc.author || ""),
+    editor: String(doc.editor || ""),
+    shelfmark: String(doc.shelfmark || ""),
+    dialect: String(doc.dialect || ""),
+    historicalDate: String(doc.historicalDate || ""),
+    title: String(doc.title || ""),
+    source: String(doc.source || ""),
+    sourceFile: String(doc.sourceFile || ""),
+    sourceEdition: String(doc.sourceEdition || ""),
+    status: String(doc.status || "draft"),
+    sentences,
+  };
+}
+
+export function isTinaAuthenticated(cms?: unknown): boolean {
+  if (typeof window === "undefined") return false;
+
+  // Check cms instance API
+  if (cms && typeof cms === "object" && "api" in cms) {
+    const tinaApi = (cms as { api?: { tina?: { request?: unknown } } })?.api?.tina;
+    if (typeof tinaApi?.request === "function") {
+      return true;
+    }
   }
+
+  // Check local dev server
+  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+    return true;
+  }
+
+  // Check stored auth token
+  const token = window.localStorage.getItem("tinacms-auth");
+  return Boolean(token);
+}
+
+const UPDATE_TEXT_MUTATION = `
+  mutation UpdateText($relativePath: String!, $params: TextMutation!) {
+    updateText(relativePath: $relativePath, params: $params) {
+      id
+      title
+      _sys { relativePath }
+    }
+  }
+`;
+
+export async function commitPendingDraft(
+  slug: string,
+  options?: { cms?: unknown },
+): Promise<CommitResult> {
+  if (typeof window === "undefined") {
+    return { ok: false, slug, error: "Window object unavailable." };
+  }
+
+  let draftDoc: Record<string, unknown> | null = null;
+
+  // 1. Try reading via local-drafts module
+  const storedDraft = readDraft(slug);
+  if (storedDraft?.doc) {
+    draftDoc = storedDraft.doc as unknown as Record<string, unknown>;
+  } else {
+    // 2. Direct localStorage fallback
+    const v1Key = `glossy:v1:draft:${slug}`;
+    const rawV1 = window.localStorage.getItem(v1Key);
+    if (rawV1) {
+      try {
+        const env = JSON.parse(rawV1);
+        draftDoc = env.doc || env;
+      } catch {}
+    } else {
+      const legacyRaw = window.localStorage.getItem(`glossy_draft_${slug}`);
+      if (legacyRaw) {
+        try {
+          draftDoc = JSON.parse(legacyRaw);
+        } catch {}
+      }
+    }
+  }
+
+  if (!draftDoc) {
+    return { ok: false, slug, error: `No local draft document found for slug: ${slug}` };
+  }
+
+  const sanitizedParams = sanitizeDraftForTinaMutation(draftDoc);
+  const fileName = (draftDoc.fileName || draftDoc.textId || slug) as string;
+  const relativePath = `${fileName.endsWith(".json") ? fileName : `${fileName}.json`}`;
+
+  // Attempt 1: Using TinaCMS client API object
+  if (options?.cms && typeof options.cms === "object" && "api" in options.cms) {
+    const tinaApi = (options.cms as {
+      api?: {
+        tina?: {
+          request: (
+            query: string,
+            options?: { variables: Record<string, unknown> },
+          ) => Promise<unknown>;
+        };
+      };
+    })?.api?.tina;
+
+    if (tinaApi?.request) {
+      try {
+        await tinaApi.request(UPDATE_TEXT_MUTATION, {
+          variables: { relativePath, params: sanitizedParams },
+        });
+        markDraftAsSynced(slug);
+        return { ok: true, slug };
+      } catch (err) {
+        return {
+          ok: false,
+          slug,
+          error: err instanceof Error ? err.message : "Tina API client request failed",
+        };
+      }
+    }
+  }
+
+  // Attempt 2: Localhost GraphQL endpoint
+  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+    try {
+      const localUrl =
+        process.env.NEXT_PUBLIC_TINA_LOCAL_URL || "http://localhost:4001/graphql";
+      const res = await fetch(localUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: UPDATE_TEXT_MUTATION,
+          variables: { relativePath, params: sanitizedParams },
+        }),
+      });
+      const json = await res.json();
+      if (json.errors && json.errors.length > 0) {
+        throw new Error(json.errors[0]?.message || "GraphQL mutation error");
+      }
+      if (json.data?.updateText || json.data?.updateDocument) {
+        markDraftAsSynced(slug);
+        return { ok: true, slug };
+      }
+    } catch (err) {
+      // Fallthrough to TinaCloud if localhost request fails
+      console.warn("[tina-sync] Localhost GraphQL request failed:", err);
+    }
+  }
+
+  // Attempt 3: TinaCloud with tinacms-auth token
+  const authToken = window.localStorage.getItem("tinacms-auth");
+  if (authToken) {
+    try {
+      const clientId =
+        process.env.NEXT_PUBLIC_TINA_CLIENT_ID || "7cf6793a-dfc2-4a6b-ae23-c2665e22f286";
+      const branch =
+        process.env.NEXT_PUBLIC_TINA_BRANCH ||
+        process.env.TINA_BRANCH ||
+        "main";
+      const cloudUrl = `https://content.tinajs.io/3.0/content/${clientId}/github/${branch}`;
+
+      const res = await fetch(cloudUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({
+          query: UPDATE_TEXT_MUTATION,
+          variables: { relativePath, params: sanitizedParams },
+        }),
+      });
+
+      const json = await res.json();
+      if (json.errors && json.errors.length > 0) {
+        throw new Error(json.errors[0]?.message || "TinaCloud GraphQL error");
+      }
+      if (json.data?.updateText || json.data?.updateDocument) {
+        markDraftAsSynced(slug);
+        return { ok: true, slug };
+      }
+    } catch (err) {
+      return {
+        ok: false,
+        slug,
+        error: err instanceof Error ? err.message : "TinaCloud commit failed",
+      };
+    }
+  }
+
+  return {
+    ok: false,
+    slug,
+    error: "TinaCMS authentication required. Please sign in to Tina Admin to commit.",
+  };
+}
+
+export async function commitAllPendingDrafts(
+  options?: { cms?: unknown },
+): Promise<BatchCommitResult> {
+  const pending = listPending();
+  const unsyncedSlugs = Object.keys(pending).filter((s) => !pending[s].synced);
+
+  const committedSlugs: string[] = [];
+  const failedSlugs: string[] = [];
+  const errors: Record<string, string> = {};
+
+  for (const slug of unsyncedSlugs) {
+    const res = await commitPendingDraft(slug, options);
+    if (res.ok) {
+      committedSlugs.push(slug);
+    } else {
+      failedSlugs.push(slug);
+      if (res.error) {
+        errors[slug] = res.error;
+      }
+    }
+  }
+
+  return { committedSlugs, failedSlugs, errors };
 }

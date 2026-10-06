@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { SiteNav } from "./site-nav";
+import { PageHero } from "./page-hero";
 import { SiteFooter } from "./site-footer";
 import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
 import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
@@ -21,13 +22,21 @@ import type {
   Morpheme,
   PartOfSpeech,
   InflectionFeatures,
+  NoteItem,
+  NoteType,
 } from "../lib/types";
 import {
   BookOpen,
+  Edit,
   RefreshCw,
   Save,
   Trash2,
+  FileText,
+  Plus,
+  X,
 } from "lucide-react";
+import { DraftSyncPrompt } from "./draft-sync-prompt";
+import { commitPendingDraft, isTinaAuthenticated } from "../lib/tina-sync";
 
 export interface EditorToken {
   id: string;
@@ -48,6 +57,7 @@ export interface EditorSentence {
   tokens: EditorToken[];
   freeTranslation: string;
   footnotes?: string[];
+  notes?: NoteItem[];
 }
 
 export interface EditorDocument {
@@ -55,9 +65,12 @@ export interface EditorDocument {
   slug: string;
   title: string;
   author: string;
+  historicalAuthor: string;
+  glossedBy: string;
   date: string;
   source: string;
   sourceFile: string;
+  sourceEdition?: string;
   language: "Old English";
   status: "draft" | "review" | "published";
   sentences: EditorSentence[];
@@ -121,7 +134,8 @@ export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number
 
 export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
   const rawAuthor = doc.author || (doc.source ? doc.source.split(/[·•]/)[0]?.trim() : "Tyler Lemon");
-  const authorMatch = rawAuthor.replace(/^(Translated and glossed by\s*)+/gi, "").trim();
+  const glossedByMatch = doc.glossedBy || rawAuthor.replace(/^(Translated and glossed by\s*)+/gi, "").trim();
+  const historicalAuthorMatch = doc.historicalAuthor || "Anonymous";
   const dateMatch =
     doc.date || (doc.source ? doc.source.split(/[·•]/)[1]?.trim() : "September 30, 2026");
 
@@ -129,16 +143,20 @@ export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
     textId: doc.textId || "ohthere",
     slug: doc.slug || "ohthere-wulfstan",
     title: doc.title || "The voyages of Ohthere and Wulfstan",
-    author: authorMatch,
+    author: glossedByMatch,
+    historicalAuthor: historicalAuthorMatch,
+    glossedBy: glossedByMatch,
     date: dateMatch,
-    source: doc.source || `${authorMatch} · ${dateMatch}`,
+    source: doc.source || `${glossedByMatch} · ${dateMatch}`,
     sourceFile: doc.sourceFile || "references/Voyages_of_Ohthere_Wulfstan.tex",
+    sourceEdition: doc.sourceEdition || "",
     language: "Old English",
     status: doc.status || "published",
     sentences: (doc.sentences || []).map((sent: ReadingSentence, sIdx: number) => ({
       id: sent.id || `sent-${sIdx + 1}`,
       freeTranslation: sent.translation || "",
       footnotes: sent.footnotes,
+      notes: sent.notes ? [...sent.notes] : undefined,
       tokens: (sent.words || []).map((w: InterlinearWord, tIdx: number) =>
         wordToEditorToken(w, sIdx, tIdx),
       ),
@@ -147,20 +165,25 @@ export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
 }
 
 export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
+  const resolvedAuthor = doc.glossedBy || doc.author;
   const result: TextDocument = {
     textId: doc.textId,
     slug: doc.slug,
     language: "Old English",
-    author: doc.author,
+    author: resolvedAuthor,
+    historicalAuthor: doc.historicalAuthor,
+    glossedBy: resolvedAuthor,
     date: doc.date,
     title: doc.title,
-    source: doc.source || `${doc.author} · ${doc.date}`,
+    source: `${resolvedAuthor} · ${doc.date}`,
     sourceFile: doc.sourceFile,
+    sourceEdition: doc.sourceEdition,
     status: doc.status,
     sentences: doc.sentences.map((sent) => ({
       id: sent.id,
       translation: sent.freeTranslation,
       footnotes: sent.footnotes,
+      notes: sent.notes ? [...sent.notes] : undefined,
       words: sent.tokens.map((tok) => {
         const punctuationMatch = tok.sourceForm.match(/[.,;:!?]+$/);
         const originalCleanWord =
@@ -240,6 +263,15 @@ export function GlossEditor({
   const [autosaveStatus, setAutosaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditingMetadata, setIsEditingMetadata] = useState(false);
+
+  // Metadata modal form state
+  const [metaTitle, setMetaTitle] = useState("");
+  const [metaHistoricalAuthor, setMetaHistoricalAuthor] = useState("");
+  const [metaGlossedBy, setMetaGlossedBy] = useState("");
+  const [metaDate, setMetaDate] = useState("");
+  const [metaSourceEdition, setMetaSourceEdition] = useState("");
+  const [showSyncPrompt, setShowSyncPrompt] = useState(false);
 
   const [workspaceTexts, setWorkspaceTexts] = useState<WorkspaceTextItem[]>(() =>
     getWorkspaceTexts({
@@ -434,9 +466,61 @@ export function GlossEditor({
     activeSentence?.tokens.find((t) => t.id === activeTokenId) ||
     documentState?.sentences.flatMap((s) => s.tokens).find((t) => t.id === activeTokenId);
 
+  const activeTokenIndexInSent = activeSentence && activeToken
+    ? activeSentence.tokens.findIndex((t) => t.id === activeToken.id)
+    : -1;
+
   const currentIndex = documentState
     ? documentState.sentences.findIndex((s) => s.id === activeSentenceId)
     : -1;
+
+  const addNoteToSentence = useCallback((sentenceId: string, targetWordIndex?: number) => {
+    setDocumentState((prev) => ({
+      ...prev,
+      sentences: prev.sentences.map((sent) => {
+        if (sent.id !== sentenceId) return sent;
+        const currentNotes = sent.notes || [];
+        const noteNumber = currentNotes.length + 1;
+        const newNote: NoteItem = {
+          id: `fn-${sentenceId}-${Date.now()}-${noteNumber}`,
+          targetWordIndex,
+          marker: String(noteNumber),
+          type: "manuscript_variant",
+          text: "",
+        };
+        return {
+          ...sent,
+          notes: [...currentNotes, newNote],
+        };
+      }),
+    }));
+  }, []);
+
+  const updateSentenceNote = useCallback((sentenceId: string, noteId: string, patch: Partial<NoteItem>) => {
+    setDocumentState((prev) => ({
+      ...prev,
+      sentences: prev.sentences.map((sent) => {
+        if (sent.id !== sentenceId) return sent;
+        return {
+          ...sent,
+          notes: (sent.notes || []).map((n) => (n.id === noteId ? { ...n, ...patch } : n)),
+        };
+      }),
+    }));
+  }, []);
+
+  const removeSentenceNote = useCallback((sentenceId: string, noteId: string) => {
+    setDocumentState((prev) => ({
+      ...prev,
+      sentences: prev.sentences.map((sent) => {
+        if (sent.id !== sentenceId) return sent;
+        return {
+          ...sent,
+          notes: (sent.notes || []).filter((n) => n.id !== noteId),
+        };
+      }),
+    }));
+  }, []);
 
   const handlePrev = () => {
     if (documentState && currentIndex > 0) {
@@ -512,6 +596,38 @@ export function GlossEditor({
     [activeTokenId],
   );
 
+  // Open metadata editing modal initialized with current state
+  const handleOpenMetadataModal = () => {
+    setMetaTitle(documentState.title || "");
+    setMetaHistoricalAuthor(documentState.historicalAuthor || "Anonymous");
+    setMetaGlossedBy(documentState.glossedBy || documentState.author || "");
+    setMetaDate(documentState.date || "");
+    setMetaSourceEdition(documentState.sourceEdition || "");
+    setIsEditingMetadata(true);
+  };
+
+  const handleSaveMetadata = (e: React.FormEvent) => {
+    e.preventDefault();
+    const updatedTitle = metaTitle.trim() || documentState.title;
+    const updatedHistAuthor = metaHistoricalAuthor.trim() || "Anonymous";
+    const updatedGlossedBy = metaGlossedBy.trim() || documentState.author || "Tyler Lemon";
+    const updatedDate = metaDate.trim() || documentState.date;
+    const updatedSourceEdition = metaSourceEdition.trim();
+
+    setDocumentState((prev) => ({
+      ...prev,
+      title: updatedTitle,
+      author: updatedGlossedBy,
+      historicalAuthor: updatedHistAuthor,
+      glossedBy: updatedGlossedBy,
+      date: updatedDate,
+      sourceEdition: updatedSourceEdition,
+      source: `${updatedGlossedBy} · ${updatedDate}`,
+    }));
+
+    setIsEditingMetadata(false);
+  };
+
   // Discard changes to restore initial snapshot and completely remove draft
   const discardChanges = () => {
     try {
@@ -574,6 +690,9 @@ export function GlossEditor({
           synced: false,
         };
         window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("glossy:drafts-updated"));
+        }
       } catch {}
 
       // 2. Build full TextMutation payload
@@ -593,6 +712,13 @@ export function GlossEditor({
             id: sent.id,
             translation: sent.translation || "",
             footnotes: sent.footnotes || [],
+            notes: (sent.notes || []).map((n) => ({
+              id: n.id,
+              targetWordIndex: n.targetWordIndex,
+              marker: n.marker || "",
+              type: n.type || "general",
+              text: n.text || "",
+            })),
             words: (sent.words || []).map((w) => ({
               id: w.id,
               originalWord: w.originalWord,
@@ -706,26 +832,23 @@ export function GlossEditor({
         } catch {}
       }
 
-      if (graphQlSuccess) {
-        try {
-          const pendingRaw = window.localStorage.getItem("glossy_pending_drafts");
-          if (pendingRaw) {
-            const pending = JSON.parse(pendingRaw);
-            if (pending[targetSlug]) {
-              pending[targetSlug].synced = true;
-              window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
-            }
-          }
-        } catch {}
+      const commitRes = await commitPendingDraft(targetSlug);
 
+      if (commitRes.ok) {
         setSaveStatus({
           kind: "success",
-          message: `Saved and synchronized directly to TinaCMS (content/texts/${targetFileName}) and browser storage.`,
+          message: `Saved working draft and synchronized directly to TinaCMS / Git repository (${targetFileName}).`,
         });
+        setShowSyncPrompt(false);
       } else {
+        setShowSyncPrompt(true);
         setSaveStatus({
           kind: "success",
-          message: `Saved working draft to browser storage (key: "${storageKey}"). To commit your changes directly to Git, open Tina Admin (↗) or click "Export JSON".`,
+          message: `Saved working draft to browser storage. ${
+            isTinaAuthenticated()
+              ? 'Click "Commit Draft to Git" in the prompt below to publish your changes.'
+              : 'Sign in to Tina Admin to commit your changes to Git.'
+          }`,
         });
       }
     } catch (error) {
@@ -935,111 +1058,150 @@ export function GlossEditor({
       <SiteNav current="edit" slug={initialDocument.slug} />
       <main className="site-shell">
         {/* Header with Workspace Actions */}
-        <header className="page-header" style={{ marginBottom: "1.5rem" }}>
-          <div>
-            <span className="sr-only">Editing workspace</span>
-            <h1>{documentState.title}</h1>
-            <p className="source-line" style={{ margin: "0.25rem 0 0" }}>
-              {documentState.author?.toLowerCase().includes("anonymous")
-                ? `${documentState.author} · ${documentState.date}`
-                : `Translated and glossed by ${documentState.author?.replace(/^(Translated and glossed by\s*)+/gi, "")} · ${documentState.date}`}
-            </p>
-
-            {workspaceTexts && workspaceTexts.length > 1 && (
-              <div style={{ marginTop: "0.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <label htmlFor="editor-text-select" style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--accent)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                  Switch text:
-                </label>
-                <select
-                  id="editor-text-select"
-                  value={initialDocument.slug}
-                  onChange={(e) => router.push(`/edit/${e.target.value}`)}
-                  style={{ padding: "0.35rem 0.6rem", fontSize: "0.85rem", border: "1px solid var(--rule)", borderRadius: "0.25rem", background: "var(--surface)", color: "var(--ink)" }}
-                >
-                  {workspaceTexts.map((t) => (
-                    <option key={t.slug} value={t.slug}>
-                      {t.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-          </div>
-
-          <div className="workspace-actions">
-            {(autosaveStatus === "saved" || autosaveStatus === "saving") && (
-              <span className={`editor-dirty ${autosaveStatus === "saved" ? "is-clean" : "is-dirty"}`}>
-                {autosaveStatus === "saved" ? "✓ Draft saved" : "Autosaving..."}
-              </span>
-            )}
-
-            <div style={{ display: "inline-flex", gap: "0.4rem", flexWrap: "wrap", alignItems: "center" }}>
+        <PageHero
+          eyebrow="Editing workspace"
+          title={
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
+              <span>{documentState.title}</span>
               <button
                 type="button"
-                onClick={discardChanges}
+                onClick={handleOpenMetadataModal}
                 className="workspace-link"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.3rem",
+                  padding: "0.25rem 0.6rem",
+                  fontSize: "0.8rem",
+                  fontWeight: 600,
+                  color: "var(--accent)",
+                  borderColor: "var(--rule)",
+                  background: "#fbf7ee",
+                }}
+                title="Edit document title, author, date, and manuscript shelfmark"
               >
-                Discard edits
+                <Edit style={{ width: "0.85rem", height: "0.85rem" }} />
+                Edit Details
               </button>
-
-              <button
-                type="button"
-                onClick={handleExportJson}
-                className="workspace-link"
-                title="Download complete JSON document"
-              >
-                Export JSON
-              </button>
-
-              <button
-                type="button"
-                onClick={handleExportLatex}
-                className="workspace-link"
-                style={{ background: "#f3eadb", color: "#7b3f2a" }}
-                title="Download gb4e LaTeX file"
-              >
-                Export LaTeX
-              </button>
-
-              {!isProtectedText && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (
-                      window.confirm(
-                        `Are you sure you want to remove "${documentState.title}" from Glossy? This will delete its JSON data, LaTeX files, and local drafts.`,
-                      )
-                    ) {
-                      handleDeleteText();
-                    }
-                  }}
-                  disabled={isDeleting}
-                  className="workspace-link"
-                  style={{
-                    background: "rgba(220, 38, 38, 0.08)",
-                    color: "#b91c1c",
-                    borderColor: "#fca5a5",
-                  }}
-                >
-                  <Trash2 style={{ width: "0.85rem", height: "0.85rem", marginRight: "0.35rem" }} />
-                  {isDeleting ? "Deleting..." : "Delete Text"}
-                </button>
+            </div>
+          }
+          description={
+            <div>
+              <p className="source-line" style={{ margin: 0 }}>
+                {documentState.historicalAuthor && documentState.historicalAuthor !== "Anonymous" && (
+                  <span style={{ fontWeight: 600, marginRight: "0.4rem" }}>
+                    [{documentState.historicalAuthor}]
+                  </span>
+                )}
+                {documentState.author?.toLowerCase().includes("anonymous")
+                  ? `${documentState.author} · ${documentState.date}`
+                  : `Translated and glossed by ${documentState.author?.replace(/^(Translated and glossed by\s*)+/gi, "")} · ${documentState.date}`}
+              </p>
+              {documentState.sourceEdition && (
+                <p style={{ margin: "0.15rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)" }}>
+                  Witness / Shelfmark: {documentState.sourceEdition}
+                </p>
               )}
             </div>
+          }
+          actions={
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
+              {workspaceTexts && workspaceTexts.length > 1 && (
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <label htmlFor="editor-text-select" style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--accent)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    Switch text:
+                  </label>
+                  <select
+                    id="editor-text-select"
+                    value={initialDocument.slug}
+                    onChange={(e) => router.push(`/edit/${e.target.value}`)}
+                    style={{ padding: "0.35rem 0.6rem", fontSize: "0.85rem", border: "1px solid var(--rule)", borderRadius: "0.25rem", background: "var(--surface)", color: "var(--ink)" }}
+                  >
+                    {workspaceTexts.map((t) => (
+                      <option key={t.slug} value={t.slug}>
+                        {t.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
-            <button
-              type="button"
-              onClick={saveToTina}
-              disabled={isSaving}
-              className="workspace-button"
-              style={{ background: "var(--accent)", color: "#fff", borderColor: "var(--accent)", padding: "0.45rem 1.1rem" }}
-              title="Save working draft to browser storage (and sync to Git if connected)"
-            >
-              <Save style={{ width: "0.9rem", height: "0.9rem", marginRight: "0.35rem" }} />
-              {isSaving ? "Saving..." : "Save draft"}
-            </button>
-          </div>
-        </header>
+              <div className="workspace-actions" style={{ marginLeft: "auto" }}>
+                {(autosaveStatus === "saved" || autosaveStatus === "saving") && (
+                  <span className={`editor-dirty ${autosaveStatus === "saved" ? "is-clean" : "is-dirty"}`}>
+                    {autosaveStatus === "saved" ? "✓ Draft saved" : "Autosaving..."}
+                  </span>
+                )}
+
+                <div style={{ display: "inline-flex", gap: "0.4rem", flexWrap: "wrap", alignItems: "center" }}>
+                  <button
+                    type="button"
+                    onClick={discardChanges}
+                    className="workspace-link"
+                  >
+                    Discard edits
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleExportJson}
+                    className="workspace-link"
+                    title="Download complete JSON document"
+                  >
+                    Export JSON
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleExportLatex}
+                    className="workspace-link"
+                    style={{ background: "#f3eadb", color: "#7b3f2a" }}
+                    title="Download gb4e LaTeX file"
+                  >
+                    Export LaTeX
+                  </button>
+
+                  {!isProtectedText && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            `Are you sure you want to remove "${documentState.title}" from Glossy? This will delete its JSON data, LaTeX files, and local drafts.`,
+                          )
+                        ) {
+                          handleDeleteText();
+                        }
+                      }}
+                      disabled={isDeleting}
+                      className="workspace-link"
+                      style={{
+                        background: "rgba(220, 38, 38, 0.08)",
+                        color: "#b91c1c",
+                        borderColor: "#fca5a5",
+                      }}
+                    >
+                      <Trash2 style={{ width: "0.85rem", height: "0.85rem", marginRight: "0.35rem" }} />
+                      {isDeleting ? "Deleting..." : "Delete Text"}
+                    </button>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={saveToTina}
+                  disabled={isSaving}
+                  className="workspace-button"
+                  style={{ background: "var(--accent)", color: "#fff", borderColor: "var(--accent)", padding: "0.45rem 1.1rem" }}
+                  title="Save working draft to browser storage (and sync to Git if connected)"
+                >
+                  <Save style={{ width: "0.9rem", height: "0.9rem", marginRight: "0.35rem" }} />
+                  {isSaving ? "Saving..." : "Save draft"}
+                </button>
+              </div>
+            </div>
+          }
+        />
 
         {/* Global Action Alerts */}
         {saveStatus.message && (
@@ -1190,16 +1352,53 @@ export function GlossEditor({
                     onClick={() => setActiveSentenceId(sent.id)}
                     className={`editor-sentence-card${isSentActive ? " is-active" : ""}`}
                   >
-                    <div className="editor-sentence-header">
-                      <h3 style={{ margin: 0, fontSize: "1.1rem", fontFamily: "'Charis SIL', 'Noto Serif', Georgia, serif", fontWeight: 700, color: "var(--accent)" }}>
-                        Sentence {actualIndex}
-                      </h3>
+                    <div className="editor-sentence-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", marginBottom: "0.5rem" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <h3 style={{ margin: 0, fontSize: "1.1rem", fontFamily: "'Charis SIL', 'Noto Serif', Georgia, serif", fontWeight: 700, color: "var(--accent)" }}>
+                          Sentence {actualIndex}
+                        </h3>
+                        {sent.notes && sent.notes.length > 0 && (
+                          <span style={{ fontSize: "0.75rem", background: "#fef3c7", color: "#92400e", border: "1px solid #fcd34d", borderRadius: "1rem", padding: "0.1rem 0.5rem", fontWeight: 600 }}>
+                            {sent.notes.length} {sent.notes.length === 1 ? "note" : "notes"}
+                          </span>
+                        )}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveSentenceId(sent.id);
+                          addNoteToSentence(sent.id);
+                        }}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "0.3rem",
+                          fontSize: "0.78rem",
+                          fontWeight: 600,
+                          color: "#7b3f2a",
+                          background: "#fbf7ee",
+                          border: "1px solid #dfcfb8",
+                          borderRadius: "0.3rem",
+                          padding: "0.25rem 0.55rem",
+                          cursor: "pointer",
+                        }}
+                        title="Add Note / Footnote to sentence"
+                      >
+                        <Plus style={{ width: "0.8rem", height: "0.8rem" }} />
+                        <span>Add Note / Footnote</span>
+                      </button>
                     </div>
 
                     {/* Word Chips */}
                     <div className="editor-tokens-list">
-                      {sent.tokens.map((tok) => {
+                      {sent.tokens.map((tok, tokIdx) => {
                         const isTokActive = tok.id === activeTokenId;
+                        const tokNotes = (sent.notes || []).filter(
+                          (n) => n.targetWordIndex === tokIdx || n.targetWordIndex === tokIdx + 1,
+                        );
+
                         return (
                           <button
                             key={tok.id}
@@ -1210,9 +1409,15 @@ export function GlossEditor({
                               setActiveTokenId(tok.id);
                             }}
                             className={`editor-word-chip${isTokActive ? " is-selected" : ""}`}
+                            style={{ position: "relative" }}
                           >
                             <span className="chip-form">
                               {tok.sourceForm}
+                              {tokNotes.length > 0 && (
+                                <sup style={{ fontSize: "0.68rem", fontWeight: 800, color: "#b45309", marginLeft: "2px" }}>
+                                  {tokNotes.map((n) => n.marker || "*").join(",")}
+                                </sup>
+                              )}
                             </span>
                             <span className="chip-gloss">
                               {tok.sourceGloss || tok.sourceForm}
@@ -1514,7 +1719,119 @@ export function GlossEditor({
                   />
                 </div>
 
-                {/* 10. Reader Popup Preview */}
+                {/* 10. Sentence Footnotes / Critical Apparatus */}
+                <fieldset className="editor-fieldset" style={{ marginTop: "1rem" }}>
+                  <legend style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                    <FileText style={{ width: "0.85rem", height: "0.85rem", color: "var(--accent)" }} />
+                    <span>Sentence Footnotes / Critical Apparatus ({activeSentence?.notes?.length || 0})</span>
+                  </legend>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "0.5rem" }}>
+                    {(activeSentence?.notes || []).map((note, nIdx) => (
+                      <div
+                        key={note.id || nIdx}
+                        style={{
+                          background: "#fbf7ee",
+                          border: "1px solid #dfcfb8",
+                          borderRadius: "0.375rem",
+                          padding: "0.6rem 0.75rem",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "0.4rem",
+                          position: "relative",
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <div style={{ display: "flex", gap: "0.35rem", alignItems: "center" }}>
+                            <input
+                              type="text"
+                              placeholder="Marker"
+                              value={note.marker || ""}
+                              onChange={(e) =>
+                                activeSentence &&
+                                updateSentenceNote(activeSentence.id, note.id, { marker: e.target.value })
+                              }
+                              style={{ width: "3.2rem", padding: "0.2rem 0.4rem", fontSize: "0.78rem", textAlign: "center" }}
+                            />
+                            <select
+                              value={note.type || "manuscript_variant"}
+                              onChange={(e) =>
+                                activeSentence &&
+                                updateSentenceNote(activeSentence.id, note.id, {
+                                  type: e.target.value as NoteType,
+                                })
+                              }
+                              style={{ padding: "0.2rem 0.4rem", fontSize: "0.78rem" }}
+                            >
+                              <option value="manuscript_variant">manuscript_variant</option>
+                              <option value="grammatical_note">grammatical_note</option>
+                              <option value="source_reference">source_reference</option>
+                              <option value="general">general</option>
+                            </select>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => activeSentence && removeSentenceNote(activeSentence.id, note.id)}
+                            style={{ background: "transparent", border: "none", color: "#b91c1c", cursor: "pointer" }}
+                            title="Remove note"
+                          >
+                            <X style={{ width: "0.85rem", height: "0.85rem" }} />
+                          </button>
+                        </div>
+
+                        {activeSentence && (
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                            <label style={{ fontSize: "0.72rem", color: "var(--muted-ink)" }}>Target Word:</label>
+                            <select
+                              value={note.targetWordIndex != null ? String(note.targetWordIndex) : ""}
+                              onChange={(e) =>
+                                updateSentenceNote(activeSentence.id, note.id, {
+                                  targetWordIndex: e.target.value !== "" ? Number(e.target.value) : undefined,
+                                })
+                              }
+                              style={{ padding: "0.15rem 0.35rem", fontSize: "0.75rem", flex: 1 }}
+                            >
+                              <option value="">Whole Sentence</option>
+                              {activeSentence.tokens.map((tok, tIdx) => (
+                                <option key={tok.id} value={tIdx + 1}>
+                                  Word #{tIdx + 1}: {tok.sourceForm}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+
+                        <textarea
+                          rows={2}
+                          placeholder="BL Cotton MS Tiberius B i reads 'hlaforde'..."
+                          value={note.text}
+                          onChange={(e) =>
+                            activeSentence &&
+                            updateSentenceNote(activeSentence.id, note.id, { text: e.target.value })
+                          }
+                          style={{ fontSize: "0.82rem", width: "100%" }}
+                        />
+                      </div>
+                    ))}
+
+                    <div style={{ display: "flex", gap: "0.5rem" }}>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          activeSentence &&
+                          addNoteToSentence(activeSentence.id, activeTokenIndexInSent >= 0 ? activeTokenIndexInSent + 1 : undefined)
+                        }
+                        className="add-morpheme-btn"
+                        style={{ fontSize: "0.8rem", padding: "0.35rem 0.75rem" }}
+                      >
+                        + Add Note for {activeToken ? `"${cleanHeaderWord}"` : "Sentence"}
+                      </button>
+                    </div>
+                  </div>
+                </fieldset>
+
+                {/* 11. Reader Popup Preview */}
                 <div className="editor-preview-card">
                   <h3>Reader Popup Preview</h3>
                   <p className="editor-preview-word">
@@ -1564,6 +1881,210 @@ export function GlossEditor({
           </aside>
         </div>
       </main>
+
+      {/* Edit Document Details Modal */}
+      {isEditingMetadata && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="edit-metadata-title"
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(28, 25, 23, 0.65)",
+            backdropFilter: "blur(3px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "1rem",
+            zIndex: 9999,
+          }}
+          onClick={() => setIsEditingMetadata(false)}
+        >
+          <div
+            style={{
+              background: "var(--surface)",
+              border: "1px solid var(--rule)",
+              borderRadius: "0.6rem",
+              maxWidth: "36rem",
+              width: "100%",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              boxShadow: "0 1.5rem 3rem rgba(0, 0, 0, 0.25)",
+              padding: "1.75rem",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingBottom: "0.85rem",
+                borderBottom: "1px solid var(--rule)",
+                marginBottom: "1.25rem",
+              }}
+            >
+              <div>
+                <h2
+                  id="edit-metadata-title"
+                  style={{
+                    margin: 0,
+                    fontSize: "1.25rem",
+                    fontFamily: "'Charis SIL', Georgia, serif",
+                    color: "var(--ink)",
+                  }}
+                >
+                  Edit Document Details
+                </h2>
+                <p style={{ margin: "0.2rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)" }}>
+                  Update original title, historical author, glossing attribution, and shelfmark.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsEditingMetadata(false)}
+                aria-label="Close dialog"
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "var(--muted-ink)",
+                  cursor: "pointer",
+                  padding: "0.25rem",
+                  borderRadius: "0.25rem",
+                }}
+              >
+                <X style={{ width: "1.25rem", height: "1.25rem" }} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveMetadata} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <div className="editor-form-group" style={{ marginBottom: 0 }}>
+                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
+                  Original Text Title
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. The Voyages of Ohthere and Wulfstan"
+                  value={metaTitle}
+                  onChange={(e) => setMetaTitle(e.target.value)}
+                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
+                />
+              </div>
+
+              <div className="editor-form-group" style={{ marginBottom: 0 }}>
+                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
+                  Historical Author / Speaker
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Anonymous, King Alfred, Cædmon, Bede"
+                  value={metaHistoricalAuthor}
+                  onChange={(e) => setMetaHistoricalAuthor(e.target.value)}
+                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
+                />
+              </div>
+
+              <div className="editor-form-group" style={{ marginBottom: 0 }}>
+                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
+                  Glossed / Edited By (Translator / Linguist)
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Tyler Lemon"
+                  value={metaGlossedBy}
+                  onChange={(e) => setMetaGlossedBy(e.target.value)}
+                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
+                />
+              </div>
+
+              <div className="editor-form-group" style={{ marginBottom: 0 }}>
+                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
+                  Date (Historical Composition or Release Date)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. c. 890–900 AD or September 30, 2026"
+                  value={metaDate}
+                  onChange={(e) => setMetaDate(e.target.value)}
+                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
+                />
+              </div>
+
+              <div className="editor-form-group" style={{ marginBottom: 0 }}>
+                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
+                  Source Edition / Manuscript Shelfmark
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. BL Cotton MS Tiberius B i, fol. 11r–15v"
+                  value={metaSourceEdition}
+                  onChange={(e) => setMetaSourceEdition(e.target.value)}
+                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
+                />
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: "0.6rem",
+                  marginTop: "0.75rem",
+                  paddingTop: "0.85rem",
+                  borderTop: "1px solid var(--rule)",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setIsEditingMetadata(false)}
+                  style={{
+                    padding: "0.45rem 1rem",
+                    borderRadius: "0.35rem",
+                    border: "1px solid var(--rule)",
+                    background: "var(--surface)",
+                    color: "var(--ink)",
+                    fontSize: "0.85rem",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  style={{
+                    padding: "0.45rem 1.1rem",
+                    borderRadius: "0.35rem",
+                    border: "none",
+                    background: "var(--accent)",
+                    color: "#ffffff",
+                    fontSize: "0.85rem",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
+                  Save Details
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <DraftSyncPrompt
+        forceShow={showSyncPrompt}
+        currentSlug={documentState.slug}
+        onSynced={() => {
+          setSaveStatus({
+            kind: "success",
+            message: "Successfully committed working draft to Git repository!",
+          });
+          setShowSyncPrompt(false);
+        }}
+        onDismiss={() => setShowSyncPrompt(false)}
+      />
       <SiteFooter />
     </>
   );

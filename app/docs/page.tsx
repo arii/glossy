@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { SiteNav } from "../../components/site-nav";
+import { PageHero } from "../../components/page-hero";
 import { SiteFooter } from "../../components/site-footer";
 import {
   BookOpen,
@@ -160,10 +161,14 @@ export default function DocsPage() {
     <>
       <SiteNav current="docs" slug="ohthere-wulfstan" />
       <main className="site-shell">
-        <header className="page-header" style={{ marginBottom: "2rem" }}>
-          <p className="eyebrow" data-tina-field={tinaField(docs, "eyebrow")}>{pageEyebrow}</p>
-          <h1 className="docs-title" data-tina-field={tinaField(docs, "title")}>{pageTitle}</h1>
-        </header>
+        <PageHero
+          eyebrow={pageEyebrow}
+          eyebrowDataTinaField={tinaField(docs, "eyebrow")}
+          title={pageTitle}
+          titleDataTinaField={tinaField(docs, "title")}
+          description={docs.description || "Comprehensive guide to Leipzig interlinear glossing standards, morphological tagging, Wiktionary citation rules, and system architecture."}
+          descriptionDataTinaField={tinaField(docs, "description")}
+        />
 
         {/* Mobile Collapsible TOC (Visible only on mobile screens <= 48rem) */}
         <div className="docs-mobile-toc">
@@ -295,7 +300,7 @@ export default function DocsPage() {
                       </div>
                       <div className="docs-tier-glosses" data-tina-field={tinaField(docs, "l1TierGlosses")}>
                         {(docs.l1TierGlosses || "Ohthere | say-PST-IND.3SG | his.GEN lord-DAT.SG").split("|").map((gloss, i) => (
-                          <div key={i} style={{ color: i === 0 ? "#a8a29e" : "#fde68a" }}>
+                          <div key={i} style={{ color: i === 0 ? "#d6d3d1" : "#fde68a" }}>
                             {gloss.trim()}
                           </div>
                         ))}
@@ -311,10 +316,11 @@ export default function DocsPage() {
                         type="button"
                         onClick={() => setAbbrOpen(!abbrOpen)}
                         className="docs-accordion-btn"
+                        aria-label="Toggle Glossing Abbreviations reference"
                       >
-                        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-                          <BookOpen style={{ width: "1.1rem", height: "1.1rem", color: "var(--accent)" }} />
-                          <div>
+                        <div style={{ display: "flex", alignItems: "flex-start", gap: "0.65rem", minWidth: 0, flex: 1 }}>
+                          <BookOpen style={{ width: "1.1rem", height: "1.1rem", color: "var(--accent)", flexShrink: 0, marginTop: "0.15rem" }} />
+                          <div style={{ minWidth: 0, overflowWrap: "break-word" }}>
                             <h3
                               style={{
                                 margin: 0,
@@ -322,28 +328,17 @@ export default function DocsPage() {
                                 fontWeight: 700,
                                 color: "var(--ink)",
                                 fontFamily: "'Charis SIL', Georgia, serif",
+                                lineHeight: 1.3,
                               }}
                             >
-                              Complete Reference: 42 Glossing Abbreviations
+                              Complete Reference: Glossing Abbreviations
                             </h3>
-                            <p style={{ margin: "0.15rem 0 0", fontSize: "0.78rem", color: "var(--muted-ink)" }}>
+                            <p style={{ margin: "0.15rem 0 0", fontSize: "0.78rem", color: "var(--muted-ink)", overflowWrap: "break-word", wordBreak: "break-word" }}>
                               Defined in Section 2 of <code>references/Voyages_of_Ohthere_Wulfstan.tex</code>
                             </p>
                           </div>
                         </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                          <span
-                            style={{
-                              fontSize: "0.75rem",
-                              fontWeight: 700,
-                              color: "var(--accent)",
-                              background: "#f3eadb",
-                              padding: "0.2rem 0.5rem",
-                              borderRadius: "0.25rem",
-                            }}
-                          >
-                            {filteredAbbrs.length} tags
-                          </span>
+                        <div style={{ flexShrink: 0, marginLeft: "0.5rem", color: "var(--muted-ink)" }}>
                           {abbrOpen ? (
                             <ChevronDown style={{ width: "1rem", height: "1rem" }} />
                           ) : (
@@ -354,11 +349,11 @@ export default function DocsPage() {
 
                       {abbrOpen && (
                         <div
+                          className="docs-accordion-content"
                           style={{
                             border: "1px solid var(--rule)",
                             borderTop: "none",
                             borderRadius: "0 0 0.35rem 0.35rem",
-                            padding: "1rem",
                             background: "var(--surface)",
                           }}
                         >
@@ -576,9 +571,9 @@ export default function DocsPage() {
                         onClick={() => setWiktionaryOpen(!wiktionaryOpen)}
                         className="docs-accordion-btn"
                       >
-                        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-                          <BookOpen style={{ width: "1.1rem", height: "1.1rem", color: "var(--accent)" }} />
-                          <div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", minWidth: 0, flex: 1 }}>
+                          <BookOpen style={{ width: "1.1rem", height: "1.1rem", color: "var(--accent)", flexShrink: 0 }} />
+                          <div style={{ minWidth: 0, overflowWrap: "break-word" }}>
                             <h3
                               data-tina-field={tinaField(docs, "l4WiktionaryTitle")}
                               style={{
@@ -597,19 +592,19 @@ export default function DocsPage() {
                           </div>
                         </div>
                         {wiktionaryOpen ? (
-                          <ChevronDown style={{ width: "1rem", height: "1rem" }} />
+                          <ChevronDown style={{ width: "1rem", height: "1rem", flexShrink: 0, marginLeft: "0.5rem" }} />
                         ) : (
-                          <ChevronRight style={{ width: "1rem", height: "1rem" }} />
+                          <ChevronRight style={{ width: "1rem", height: "1rem", flexShrink: 0, marginLeft: "0.5rem" }} />
                         )}
                       </button>
 
                       {wiktionaryOpen && (
                         <div
+                          className="docs-accordion-content"
                           style={{
                             border: "1px solid var(--rule)",
                             borderTop: "none",
                             borderRadius: "0 0 0.35rem 0.35rem",
-                            padding: "1.25rem",
                             background: "var(--surface)",
                           }}
                         >
@@ -650,9 +645,9 @@ export default function DocsPage() {
                         onClick={() => setIpaOpen(!ipaOpen)}
                         className="docs-accordion-btn"
                       >
-                        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-                          <Terminal style={{ width: "1.1rem", height: "1.1rem", color: "var(--accent)" }} />
-                          <div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", minWidth: 0, flex: 1 }}>
+                          <Terminal style={{ width: "1.1rem", height: "1.1rem", color: "var(--accent)", flexShrink: 0 }} />
+                          <div style={{ minWidth: 0, overflowWrap: "break-word" }}>
                             <h3
                               data-tina-field={tinaField(docs, "l4IpaTitle")}
                               style={{
@@ -671,19 +666,19 @@ export default function DocsPage() {
                           </div>
                         </div>
                         {ipaOpen ? (
-                          <ChevronDown style={{ width: "1rem", height: "1rem" }} />
+                          <ChevronDown style={{ width: "1rem", height: "1rem", flexShrink: 0, marginLeft: "0.5rem" }} />
                         ) : (
-                          <ChevronRight style={{ width: "1rem", height: "1rem" }} />
+                          <ChevronRight style={{ width: "1rem", height: "1rem", flexShrink: 0, marginLeft: "0.5rem" }} />
                         )}
                       </button>
 
                       {ipaOpen && (
                         <div
+                          className="docs-accordion-content"
                           style={{
                             border: "1px solid var(--rule)",
                             borderTop: "none",
                             borderRadius: "0 0 0.35rem 0.35rem",
-                            padding: "1.25rem",
                             background: "var(--surface)",
                           }}
                         >
@@ -719,7 +714,7 @@ export default function DocsPage() {
                       {secA1?.domainNum || "A1"}
                     </span>
                     <div>
-                      <p className="docs-section-eyebrow" data-tina-field={secA1 ? tinaField(secA1, "eyebrow") : undefined} style={{ color: "#475569" }}>
+                      <p className="docs-section-eyebrow" data-tina-field={secA1 ? tinaField(secA1, "eyebrow") : undefined} style={{ color: "#334155" }}>
                         {secA1?.eyebrow || "Corpus Expansion"}
                       </p>
                       <h2 className="docs-section-h2" data-tina-field={secA1 ? tinaField(secA1, "title") : undefined}>
@@ -741,17 +736,16 @@ export default function DocsPage() {
                         <div
                           key={idx}
                           data-tina-field={tinaField(step)}
+                          className="docs-step-card"
                           style={{
                             display: "flex",
-                            gap: "0.75rem",
-                            padding: "0.85rem 1rem",
-                            background: "#fbf7ee",
+                            background: "var(--surface)",
                             border: "1px solid var(--rule)",
-                            borderRadius: "0.35rem",
+                            borderRadius: "0.5rem",
                           }}
                         >
-                          <span className="docs-nav-num arch" style={{ marginTop: "0.15rem" }} data-tina-field={tinaField(step, "num")}>
-                            {step.num}
+                          <span className="docs-step-num" data-tina-field={tinaField(step, "num")}>
+                            {step.num}.
                           </span>
                           <div>
                             <strong
@@ -760,13 +754,16 @@ export default function DocsPage() {
                                 display: "block",
                                 color: "var(--ink)",
                                 fontFamily: "'Charis SIL', Georgia, serif",
+                                fontSize: "0.95rem",
+                                fontWeight: 700,
+                                marginBottom: "0.2rem",
                               }}
                             >
                               {step.title}
                             </strong>
-                            <span data-tina-field={tinaField(step, "description")} style={{ fontSize: "0.82rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
+                            <p data-tina-field={tinaField(step, "description")} style={{ margin: 0, fontSize: "0.82rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
                               {step.description}
-                            </span>
+                            </p>
                           </div>
                         </div>
                       ))}
@@ -781,7 +778,7 @@ export default function DocsPage() {
                       {secA2?.domainNum || "A2"}
                     </span>
                     <div>
-                      <p className="docs-section-eyebrow" data-tina-field={secA2 ? tinaField(secA2, "eyebrow") : undefined} style={{ color: "#475569" }}>
+                      <p className="docs-section-eyebrow" data-tina-field={secA2 ? tinaField(secA2, "eyebrow") : undefined} style={{ color: "#334155" }}>
                         {secA2?.eyebrow || "Architecture & Storage"}
                       </p>
                       <h2 className="docs-section-h2" data-tina-field={secA2 ? tinaField(secA2, "title") : undefined}>
@@ -856,7 +853,7 @@ export default function DocsPage() {
                       {secA3?.domainNum || "A3"}
                     </span>
                     <div>
-                      <p className="docs-section-eyebrow" data-tina-field={secA3 ? tinaField(secA3, "eyebrow") : undefined} style={{ color: "#475569" }}>
+                      <p className="docs-section-eyebrow" data-tina-field={secA3 ? tinaField(secA3, "eyebrow") : undefined} style={{ color: "#334155" }}>
                         {secA3?.eyebrow || "Quality Assurance"}
                       </p>
                       <h2 className="docs-section-h2" data-tina-field={secA3 ? tinaField(secA3, "title") : undefined}>

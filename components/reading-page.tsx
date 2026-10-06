@@ -1,6 +1,7 @@
 "use client";
 
 import { SiteNav } from "./site-nav";
+import { PageHero } from "./page-hero";
 import { SiteFooter } from "./site-footer";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -213,13 +214,45 @@ export function ReadingPage({
     lastTriggerId.current = id;
   };
 
+  // Aggregate all notes across sentences
+  const aggregatedApparatus = (selectedText?.sentences || []).flatMap((sent, sIdx) => {
+    const sNum = sent.id.match(/\d+$/)?.[0] || String(sIdx + 1);
+    const itemNotes = (sent.notes || []).map((note) => {
+      let targetWordForm = "";
+      if (note.targetWordIndex != null && sent.words[note.targetWordIndex - 1]) {
+        targetWordForm = sent.words[note.targetWordIndex - 1].originalWord;
+      }
+      return {
+        id: note.id,
+        sentenceId: sent.id,
+        sentenceLabel: `Sentence ${sNum}${note.targetWordIndex ? `.${note.targetWordIndex}` : ""}`,
+        wordForm: targetWordForm,
+        marker: note.marker || "*",
+        type: note.type || "general",
+        text: note.text,
+      };
+    });
+
+    const stringNotes = (sent.footnotes || []).map((fnText, fnIdx) => ({
+      id: `fn-legacy-${sent.id}-${fnIdx + 1}`,
+      sentenceId: sent.id,
+      sentenceLabel: `Sentence ${sNum}`,
+      wordForm: "",
+      marker: String(fnIdx + 1),
+      type: "general" as const,
+      text: fnText,
+    }));
+
+    return [...itemNotes, ...stringNotes];
+  });
+
   return (
     <>
       <SiteNav current="read" slug={texts.some((text) => text.slug === selectedSlug) ? selectedSlug : (texts[0]?.slug ?? "ohthere-wulfstan")} />
       <main className="site-shell">
-        <header className="page-header" style={{ marginBottom: "2rem" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
-            <p className="eyebrow" style={{ margin: 0 }}>Old English visual gloss</p>
+        <PageHero
+          eyebrow="Old English visual gloss"
+          badge={
             <button
               type="button"
               onClick={() => setAttributionOpen(true)}
@@ -239,13 +272,12 @@ export function ReadingPage({
             >
               Attribution &amp; Citation
             </button>
-          </div>
-          <div>
-            <h1>{currentTitle}</h1>
-            <p className="source-line">{currentSource}</p>
-
-            {workspaceTexts && workspaceTexts.length > 1 && (
-              <div style={{ marginTop: "0.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          }
+          title={currentTitle}
+          description={currentSource}
+          actions={
+            workspaceTexts && workspaceTexts.length > 1 ? (
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <label htmlFor="viewer-text-select" style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--accent)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                   Switch text:
                 </label>
@@ -262,9 +294,9 @@ export function ReadingPage({
                   ))}
                 </select>
               </div>
-            )}
-          </div>
-        </header>
+            ) : null
+          }
+        />
 
         <AttributionModal
           isOpen={attributionOpen}
@@ -289,6 +321,7 @@ export function ReadingPage({
                   <AnnotatedPassage
                     segments={block.segments}
                     records={glossRecords}
+                    notes={block.notes}
                     selectedId={selectedId}
                     onHover={selectOnHover}
                     onSelect={pinSelection}
@@ -318,6 +351,78 @@ export function ReadingPage({
             )}
           </section>
         </div>
+
+        {aggregatedApparatus.length > 0 && (
+          <section
+            id="critical-apparatus"
+            style={{
+              marginTop: "3rem",
+              paddingTop: "2rem",
+              borderTop: "2px solid var(--rule)",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "1.25rem",
+                fontFamily: "'Charis SIL', Georgia, serif",
+                color: "var(--ink)",
+                marginBottom: "1rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+              }}
+            >
+              Critical Apparatus &amp; References
+            </h2>
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.75rem",
+                background: "var(--surface)",
+                border: "1px solid var(--rule)",
+                borderRadius: "0.5rem",
+                padding: "1.25rem 1.5rem",
+              }}
+            >
+              {aggregatedApparatus.map((item) => (
+                <div
+                  key={item.id}
+                  id={item.id}
+                  style={{
+                    fontSize: "0.92rem",
+                    lineHeight: 1.5,
+                    color: "var(--ink)",
+                    display: "flex",
+                    gap: "0.5rem",
+                    alignItems: "baseline",
+                  }}
+                >
+                  <strong style={{ color: "#7b3f2a", fontFamily: "monospace", minWidth: "4rem" }}>
+                    {item.sentenceLabel}
+                    {item.wordForm ? ` (${item.wordForm})` : ""}:
+                  </strong>
+                  <span>{item.text}</span>
+                  <span
+                    style={{
+                      fontSize: "0.7rem",
+                      fontWeight: 600,
+                      background: "#fef3c7",
+                      color: "#92400e",
+                      borderRadius: "0.25rem",
+                      padding: "0.1rem 0.4rem",
+                      marginLeft: "auto",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {item.type.replace("_", " ")}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
       <SiteFooter />
     </>

@@ -13,6 +13,8 @@ if (!clientId) {
   );
 }
 
+const serveOut = existsSync("out");
+
 // Auto-start preview server if port 3000 is not running
 let serverProcess = null;
 try {
@@ -25,7 +27,6 @@ try {
     serveOut ? ["serve", "out", "-p", "3000"] : ["next", "dev", "-p", "3000"],
     { stdio: "inherit" }
   );
-
   let ready = false;
   for (let i = 0; i < 40; i++) {
     await new Promise((r) => setTimeout(r, 500));
@@ -125,9 +126,13 @@ try {
   ]);
   await check("/read/ohthere", ["The voyages of Ohthere and Wulfstan"]);
   await check("/docs", ["Documentation &amp; Reference Guides", "Leipzig"]);
+  await check("/articles", ["Articles &amp; Blog", "Philological Essays &amp; Platform Updates"]);
+  await check("/articles/welcome", ["Welcome to the Glossy Philology Blog", "WYSIWYG editor without touching raw Markdown or code"]);
   await check("/edit/new", ["Gloss a New Old English Text"]);
   await check("/admin", ["Tina"]);
-  await check("/admin/index.html", ["Tina"]);
+  if (serveOut) {
+    await check("/admin/index.html", ["Tina"]);
+  }
 
   await check("/", [
     "Old English Corpus &amp; Editions",
