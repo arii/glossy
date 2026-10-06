@@ -385,6 +385,11 @@ export function getLocalDraft(slug: string): TextDocument | null {
 export function createLocalDocument(input: {
   title: string;
   author?: string;
+  editor?: string;
+  shelfmark?: string;
+  dialect?: string;
+  historicalDate?: string;
+  sourceEdition?: string;
   source?: string;
   slug?: string;
   sentences?: TextDocument["sentences"];
@@ -414,8 +419,13 @@ export function createLocalDocument(input: {
     slug: generatedSlug,
     title,
     author: input.author?.trim() || "Anonymous",
-    date: "c. 9th–11th Century",
-    source: input.source?.trim() || "User Uploaded / Local Draft",
+    editor: input.editor?.trim() || "Tyler Lemon",
+    shelfmark: input.shelfmark?.trim(),
+    dialect: input.dialect?.trim(),
+    historicalDate: input.historicalDate?.trim(),
+    sourceEdition: input.sourceEdition?.trim(),
+    date: input.historicalDate?.trim() || "c. 9th–11th Century",
+    source: input.shelfmark?.trim() || input.source?.trim() || "User Uploaded / Local Draft",
     sourceFile: `${generatedSlug}.json`,
     language: "Old English",
     status: "draft",

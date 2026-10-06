@@ -38,6 +38,11 @@ type Preset = {
   title: string;
   slug: string;
   author: string;
+  editor?: string;
+  shelfmark?: string;
+  dialect?: string;
+  historicalDate?: string;
+  sourceEdition?: string;
   source: string;
   sourceFile: string;
   period: string;
@@ -50,6 +55,11 @@ const PRESETS: Preset[] = [
     title: "Beowulf: Prologue (Lines 1–11)",
     slug: "beowulf-prologue",
     author: "Anonymous (Nowell Codex)",
+    editor: "Tyler Lemon",
+    shelfmark: "BL Cotton MS Vitellius A. xv, fol. 129r–198v (Nowell Codex)",
+    dialect: "Late West Saxon (with Anglian features)",
+    historicalDate: "c. 700–1000 AD (MS c. 1000–1010 AD)",
+    sourceEdition: "Klaeber's Beowulf (4th ed. Fulk, Bjork, Niles 2008)",
     source: "London, British Library, Cotton MS Vitellius A. xv (Nowell Codex), f. 129r",
     sourceFile: "references/Beowulf_Prologue.tex",
     period: "Heroic Epic Poetry (ca. 8th–11th c.)",
@@ -105,6 +115,11 @@ const PRESETS: Preset[] = [
     title: "Cædmon's Hymn",
     slug: "caedmon-hymn",
     author: "Cædmon (Bede's Historia Ecclesiastica)",
+    editor: "Tyler Lemon",
+    shelfmark: "CUL MS Kk. 5. 16, fol. 128v (Moore Bede)",
+    dialect: "Northumbrian (Early Old English)",
+    historicalDate: "c. 658–680 AD (MS c. 737 AD)",
+    sourceEdition: "Dobbie (1942), ASPR VI",
     source: "Cambridge, University Library, MS Kk. 5. 16 (Moore Bede)",
     sourceFile: "references/Caedmon_Hymn.tex",
     period: "Northumbrian Religious Hymn (ca. 7th c.)",
@@ -124,6 +139,11 @@ const PRESETS: Preset[] = [
     title: "The Wanderer (Opening)",
     slug: "the-wanderer",
     author: "Anonymous (Exeter Book)",
+    editor: "Tyler Lemon",
+    shelfmark: "Exeter Cathedral Library MS 3501, fol. 76v–79r (Exeter Book)",
+    dialect: "Late West Saxon",
+    historicalDate: "c. 10th Century AD (MS c. 970 AD)",
+    sourceEdition: "Krapp & Dobbie (1936), ASPR III",
     source: "Exeter, Cathedral Library, MS 3501, ff. 76v–79r",
     sourceFile: "references/The_Wanderer.tex",
     period: "Elegiac Verse (10th c.)",
@@ -162,6 +182,11 @@ export default function NewTextPage() {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [author, setAuthor] = useState("");
+  const [editor, setEditor] = useState("");
+  const [shelfmark, setShelfmark] = useState("");
+  const [dialect, setDialect] = useState("");
+  const [historicalDate, setHistoricalDate] = useState("");
+  const [sourceEdition, setSourceEdition] = useState("");
   const [source, setSource] = useState("");
 
   const [inputMode, setInputMode] = useState<"text" | "gb4e">("text");
@@ -213,6 +238,11 @@ export default function NewTextPage() {
             setTitle(parsed.title || file.name.replace(/\.[^/.]+$/, ""));
             setSlug(docSlug);
             setAuthor(parsed.author || "Anonymous");
+            setEditor(parsed.editor || "Tyler Lemon");
+            setShelfmark(parsed.shelfmark || parsed.source || "");
+            setDialect(parsed.dialect || "");
+            setHistoricalDate(parsed.historicalDate || parsed.date || "");
+            setSourceEdition(parsed.sourceEdition || "");
             setSource(parsed.source || "Uploaded JSON Document");
             setUploadedSentences(parsed.sentences);
             setRawText(
@@ -289,6 +319,11 @@ export default function NewTextPage() {
     setTitle("");
     setSlug("");
     setAuthor("");
+    setEditor("");
+    setShelfmark("");
+    setDialect("");
+    setHistoricalDate("");
+    setSourceEdition("");
     setSource("");
     setRawText("");
     setRawTranslations("");
@@ -314,6 +349,11 @@ export default function NewTextPage() {
       setTitle(preset.title);
       setSlug(preset.slug);
       setAuthor(preset.author);
+      setEditor(preset.editor || "Tyler Lemon");
+      setShelfmark(preset.shelfmark || preset.source);
+      setDialect(preset.dialect || "");
+      setHistoricalDate(preset.historicalDate || "");
+      setSourceEdition(preset.sourceEdition || "");
       setSource(preset.source);
       setRawText(preset.lines.map((l) => l.oe).join("\n"));
       setRawTranslations(preset.lines.map((l) => l.en).join("\n"));
@@ -397,7 +437,12 @@ export default function NewTextPage() {
         title: title.trim(),
         slug: slug.trim(),
         author: author.trim() || "Anonymous",
-        source: source.trim() || "Historical Manuscript",
+        editor: editor.trim() || "Tyler Lemon",
+        shelfmark: shelfmark.trim() || source.trim() || "Local Draft / Custom Source",
+        dialect: dialect.trim(),
+        historicalDate: historicalDate.trim(),
+        sourceEdition: sourceEdition.trim(),
+        source: shelfmark.trim() || source.trim() || "Historical Manuscript",
         sentences: sentences,
         overwrite: true,
       });
@@ -1000,7 +1045,7 @@ export default function NewTextPage() {
               </div>
             </div>
 
-            <div className="ingest-form-grid">
+            <div className="ingest-form-grid" style={{ marginBottom: "1rem" }}>
               <div>
                 <label
                   htmlFor="text-author"
@@ -1029,17 +1074,17 @@ export default function NewTextPage() {
               </div>
               <div>
                 <label
-                  htmlFor="text-source"
+                  htmlFor="text-editor"
                   style={{ display: "block", fontWeight: 600, fontSize: "0.85rem", marginBottom: "0.25rem" }}
                 >
-                  Manuscript / Reference Locator
+                  Editor / Glossing Attribution
                 </label>
                 <input
-                  id="text-source"
+                  id="text-editor"
                   type="text"
-                  value={source}
-                  onChange={(e) => setSource(e.target.value)}
-                  placeholder="e.g. Cotton MS Vitellius A. xv, Exeter Book"
+                  value={editor}
+                  onChange={(e) => setEditor(e.target.value)}
+                  placeholder="e.g. Tyler Lemon, Peter S. Baker"
                   style={{
                     width: "100%",
                     maxWidth: "100%",
@@ -1053,6 +1098,106 @@ export default function NewTextPage() {
                   }}
                 />
               </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+              <div>
+                <label
+                  htmlFor="text-shelfmark"
+                  style={{ display: "block", fontWeight: 600, fontSize: "0.85rem", marginBottom: "0.25rem" }}
+                >
+                  Primary Manuscript Shelfmark
+                </label>
+                <input
+                  id="text-shelfmark"
+                  type="text"
+                  value={shelfmark}
+                  onChange={(e) => setShelfmark(e.target.value)}
+                  placeholder="e.g. BL Cotton MS Tiberius B i, fol. 11r–15v"
+                  style={{
+                    width: "100%",
+                    padding: "0.55rem 0.75rem",
+                    borderRadius: "6px",
+                    border: "1px solid var(--color-border, #cbd5e1)",
+                    fontSize: "0.95rem",
+                    background: "var(--paper)",
+                    color: "var(--ink)",
+                  }}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="text-dialect"
+                  style={{ display: "block", fontWeight: 600, fontSize: "0.85rem", marginBottom: "0.25rem" }}
+                >
+                  Dialect
+                </label>
+                <input
+                  id="text-dialect"
+                  type="text"
+                  value={dialect}
+                  onChange={(e) => setDialect(e.target.value)}
+                  placeholder="e.g. Early West Saxon, Northumbrian"
+                  style={{
+                    width: "100%",
+                    padding: "0.55rem 0.75rem",
+                    borderRadius: "6px",
+                    border: "1px solid var(--color-border, #cbd5e1)",
+                    fontSize: "0.95rem",
+                    background: "var(--paper)",
+                    color: "var(--ink)",
+                  }}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="text-historical-date"
+                  style={{ display: "block", fontWeight: 600, fontSize: "0.85rem", marginBottom: "0.25rem" }}
+                >
+                  Historical Date
+                </label>
+                <input
+                  id="text-historical-date"
+                  type="text"
+                  value={historicalDate}
+                  onChange={(e) => setHistoricalDate(e.target.value)}
+                  placeholder="e.g. c. 890–900 AD"
+                  style={{
+                    width: "100%",
+                    padding: "0.55rem 0.75rem",
+                    borderRadius: "6px",
+                    border: "1px solid var(--color-border, #cbd5e1)",
+                    fontSize: "0.95rem",
+                    background: "var(--paper)",
+                    color: "var(--ink)",
+                  }}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="text-source-edition"
+                style={{ display: "block", fontWeight: 600, fontSize: "0.85rem", marginBottom: "0.25rem" }}
+              >
+                Source Critical Edition
+              </label>
+              <input
+                id="text-source-edition"
+                type="text"
+                value={sourceEdition}
+                onChange={(e) => setSourceEdition(e.target.value)}
+                placeholder="e.g. Old English Orosius (ed. Bately 1980 / Sweet), Klaeber's Beowulf"
+                style={{
+                  width: "100%",
+                  padding: "0.55rem 0.75rem",
+                  borderRadius: "6px",
+                  border: "1px solid var(--color-border, #cbd5e1)",
+                  fontSize: "0.95rem",
+                  background: "var(--paper)",
+                  color: "var(--ink)",
+                }}
+              />
             </div>
           </div>
 

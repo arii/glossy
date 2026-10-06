@@ -116,8 +116,12 @@ export type TextDocument = Passage & {
   language: "Old English";
   author?: string;
   historicalAuthor?: string;
+  editor?: string;
   glossedBy?: string;
   date?: string;
+  historicalDate?: string;
+  dialect?: string;
+  shelfmark?: string;
   title: string;
   source: string;
   sourceFile: string;

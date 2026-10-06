@@ -304,6 +304,11 @@ export function ReadingPage({
           slug={selectedSlug}
           title={currentTitle || selectedSlug}
           author={selectedText?.author}
+          editor={selectedText?.editor}
+          shelfmark={selectedText?.shelfmark}
+          dialect={selectedText?.dialect}
+          historicalDate={selectedText?.historicalDate}
+          sourceEdition={selectedText?.sourceEdition}
           source={currentSource}
         />
 

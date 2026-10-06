@@ -23,6 +23,11 @@ export type TextChoice = {
   title: string;
   kind: "manuscript" | "text";
   author?: string;
+  editor?: string;
+  shelfmark?: string;
+  dialect?: string;
+  historicalDate?: string;
+  sourceEdition?: string;
   source?: string;
   witness?: string;
   sentenceCount?: number;
@@ -69,8 +74,13 @@ export function TextDirectory({
             title: doc.title || slug,
             kind: "text",
             author: doc.author || "Custom Ingested Text",
+            editor: doc.editor,
+            shelfmark: doc.shelfmark,
+            dialect: doc.dialect,
+            historicalDate: doc.historicalDate,
+            sourceEdition: doc.sourceEdition,
             source: doc.source || "Local Browser Workspace",
-            witness: doc.source || "Local Browser Draft",
+            witness: doc.shelfmark || doc.source || "Local Browser Draft",
             status: "draft",
             isProtected: false,
             isLocalOnly: true,
@@ -84,7 +94,12 @@ export function TextDirectory({
         return {
           ...c,
           author: c.author || meta?.author,
-          witness: c.witness || meta?.witness || c.source,
+          editor: c.editor || meta?.editor,
+          shelfmark: c.shelfmark || meta?.shelfmark || meta?.witness,
+          dialect: c.dialect || meta?.dialect,
+          historicalDate: c.historicalDate || meta?.historicalDate || meta?.origDate,
+          sourceEdition: c.sourceEdition || meta?.sourceEdition,
+          witness: c.shelfmark || c.witness || meta?.shelfmark || meta?.witness || c.source,
           hasLocalDraft: localSlugsWithEdits.has(c.slug) || localSlugsWithEdits.has(meta?.slug || "") || localSlugsWithEdits.has(meta?.textId || ""),
         };
       });
@@ -522,6 +537,11 @@ export function TextDirectory({
           slug={activeModalChoice.slug}
           title={activeModalChoice.title}
           author={activeModalChoice.author}
+          editor={activeModalChoice.editor}
+          shelfmark={activeModalChoice.shelfmark || activeModalChoice.witness}
+          dialect={activeModalChoice.dialect}
+          historicalDate={activeModalChoice.historicalDate}
+          sourceEdition={activeModalChoice.sourceEdition}
           source={activeModalChoice.witness || activeModalChoice.source}
           config={attributionConfig}
           content={attributionConfig}

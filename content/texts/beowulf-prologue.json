@@ -1,11 +1,16 @@
 {
   "textId": "beowulf-prologue",
   "slug": "beowulf-prologue",
-  "title": "Beowulf: Prologue (Lines 1–11)",
+  "language": "Old English",
   "author": "Anonymous (Nowell Codex)",
+  "editor": "Tyler Lemon",
+  "shelfmark": "BL Cotton MS Vitellius A. xv, fol. 129r–198v (Nowell Codex)",
+  "dialect": "Late West Saxon (with Anglian features)",
+  "historicalDate": "c. 700–1000 AD (MS c. 1000–1010 AD)",
+  "title": "Beowulf: Prologue (Lines 1–11)",
   "source": "London, British Library, Cotton MS Vitellius A. xv, ff. 129r–198v",
   "sourceFile": "references/Beowulf_Prologue.tex",
-  "language": "Old English",
+  "sourceEdition": "Klaeber's Beowulf (4th ed. Fulk, Bjork, Niles 2008)",
   "status": "published",
   "sentences": [
     {
