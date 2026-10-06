@@ -48,62 +48,6 @@ interface Abbreviation {
   category: "Person & Number" | "Case" | "Gender & Mood" | "Part of Speech" | "Affixes & Morphemes";
 }
 
-const DEFAULT_ABBREVIATIONS: Abbreviation[] = [
-  { abbr: "1", name: "1st person", desc: "Speaker (ic, mē, mīn, wē, ūs)", category: "Person & Number" },
-  { abbr: "2", name: "2nd person", desc: "Addressee (þū, þē, þīn, gē, ēow)", category: "Person & Number" },
-  { abbr: "3", name: "3rd person", desc: "Third person (hē, hēo, hit, hīe, him, his)", category: "Person & Number" },
-  { abbr: "ACC", name: "accusative case", desc: "Direct object of transitive verb or preposition", category: "Case" },
-  { abbr: "ADJ", name: "adjective", desc: "Descriptive modifier", category: "Part of Speech" },
-  { abbr: "ADV", name: "adverb", desc: "Modifying verb, adjective, or clause direction", category: "Part of Speech" },
-  { abbr: "AGT", name: "agent", desc: "Agentive noun suffix (-ere, -a, e.g. hwælhuntan, fiscerum)", category: "Affixes & Morphemes" },
-  { abbr: "CMP", name: "comparative", desc: "Comparative degree (-ra, -re, -or, e.g. lengra, swīftre)", category: "Gender & Mood" },
-  { abbr: "COMP", name: "complementizer", desc: "Subordinating clause marker (þæt, that)", category: "Part of Speech" },
-  { abbr: "DAT", name: "dative case", desc: "Indirect object (to/for) or prepositional object", category: "Case" },
-  { abbr: "DEF", name: "definite", desc: "Definite article (sē, sēo, þæt, þā, þǣm)", category: "Part of Speech" },
-  { abbr: "DEM", name: "demonstrative", desc: "Demonstrative pronoun/determiner (þes, þis, þās)", category: "Part of Speech" },
-  { abbr: "DET", name: "determiner", desc: "Quantifier or demonstrative modifying a noun", category: "Part of Speech" },
-  { abbr: "DIST", name: "distal", desc: "Distal demonstrative (that / those over there)", category: "Part of Speech" },
-  { abbr: "F", name: "feminine gender", desc: "Grammatical feminine gender", category: "Gender & Mood" },
-  { abbr: "GEN", name: "genitive case", desc: "Possession, origin, or partitive relation (of)", category: "Case" },
-  { abbr: "HAB", name: "habitual", desc: "Habitual or timeless aspect (bēoð, bið)", category: "Gender & Mood" },
-  { abbr: "IMP", name: "imperative mood", desc: "Direct command or exhortation", category: "Gender & Mood" },
-  { abbr: "IND", name: "indicative mood", desc: "Stating factual reality", category: "Gender & Mood" },
-  { abbr: "INDF", name: "indefinite", desc: "Indefinite article/pronoun (ān, sum, ǣniġ)", category: "Part of Speech" },
-  { abbr: "INF", name: "infinitive", desc: "Uninflected verb citation base (-an, -ian)", category: "Part of Speech" },
-  { abbr: "INS", name: "instrumental case", desc: "Means or instrument by which an action is done (þȳ, þon)", category: "Case" },
-  { abbr: "M", name: "masculine gender", desc: "Grammatical masculine gender", category: "Gender & Mood" },
-  { abbr: "N", name: "neuter gender", desc: "Grammatical neuter gender", category: "Gender & Mood" },
-  { abbr: "NEG", name: "negative", desc: "Negative prefix or particle (ne, n-ān, næfde)", category: "Affixes & Morphemes" },
-  { abbr: "NMLZ", name: "nominalizer", desc: "Suffix creating a noun (-oð, -aþ, e.g. huntoðe, fiscaþe)", category: "Affixes & Morphemes" },
-  { abbr: "NOM", name: "nominative case", desc: "Grammatical subject of the clause", category: "Case" },
-  { abbr: "PART", name: "participle", desc: "Past or present participle (-ende, -en, -ed, -od)", category: "Part of Speech" },
-  { abbr: "PASS", name: "passive voice", desc: "Passive verbal construction", category: "Gender & Mood" },
-  { abbr: "PFX", name: "prefix", desc: "Derivational or verbal prefix (ġe-, ā-, of-, be-)", category: "Affixes & Morphemes" },
-  { abbr: "PL", name: "plural number", desc: "More than one entity", category: "Person & Number" },
-  { abbr: "POSS", name: "possessive", desc: "Possessive pronoun or determiner", category: "Part of Speech" },
-  { abbr: "PROX", name: "proximate", desc: "Proximate demonstrative (this / these here)", category: "Part of Speech" },
-  { abbr: "PRS", name: "present tense", desc: "Action taking place in the present", category: "Gender & Mood" },
-  { abbr: "PST", name: "past tense", desc: "Action completed in past time (preterite)", category: "Gender & Mood" },
-  { abbr: "REL", name: "relativizer", desc: "Relative clause marker (þe, sē þe)", category: "Part of Speech" },
-  { abbr: "SG", name: "singular number", desc: "Exactly one entity", category: "Person & Number" },
-  { abbr: "SJV", name: "subjunctive mood", desc: "Hypothetical, counterfactual, or indirect clause", category: "Gender & Mood" },
-  { abbr: "STR", name: "strong declension (indef.)", desc: "Strong adjectival inflection (alone without article)", category: "Gender & Mood" },
-  { abbr: "SUP", name: "superlative", desc: "Superlative degree (-ost, -est, -mest, e.g. norþmest)", category: "Gender & Mood" },
-  { abbr: "THM", name: "theme vowel", desc: "Formative thematic vowel in Class 2 weak verbs (-i-, -o-)", category: "Affixes & Morphemes" },
-  { abbr: "WK", name: "weak declension (def.)", desc: "Weak adjectival or nominal inflection (after article)", category: "Gender & Mood" },
-];
-
-
-const DEFAULT_SECTIONS: DocSectionItem[] = [
-  { id: "section-l1", domain: "linguistics", domainNum: "L1", num: "1", eyebrow: "Beginner's Primer", title: "How Interlinear Glossing Works" },
-  { id: "section-l2", domain: "linguistics", domainNum: "L2", num: "2", eyebrow: "Linguistic Standards", title: "Why Adjectives Use Masculine Nominative Singular Strong Form" },
-  { id: "section-l3", domain: "linguistics", domainNum: "L3", num: "3", eyebrow: "Morphological Edge Cases", title: "The Numeral Lemmatization Standard (Masculine Nominative)" },
-  { id: "section-l4", domain: "linguistics", domainNum: "L4", num: "4", eyebrow: "Lexicographic Standards", title: "Official Wiktionary & IPA Formatting Standards" },
-  { id: "section-a1", domain: "architecture", domainNum: "A1", num: "1", eyebrow: "Corpus Expansion", title: "Ingesting & Glossing New Texts (Beowulf, Cædmon, Custom OE)" },
-  { id: "section-a2", domain: "architecture", domainNum: "A2", num: "2", eyebrow: "Architecture & Storage", title: "Local Session Drafts, Autosave, & Dual-Write CMS Integration" },
-  { id: "section-a3", domain: "architecture", domainNum: "A3", num: "3", eyebrow: "Quality Assurance", title: "Automated Quality Verification Suite" },
-];
-
 export default function DocsPage() {
   const { data: pageData } = useTina({
     query: DOCS_PAGE_QUERY,
@@ -141,8 +85,8 @@ export default function DocsPage() {
     }
   };
 
-  const abbreviations: Abbreviation[] = (pageData.abbreviations as Abbreviation[]) || DEFAULT_ABBREVIATIONS;
-  const sections: DocSectionItem[] = (pageData.sections as DocSectionItem[]) || DEFAULT_SECTIONS;
+  const abbreviations: Abbreviation[] = (pageData.abbreviations as Abbreviation[]) || (docsData.abbreviations as Abbreviation[]);
+  const sections: DocSectionItem[] = (pageData.sections as DocSectionItem[]) || (docsData.sections as DocSectionItem[]);
 
   const linguisticsSections = sections.filter((s) => s.domain === "linguistics");
   const architectureSections = sections.filter((s) => s.domain === "architecture");

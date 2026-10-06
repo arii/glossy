@@ -735,7 +735,7 @@ export default function NewTextPage() {
                     cursor: "pointer",
                   }}
                 >
-                  📝 Plain Text &amp; Parallel English
+                  Plain Text &amp; Parallel English
                 </button>
                 <button
                   type="button"
@@ -751,7 +751,7 @@ export default function NewTextPage() {
                     cursor: "pointer",
                   }}
                 >
-                  📜 LaTeX gb4e Macros
+                  LaTeX gb4e Macros
                 </button>
               </div>
             </div>
@@ -853,7 +853,7 @@ export default function NewTextPage() {
                     )}
                     {oeCount > 0 && enCount > 0 && !isLineCountMatched && (
                       <span style={{ fontSize: "0.8rem", color: "#b91c1c", fontWeight: 600 }}>
-                        ⚠️ Line count mismatch: {oeCount} Old English lines vs {enCount} translations. Please ensure 1:1 sentence pairing.
+                        Line count mismatch: {oeCount} Old English lines vs {enCount} translations. Please ensure 1:1 sentence pairing.
                       </span>
                     )}
                   </div>
@@ -918,7 +918,7 @@ export default function NewTextPage() {
                 cursor: isSubmitting ? "not-allowed" : "pointer",
               }}
             >
-              {isSubmitting ? "Ingesting & Lemmatizing..." : "🚀 Create & Start Glossing"}
+              {isSubmitting ? "Ingesting & Lemmatizing..." : "Create & Start Glossing"}
             </button>
             {hasAnyContent && (
               <button

@@ -8,7 +8,6 @@ import { SiteFooter } from "../components/site-footer";
 import {
   BookOpen,
   Code2,
-  Database,
   ExternalLink,
 } from "lucide-react";
 import { useTina, tinaField } from "tinacms/dist/react";
@@ -244,20 +243,6 @@ export default function Home() {
                 <span>Explore Corpus ↓</span>
               </button>
             </div>
-
-            {/* Scholarly Provenance & Inspiration Note */}
-            <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
-              Inspired by Peter S. Baker&apos;s{" "}
-              <a
-                href="https://oldenglishaerobics.net/"
-                target="_blank"
-                rel="noreferrer"
-                style={{ color: "var(--accent)", textDecoration: "underline", fontWeight: 600 }}
-              >
-                Old English Aerobics
-              </a>{" "}
-              · Master edition by Tyler Lemon (2026).
-            </p>
           </div>
 
           {/* Right Column: Interactive Live Gloss Preview Widget */}
@@ -282,16 +267,8 @@ export default function Home() {
                 marginBottom: "1rem",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                <span style={{ width: "0.6rem", height: "0.6rem", borderRadius: "50%", background: "#ef4444" }} />
-                <span style={{ width: "0.6rem", height: "0.6rem", borderRadius: "50%", background: "#f59e0b" }} />
-                <span style={{ width: "0.6rem", height: "0.6rem", borderRadius: "50%", background: "#10b981" }} />
-                <span style={{ fontSize: "0.72rem", color: "#a8a29e", fontFamily: "monospace", marginLeft: "0.4rem" }}>
-                  Leipzig Interlinear Reader Preview
-                </span>
-              </div>
-              <span style={{ fontSize: "0.68rem", background: "#332d29", color: "#fbbf24", padding: "0.15rem 0.4rem", borderRadius: "0.2rem", fontFamily: "monospace" }}>
-                Interactive Demo
+              <span style={{ fontSize: "0.75rem", color: "#d6d3d1", fontFamily: "monospace", letterSpacing: "0.03em" }}>
+                Leipzig Interlinear Reader Preview
               </span>
             </div>
 
@@ -408,13 +385,13 @@ export default function Home() {
         </section>
 
         {/* ================================================================ */}
-        {/* 3 FEATURE PILLARS SECTION                                        */}
+        {/* CORE CAPABILITY PILLARS SECTION                                  */}
         {/* ================================================================ */}
         <section style={{ padding: "3rem 0", borderBottom: "1px solid var(--rule)" }}>
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(18rem, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(22rem, 1fr))",
               gap: "1.5rem",
             }}
           >
@@ -465,30 +442,6 @@ export default function Home() {
                 and direct Wiktionary etymological links validated across all 1,716 corpus tokens.
               </p>
             </div>
-
-            {/* Pillar 3: Dual-Write Architecture */}
-            <div
-              style={{
-                background: "var(--surface)",
-                border: "1px solid var(--rule)",
-                borderRadius: "0.5rem",
-                padding: "1.5rem",
-                boxShadow: "0 0.25rem 1rem rgba(64, 47, 29, 0.03)",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
-                <div style={{ background: "#f3eadb", padding: "0.45rem", borderRadius: "0.35rem", color: "var(--accent)" }}>
-                  <Database style={{ width: "1.1rem", height: "1.1rem" }} />
-                </div>
-                <h3 style={{ margin: 0, fontSize: "1.05rem", fontFamily: "'Charis SIL', Georgia, serif", color: "var(--ink)" }}>
-                  Dual-Write LaTeX &amp; CMS Sync
-                </h3>
-              </div>
-              <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--muted-ink)", lineHeight: 1.6 }}>
-                3-tier data synchronization model syncing browser <code>localStorage</code>, compilable <code>gb4e</code> LaTeX, 
-                structured JSON, and TinaCMS working trees with zero data loss.
-              </p>
-            </div>
           </div>
         </section>
 
@@ -496,31 +449,11 @@ export default function Home() {
         {/* CORPUS DIRECTORY: Responsive Multi-Column Card Grid              */}
         {/* ================================================================ */}
         <section id="corpus-directory" style={{ padding: "3rem 0 1rem" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "1rem", marginBottom: "1.5rem" }}>
-            <div>
-              <p className="eyebrow" style={{ margin: "0 0 0.25rem" }}>Digital Manuscripts</p>
-              <h2 style={{ margin: 0, fontSize: "1.65rem", fontFamily: "'Charis SIL', Georgia, serif", color: "var(--ink)" }}>
-                Old English Corpus &amp; Editions
-              </h2>
-            </div>
-
-            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-              <Link
-                href="/edit/new"
-                style={{
-                  fontSize: "0.85rem",
-                  fontWeight: 600,
-                  color: "var(--accent)",
-                  background: "#fbf7ee",
-                  border: "1px solid var(--rule)",
-                  padding: "0.35rem 0.75rem",
-                  borderRadius: "0.25rem",
-                  textDecoration: "none",
-                }}
-              >
-                + Ingest New Text
-              </Link>
-            </div>
+          <div style={{ marginBottom: "1.5rem" }}>
+            <p className="eyebrow" style={{ margin: "0 0 0.25rem" }}>Digital Manuscripts</p>
+            <h2 style={{ margin: 0, fontSize: "1.65rem", fontFamily: "'Charis SIL', Georgia, serif", color: "var(--ink)" }}>
+              Old English Corpus &amp; Editions
+            </h2>
           </div>
 
           <TextDirectory initialChoices={choices} />

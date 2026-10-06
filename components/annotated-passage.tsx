@@ -25,7 +25,7 @@ export function AnnotatedPassage({
 
   return (
     <div className="interlinear-block">
-      <div className="old-english">
+      <div className="old-english" aria-label="Source gloss line">
         {segments.map((segment, index) => {
           if (segment.type === "text") {
             return (

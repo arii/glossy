@@ -39,8 +39,7 @@ if (cardCount < 1) {
   throw new Error(`Expected at least one text on the landing page, found ${cardCount}.`);
 }
 const reader = await check("/read/ohthere-wulfstan", [
-  "Old English visual gloss",
-  "Source gloss line",
+  "The voyages of Ohthere and Wulfstan",
   "Ohthere",
   "Ohthere said to his lord, King Alfred",
 ]);

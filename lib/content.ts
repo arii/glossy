@@ -13,6 +13,8 @@ import type {
 } from "./types";
 import { parseGb4eToTextDocument } from "./gb4e";
 
+export { getGlossRecords, getReadingPassage } from "./passage-utils";
+
 const contentDirectory = path.join(process.cwd(), "content", "texts");
 
 export function loadHomePageContent(): HomePageContent {

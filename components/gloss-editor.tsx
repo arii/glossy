@@ -813,18 +813,6 @@ export function GlossEditor({
             <div style={{ display: "inline-flex", gap: "0.4rem", flexWrap: "wrap", alignItems: "center" }}>
               <button
                 type="button"
-                onClick={() => {
-                  const el = document.getElementById("batch-import-section");
-                  if (el) el.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="workspace-link"
-              >
-                <Upload style={{ width: "0.85rem", height: "0.85rem", marginRight: "0.35rem" }} />
-                Import gb4e
-              </button>
-
-              <button
-                type="button"
                 onClick={() => loadFromMasterTex()}
                 className="workspace-link"
               >
@@ -984,7 +972,6 @@ export function GlossEditor({
                     <div className="editor-tokens-list">
                       {sent.tokens.map((tok) => {
                         const isTokActive = tok.id === activeTokenId;
-                        const isMultiMorpheme = tok.morphemes && tok.morphemes.length > 1;
                         return (
                           <button
                             key={tok.id}
@@ -1002,11 +989,6 @@ export function GlossEditor({
                             <span className="chip-gloss">
                               {tok.sourceGloss || tok.sourceForm}
                             </span>
-                            {isMultiMorpheme && (
-                              <span className="morph-count-badge">
-                                {tok.morphemes.length} morphs
-                              </span>
-                            )}
                           </button>
                         );
                       })}

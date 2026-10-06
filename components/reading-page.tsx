@@ -3,7 +3,7 @@
 import { SiteNav } from "./site-nav";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TinaMarkdown, type Components } from "tinacms/dist/rich-text";
-import { getGlossRecords, getReadingPassage } from "../data/ohthere";
+import { getGlossRecords, getReadingPassage } from "../lib/passage-utils";
 import type { DictionaryEntry, ManuscriptDocument, TextDocument } from "../lib/types";
 import { AnnotatedPassage } from "./annotated-passage";
 import { GlossPopup } from "./gloss-popup";
@@ -78,11 +78,8 @@ function ReadingPageInner({
   const lastTriggerId = useRef<string | null>(null);
   const glossAreaRef = useRef<HTMLElement | null>(null);
 
-  const activeManuscript =
-    visibleManuscripts.find((m) => m.slug === selectedSlug) ??
-    (visibleManuscripts.length > 0 ? visibleManuscripts[0] : null);
-
-  const selectedText = texts.find((text) => text.slug === selectedSlug) ?? texts[0];
+  const activeManuscript = visibleManuscripts.find((m) => m.slug === selectedSlug);
+  const selectedText = texts.find((text) => text.slug === selectedSlug) ?? (activeManuscript ? undefined : texts[0]);
   const glossRecords = selectedText ? getGlossRecords(selectedText) : {};
   const readingPassage = selectedText ? getReadingPassage(selectedText) : undefined;
   const selectedRecord = selectedId ? glossRecords[selectedId] : undefined;
@@ -117,14 +114,6 @@ function ReadingPageInner({
     setSelectedId(null);
     setPinnedId(null);
     setActiveTerm(null);
-    const triggerId = lastTriggerId.current;
-    if (triggerId) {
-      window.requestAnimationFrame(() => {
-        document
-          .querySelector<HTMLElement>(`[data-gloss-trigger="${triggerId}"]`)
-          ?.focus();
-      });
-    }
   }, [setActiveTerm]);
 
   useEffect(() => {
@@ -206,7 +195,7 @@ function ReadingPageInner({
                 cursor: "pointer",
               }}
             >
-              ℹ️ Attribution &amp; Citation
+              Attribution &amp; Citation
             </button>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1.5rem" }}>
@@ -310,7 +299,7 @@ function ReadingPageInner({
             {activeTerm ? (
               <GlossaryPanel
                 activeTerm={activeTerm}
-                onClose={() => setActiveTerm(null)}
+                onClose={closeGloss}
               />
             ) : selectedRecord ? (
               <GlossPopup

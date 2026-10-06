@@ -1,4 +1,4 @@
-import type { GlossRecord, Passage, TextDocument } from "../lib/types";
+import type { GlossRecord, Passage, TextDocument } from "./types";
 
 export function getGlossRecords(document: TextDocument): Record<string, GlossRecord> {
   if (document.glossRecords && document.glossRecords.length > 0) {
