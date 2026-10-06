@@ -114,10 +114,10 @@ export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number
 }
 
 export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
-  const authorMatch =
-    doc.author || (doc.source ? doc.source.split("·")[0]?.trim() : "Tyler Lemon");
+  const rawAuthor = doc.author || (doc.source ? doc.source.split(/[·•]/)[0]?.trim() : "Tyler Lemon");
+  const authorMatch = rawAuthor.replace(/^(Translated and glossed by\s*)+/gi, "").trim();
   const dateMatch =
-    doc.date || (doc.source ? doc.source.split("·")[1]?.trim() : "September 30, 2026");
+    doc.date || (doc.source ? doc.source.split(/[·•]/)[1]?.trim() : "September 30, 2026");
 
   return {
     textId: doc.textId || "ohthere",
@@ -777,7 +777,9 @@ export function GlossEditor({
             <span className="sr-only">Editing workspace</span>
             <h1>{documentState.title}</h1>
             <p className="source-line" style={{ margin: "0.25rem 0 0" }}>
-              Attribution: {documentState.author} · {documentState.date}
+              {documentState.author?.toLowerCase().includes("anonymous")
+                ? `${documentState.author} · ${documentState.date}`
+                : `Translated and glossed by ${documentState.author?.replace(/^(Translated and glossed by\s*)+/gi, "")} · ${documentState.date}`}
             </p>
 
             {availableTexts && availableTexts.length > 1 && (
