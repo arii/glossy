@@ -23,15 +23,9 @@ const document = parseGb4eToTextDocument(texContent, {
   status: "published",
 });
 
-const texSource = exportToGb4eLatex(document);
-const fullDocumentWithTex = {
-  ...document,
-  texSource,
-};
-
 const targetJsonPath = join(contentDir, "ohthere.json");
-writeFileSync(targetJsonPath, JSON.stringify(fullDocumentWithTex, null, 2) + "\n", "utf8");
+writeFileSync(targetJsonPath, JSON.stringify(document, null, 2) + "\n", "utf8");
 
 console.log(
-  `Successfully compiled full TeX document to ${targetJsonPath} (${document.sentences?.length || 0} sentences, including raw texSource).`,
+  `Successfully compiled full TeX document to ${targetJsonPath} (${document.sentences?.length || 0} sentences).`,
 );

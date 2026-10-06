@@ -5,47 +5,23 @@ import { SiteFooter } from "./site-footer";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { TinaMarkdown, type Components } from "tinacms/dist/rich-text";
 import { getGlossRecords, getReadingPassage } from "../lib/passage-utils";
-import type { DictionaryEntry, ManuscriptDocument, TextDocument } from "../lib/types";
+import type { TextDocument } from "../lib/types";
 import { getLocalDraft, getHiddenSlugs, restoreHiddenText } from "../lib/local-drafts";
 import { AnnotatedPassage } from "./annotated-passage";
 import { GlossPopup } from "./gloss-popup";
-import { GlossaryPanel, GlossWord, GlossaryProvider, useGlossary } from "./glossary";
 import { AttributionModal } from "./attribution-modal";
 
 type ReadingPageProps = {
   texts: TextDocument[];
-  manuscripts?: ManuscriptDocument[];
-  dictionary?: Record<string, DictionaryEntry>;
   initialSlug?: string;
 };
 
 export function ReadingPage({
   texts,
-  manuscripts = [],
-  dictionary = {},
-  initialSlug,
-}: ReadingPageProps) {
-  return (
-    <GlossaryProvider dictionaryMap={dictionary}>
-      <ReadingPageInner
-        texts={texts}
-        manuscripts={manuscripts}
-        dictionary={dictionary}
-        initialSlug={initialSlug}
-      />
-    </GlossaryProvider>
-  );
-}
-
-function ReadingPageInner({
-  texts,
-  manuscripts = [],
   initialSlug,
 }: ReadingPageProps) {
   const router = useRouter();
-  const { activeTerm, setActiveTerm } = useGlossary();
 
   const [deletedSlugs, setDeletedSlugs] = useState<string[]>([]);
   const [localDraftText, setLocalDraftText] = useState<TextDocument | null>(null);
@@ -56,22 +32,7 @@ function ReadingPageInner({
   const lastTriggerId = useRef<string | null>(null);
   const glossAreaRef = useRef<HTMLElement | null>(null);
 
-  const visibleManuscripts = manuscripts.filter(
-    (manuscript) =>
-      !texts.some(
-        (text) =>
-          text.textId === manuscript.slug ||
-          text.slug === manuscript.slug ||
-          normalizeTitle(text.title) === normalizeTitle(manuscript.title),
-      ),
-  );
-
-  const defaultSlug =
-    initialSlug ??
-    texts[0]?.slug ??
-    visibleManuscripts[0]?.slug ??
-    "";
-
+  const defaultSlug = initialSlug ?? texts[0]?.slug ?? "";
   const selectedSlug = defaultSlug;
 
   useEffect(() => {
@@ -95,11 +56,10 @@ function ReadingPageInner({
   const closeGloss = useCallback(() => {
     setSelectedId(null);
     setPinnedId(null);
-    setActiveTerm(null);
-  }, [setActiveTerm]);
+  }, []);
 
   useEffect(() => {
-    if (!selectedId && !activeTerm) {
+    if (!selectedId) {
       return;
     }
 
@@ -111,10 +71,10 @@ function ReadingPageInner({
 
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [selectedId, activeTerm, closeGloss]);
+  }, [selectedId, closeGloss]);
 
   useEffect(() => {
-    if (!selectedId && !activeTerm) {
+    if (!selectedId) {
       return;
     }
 
@@ -141,7 +101,7 @@ function ReadingPageInner({
       document.removeEventListener("pointerdown", closeOnOutsidePointer);
       document.removeEventListener("touchstart", closeOnOutsidePointer);
     };
-  }, [selectedId, activeTerm, closeGloss]);
+  }, [selectedId, closeGloss]);
 
   const handleRestore = () => {
     try {
@@ -150,20 +110,18 @@ function ReadingPageInner({
     } catch {}
   };
 
-  const availableTexts = [
-    ...texts.filter((t) => !deletedSlugs.includes(t.slug)).map((t) => ({ slug: t.slug, title: t.title })),
-    ...visibleManuscripts.filter((m) => !deletedSlugs.includes(m.slug)).map((m) => ({ slug: m.slug, title: m.title })),
-  ];
+  const availableTexts = texts
+    .filter((t) => !deletedSlugs.includes(t.slug))
+    .map((t) => ({ slug: t.slug, title: t.title }));
 
-  const activeManuscript = visibleManuscripts.find((m) => m.slug === selectedSlug);
-  const baseText = texts.find((text) => text.slug === selectedSlug) ?? (activeManuscript ? undefined : texts[0]);
+  const baseText = texts.find((text) => text.slug === selectedSlug) ?? texts[0];
   const selectedText = localDraftText ?? baseText;
   const glossRecords = selectedText ? getGlossRecords(selectedText) : {};
   const readingPassage = selectedText ? getReadingPassage(selectedText) : undefined;
   const selectedRecord = selectedId ? glossRecords[selectedId] : undefined;
 
-  const currentTitle = activeManuscript?.title ?? readingPassage?.title;
-  const currentSource = activeManuscript?.source ?? readingPassage?.source;
+  const currentTitle = readingPassage?.title;
+  const currentSource = readingPassage?.source;
 
   const isDeletedLocally = isClientReady && deletedSlugs.includes(selectedSlug);
 
@@ -235,14 +193,6 @@ function ReadingPageInner({
     lastTriggerId.current = id;
   };
 
-  const markdownComponents: Components<{
-    GlossWord: { text?: string; dictEntry?: string | DictionaryEntry };
-  }> = {
-    GlossWord: (props) => (
-      <GlossWord text={String(props?.text ?? "")} dictEntry={props?.dictEntry} />
-    ),
-  };
-
   return (
     <>
       <SiteNav current="read" slug={texts.some((text) => text.slug === selectedSlug) ? selectedSlug : (texts[0]?.slug ?? "ohthere-wulfstan")} />
@@ -271,8 +221,8 @@ function ReadingPageInner({
             </button>
           </div>
           <div>
-            <h1 data-tina-field={activeManuscript?._tina_metadata?.title}>{currentTitle}</h1>
-            <p className="source-line" data-tina-field={activeManuscript?._tina_metadata?.source}>{currentSource}</p>
+            <h1>{currentTitle}</h1>
+            <p className="source-line">{currentSource}</p>
 
             {availableTexts && availableTexts.length > 1 && (
               <div style={{ marginTop: "0.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
@@ -300,56 +250,15 @@ function ReadingPageInner({
           isOpen={attributionOpen}
           onClose={() => setAttributionOpen(false)}
           slug={selectedSlug}
-          title={currentTitle}
-          author={selectedText?.author ?? activeManuscript?.author}
+          title={currentTitle || selectedSlug}
+          author={selectedText?.author}
           source={currentSource}
         />
 
         <div className="reading-layout">
           <section className="passage" aria-labelledby="passage-heading">
             <h2 id="passage-heading">Text</h2>
-            {activeManuscript?.blocks && activeManuscript.blocks.length > 0 ? (
-              activeManuscript.blocks.map((block) => (
-                <div className="passage-block" key={block.id}>
-                  <div
-                    className="old-english"
-                    aria-label="Source gloss line"
-                  >
-                    <TinaMarkdown
-                      content={block.body as Parameters<typeof TinaMarkdown>[0]["content"]}
-                      components={markdownComponents}
-                    />
-                  </div>
-                  {block.translation && (
-                    <p className="translation">
-                      {block.translation}
-                    </p>
-                  )}
-                </div>
-              ))
-            ) : activeManuscript?.body ? (
-              <div className="passage-block">
-                <div
-                  className="old-english"
-                  data-tina-field={activeManuscript?._tina_metadata?.body}
-                  aria-label="Source gloss line"
-                >
-                  <TinaMarkdown
-                    content={activeManuscript.body as Parameters<typeof TinaMarkdown>[0]["content"]}
-                    components={markdownComponents}
-                  />
-                </div>
-                {activeManuscript.translation && (
-                  <p
-                    className="translation"
-                    data-tina-field={activeManuscript?._tina_metadata?.translation}
-                    style={{ whiteSpace: "pre-line" }}
-                  >
-                    {activeManuscript.translation}
-                  </p>
-                )}
-              </div>
-            ) : readingPassage?.blocks ? (
+            {readingPassage?.blocks ? (
               readingPassage.blocks.map((block) => (
                 <div className="passage-block" key={block.id}>
                   <AnnotatedPassage
@@ -368,23 +277,19 @@ function ReadingPageInner({
 
           <section
             ref={glossAreaRef}
-            className={`gloss-sidebar-container${selectedRecord || activeTerm ? " has-selection" : ""}`}
+            className={`gloss-sidebar-container${selectedRecord ? " has-selection" : ""}`}
           >
-            {activeTerm ? (
-              <GlossaryPanel
-                activeTerm={activeTerm}
-                onClose={closeGloss}
-              />
-            ) : selectedRecord ? (
+            {selectedRecord ? (
               <GlossPopup
                 record={selectedRecord}
                 onClose={closeGloss}
               />
             ) : (
-              <GlossaryPanel
-                activeTerm={null}
-                onClose={() => {}}
-              />
+              <aside className="gloss-area" aria-label="Visual gloss">
+                <p className="empty-gloss">
+                  Hover over a word to preview its gloss. Click or tap to keep it open while you follow a reference.
+                </p>
+              </aside>
             )}
           </section>
         </div>
@@ -392,8 +297,4 @@ function ReadingPageInner({
       <SiteFooter />
     </>
   );
-}
-
-function normalizeTitle(title: string) {
-  return title.trim().replace(/\s+/gu, " ").toLocaleLowerCase("und");
 }

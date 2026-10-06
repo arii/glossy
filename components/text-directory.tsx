@@ -109,21 +109,18 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
   const handleDelete = (choice: TextChoice) => {
     if (choice.isLocalOnly) {
       if (isProtectedSlug(choice.slug)) {
-        alert("This canonical text is part of the core corpus and cannot be deleted.");
         return;
       }
-      const confirmed = window.confirm(
-        `Delete local draft "${choice.title}"? This cannot be undone.`
-      );
-      if (!confirmed) return;
       deleteLocalDraft(choice.slug);
       setChoices((prev) => prev.filter((item) => item.slug !== choice.slug));
+      reloadCorpus();
     } else if (choice.hasLocalDraft) {
-      const confirmed = window.confirm(
-        `Discard all local edits for "${choice.title}" and revert to the master edition?`
-      );
-      if (!confirmed) return;
       deleteLocalDraft(choice.slug);
+      setChoices((prev) =>
+        prev.map((item) =>
+          item.slug === choice.slug ? { ...item, hasLocalDraft: false } : item
+        )
+      );
       reloadCorpus();
     }
   };
@@ -181,7 +178,6 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
           author: parsedDoc.author,
           source: parsedDoc.source || "Local Upload",
           sentences: parsedDoc.sentences,
-          texSource: parsedDoc.texSource,
           overwrite: true,
         });
 

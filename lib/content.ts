@@ -1,17 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
-import matter from "gray-matter";
-import { parseMDX } from "@tinacms/mdx";
 import type {
-  DictionaryEntry,
-  ManuscriptDocument,
   TextDocument,
-  ReadingSentence,
   HomePageContent,
   IngestPageContent,
   DocsPageContent,
 } from "./types";
-import { parseGb4eToTextDocument } from "./gb4e";
 
 export { getGlossRecords, getReadingPassage } from "./passage-utils";
 
@@ -83,98 +77,7 @@ export function loadDocsPageContent(): DocsPageContent {
   }
 }
 
-
-const glossWordTemplate = {
-  name: "body",
-  type: "rich-text" as const,
-  templates: [
-    {
-      name: "GlossWord",
-      label: "Gloss Word",
-      inline: true,
-      fields: [
-        { type: "string" as const, name: "text" },
-        { type: "reference" as const, name: "dictEntry", collections: ["dictionary"] },
-      ],
-    },
-  ],
-};
-
-export function loadDictionary(): Record<string, DictionaryEntry> {
-  const dictDir = path.join(process.cwd(), "content", "dictionary");
-  const dictMap: Record<string, DictionaryEntry> = {};
-  if (!fs.existsSync(dictDir)) return dictMap;
-
-  for (const file of fs.readdirSync(dictDir)) {
-    if (file.endsWith(".json")) {
-      const data = JSON.parse(fs.readFileSync(path.join(dictDir, file), "utf8")) as DictionaryEntry;
-      const base = path.basename(file, ".json");
-      const entry: DictionaryEntry = { ...data, id: base, relativePath: file };
-      dictMap[file] = entry;
-      dictMap[base] = entry;
-      dictMap[`content/dictionary/${file}`] = entry;
-      if (data.word) {
-        dictMap[data.word] = entry;
-      }
-    }
-  }
-  return dictMap;
-}
-
-export function loadManuscripts(): ManuscriptDocument[] {
-  const mDir = path.join(process.cwd(), "content", "manuscripts");
-  if (!fs.existsSync(mDir)) return [];
-
-  return fs.readdirSync(mDir).filter((f) => f.endsWith(".mdx")).map((file) => {
-    const raw = fs.readFileSync(path.join(mDir, file), "utf8");
-    const parsed = matter(raw);
-    const frontmatter = parsed.data as Record<string, unknown>;
-    const bodyText = parsed.content;
-    const bodyAst = parseMDX(bodyText, glossWordTemplate, (val: string) => val);
-    const slug = path.basename(file, ".mdx");
-    const rawTranslation = typeof frontmatter.translation === "string" ? frontmatter.translation.trim() : undefined;
-
-    // Split paragraphs into individual sentence blocks with their matching translations
-    const rawParagraphs = bodyText.trim().split(/\n\s*\n/).filter(Boolean);
-    const translationParagraphs = rawTranslation ? rawTranslation.split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean) : [];
-
-    const blocks = rawParagraphs.map((para, index) => {
-      const paraAst = parseMDX(para, glossWordTemplate, (val: string) => val);
-      return {
-        id: `${slug}-block-${index + 1}`,
-        body: paraAst,
-        translation: translationParagraphs[index],
-      };
-    });
-
-    return {
-      slug,
-      title: typeof frontmatter.title === "string" ? frontmatter.title : slug,
-      author: typeof frontmatter.author === "string" ? frontmatter.author : undefined,
-      source: typeof frontmatter.source === "string" ? frontmatter.source : undefined,
-      translation: rawTranslation,
-      blocks: blocks.length > 0 ? blocks : undefined,
-      body: bodyAst,
-      rawBody: bodyText,
-    };
-  });
-}
-
 export type LoadedTextDocument = TextDocument & { fileName: string };
-
-export function parseTexToLegacyTextDocument(): TextDocument {
-  const texPath = path.join(process.cwd(), "references", "Voyages_of_Ohthere_Wulfstan.tex");
-  if (!fs.existsSync(texPath)) {
-    throw new Error("Master TeX file not found.");
-  }
-  const content = fs.readFileSync(texPath, "utf8");
-  return parseGb4eToTextDocument(content, {
-    textId: "ohthere",
-    slug: "ohthere-wulfstan",
-    sourceFile: "references/Voyages_of_Ohthere_Wulfstan.tex",
-    status: "published",
-  });
-}
 
 export function loadTextDocuments(): LoadedTextDocument[] {
   const fileNames = fs
@@ -185,38 +88,6 @@ export function loadTextDocuments(): LoadedTextDocument[] {
     const filePath = path.join(contentDirectory, fileName);
     const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as unknown;
     const normalized = normalizeDocumentShape(requireObject(parsed, `Text document "${fileName}"`), fileName);
-
-    // If it's the Voyages document, merge in any extra parsed sentences from Voyages_of_Ohthere_Wulfstan.tex
-    if (normalized.slug === "ohthere-wulfstan" || normalized.textId === "ohthere") {
-      try {
-        const fullLegacy = parseTexToLegacyTextDocument();
-        const existingSentences = (normalized.sentences as ReadingSentence[]) || [];
-        const fullSentences = (fullLegacy.sentences as ReadingSentence[]) || [];
-
-        // Merge the two arrays by sentence index, using authoritative master data if existing is empty
-        const mergedSentences = fullSentences.map((fullSent, idx) => {
-          const existing = existingSentences[idx];
-          if (!existing) return fullSent;
-          const hasValidTranslation = typeof existing.translation === "string" && existing.translation.trim().length > 0;
-          const hasValidWords = Array.isArray(existing.words) && existing.words.length > 0;
-          return {
-            ...fullSent,
-            ...existing,
-            translation: hasValidTranslation ? existing.translation : fullSent.translation,
-            words: hasValidWords ? existing.words : fullSent.words,
-          };
-        });
-
-        // Retain any additional sentences added beyond master length
-        if (existingSentences.length > fullSentences.length) {
-          mergedSentences.push(...existingSentences.slice(fullSentences.length));
-        }
-
-        normalized.sentences = mergedSentences;
-      } catch (err) {
-        console.error("Failed to dynamically load full TeX document in loadTextDocuments", err);
-      }
-    }
 
     return { ...normalized, fileName: path.basename(fileName, ".json") } as LoadedTextDocument;
   });

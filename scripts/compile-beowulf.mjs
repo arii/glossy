@@ -921,7 +921,6 @@ const doc = {
 };
 
 const texSource = exportToGb4eLatex(doc);
-doc.texSource = texSource;
 
 fs.writeFileSync(path.join(process.cwd(), "references", "Beowulf_Prologue.tex"), texSource, "utf8");
 fs.writeFileSync(path.join(process.cwd(), "content", "texts", "beowulf-prologue.json"), JSON.stringify(doc, null, 2) + "\n", "utf8");

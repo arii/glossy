@@ -116,6 +116,37 @@ export interface LinguisticAnalysis {
   - Working delete/revert handlers in the card 3-dot menu and editor header cleanly remove the draft from `localStorage` (`glossy:v1:draft:<slug>`, `glossy_draft_<slug>`, and pending manifest).
   - Core canonical Ohthere remains protected from accidental deletion while allowing users to discard working edits back to the pristine master copy.
 
+### Phase 6: Redundant `texSource` Investigation and Elimination
+- [x] **Step 6.1 — Architectural Investigation of `texSource`**:
+  - **Finding**: `texSource` was originally an embedded string storing raw `\begin{exe}...\end{exe}` LaTeX markup (~60 KB in `ohthere.json`, and thousands of characters in other texts).
+  - **Redundancy Analysis**: Because Step 2.1 implemented lossless dynamic export (`exportToGb4eLatex` in `data/latex-export.ts`) compiling directly on-demand from structured JSON sentences, words, and analyses, the persistent `texSource` key is 100% redundant.
+  - **Impact**: Embedded TeX strings cause severe JSON payload bloat, create dual-source drift risks where edits to sentences might not reflect in `texSource`, and contradict the JSON single source of truth architecture.
+  - **Conclusion**: `texSource` is safe to purge across canonical files, types, draft envelopes, and CMS collections.
+- [x] **Step 6.2 — Purge `texSource` from Canonical Texts & Compilers**:
+  - Remove `texSource` keys from all JSON files in `content/texts/*.json`.
+  - Update `scripts/compile-tex-to-content.mjs`, `scripts/compile-beowulf.mjs`, and `scripts/compile-presets.mjs` to cease generating `texSource`.
+- [x] **Step 6.3 — Purge `texSource` from Data Models & Schemas**:
+  - Remove `texSource` from `lib/types.ts` (`TextDocument` interface).
+  - Remove `texSource` from `lib/local-drafts.ts`, `lib/tina-sync.ts`, `components/gloss-editor.tsx`, `components/text-directory.tsx`, and `app/edit/new/page.tsx`.
+  - Remove `texSource` field from Tina CMS `text` collection in `tina/config.ts`.
+
+### Phase 7: Deprecation & Removal of Legacy MDX Manuscripts and Dictionary (WP6)
+- [x] **Step 7.1 — Verification of Text Translations & Headwords**:
+  - Verified that `content/texts/ohthere.json` already contains all 75 sentences and complete translations, completely superseding `content/manuscripts/ohthere.mdx` (which only contained 3 sentences).
+  - Verified that canonical JSON texts carry self-contained `analysis` payloads (lemma, POS, morphemes, definitions), and the editor/lemmatizer uses `lib/old-english-lexicon.ts` directly, making `content/dictionary/` dead code.
+- [x] **Step 7.2 — File System Purge**:
+  - Delete `content/manuscripts/` (`ohthere.mdx`).
+  - Delete `content/dictionary/` (64 obsolete JSON dictionary headword files).
+  - Delete `scripts/sync-dictionary.mjs`.
+- [x] **Step 7.3 — Runtime Code Refactoring**:
+  - Remove `loadManuscripts`, `loadDictionary`, and `@tinacms/mdx` parsing from `lib/content.ts`.
+  - Remove legacy Ohthere TeX merging routine from `lib/content.ts` (relying directly on canonical `ohthere.json`).
+  - Remove `GlossaryProvider`'s `dictionaryMap` and `GlossWord` lookup from `components/glossary.tsx`.
+  - Remove `manuscripts` and `dictionary` props and legacy blocks code paths from `components/reading-page.tsx`.
+  - Remove `manuscripts` and `dictionary` loaders from `app/read/[slug]/page.tsx`.
+  - Remove `manuscript` and `dictionary` collections from `tina/config.ts`.
+  - Remove `@tinacms/mdx` dependency and `sync:dictionary` npm script from `package.json`.
+
 ---
 
 ## 4. Verification & Validation Criteria

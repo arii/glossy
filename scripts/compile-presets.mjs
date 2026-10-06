@@ -84,7 +84,6 @@ for (const preset of PRESETS) {
   };
 
   const tex = exportToGb4eLatex(doc);
-  doc.texSource = tex;
 
   fs.writeFileSync(path.join(process.cwd(), preset.sourceFile), tex, "utf8");
   fs.writeFileSync(

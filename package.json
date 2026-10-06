@@ -9,7 +9,6 @@
     "dev:tina": "node scripts/dev.js",
     "start": "serve out -p 3000",
     "clean": "rm -rf .next .open-next out node_modules/.cache bun.lockb bun.lock",
-    "sync:dictionary": "tsx scripts/sync-dictionary.mjs",
     "compile:content": "tsx scripts/compile-tex-to-content.mjs",
     "compile:beowulf": "tsx scripts/compile-beowulf.mjs",
     "compile:presets": "tsx scripts/compile-presets.mjs",
@@ -33,7 +32,6 @@
   "dependencies": {
     "@google/genai": "^2.27.0",
     "@tinacms/cli": "^3.1.0",
-    "@tinacms/mdx": "^2.3.0",
     "gray-matter": "^4.0.3",
     "lucide-react": "^1.50.0",
     "next": "15.5.27",

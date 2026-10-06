@@ -34,7 +34,6 @@ export async function syncDocumentToTina(
         sourceFile: doc.sourceFile || `${slug}.json`,
         sourceEdition: doc.sourceEdition || "",
         status: doc.status || "draft",
-        texSource: doc.texSource || "",
         sentences: (doc.sentences || []).map((sent) => ({
           id: sent.id,
           translation: sent.translation || "",

@@ -203,13 +203,21 @@ export function deleteDraft(slug: string): boolean {
   if (!storage || !slug) return false;
 
   try {
-    storage.removeItem(`${DRAFT_STORAGE_PREFIX}${slug}`);
-    storage.removeItem(`glossy_draft_${slug}`);
-    storage.removeItem(`glossy_doc_${slug}`);
+    const slugsToDelete = [slug];
+    if (slug === "ohthere") slugsToDelete.push("ohthere-wulfstan");
+    if (slug === "ohthere-wulfstan") slugsToDelete.push("ohthere");
+
+    for (const s of slugsToDelete) {
+      storage.removeItem(`${DRAFT_STORAGE_PREFIX}${s}`);
+      storage.removeItem(`glossy_draft_${s}`);
+      storage.removeItem(`glossy_doc_${s}`);
+    }
 
     // Remove from pending manifest
     const manifest = listPending();
-    delete manifest[slug];
+    for (const s of slugsToDelete) {
+      delete manifest[s];
+    }
     storage.setItem(PENDING_MANIFEST_KEY, JSON.stringify(manifest));
     return true;
   } catch {
@@ -359,7 +367,6 @@ export function createLocalDocument(input: {
   source?: string;
   slug?: string;
   sentences?: TextDocument["sentences"];
-  texSource?: string;
   overwrite?: boolean;
 }): StorageResult<TextDocument> {
   const title = input.title.trim();
@@ -393,7 +400,6 @@ export function createLocalDocument(input: {
     status: "draft",
     blocks: [],
     sentences: input.sentences || [],
-    texSource: input.texSource,
   };
 
   const writeRes = writeDraft(generatedSlug, doc);

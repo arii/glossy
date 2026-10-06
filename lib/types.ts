@@ -104,7 +104,6 @@ export type TextDocument = Passage & {
   sourceFile: string;
   sourceEdition?: string;
   status: "draft" | "review" | "published";
-  texSource?: string;
   sentences?: ReadingSentence[];
   blocks?: PassageBlock[];
   glossRecords?: GlossRecord[];

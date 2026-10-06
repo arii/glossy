@@ -45,12 +45,6 @@ export default defineConfig({
             options: ["draft", "review", "published"],
           },
           {
-            type: "string",
-            name: "texSource",
-            label: "Raw LaTeX Source (gb4e)",
-            ui: { component: "textarea" },
-          },
-          {
             type: "object",
             name: "sentences",
             label: "Examples",
@@ -142,71 +136,6 @@ export default defineConfig({
                       },
                       { type: "string", name: "notes", label: "Review Notes", ui: { component: "textarea" } },
                     ],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        name: "dictionary",
-        label: "Dictionary",
-        path: "content/dictionary",
-        format: "json",
-        fields: [
-          { type: "string", name: "word", label: "Base Word", required: true, isTitle: true },
-          { type: "string", name: "pronunciation", label: "Pronunciation" },
-          { type: "string", name: "sourceGloss", label: "Source Gloss" },
-          {
-            type: "object",
-            name: "morphemes",
-            label: "Morphemes",
-            list: true,
-            ui: {
-              itemProps: (item) => ({
-                label: `${item?.part || "part"} = ${item?.meaning || "meaning"}`,
-              }),
-            },
-            fields: [
-              { type: "string", name: "part", label: "Part (e.g., sǣ)" },
-              { type: "string", name: "meaning", label: "Meaning (e.g., say)" },
-            ],
-          },
-          { type: "string", name: "inflection", label: "Inflection", ui: { component: "textarea" } },
-          { type: "string", name: "definition", label: "Definition" },
-        ],
-      },
-      {
-        name: "manuscript",
-        label: "Manuscript",
-        path: "content/manuscripts",
-        format: "mdx",
-        ui: {
-          router: ({ document }) => `/read/${document._sys.filename}`,
-        },
-        fields: [
-          { type: "string", name: "title", label: "Title", isTitle: true, required: true },
-          { type: "string", name: "author", label: "Author / Speaker" },
-          { type: "string", name: "source", label: "Attribution" },
-          { type: "string", name: "translation", label: "English Translation", ui: { component: "textarea" } },
-          {
-            type: "rich-text",
-            name: "body",
-            label: "Manuscript Body",
-            isBody: true,
-            templates: [
-              {
-                name: "GlossWord",
-                label: "Gloss Word",
-                inline: true,
-                fields: [
-                  { type: "string", name: "text", label: "Display Text in Sentence", required: true },
-                  {
-                    type: "reference",
-                    name: "dictEntry",
-                    label: "Dictionary Entry",
-                    collections: ["dictionary"],
                   },
                 ],
               },
@@ -481,7 +410,6 @@ export default defineConfig({
         sourceFile: String(draftDoc.sourceFile || ""),
         sourceEdition: String(draftDoc.sourceEdition || ""),
         status: String(draftDoc.status || "draft"),
-        texSource: String(draftDoc.texSource || ""),
         sentences,
       };
     }

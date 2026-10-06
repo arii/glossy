@@ -345,7 +345,6 @@ export default function NewTextPage() {
         author: author.trim() || "Anonymous",
         source: source.trim() || "Historical Manuscript",
         sentences: sentences,
-        texSource: latexSource.trim() || undefined,
         overwrite: true,
       });
 

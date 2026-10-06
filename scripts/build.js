@@ -38,8 +38,7 @@ function runCommand(cmd, args) {
 
 async function main() {
   if (process.argv.includes("--with-content")) {
-    printStep("0. Synchronizing dictionaries & compiling content");
-    runCommand("npx", ["tsx", "scripts/sync-dictionary.mjs"]);
+    printStep("0. Compiling content");
     runCommand("npx", ["tsx", "scripts/compile-tex-to-content.mjs"]);
     runCommand("npx", ["tsx", "scripts/compile-beowulf.mjs"]);
     runCommand("npx", ["tsx", "scripts/compile-presets.mjs"]);

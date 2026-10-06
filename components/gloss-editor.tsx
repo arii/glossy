@@ -199,7 +199,6 @@ export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
     blocks: [],
   };
 
-  result.texSource = exportToGb4eLatex(result);
   return result;
 }
 
@@ -489,28 +488,15 @@ export function GlossEditor({
 
   // Discard changes to restore initial snapshot and completely remove draft
   const discardChanges = () => {
-    const confirmed = window.confirm(
-      `Are you sure you want to discard all local edits and revert to the master edition? This will clear your local draft.`
-    );
-    if (!confirmed) return;
-
     try {
       const fallback = textDocumentToEditorDoc(initialDocument);
       setDocumentState(fallback);
       setSavedSnapshot(safeJsonStringify(fallback));
 
+      const slug = initialDocument.slug || initialDocument.textId || "ohthere";
+      deleteLocalDraft(slug);
       try {
-        const slug = initialDocument.slug || initialDocument.textId || "ohthere";
         window.localStorage.removeItem(storageKey);
-        window.localStorage.removeItem(`glossy_draft_${slug}`);
-        window.localStorage.removeItem(`glossy:v1:draft:${slug}`);
-        // Also remove from pending manifest
-        const pendingRaw = window.localStorage.getItem("glossy_pending_drafts");
-        if (pendingRaw) {
-          const pending = JSON.parse(pendingRaw);
-          delete pending[slug];
-          window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
-        }
       } catch {}
 
       if (fallback.sentences.length > 0) {
@@ -575,7 +561,6 @@ export function GlossEditor({
           sourceFile: legacyDoc.sourceFile || "",
           sourceEdition: legacyDoc.sourceEdition || "",
           status: legacyDoc.status || "draft",
-          texSource: legacyDoc.texSource || "",
           sentences: (legacyDoc.sentences || []).map((sent) => ({
             id: sent.id,
             translation: sent.translation || "",
@@ -774,19 +759,12 @@ export function GlossEditor({
     if (isProtectedText) return;
     setIsDeleting(true);
     try {
+      const slug = initialDocument.slug || initialDocument.textId || "";
+      if (slug) {
+        deleteLocalDraft(slug);
+      }
       try {
-        await fetch("/api/delete-document", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: safeJsonStringify({
-            slug: initialDocument.slug,
-            fileName: initialDocument.fileName || initialDocument.textId,
-          }),
-        });
-      } catch {}
-
-      try {
-        localStorage.removeItem(storageKey);
+        window.localStorage.removeItem(storageKey);
       } catch {}
 
       router.push("/");
