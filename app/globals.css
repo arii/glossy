@@ -1810,12 +1810,30 @@ h2 {
   display: none;
 }
 
+/* Responsive Ingestion Form Grid */
+.ingest-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .ingest-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+input, textarea, select, label {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
 /* Mobile Layout Optimizations: Workspace Choice and Documentation Pages */
 @media (max-width: 48rem) {
   .workspace-choice {
     width: 100%;
     max-width: 100%;
-    padding: 1.25rem 1rem;
+    padding: clamp(0.85rem, 3vw, 1.25rem);
     margin: 1.5rem auto;
     box-sizing: border-box;
   }
