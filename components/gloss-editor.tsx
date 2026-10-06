@@ -204,6 +204,9 @@ export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
     blocks: [],
   };
 
+  delete (result as Record<string, unknown>).texSource;
+  delete (result as Record<string, unknown>)["tex-source"];
+
   return result;
 }
 
@@ -555,6 +558,8 @@ export function GlossEditor({
       try {
         window.localStorage.setItem(storageKey, serialized);
         // Also save in TextDocument format for admin sync
+        delete (legacyDoc as Record<string, unknown>).texSource;
+        delete (legacyDoc as Record<string, unknown>)["tex-source"];
         window.localStorage.setItem(`glossy_draft_${targetSlug}`, safeJsonStringify(legacyDoc));
 
         // Update pending drafts manifest
@@ -750,6 +755,8 @@ export function GlossEditor({
   const handleExportJson = () => {
     if (!documentState) return;
     const legacyDoc = editorDocToTextDocument(documentState);
+    delete (legacyDoc as Record<string, unknown>).texSource;
+    delete (legacyDoc as Record<string, unknown>)["tex-source"];
     const jsonStr = safeJsonStringify(legacyDoc, null, 2);
     const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
     const url = URL.createObjectURL(blob);

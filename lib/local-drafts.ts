@@ -80,6 +80,8 @@ export function readDraft(slug: string): StoredDraft | null {
     try {
       const parsed = JSON.parse(v1Raw) as StoredDraft;
       if (parsed && parsed.doc && parsed.version === 1) {
+        delete (parsed.doc as Record<string, unknown>).texSource;
+        delete (parsed.doc as Record<string, unknown>)["tex-source"];
         return parsed;
       }
     } catch {}
@@ -151,6 +153,8 @@ export function readDraft(slug: string): StoredDraft | null {
       }
 
       if (convertedDoc && convertedDoc.title) {
+        delete (convertedDoc as Record<string, unknown>).texSource;
+        delete (convertedDoc as Record<string, unknown>)["tex-source"];
         const envelope: StoredDraft = {
           version: 1,
           doc: convertedDoc,
@@ -174,6 +178,8 @@ export function writeDraft(slug: string, doc: TextDocument): StorageResult<Store
   }
 
   try {
+    delete (doc as Record<string, unknown>).texSource;
+    delete (doc as Record<string, unknown>)["tex-source"];
     const hash = computeDocumentHash(doc);
     const envelope: StoredDraft = {
       version: 1,

@@ -21,19 +21,12 @@ export type AttributionConfig = {
   editionDate?: string;
   booktitle?: string;
   attributionLinguisticPackage?: string;
-  linguisticPackage?: string;
   attributionStandardsTitle?: string;
-  standardsTitle?: string;
   attributionStandardsStatement?: string;
-  standardsStatement?: string;
   bibtexCitationTemplate?: string;
-  bibtexTemplate?: string;
   unifiedLsaCitationTemplate?: string;
-  unifiedTemplate?: string;
   apaCitationTemplate?: string;
-  apaTemplate?: string;
   chicagoCitationTemplate?: string;
-  chicagoTemplate?: string;
   [key: string]: unknown;
 };
 
@@ -76,9 +69,17 @@ export function AttributionCard({
   const activeDefaultEditorUrl = activeConfig.defaultEditorUrl || initialAttributionData.defaultEditorUrl || "https://sites.google.com/view/tyler-lemon";
   const activeEditionDate = activeConfig.editionDate || initialAttributionData.editionDate || "2026";
   const activeBooktitle = activeConfig.booktitle || initialAttributionData.booktitle || "Glossy: Digital Scholarly Editions of Old English Interlinear Texts";
-  const activeLinguisticPackage = (activeConfig.attributionLinguisticPackage as string) || activeConfig.linguisticPackage || initialAttributionData.attributionLinguisticPackage || initialAttributionData.linguisticPackage || "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing";
-  const activeStandardsTitle = (activeConfig.attributionStandardsTitle as string) || activeConfig.standardsTitle || initialAttributionData.attributionStandardsTitle || initialAttributionData.standardsTitle || "Collaborative Development & Standards";
-  const activeStandardsStatement = (activeConfig.attributionStandardsStatement as string) || activeConfig.standardsStatement || initialAttributionData.attributionStandardsStatement || initialAttributionData.standardsStatement ||
+  const activeLinguisticPackage =
+    activeConfig.attributionLinguisticPackage ||
+    initialAttributionData.attributionLinguisticPackage ||
+    "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing";
+  const activeStandardsTitle =
+    activeConfig.attributionStandardsTitle ||
+    initialAttributionData.attributionStandardsTitle ||
+    "Collaborative Development & Standards";
+  const activeStandardsStatement =
+    activeConfig.attributionStandardsStatement ||
+    initialAttributionData.attributionStandardsStatement ||
     `Developed through the collaborative partnership of ${activePlatformCreator} (software architecture, digital platform, and automated verification suite) and ${activeDefaultEditor} (linguistic subject matter expertise, Old English glossing, and grammatical accuracy). Interlinear formatting conforms to the international Leipzig Glossing Rules with LaTeX gb4e alignment, canonical lemmatization referenced to Bosworth-Toller and Wiktionary, and visual gloss layout inspired by Peter S. Baker's Old English Aerobics (oldenglishaerobics.net).`;
 
   const provenanceData = builtIn
@@ -144,25 +145,21 @@ export function AttributionCard({
   };
 
   const bibtexTemplate =
-    (activeConfig.bibtexCitationTemplate as string) ||
-    activeConfig.bibtexTemplate ||
+    activeConfig.bibtexCitationTemplate ||
     initialAttributionData.bibtexCitationTemplate ||
-    initialAttributionData.bibtexTemplate;
+    "";
   const unifiedTemplate =
-    (activeConfig.unifiedLsaCitationTemplate as string) ||
-    activeConfig.unifiedTemplate ||
+    activeConfig.unifiedLsaCitationTemplate ||
     initialAttributionData.unifiedLsaCitationTemplate ||
-    initialAttributionData.unifiedTemplate;
+    "";
   const apaTemplate =
-    (activeConfig.apaCitationTemplate as string) ||
-    activeConfig.apaTemplate ||
+    activeConfig.apaCitationTemplate ||
     initialAttributionData.apaCitationTemplate ||
-    initialAttributionData.apaTemplate;
+    "";
   const chicagoTemplate =
-    (activeConfig.chicagoCitationTemplate as string) ||
-    activeConfig.chicagoTemplate ||
+    activeConfig.chicagoCitationTemplate ||
     initialAttributionData.chicagoCitationTemplate ||
-    initialAttributionData.chicagoTemplate;
+    "";
 
   const citations: Record<CitationFormat, string> = {
     bibtex: interpolateCitation(bibtexTemplate, { ...baseVars, author: bibtexAuthor }),
@@ -316,13 +313,13 @@ export function AttributionCard({
         {/* Tile 5: Collaborative Development & Standards */}
         <div style={{ gridColumn: "1 / -1" }}>
           <span
-            data-tina-field={tinaField(activeConfig, activeConfig.attributionStandardsTitle ? "attributionStandardsTitle" : "standardsTitle")}
+            data-tina-field={tinaField(activeConfig, "attributionStandardsTitle")}
             style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}
           >
             <ShieldCheck style={{ width: "0.75rem", height: "0.75rem" }} /> {activeStandardsTitle}
           </span>
           <p
-            data-tina-field={tinaField(activeConfig, activeConfig.attributionStandardsStatement ? "attributionStandardsStatement" : "standardsStatement")}
+            data-tina-field={tinaField(activeConfig, "attributionStandardsStatement")}
             style={{ margin: "0.2rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)", lineHeight: 1.5 }}
           >
             {activeStandardsStatement}
@@ -363,10 +360,10 @@ export function AttributionCard({
         <div style={{ position: "relative", background: "#1c1917", color: "#fafaf9", borderRadius: "0.4rem", padding: "1rem 1.25rem", fontFamily: "monospace", fontSize: "0.82rem", border: "1px solid #332d29" }}>
           <pre
             data-tina-field={
-              activeTab === "bibtex" ? tinaField(activeConfig, activeConfig.bibtexCitationTemplate ? "bibtexCitationTemplate" : "bibtexTemplate") :
-              activeTab === "unified" ? tinaField(activeConfig, activeConfig.unifiedLsaCitationTemplate ? "unifiedLsaCitationTemplate" : "unifiedTemplate") :
-              activeTab === "apa" ? tinaField(activeConfig, activeConfig.apaCitationTemplate ? "apaCitationTemplate" : "apaTemplate") :
-              tinaField(activeConfig, activeConfig.chicagoCitationTemplate ? "chicagoCitationTemplate" : "chicagoTemplate")
+              activeTab === "bibtex" ? tinaField(activeConfig, "bibtexCitationTemplate") :
+              activeTab === "unified" ? tinaField(activeConfig, "unifiedLsaCitationTemplate") :
+              activeTab === "apa" ? tinaField(activeConfig, "apaCitationTemplate") :
+              tinaField(activeConfig, "chicagoCitationTemplate")
             }
             style={{ margin: 0, whiteSpace: "pre-wrap", wordBreak: "break-word", lineHeight: 1.5 }}
           >

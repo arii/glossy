@@ -8,6 +8,7 @@ import { SiteFooter } from "../components/site-footer";
 import { ExternalLink, BookOpen, Edit3, Code2 } from "lucide-react";
 import { useTina, tinaField } from "tinacms/dist/react";
 import homeContentData from "../content/pages/home.json";
+import attributionData from "../content/pages/attribution.json";
 import { BUILT_IN_CORPUS } from "../lib/corpus-registry";
 import type { HomePageContent } from "../lib/types";
 
@@ -100,19 +101,6 @@ const HOME_PAGE_QUERY = `
         label
         href
       }
-      platformCreator
-      platformCreatorUrl
-      defaultEditor
-      defaultEditorUrl
-      editionDate
-      booktitle
-      attributionLinguisticPackage
-      attributionStandardsTitle
-      attributionStandardsStatement
-      bibtexCitationTemplate
-      unifiedLsaCitationTemplate
-      apaCitationTemplate
-      chicagoCitationTemplate
     }
   }
 `;
@@ -613,7 +601,7 @@ export default function Home() {
         </section>
 
         <section id="corpus-directory" style={{ padding: "1rem 0 1rem" }}>
-          <TextDirectory initialChoices={choices} attributionConfig={page} />
+          <TextDirectory initialChoices={choices} attributionConfig={attributionData} />
         </section>
 
       </main>

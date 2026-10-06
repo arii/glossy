@@ -171,26 +171,6 @@ export type HomePageContent = {
     label: string;
     href: string;
   };
-  platformCreator?: string;
-  platformCreatorUrl?: string;
-  defaultEditor?: string;
-  defaultEditorUrl?: string;
-  editionDate?: string;
-  booktitle?: string;
-  attributionLinguisticPackage?: string;
-  linguisticPackage?: string;
-  attributionStandardsTitle?: string;
-  standardsTitle?: string;
-  attributionStandardsStatement?: string;
-  standardsStatement?: string;
-  bibtexCitationTemplate?: string;
-  bibtexTemplate?: string;
-  unifiedLsaCitationTemplate?: string;
-  unifiedTemplate?: string;
-  apaCitationTemplate?: string;
-  apaTemplate?: string;
-  chicagoCitationTemplate?: string;
-  chicagoTemplate?: string;
 };
 
 export type IngestPageContent = {
@@ -256,19 +236,12 @@ export type AttributionPageContent = {
   editionDate?: string;
   booktitle?: string;
   attributionLinguisticPackage?: string;
-  linguisticPackage?: string;
   attributionStandardsTitle?: string;
-  standardsTitle?: string;
   attributionStandardsStatement?: string;
-  standardsStatement?: string;
   bibtexCitationTemplate?: string;
-  bibtexTemplate?: string;
   unifiedLsaCitationTemplate?: string;
-  unifiedTemplate?: string;
   apaCitationTemplate?: string;
-  apaTemplate?: string;
   chicagoCitationTemplate?: string;
-  chicagoTemplate?: string;
 };
 
 export type DocsDomain = "all" | "linguistics" | "architecture";
