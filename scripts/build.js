@@ -36,12 +36,14 @@ function runCommand(cmd, args) {
 }
 
 async function main() {
-  printStep("1. Synchronizing dictionaries & compiling content");
-  runCommand("node", ["scripts/sync-dictionary.mjs"]);
-  runCommand("node", ["scripts/compile-tex-to-content.mjs"]);
-  runCommand("node", ["scripts/compile-beowulf.mjs"]);
+  if (process.argv.includes("--with-content")) {
+    printStep("0. Synchronizing dictionaries & compiling content");
+    runCommand("npx", ["tsx", "scripts/sync-dictionary.mjs"]);
+    runCommand("npx", ["tsx", "scripts/compile-tex-to-content.mjs"]);
+    runCommand("npx", ["tsx", "scripts/compile-beowulf.mjs"]);
+  }
 
-  printStep("2. Building TinaCMS schemas & admin bundle");
+  printStep("1. Building TinaCMS schemas & admin bundle");
   const busy = await isPortBusy(9123);
   if (busy) {
     console.log("ℹ️ Datalayer port 9123 is currently busy; reusing existing compiled schema.");
