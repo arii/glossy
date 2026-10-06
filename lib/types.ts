@@ -157,3 +157,101 @@ export type ManuscriptDocument = {
   rawBody?: string;
   _tina_metadata?: Record<string, string>;
 };
+
+export type HomePageContent = {
+  pageId?: string;
+  title?: string;
+  eyebrow?: string;
+  heading?: string;
+  description?: string;
+  primaryAction?: {
+    label: string;
+    href: string;
+  };
+  secondaryAction?: {
+    label: string;
+    href: string;
+  };
+};
+
+export type IngestPageContent = {
+  pageId?: string;
+  title?: string;
+  eyebrow?: string;
+  heading?: string;
+  description?: string;
+};
+
+export type DocsDomain = "all" | "linguistics" | "architecture";
+
+export type GlossingAbbreviationItem = {
+  abbr: string;
+  name: string;
+  desc: string;
+  category: "Person & Number" | "Case" | "Gender & Mood" | "Part of Speech" | "Affixes & Morphemes";
+};
+
+export type DocSectionItem = {
+  id: string;
+  domain?: "linguistics" | "architecture";
+  domainNum?: string;
+  num: string;
+  eyebrow?: string;
+  title: string;
+  badge?: string;
+};
+
+export type NumeralCardItem = {
+  badge: string;
+  title: string;
+  description: string;
+  isFullWidth?: boolean;
+};
+
+export type VerificationToolItem = {
+  name: string;
+  command: string;
+  target: string;
+};
+
+export type IngestionStepItem = {
+  num: string;
+  title: string;
+  description: string;
+};
+
+export type WiktionaryGuidelineItem = {
+  title: string;
+  description: string;
+};
+
+export type IpaSpecificationItem = {
+  title: string;
+  description: string;
+};
+
+export type StorageTierItem = {
+  tier: string;
+  timing: string;
+  title: string;
+  description: string;
+};
+
+export type DocsPageContent = {
+  title?: string;
+  eyebrow?: string;
+  description?: string;
+  canonicalRuleTitle?: string;
+  canonicalRuleDescription?: string;
+  architectureSpecTitle?: string;
+  architectureSpecDescription?: string;
+  sections?: DocSectionItem[];
+  abbreviations?: GlossingAbbreviationItem[];
+  numeralCards?: NumeralCardItem[];
+  verificationTools?: VerificationToolItem[];
+  ingestionSteps?: IngestionStepItem[];
+  wiktionaryGuidelines?: WiktionaryGuidelineItem[];
+  ipaSpecifications?: IpaSpecificationItem[];
+  storageTiers?: StorageTierItem[];
+};
+

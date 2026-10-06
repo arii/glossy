@@ -2,10 +2,85 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { parseMDX } from "@tinacms/mdx";
-import type { DictionaryEntry, ManuscriptDocument, TextDocument, ReadingSentence } from "./types";
+import type {
+  DictionaryEntry,
+  ManuscriptDocument,
+  TextDocument,
+  ReadingSentence,
+  HomePageContent,
+  IngestPageContent,
+  DocsPageContent,
+} from "./types";
 import { parseGb4eToTextDocument } from "./gb4e";
 
 const contentDirectory = path.join(process.cwd(), "content", "texts");
+
+export function loadHomePageContent(): HomePageContent {
+  const filePath = path.join(process.cwd(), "content", "pages", "home.json");
+  const defaults: HomePageContent = {
+    pageId: "home",
+    title: "Glossy · Interlinear Texts",
+    eyebrow: "Glossy · Interlinear texts",
+    heading: "Read a text or work on its glosses.",
+    description:
+      "The reader and editing workspace are separate. Choose a text below to read the published version, open its live gloss editor, or start glossing a new Old English text (e.g. Beowulf, Cædmon's Hymn).",
+    primaryAction: {
+      label: "+ Gloss a New Text",
+      href: "/edit/new",
+    },
+    secondaryAction: {
+      label: "Architecture & FAQ",
+      href: "/docs",
+    },
+  };
+
+  if (!fs.existsSync(filePath)) return defaults;
+  try {
+    const raw = fs.readFileSync(filePath, "utf8");
+    const parsed = JSON.parse(raw) as HomePageContent;
+    return { ...defaults, ...parsed };
+  } catch (err) {
+    console.error("Failed reading content/pages/home.json", err);
+    return defaults;
+  }
+}
+
+export function loadIngestPageContent(): IngestPageContent {
+  const filePath = path.join(process.cwd(), "content", "pages", "ingest.json");
+  const defaults: IngestPageContent = {
+    pageId: "ingest",
+    title: "Gloss a New Old English Text",
+    eyebrow: "Glossy · Corpus Ingestion",
+    heading: "Gloss a New Old English Text",
+    description:
+      "Paste raw Old English sentences, select a classic preset (such as Beowulf or Cædmon's Hymn), or paste LaTeX gb4e code. The ingestion engine will automatically tokenize, lemmatize, and initialize your interlinear glosses.",
+  };
+
+  if (!fs.existsSync(filePath)) return defaults;
+  try {
+    const raw = fs.readFileSync(filePath, "utf8");
+    const parsed = JSON.parse(raw) as IngestPageContent;
+    return { ...defaults, ...parsed };
+  } catch (err) {
+    console.error("Failed reading content/pages/ingest.json", err);
+    return defaults;
+  }
+}
+
+export function loadDocsPageContent(): DocsPageContent {
+  const filePath = path.join(process.cwd(), "content", "docs", "architecture-faq.json");
+  if (!fs.existsSync(filePath)) {
+    return {};
+  }
+  try {
+    const raw = fs.readFileSync(filePath, "utf8");
+    return JSON.parse(raw) as DocsPageContent;
+  } catch (err) {
+    console.error("Failed reading content/docs/architecture-faq.json", err);
+    return {};
+  }
+}
+
 
 const glossWordTemplate = {
   name: "body",

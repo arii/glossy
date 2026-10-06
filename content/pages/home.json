@@ -1,0 +1,15 @@
+{
+  "pageId": "home",
+  "title": "Glossy · Interlinear Texts",
+  "eyebrow": "Glossy · Interlinear texts",
+  "heading": "Read a text or work on its glosses.",
+  "description": "The reader and editing workspace are separate. Choose a text below to read the published version, open its live gloss editor, or start glossing a new Old English text (e.g. Beowulf, Cædmon's Hymn).",
+  "primaryAction": {
+    "label": "+ Gloss a New Text",
+    "href": "/edit/new"
+  },
+  "secondaryAction": {
+    "label": "Architecture & FAQ",
+    "href": "/docs"
+  }
+}

@@ -8,6 +8,7 @@ import type { DictionaryEntry, ManuscriptDocument, TextDocument } from "../lib/t
 import { AnnotatedPassage } from "./annotated-passage";
 import { GlossPopup } from "./gloss-popup";
 import { GlossaryPanel, GlossWord, GlossaryProvider, useGlossary } from "./glossary";
+import { AttributionModal } from "./attribution-modal";
 
 type ReadingPageProps = {
   texts: TextDocument[];
@@ -179,12 +180,35 @@ function ReadingPageInner({
     ),
   };
 
+  const [attributionOpen, setAttributionOpen] = useState(false);
+
   return (
     <>
       <SiteNav current="read" slug={texts.some((text) => text.slug === selectedSlug) ? selectedSlug : (texts[0]?.slug ?? "ohthere-wulfstan")} />
       <main className="site-shell">
         <header className="page-header" style={{ marginBottom: "2rem" }}>
-          <p className="eyebrow">Old English visual gloss</p>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+            <p className="eyebrow" style={{ margin: 0 }}>Old English visual gloss</p>
+            <button
+              type="button"
+              onClick={() => setAttributionOpen(true)}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.35rem",
+                padding: "0.25rem 0.6rem",
+                background: "#fbf7ee",
+                border: "1px solid #dfcfb8",
+                borderRadius: "0.25rem",
+                fontSize: "0.75rem",
+                fontWeight: 600,
+                color: "var(--accent)",
+                cursor: "pointer",
+              }}
+            >
+              ℹ️ Attribution &amp; Citation
+            </button>
+          </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1.5rem" }}>
             <div>
               <h1 data-tina-field={activeManuscript?._tina_metadata?.title}>{currentTitle}</h1>
@@ -208,6 +232,15 @@ function ReadingPageInner({
             )}
           </div>
         </header>
+
+        <AttributionModal
+          isOpen={attributionOpen}
+          onClose={() => setAttributionOpen(false)}
+          slug={selectedSlug}
+          title={currentTitle}
+          author={selectedText?.author ?? activeManuscript?.author}
+          source={currentSource}
+        />
 
         <div className="reading-layout">
           <section className="passage" aria-labelledby="passage-heading">

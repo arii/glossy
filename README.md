@@ -18,7 +18,7 @@ Glossy is a specialized digital humanities application for reading, editing, and
   - Multi-sentence `gb4e` LaTeX ingestion with preview and append controls
   - Dual-write persistence saving both structured JSON (`content/texts/<slug>.json`) and standalone LaTeX (`references/<slug>.tex`)
 - **Corpus Ingestion (`/edit/new`)**: Rapid onboarding of new texts with automatic Old English tokenization and rule-based lemmatization.
-- **Linguistic Architecture & FAQ (`/docs`)**: In-app reference documenting all 37 manuscript glossing abbreviations, citation standards by part of speech, and data models.
+- **Linguistic Architecture & FAQ (`/docs`)**: In-app reference documenting all 42 manuscript glossing abbreviations, citation standards by part of speech, and data models.
 - **Headless CMS Admin (`/admin/index.html`)**: TinaCMS editorial dashboard.
 
 ---

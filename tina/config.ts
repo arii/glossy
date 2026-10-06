@@ -207,6 +207,179 @@ export default defineConfig({
           },
         ],
       },
+      {
+        name: "page",
+        label: "Pages",
+        path: "content/pages",
+        format: "json",
+        ui: {
+          router: ({ document }) => {
+            if (document._sys.filename === "home") return "/";
+            if (document._sys.filename === "ingest") return "/edit/new";
+            return `/${document._sys.filename}`;
+          },
+        },
+        fields: [
+          { type: "string", name: "pageId", label: "Page Identifier", required: true, isTitle: true },
+          { type: "string", name: "title", label: "Page Title" },
+          { type: "string", name: "eyebrow", label: "Eyebrow Text" },
+          { type: "string", name: "heading", label: "Main Heading" },
+          { type: "string", name: "description", label: "Description", ui: { component: "textarea" } },
+          {
+            type: "object",
+            name: "primaryAction",
+            label: "Primary Action Button",
+            fields: [
+              { type: "string", name: "label", label: "Button Label" },
+              { type: "string", name: "href", label: "Link URL" },
+            ],
+          },
+          {
+            type: "object",
+            name: "secondaryAction",
+            label: "Secondary Action Button",
+            fields: [
+              { type: "string", name: "label", label: "Button Label" },
+              { type: "string", name: "href", label: "Link URL" },
+            ],
+          },
+        ],
+      },
+      {
+        name: "docs",
+        label: "Documentation & FAQ",
+        path: "content/docs",
+        format: "json",
+        ui: {
+          router: () => "/docs",
+        },
+        fields: [
+          { type: "string", name: "title", label: "Document Title", required: true, isTitle: true },
+          { type: "string", name: "eyebrow", label: "Eyebrow Text" },
+          { type: "string", name: "description", label: "Overview Description", ui: { component: "textarea" } },
+          { type: "string", name: "canonicalRuleTitle", label: "Quick Rule Title" },
+          { type: "string", name: "canonicalRuleDescription", label: "Quick Rule Description", ui: { component: "textarea" } },
+          {
+            type: "object",
+            name: "sections",
+            label: "Documentation Sections",
+            list: true,
+            ui: {
+              itemProps: (item) => ({ label: `${item?.num || "#"}. ${item?.title || "Section"}` }),
+            },
+            fields: [
+              { type: "string", name: "id", label: "Section Anchor ID", required: true },
+              { type: "string", name: "num", label: "Section Number", required: true },
+              { type: "string", name: "eyebrow", label: "Section Eyebrow" },
+              { type: "string", name: "title", label: "Section Title", required: true },
+            ],
+          },
+          {
+            type: "object",
+            name: "abbreviations",
+            label: "37 Leipzig Glossing Abbreviations",
+            list: true,
+            ui: {
+              itemProps: (item) => ({ label: `${item?.abbr || "TAG"}: ${item?.name || "Term"}` }),
+            },
+            fields: [
+              { type: "string", name: "abbr", label: "Tag / Abbreviation", required: true },
+              { type: "string", name: "name", label: "Full Term Name", required: true },
+              { type: "string", name: "desc", label: "Description & Examples", required: true, ui: { component: "textarea" } },
+              {
+                type: "string",
+                name: "category",
+                label: "Category",
+                options: ["Person & Number", "Case", "Gender & Mood", "Part of Speech", "Affixes & Morphemes"],
+              },
+            ],
+          },
+          {
+            type: "object",
+            name: "numeralCards",
+            label: "Numeral Lemmatization Cards",
+            list: true,
+            ui: {
+              itemProps: (item) => ({ label: item?.title || "Card" }),
+            },
+            fields: [
+              { type: "string", name: "badge", label: "Badge Label" },
+              { type: "string", name: "title", label: "Card Title", required: true },
+              { type: "string", name: "description", label: "Description", ui: { component: "textarea" } },
+              { type: "boolean", name: "isFullWidth", label: "Full Width Layout" },
+            ],
+          },
+          {
+            type: "object",
+            name: "verificationTools",
+            label: "Quality Verification Tools Table",
+            list: true,
+            ui: {
+              itemProps: (item) => ({ label: item?.name || "Tool" }),
+            },
+            fields: [
+              { type: "string", name: "name", label: "Tool Name", required: true },
+              { type: "string", name: "command", label: "Terminal Command", required: true },
+              { type: "string", name: "target", label: "Function & Verification Target", required: true, ui: { component: "textarea" } },
+            ],
+          },
+          {
+            type: "object",
+            name: "ingestionSteps",
+            label: "Corpus Ingestion Steps",
+            list: true,
+            ui: {
+              itemProps: (item) => ({ label: `${item?.num || "#"}. ${item?.title || "Step"}` }),
+            },
+            fields: [
+              { type: "string", name: "num", label: "Step Number" },
+              { type: "string", name: "title", label: "Step Title", required: true },
+              { type: "string", name: "description", label: "Description", ui: { component: "textarea" } },
+            ],
+          },
+          {
+            type: "object",
+            name: "wiktionaryGuidelines",
+            label: "Wiktionary Formatting Guidelines",
+            list: true,
+            ui: {
+              itemProps: (item) => ({ label: item?.title || "Guideline" }),
+            },
+            fields: [
+              { type: "string", name: "title", label: "Rule Title", required: true },
+              { type: "string", name: "description", label: "Rule Description", ui: { component: "textarea" } },
+            ],
+          },
+          {
+            type: "object",
+            name: "ipaSpecifications",
+            label: "IPA Phonetic Guidelines",
+            list: true,
+            ui: {
+              itemProps: (item) => ({ label: item?.title || "Specification" }),
+            },
+            fields: [
+              { type: "string", name: "title", label: "Specification Title", required: true },
+              { type: "string", name: "description", label: "Specification Description", ui: { component: "textarea" } },
+            ],
+          },
+          {
+            type: "object",
+            name: "storageTiers",
+            label: "Dual-Write Storage Architecture Tiers",
+            list: true,
+            ui: {
+              itemProps: (item) => ({ label: `${item?.tier || "Tier"}: ${item?.title || "Storage"}` }),
+            },
+            fields: [
+              { type: "string", name: "tier", label: "Tier Label (e.g. Tier 1)", required: true },
+              { type: "string", name: "timing", label: "Timing / Trigger (e.g. 300ms debounce)", required: true },
+              { type: "string", name: "title", label: "Tier Title", required: true },
+              { type: "string", name: "description", label: "Description", ui: { component: "textarea" } },
+            ],
+          },
+        ],
+      },
     ],
   },
 });
