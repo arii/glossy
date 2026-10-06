@@ -20,7 +20,6 @@ import {
   Upload,
   Sparkles,
 } from "lucide-react";
-import { PageHeader } from "../../../components/page-header";
 
 const INGEST_PAGE_QUERY = `
   query IngestPageQuery($relativePath: String!) {
@@ -471,33 +470,57 @@ export default function NewTextPage() {
   return (
     <>
       <SiteNav current="new" slug="ohthere" />
+      <main className="site-shell">
+        <header className="page-header" style={{ marginBottom: "2rem" }}>
+          <p className="eyebrow" data-tina-field={tinaField(page, "eyebrow")}>
+            {page.eyebrow || "Glossy · Corpus Ingestion"}
+          </p>
+          <h1 data-tina-field={tinaField(page, "heading")}>
+            {page.heading || "Gloss a New Old English Text"}
+          </h1>
+          <p
+            className="source-line"
+            data-tina-field={tinaField(page, "description")}
+            style={{ maxWidth: "48rem", fontSize: "1.05rem", lineHeight: 1.6 }}
+          >
+            {page.description || (
+              <>
+                Paste raw Old English sentences, choose a classic preset (such as <em>Beowulf</em> or{" "}
+                <em>Cædmon&apos;s Hymn</em>), or paste LaTeX <code>gb4e</code> code. The ingestion engine will
+                automatically tokenize, lemmatize, and initialize your interlinear glosses.
+              </>
+            )}
+          </p>
+        </header>
 
-      {/* Standardized Reusable PageHeader */}
-      <PageHeader
-        containerClassName="max-w-7xl"
-        eyebrow={page.eyebrow || "Glossy · Corpus Ingestion"}
-        eyebrowProps={{ "data-tina-field": tinaField(page, "eyebrow") }}
-        title={page.heading || "Gloss a New Old English Text"}
-        titleProps={{ "data-tina-field": tinaField(page, "heading") }}
-        metadata={
-          page.description || (
-            <>
-              Paste raw Old English sentences, choose a classic preset (such as <em>Beowulf</em> or{" "}
-              <em>Cædmon&apos;s Hymn</em>), or paste LaTeX <code>gb4e</code> code. The ingestion engine will
-              automatically tokenize, lemmatize, and initialize your interlinear glosses.
-            </>
-          )
-        }
-        metadataProps={{ "data-tina-field": tinaField(page, "description") }}
-      />
-
-      <main className="max-w-7xl mx-auto px-6 mb-16">
-        {/* Standardized Workspace Card Primitive */}
-        <section className="bg-white rounded-lg border border-stone-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 md:p-10">
+        {/* Workspace Card */}
+        <section
+          className="workspace-choice"
+          style={{
+            maxWidth: "100%",
+            margin: "0 auto",
+            textAlign: "left",
+            background: "var(--surface)",
+            border: "1px solid var(--rule)",
+            borderRadius: "0.5rem",
+            padding: "clamp(1.5rem, 3vw, 2.5rem)",
+            boxShadow: "0 0.5rem 2rem rgba(64, 47, 29, 0.04)",
+          }}
+        >
           {/* Top-Level Workflow Tabs */}
-          <div className="mb-8 flex justify-between items-center flex-wrap gap-4 pb-4 border-b border-stone-200/80">
+          <div
+            style={{
+              marginTop: 0,
+              marginBottom: "1.75rem",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "1rem",
+            }}
+          >
             <div
-              className="inline-flex items-center gap-1.5 p-1 bg-stone-100 rounded-lg border border-stone-200/80"
+              className="segmented-control-group"
               role="tablist"
               aria-label="Ingestion Mode"
             >
@@ -506,13 +529,9 @@ export default function NewTextPage() {
                 role="tab"
                 aria-selected={workflowTab === "custom"}
                 onClick={() => setWorkflowTab("custom")}
-                className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-mono transition-colors cursor-pointer ${
-                  workflowTab === "custom"
-                    ? "bg-white text-stone-900 shadow-sm border border-stone-200/80 font-semibold"
-                    : "text-stone-600 hover:text-stone-900"
-                }`}
+                className={`segmented-control-button ${workflowTab === "custom" ? "active" : ""}`}
               >
-                <FileText className="w-3.5 h-3.5" />
+                <FileText style={{ width: "0.95rem", height: "0.95rem" }} />
                 <span>Enter Custom Text</span>
               </button>
 
@@ -521,16 +540,21 @@ export default function NewTextPage() {
                 role="tab"
                 aria-selected={workflowTab === "upload"}
                 onClick={() => setWorkflowTab("upload")}
-                className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-mono transition-colors cursor-pointer ${
-                  workflowTab === "upload"
-                    ? "bg-white text-stone-900 shadow-sm border border-stone-200/80 font-semibold"
-                    : "text-stone-600 hover:text-stone-900"
-                }`}
+                className={`segmented-control-button ${workflowTab === "upload" ? "active" : ""}`}
               >
-                <Upload className="w-3.5 h-3.5" />
+                <Upload style={{ width: "0.95rem", height: "0.95rem" }} />
                 <span>Upload File (.json, .txt, .tex)</span>
                 {uploadedFileName && (
-                  <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-900 text-white">
+                  <span
+                    style={{
+                      fontSize: "0.68rem",
+                      fontWeight: 700,
+                      padding: "0.1rem 0.4rem",
+                      borderRadius: "1rem",
+                      background: "var(--accent)",
+                      color: "#ffffff",
+                    }}
+                  >
                     Loaded
                   </span>
                 )}
@@ -541,16 +565,21 @@ export default function NewTextPage() {
                 role="tab"
                 aria-selected={workflowTab === "preset"}
                 onClick={() => setWorkflowTab("preset")}
-                className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-mono transition-colors cursor-pointer ${
-                  workflowTab === "preset"
-                    ? "bg-white text-stone-900 shadow-sm border border-stone-200/80 font-semibold"
-                    : "text-stone-600 hover:text-stone-900"
-                }`}
+                className={`segmented-control-button ${workflowTab === "preset" ? "active" : ""}`}
               >
-                <BookOpen className="w-3.5 h-3.5" />
+                <BookOpen style={{ width: "0.95rem", height: "0.95rem" }} />
                 <span>Load Classic Preset</span>
                 {activePresetId && (
-                  <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-700 text-white">
+                  <span
+                    style={{
+                      fontSize: "0.68rem",
+                      fontWeight: 700,
+                      padding: "0.1rem 0.4rem",
+                      borderRadius: "1rem",
+                      background: "#22c55e",
+                      color: "#ffffff",
+                    }}
+                  >
                     Active
                   </span>
                 )}

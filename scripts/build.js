@@ -29,11 +29,9 @@ function isPortBusy(port) {
 }
 
 function runCommand(cmd, args) {
-  const localBin = `./node_modules/.bin/${cmd}`;
-  const bin = existsSync(localBin) ? localBin : cmd;
-  const res = spawnSync(bin, args, { stdio: "inherit" });
+  const res = spawnSync(cmd, args, { stdio: "inherit", shell: true });
   if (res.status !== 0) {
-    console.error(`\n🚨 [BUILD FAILURE] Command failed: ${bin} ${args.join(" ")}`);
+    console.error(`\n🚨 [BUILD FAILURE] Command failed: ${cmd} ${args.join(" ")}`);
     process.exit(res.status ?? 1);
   }
 }
@@ -41,9 +39,9 @@ function runCommand(cmd, args) {
 async function main() {
   if (process.argv.includes("--with-content")) {
     printStep("0. Compiling content");
-    runCommand("tsx", ["scripts/compile-tex-to-content.mjs"]);
-    runCommand("tsx", ["scripts/compile-beowulf.mjs"]);
-    runCommand("tsx", ["scripts/compile-presets.mjs"]);
+    runCommand("npx", ["tsx", "scripts/compile-tex-to-content.mjs"]);
+    runCommand("npx", ["tsx", "scripts/compile-beowulf.mjs"]);
+    runCommand("npx", ["tsx", "scripts/compile-presets.mjs"]);
   }
 
   printStep("1. Building TinaCMS schemas & admin bundle");
@@ -57,22 +55,22 @@ async function main() {
   if (busy && hasGeneratedFiles) {
     console.log("ℹ️ Tina dev server port (9000/9123/4001) is currently busy; reusing existing compiled schema.");
   } else {
-    const tinaBin = existsSync("./node_modules/.bin/tinacms") ? "./node_modules/.bin/tinacms" : "tinacms";
-    const res = spawnSync(tinaBin, ["build", "--skip-cloud-checks", "--datalayer-port", "9123"], {
+    const res = spawnSync("npx", ["tinacms", "build", "--skip-cloud-checks", "--datalayer-port", "9123"], {
       stdio: "inherit",
+      shell: true,
     });
     if (res.status !== 0) {
       if (hasGeneratedFiles) {
         console.warn("⚠️ tinacms build encountered port/env conflict; reusing pre-generated Tina client and types.");
       } else {
-        console.error(`\n🚨 [BUILD FAILURE] Command failed: ${tinaBin} build`);
+        console.error(`\n🚨 [BUILD FAILURE] Command failed: npx tinacms build`);
         process.exit(res.status ?? 1);
       }
     }
   }
 
   printStep("2. Building Next.js production output");
-  runCommand("next", ["build"]);
+  runCommand("npx", ["next", "build"]);
 
   console.log("\n✨ Production build completed successfully!\n");
 }

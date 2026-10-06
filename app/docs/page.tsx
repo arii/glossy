@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { SiteNav } from "../../components/site-nav";
 import { SiteFooter } from "../../components/site-footer";
-import { PageHeader } from "../../components/page-header";
 import {
   BookOpen,
   Layers,
@@ -160,18 +159,12 @@ export default function DocsPage() {
   return (
     <>
       <SiteNav current="docs" slug="ohthere-wulfstan" />
+      <main className="site-shell">
+        <header className="page-header" style={{ marginBottom: "2rem" }}>
+          <p className="eyebrow" data-tina-field={tinaField(docs, "eyebrow")}>{pageEyebrow}</p>
+          <h1 className="docs-title" data-tina-field={tinaField(docs, "title")}>{pageTitle}</h1>
+        </header>
 
-      {/* Standardized Reusable PageHeader */}
-      <PageHeader
-        containerClassName="max-w-7xl"
-        eyebrow={pageEyebrow}
-        eyebrowProps={{ "data-tina-field": tinaField(docs, "eyebrow") }}
-        title={pageTitle}
-        titleProps={{ "data-tina-field": tinaField(docs, "title") }}
-        metadata={docs.description || "The authoritative reference for the Glossy digital philology workspace."}
-      />
-
-      <main className="max-w-7xl mx-auto px-6 mb-16">
         {/* Mobile Collapsible TOC (Visible only on mobile screens <= 48rem) */}
         <div className="docs-mobile-toc">
           <details style={{ background: "var(--surface)", border: "1px solid var(--rule)", borderRadius: "0.5rem", padding: "0.75rem 1rem", marginBottom: "1.5rem" }}>
@@ -208,14 +201,14 @@ export default function DocsPage() {
           </details>
         </div>
 
-        {/* Two-Column Grid: Sticky Sidebar pinned w-64, Main Content Area max-w-5xl */}
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-          {/* Pinned Sticky Sidebar */}
-          <aside className="w-full lg:w-64 lg:shrink-0 lg:sticky lg:top-20 space-y-4">
-            <div className="bg-white rounded-lg border border-stone-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
-              <div className="flex items-center justify-between pb-3 border-b border-stone-200/80 mb-3">
-                <div className="flex items-center gap-2 font-mono text-xs font-semibold tracking-wider uppercase text-stone-700">
-                  <Layers className="w-4 h-4 text-amber-900" />
+        {/* Two-Column Grid: Sticky TOC on Left, Content on Right */}
+        <div className="docs-grid">
+          {/* Sticky Sidebar */}
+          <aside className="docs-sidebar">
+            <div className="docs-card">
+              <div className="docs-card-header">
+                <div className="docs-card-title">
+                  <Layers style={{ width: "1rem", height: "1rem" }} />
                   <span>Table of Contents</span>
                 </div>
               </div>
@@ -261,8 +254,8 @@ export default function DocsPage() {
             </div>
           </aside>
 
-          {/* Main Content Sections: max-w-5xl with vertical rhythm space-y-12 */}
-          <div className="w-full lg:max-w-5xl space-y-12 min-w-0">
+          {/* Main Content Sections */}
+          <div className="docs-content">
             {/* ============================================================== */}
             {/* LINGUISTICS DOMAIN SECTIONS                                    */}
             {/* ============================================================== */}

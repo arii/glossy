@@ -28,7 +28,6 @@ import {
   Save,
   Trash2,
 } from "lucide-react";
-import { PageHeader } from "./page-header";
 
 export interface EditorToken {
   id: string;
@@ -934,123 +933,113 @@ export function GlossEditor({
   return (
     <>
       <SiteNav current="edit" slug={initialDocument.slug} />
+      <main className="site-shell">
+        {/* Header with Workspace Actions */}
+        <header className="page-header" style={{ marginBottom: "1.5rem" }}>
+          <div>
+            <span className="sr-only">Editing workspace</span>
+            <h1>{documentState.title}</h1>
+            <p className="source-line" style={{ margin: "0.25rem 0 0" }}>
+              {documentState.author?.toLowerCase().includes("anonymous")
+                ? `${documentState.author} · ${documentState.date}`
+                : `Translated and glossed by ${documentState.author?.replace(/^(Translated and glossed by\s*)+/gi, "")} · ${documentState.date}`}
+            </p>
 
-      {/* Standardized Reusable PageHeader */}
-      <PageHeader
-        containerClassName="max-w-7xl"
-        eyebrow="Editing workspace"
-        title={documentState.title}
-        metadata={
-          documentState.author?.toLowerCase().includes("anonymous")
-            ? `${documentState.author} · ${documentState.date}`
-            : `Translated and glossed by ${documentState.author?.replace(/^(Translated and glossed by\s*)+/gi, "")} · ${documentState.date}`
-        }
-        actions={
-          <div className="flex items-center gap-2.5 flex-wrap">
+            {workspaceTexts && workspaceTexts.length > 1 && (
+              <div style={{ marginTop: "0.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <label htmlFor="editor-text-select" style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--accent)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  Switch text:
+                </label>
+                <select
+                  id="editor-text-select"
+                  value={initialDocument.slug}
+                  onChange={(e) => router.push(`/edit/${e.target.value}`)}
+                  style={{ padding: "0.35rem 0.6rem", fontSize: "0.85rem", border: "1px solid var(--rule)", borderRadius: "0.25rem", background: "var(--surface)", color: "var(--ink)" }}
+                >
+                  {workspaceTexts.map((t) => (
+                    <option key={t.slug} value={t.slug}>
+                      {t.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+
+          <div className="workspace-actions">
             {(autosaveStatus === "saved" || autosaveStatus === "saving") && (
-              <span className={`text-xs font-mono px-2 py-1 rounded border ${autosaveStatus === "saved" ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-amber-50 text-amber-700 border-amber-200"}`}>
+              <span className={`editor-dirty ${autosaveStatus === "saved" ? "is-clean" : "is-dirty"}`}>
                 {autosaveStatus === "saved" ? "✓ Draft saved" : "Autosaving..."}
               </span>
             )}
-            <button
-              type="button"
-              onClick={discardChanges}
-              className="px-3 py-1.5 rounded-md bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-300 text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer"
-            >
-              Discard edits
-            </button>
+
+            <div style={{ display: "inline-flex", gap: "0.4rem", flexWrap: "wrap", alignItems: "center" }}>
+              <button
+                type="button"
+                onClick={discardChanges}
+                className="workspace-link"
+              >
+                Discard edits
+              </button>
+
+              <button
+                type="button"
+                onClick={handleExportJson}
+                className="workspace-link"
+                title="Download complete JSON document"
+              >
+                Export JSON
+              </button>
+
+              <button
+                type="button"
+                onClick={handleExportLatex}
+                className="workspace-link"
+                style={{ background: "#f3eadb", color: "#7b3f2a" }}
+                title="Download gb4e LaTeX file"
+              >
+                Export LaTeX
+              </button>
+
+              {!isProtectedText && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (
+                      window.confirm(
+                        `Are you sure you want to remove "${documentState.title}" from Glossy? This will delete its JSON data, LaTeX files, and local drafts.`,
+                      )
+                    ) {
+                      handleDeleteText();
+                    }
+                  }}
+                  disabled={isDeleting}
+                  className="workspace-link"
+                  style={{
+                    background: "rgba(220, 38, 38, 0.08)",
+                    color: "#b91c1c",
+                    borderColor: "#fca5a5",
+                  }}
+                >
+                  <Trash2 style={{ width: "0.85rem", height: "0.85rem", marginRight: "0.35rem" }} />
+                  {isDeleting ? "Deleting..." : "Delete Text"}
+                </button>
+              )}
+            </div>
+
             <button
               type="button"
               onClick={saveToTina}
               disabled={isSaving}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-amber-900 hover:bg-amber-950 text-white text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer shadow-sm"
+              className="workspace-button"
+              style={{ background: "var(--accent)", color: "#fff", borderColor: "var(--accent)", padding: "0.45rem 1.1rem" }}
               title="Save working draft to browser storage (and sync to Git if connected)"
             >
-              <Save className="w-3.5 h-3.5" />
-              <span>{isSaving ? "Saving..." : "Save draft"}</span>
+              <Save style={{ width: "0.9rem", height: "0.9rem", marginRight: "0.35rem" }} />
+              {isSaving ? "Saving..." : "Save draft"}
             </button>
           </div>
-        }
-      />
-
-      {/* Persistent Workspace Toolbar */}
-      <div className="max-w-7xl mx-auto px-6 mb-8">
-        <div className="min-h-12 border border-stone-200/90 rounded-lg bg-stone-100/60 px-4 py-2 flex flex-wrap items-center justify-between gap-3 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-          <div className="flex items-center gap-3 text-xs font-mono text-stone-600 flex-wrap">
-            <span className="font-semibold text-stone-900 uppercase tracking-wider">
-              Corpus Editor
-            </span>
-            <span className="text-stone-300">|</span>
-            <span>
-              {documentState.sentences.length} sentences loaded
-            </span>
-            {workspaceTexts && workspaceTexts.length > 1 && (
-              <>
-                <span className="text-stone-300">|</span>
-                <div className="flex items-center gap-2">
-                  <label htmlFor="editor-text-select" className="text-[11px] font-mono uppercase tracking-wider text-stone-500 font-semibold">
-                    Switch text:
-                  </label>
-                  <select
-                    id="editor-text-select"
-                    value={initialDocument.slug}
-                    onChange={(e) => router.push(`/edit/${e.target.value}`)}
-                    className="px-2 py-0.5 text-xs border border-stone-300 rounded bg-white text-stone-800 font-sans cursor-pointer focus:outline-none focus:ring-1 focus:ring-stone-400"
-                  >
-                    {workspaceTexts.map((t) => (
-                      <option key={t.slug} value={t.slug}>
-                        {t.title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2 flex-wrap">
-            <button
-              type="button"
-              onClick={handleExportJson}
-              className="px-2.5 py-1 rounded bg-white border border-stone-300 text-stone-700 text-xs font-mono uppercase tracking-wider hover:bg-stone-50 transition-colors cursor-pointer"
-              title="Download complete JSON document"
-            >
-              Export JSON
-            </button>
-
-            <button
-              type="button"
-              onClick={handleExportLatex}
-              className="px-2.5 py-1 rounded bg-amber-50 border border-amber-200 text-amber-900 text-xs font-mono uppercase tracking-wider hover:bg-amber-100 transition-colors cursor-pointer"
-              title="Download gb4e LaTeX file"
-            >
-              Export LaTeX
-            </button>
-
-            {!isProtectedText && (
-              <button
-                type="button"
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      `Are you sure you want to remove "${documentState.title}" from Glossy? This will delete its JSON data, LaTeX files, and local drafts.`,
-                    )
-                  ) {
-                    handleDeleteText();
-                  }
-                }}
-                disabled={isDeleting}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-red-50 border border-red-200 text-red-700 text-xs font-mono uppercase tracking-wider hover:bg-red-100 transition-colors cursor-pointer"
-              >
-                <Trash2 className="w-3 h-3" />
-                <span>{isDeleting ? "Deleting..." : "Delete Text"}</span>
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <main className="site-shell" style={{ paddingTop: 0 }}>
+        </header>
 
         {/* Global Action Alerts */}
         {saveStatus.message && (

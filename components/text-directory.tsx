@@ -141,7 +141,17 @@ export function TextDirectory({
     <div id="corpus-directory" className="corpus-directory-container" style={{ marginTop: "3.5rem" }}>
       {/* Section Header */}
       <div style={{ marginBottom: "1.25rem" }}>
-        <h2 className="font-serif text-xl md:text-2xl font-medium text-stone-900 tracking-tight mb-4">
+        <h2
+          style={{
+            fontFamily: "'Charis SIL', Georgia, serif",
+            fontSize: "1.35rem",
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "var(--ink)",
+            margin: "0 0 1.25rem",
+          }}
+        >
           Old English Corpus &amp; Editions
         </h2>
 
@@ -207,6 +217,18 @@ export function TextDirectory({
             <div
               key={choice.slug}
               className="workspace-choice-card"
+              style={{
+                background: "#ffffff",
+                border: "1px solid var(--rule)",
+                borderRadius: "0.5rem",
+                padding: "1.25rem",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                minHeight: "13rem",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+                position: "relative",
+              }}
             >
               <div>
                 {/* Top row: Title and Badges */}

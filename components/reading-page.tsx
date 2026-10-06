@@ -17,7 +17,6 @@ import {
 import { AnnotatedPassage } from "./annotated-passage";
 import { GlossPopup } from "./gloss-popup";
 import { AttributionModal } from "./attribution-modal";
-import { PageHeader } from "./page-header";
 
 type ReadingPageProps = {
   texts: TextDocument[];
@@ -217,60 +216,55 @@ export function ReadingPage({
   return (
     <>
       <SiteNav current="read" slug={texts.some((text) => text.slug === selectedSlug) ? selectedSlug : (texts[0]?.slug ?? "ohthere-wulfstan")} />
-
-      {/* Standardized Reusable PageHeader */}
-      <PageHeader
-        containerClassName="max-w-7xl"
-        eyebrow="Old English visual gloss"
-        title={currentTitle}
-        metadata={currentSource}
-        actions={
-          <button
-            type="button"
-            onClick={() => setAttributionOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-stone-300 shadow-[0_1px_2px_rgba(0,0,0,0.04)] text-stone-700 text-xs font-mono uppercase tracking-wider hover:bg-stone-50 transition-colors cursor-pointer"
-          >
-            Attribution &amp; Citation
-          </button>
-        }
-      />
-
-      {/* Persistent Workspace Toolbar */}
-      <div className="max-w-7xl mx-auto px-6 mb-8">
-        <div className="h-12 border border-stone-200/90 rounded-lg bg-stone-100/60 px-4 flex items-center justify-between gap-4 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-          <div className="flex items-center gap-3 text-xs font-mono text-stone-600">
-            <span className="font-semibold text-stone-900 uppercase tracking-wider">
-              Corpus Reader
-            </span>
-            <span className="text-stone-300">|</span>
-            <span>
-              {readingPassage?.blocks?.length || 0} sentence{readingPassage?.blocks?.length === 1 ? "" : "s"} loaded
-            </span>
+      <main className="site-shell">
+        <header className="page-header" style={{ marginBottom: "2rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+            <p className="eyebrow" style={{ margin: 0 }}>Old English visual gloss</p>
+            <button
+              type="button"
+              onClick={() => setAttributionOpen(true)}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.35rem",
+                padding: "0.25rem 0.6rem",
+                background: "#fbf7ee",
+                border: "1px solid #dfcfb8",
+                borderRadius: "0.25rem",
+                fontSize: "0.75rem",
+                fontWeight: 600,
+                color: "var(--accent)",
+                cursor: "pointer",
+              }}
+            >
+              Attribution &amp; Citation
+            </button>
           </div>
+          <div>
+            <h1>{currentTitle}</h1>
+            <p className="source-line">{currentSource}</p>
 
-          {workspaceTexts && workspaceTexts.length > 1 && (
-            <div className="flex items-center gap-2">
-              <label htmlFor="viewer-text-select" className="text-[11px] font-mono uppercase tracking-wider text-stone-500 font-semibold">
-                Switch text:
-              </label>
-              <select
-                id="viewer-text-select"
-                value={selectedSlug}
-                onChange={(e) => router.push(`/read/${e.target.value}`)}
-                className="px-2.5 py-1 text-xs border border-stone-300 rounded bg-white text-stone-800 font-sans cursor-pointer focus:outline-none focus:ring-1 focus:ring-stone-400"
-              >
-                {workspaceTexts.map((t) => (
-                  <option key={t.slug} value={t.slug}>
-                    {t.title}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <main className="site-shell" style={{ paddingTop: 0 }}>
+            {workspaceTexts && workspaceTexts.length > 1 && (
+              <div style={{ marginTop: "0.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <label htmlFor="viewer-text-select" style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--accent)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  Switch text:
+                </label>
+                <select
+                  id="viewer-text-select"
+                  value={selectedSlug}
+                  onChange={(e) => router.push(`/read/${e.target.value}`)}
+                  style={{ padding: "0.35rem 0.6rem", fontSize: "0.85rem", border: "1px solid var(--rule)", borderRadius: "0.25rem", background: "var(--surface)", color: "var(--ink)" }}
+                >
+                  {workspaceTexts.map((t) => (
+                    <option key={t.slug} value={t.slug}>
+                      {t.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+        </header>
 
         <AttributionModal
           isOpen={attributionOpen}
