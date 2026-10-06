@@ -142,8 +142,10 @@ export default function NewTextPage() {
   const { data: pageData } = useTina({
     query: INGEST_PAGE_QUERY,
     variables: { relativePath: "ingest.json" },
-    data: ingestPageData,
+    data: { page: ingestPageData },
   });
+
+  const page = pageData?.page || ingestPageData;
 
   // Top-level workflow tab: "custom" vs "preset"
   const [workflowTab, setWorkflowTab] = useState<"custom" | "preset">("custom");
@@ -395,18 +397,18 @@ export default function NewTextPage() {
       <SiteNav current="new" slug="ohthere-wulfstan" />
       <main className="site-shell">
         <header className="page-header" style={{ marginBottom: "2rem" }}>
-          <p className="eyebrow" data-tina-field={tinaField(pageData, "eyebrow")}>
-            {pageData.eyebrow || "Glossy · Corpus Ingestion"}
+          <p className="eyebrow" data-tina-field={tinaField(page, "eyebrow")}>
+            {page.eyebrow || "Glossy · Corpus Ingestion"}
           </p>
-          <h1 data-tina-field={tinaField(pageData, "heading")}>
-            {pageData.heading || "Gloss a New Old English Text"}
+          <h1 data-tina-field={tinaField(page, "heading")}>
+            {page.heading || "Gloss a New Old English Text"}
           </h1>
           <p
             className="source-line"
-            data-tina-field={tinaField(pageData, "description")}
+            data-tina-field={tinaField(page, "description")}
             style={{ maxWidth: "48rem", fontSize: "1.05rem", lineHeight: 1.6 }}
           >
-            {pageData.description || (
+            {page.description || (
               <>
                 Paste raw Old English sentences, choose a classic preset (such as <em>Beowulf</em> or{" "}
                 <em>Cædmon&apos;s Hymn</em>), or paste LaTeX <code>gb4e</code> code. The ingestion engine will

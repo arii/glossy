@@ -22,17 +22,17 @@ export function loadHomePageContent(): HomePageContent {
   const defaults: HomePageContent = {
     pageId: "home",
     title: "Glossy · Interlinear Texts",
-    eyebrow: "Glossy · Interlinear texts",
+    eyebrow: "Interlinear Texts",
     heading: "Read a text or work on its glosses.",
     description:
-      "The reader and editing workspace are separate. Choose a text below to read the published version, open its live gloss editor, or start glossing a new Old English text (e.g. Beowulf, Cædmon's Hymn).",
+      "Read, edit, and publish morphologically tagged historical texts with standardized Leipzig three-tier alignment, canonical dictionary headwords, and compilable LaTeX gb4e export.",
     primaryAction: {
       label: "+ Gloss a New Text",
       href: "/edit/new",
     },
     secondaryAction: {
-      label: "Architecture & FAQ",
-      href: "/docs",
+      label: "Explore Corpus ↓",
+      href: "#corpus-directory",
     },
   };
 

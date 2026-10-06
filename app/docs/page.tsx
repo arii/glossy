@@ -51,8 +51,10 @@ export default function DocsPage() {
   const { data: pageData } = useTina({
     query: DOCS_PAGE_QUERY,
     variables: { relativePath: "architecture-faq.json" },
-    data: docsData,
+    data: { docs: docsData },
   });
+
+  const docs = pageData?.docs || docsData;
 
   const [abbrOpen, setAbbrOpen] = useState(true);
   const [abbrQuery, setAbbrQuery] = useState("");
@@ -60,8 +62,8 @@ export default function DocsPage() {
   const [wiktionaryOpen, setWiktionaryOpen] = useState(true);
   const [ipaOpen, setIpaOpen] = useState(true);
 
-  const abbreviations: Abbreviation[] = (pageData.abbreviations as Abbreviation[]) || (docsData.abbreviations as Abbreviation[]);
-  const sections: DocSectionItem[] = (pageData.sections as DocSectionItem[]) || (docsData.sections as DocSectionItem[]);
+  const abbreviations: Abbreviation[] = (docs.abbreviations as Abbreviation[]) || (docsData.abbreviations as Abbreviation[]);
+  const sections: DocSectionItem[] = (docs.sections as DocSectionItem[]) || (docsData.sections as DocSectionItem[]);
 
   const linguisticsSections = sections.filter((s) => s.domain === "linguistics");
   const architectureSections = sections.filter((s) => s.domain === "architecture");
@@ -84,16 +86,16 @@ export default function DocsPage() {
     }
   };
 
-  const pageEyebrow = pageData.eyebrow || "Linguistic Standards & System Architecture";
-  const pageTitle = pageData.title || "Documentation & Reference Guides";
+  const pageEyebrow = docs.eyebrow || "Linguistic Standards & System Architecture";
+  const pageTitle = docs.title || "Documentation & Reference Guides";
 
   return (
     <>
       <SiteNav current="docs" slug="ohthere-wulfstan" />
       <main className="site-shell">
         <header className="page-header" style={{ marginBottom: "2rem" }}>
-          <p className="eyebrow" data-tina-field={tinaField(pageData, "eyebrow")}>{pageEyebrow}</p>
-          <h1 className="docs-title" data-tina-field={tinaField(pageData, "title")}>{pageTitle}</h1>
+          <p className="eyebrow" data-tina-field={tinaField(docs, "eyebrow")}>{pageEyebrow}</p>
+          <h1 className="docs-title" data-tina-field={tinaField(docs, "title")}>{pageTitle}</h1>
         </header>
 
         {/* Two-Column Grid: Sticky TOC on Left, Content on Right */}

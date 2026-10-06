@@ -65,11 +65,11 @@ const HERO_PREVIEW_TOKENS = [
 const DEFAULT_HOME_CONTENT = {
   title: "Glossy · Interlinear Texts",
   eyebrow: "Interlinear Texts",
-  heading: "Interlinear Glossing & Morphology for Old English",
+  heading: "Read a text or work on its glosses.",
   description:
     "Read, edit, and publish morphologically tagged historical texts with standardized Leipzig three-tier alignment, canonical dictionary headwords, and compilable LaTeX gb4e export.",
   primaryAction: {
-    label: "+ Ingest & Gloss New Text",
+    label: "+ Gloss a New Text",
     href: "/edit/new",
   },
   secondaryAction: {
@@ -101,8 +101,10 @@ export default function Home() {
   const { data: pageData } = useTina({
     query: HOME_PAGE_QUERY,
     variables: { relativePath: "home.json" },
-    data: (homeContentData as typeof DEFAULT_HOME_CONTENT) || DEFAULT_HOME_CONTENT,
+    data: { page: (homeContentData as typeof DEFAULT_HOME_CONTENT) || DEFAULT_HOME_CONTENT },
   });
+
+  const page = pageData?.page || (homeContentData as typeof DEFAULT_HOME_CONTENT) || DEFAULT_HOME_CONTENT;
 
   const [selectedTokenIdx, setSelectedTokenIdx] = useState<number>(1); // default to 'sǣde'
 
@@ -146,7 +148,7 @@ export default function Home() {
           {/* Left Column: Headline & Primary CTAs */}
           <div>
             <h1
-              data-tina-field={tinaField(pageData, "heading")}
+              data-tina-field={tinaField(page, "heading")}
               style={{
                 fontSize: "clamp(2rem, 4vw, 2.75rem)",
                 fontFamily: "'Charis SIL', Georgia, serif",
@@ -156,12 +158,12 @@ export default function Home() {
                 margin: "0 0 1rem",
               }}
             >
-              {pageData.heading || "Interlinear Glossing & Morphology for Old English"}
+              {page.heading || "Read a text or work on its glosses."}
             </h1>
 
-            {pageData.description ? (
+            {page.description ? (
               <p
-                data-tina-field={tinaField(pageData, "description")}
+                data-tina-field={tinaField(page, "description")}
                 style={{
                   fontSize: "1.05rem",
                   lineHeight: 1.65,
@@ -170,14 +172,14 @@ export default function Home() {
                   maxWidth: "34rem",
                 }}
               >
-                {pageData.description}
+                {page.description}
               </p>
             ) : null}
 
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center" }}>
               <Link
-                href={pageData.primaryAction?.href || "/edit/new"}
-                data-tina-field={tinaField(pageData.primaryAction, "label")}
+                href={page.primaryAction?.href || "/edit/new"}
+                data-tina-field={page.primaryAction ? tinaField(page.primaryAction, "label") : undefined}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -193,10 +195,11 @@ export default function Home() {
                   transition: "all 0.15s ease",
                 }}
               >
-                <span>{pageData.primaryAction?.label || "+ Gloss a New Text"}</span>
+                <span>{page.primaryAction?.label || "+ Gloss a New Text"}</span>
               </Link>
               <Link
-                href="#corpus-directory"
+                href={page.secondaryAction?.href || "#corpus-directory"}
+                data-tina-field={page.secondaryAction ? tinaField(page.secondaryAction, "label") : undefined}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -212,7 +215,7 @@ export default function Home() {
                   transition: "all 0.15s ease",
                 }}
               >
-                <span>Explore Corpus ↓</span>
+                <span>{page.secondaryAction?.label || "Explore Corpus ↓"}</span>
               </Link>
             </div>
           </div>
