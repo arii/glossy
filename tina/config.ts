@@ -1,4 +1,7 @@
+import React from "react";
+import { createRoot } from "react-dom/client";
 import { defineConfig, type TinaCMS } from "tinacms";
+import { DraftSyncPrompt } from "../components/draft-sync-prompt";
 
 const branch =
   process.env.TINA_BRANCH ??
@@ -574,227 +577,17 @@ export default defineConfig({
     ],
   },
   cmsCallback: (cms: TinaCMS) => {
-    function sanitizeDraftForTinaMutation(draftDoc: Record<string, unknown>) {
-      const sentencesRaw = Array.isArray(draftDoc.sentences) ? draftDoc.sentences : [];
-      const sentences = sentencesRaw.map((s: Record<string, unknown>) => {
-        const wordsRaw = Array.isArray(s.words) ? s.words : [];
-        const words = wordsRaw.map((w: Record<string, unknown>) => {
-          const wordObj: Record<string, unknown> = {
-            id: String(w.id || ""),
-            originalWord: String(w.originalWord || ""),
-            morphologicalGloss: String(w.morphologicalGloss || ""),
-            trailingPunctuation: String(w.trailingPunctuation || ""),
-            sourceGlossTex: String(w.sourceGlossTex || ""),
-          };
-
-          if (w.analysis && typeof w.analysis === "object") {
-            const a = w.analysis as Record<string, unknown>;
-            const analysisObj: Record<string, unknown> = {
-              lemma: String(a.lemma || ""),
-              partOfSpeech: String(a.partOfSpeech || ""),
-              definition: String(a.definition || ""),
-              phonetic: String(a.phonetic || ""),
-              pronunciationSource: String(a.pronunciationSource || ""),
-              historicalNote: String(a.historicalNote || ""),
-              wiktionaryUrl: String(a.wiktionaryUrl || ""),
-            };
-
-            if (a.features && typeof a.features === "object") {
-              const f = a.features as Record<string, unknown>;
-              const featuresObj: Record<string, unknown> = {};
-              if (f.case) featuresObj.case = String(f.case);
-              if (f.number) featuresObj.number = String(f.number);
-              if (f.gender) featuresObj.gender = String(f.gender);
-              if (f.person != null) {
-                const p = Number(f.person);
-                if (!isNaN(p)) featuresObj.person = p;
-              }
-              if (f.tense) featuresObj.tense = String(f.tense);
-              if (f.mood) featuresObj.mood = String(f.mood);
-              if (f.degree) featuresObj.degree = String(f.degree);
-              analysisObj.features = featuresObj;
-            }
-
-            if (Array.isArray(a.morphemes)) {
-              analysisObj.morphemes = a.morphemes.map((m: Record<string, unknown>) => ({
-                form: String(m.form || ""),
-                gloss: String(m.gloss || ""),
-                kind: String(m.kind || "stem"),
-              }));
-            }
-
-            wordObj.analysis = analysisObj;
-          }
-
-          if (w.review && typeof w.review === "object") {
-            const r = w.review as Record<string, unknown>;
-            const src = (r.source && typeof r.source === "object" ? r.source : {}) as Record<string, unknown>;
-            wordObj.review = {
-              status: String(r.status || "source-checked"),
-              notes: String(r.notes || ""),
-              source: {
-                file: String(src.file || ""),
-                locator: String(src.locator || ""),
-              },
-            };
-          }
-
-          return wordObj;
-        });
-
-        const footnotesRaw = Array.isArray(s.footnotes) ? s.footnotes : [];
-        const notesRaw = Array.isArray(s.notes) ? s.notes : [];
-        const notes = notesRaw.map((n: Record<string, unknown>) => ({
-          id: String(n.id || ""),
-          targetWordIndex: n.targetWordIndex != null ? Number(n.targetWordIndex) : undefined,
-          marker: n.marker ? String(n.marker) : undefined,
-          type: String(n.type || "general"),
-          text: String(n.text || ""),
-        }));
-        return {
-          id: String(s.id || ""),
-          translation: String(s.translation || ""),
-          footnotes: footnotesRaw.map((fn: unknown) => String(fn)),
-          notes,
-          words,
-        };
-      });
-
-      return {
-        textId: String(draftDoc.textId || draftDoc.slug || ""),
-        slug: String(draftDoc.slug || draftDoc.textId || ""),
-        language: String(draftDoc.language || "Old English"),
-        author: String(draftDoc.author || ""),
-        title: String(draftDoc.title || ""),
-        source: String(draftDoc.source || ""),
-        sourceFile: String(draftDoc.sourceFile || ""),
-        sourceEdition: String(draftDoc.sourceEdition || ""),
-        status: String(draftDoc.status || "draft"),
-        sentences,
-      };
-    }
-
     if (typeof window !== "undefined") {
       const checkAndRenderSyncBar = () => {
         try {
-          const draftsRaw = window.localStorage.getItem("glossy_pending_drafts");
-          if (!draftsRaw) return;
-          const pending = JSON.parse(draftsRaw);
-          const unsyncedSlugs = Object.keys(pending).filter((k) => !pending[k].synced);
-          if (unsyncedSlugs.length === 0) return;
-
-          if (document.getElementById("tina-draft-sync-bar")) return;
-
-          const bar = document.createElement("div");
-          bar.id = "tina-draft-sync-bar";
-          bar.style.cssText =
-            "position:fixed;bottom:1.5rem;right:1.5rem;z-index:99999;background:#1c1917;color:#fafaf9;padding:1rem 1.25rem;border-radius:0.5rem;box-shadow:0 12px 30px rgba(0,0,0,0.35);border:1px solid #44403c;font-family:sans-serif;font-size:0.875rem;max-width:32rem;display:flex;flex-direction:column;gap:0.65rem;";
-
-          const headerRow = document.createElement("div");
-          headerRow.style.cssText = "display:flex;justify-content:space-between;align-items:center;";
-
-          const headerTitle = document.createElement("span");
-          headerTitle.style.cssText = "font-weight:600;color:#eab308;display:flex;align-items:center;gap:0.4rem;";
-          headerTitle.textContent = "📥 Unpublished Drafts Detected";
-
-          const closeBtn = document.createElement("button");
-          closeBtn.style.cssText = "background:transparent;border:none;color:#a8a29e;cursor:pointer;font-size:1.2rem;line-height:1;";
-          closeBtn.textContent = "×";
-          closeBtn.title = "Dismiss";
-          closeBtn.onclick = () => bar.remove();
-
-          headerRow.appendChild(headerTitle);
-          headerRow.appendChild(closeBtn);
-          bar.appendChild(headerRow);
-
-          const desc = document.createElement("div");
-          desc.style.cssText = "font-size:0.82rem;color:#d6d3d1;line-height:1.4;";
-          const titlesList = unsyncedSlugs.map((s) => pending[s].title || s).join(", ");
-          desc.textContent = `Found unpublished local drafts in this browser for: ${titlesList}. Sign in to commit them to the Git repository.`;
-          bar.appendChild(desc);
-
-          const actionsRow = document.createElement("div");
-          actionsRow.style.cssText = "display:flex;gap:0.5rem;margin-top:0.25rem;";
-
-          const commitBtn = document.createElement("button");
-          commitBtn.style.cssText = "background:#7b3f2a;color:#fff;border:none;padding:0.45rem 0.9rem;border-radius:0.3rem;font-weight:600;cursor:pointer;font-size:0.82rem;";
-          commitBtn.textContent = "Commit Drafts to Git";
-
-          const openEditorLink = document.createElement("a");
-          openEditorLink.href = `/edit/${unsyncedSlugs[0]}`;
-          openEditorLink.target = "_blank";
-          openEditorLink.style.cssText = "background:#292524;color:#d6d3d1;padding:0.45rem 0.9rem;border-radius:0.3rem;text-decoration:none;font-size:0.82rem;display:inline-flex;align-items:center;border:1px solid #44403c;";
-          openEditorLink.textContent = "Open Editor ↗";
-
-          actionsRow.appendChild(commitBtn);
-          actionsRow.appendChild(openEditorLink);
-          bar.appendChild(actionsRow);
-
-          commitBtn.onclick = async () => {
-            commitBtn.textContent = "Committing to Git...";
-            commitBtn.disabled = true;
-
-            try {
-              const tinaApi = (cms.api as {
-                tina?: {
-                  request: (
-                    query: string,
-                    options?: { variables: Record<string, unknown> }
-                  ) => Promise<unknown>;
-                };
-              })?.tina;
-
-              if (!tinaApi?.request) {
-                throw new Error("Tina API client is not authenticated. Please sign in to TinaCMS first.");
-              }
-
-              for (const slug of unsyncedSlugs) {
-                let draftDoc: Record<string, unknown> | null = null;
-                const v1Key = `glossy:draft:v1:${slug}`;
-                const rawV1 = window.localStorage.getItem(v1Key);
-                if (rawV1) {
-                  const env = JSON.parse(rawV1);
-                  draftDoc = env.doc || env;
-                } else {
-                  const legacyRaw = window.localStorage.getItem(`glossy_draft_${slug}`);
-                  if (legacyRaw) draftDoc = JSON.parse(legacyRaw);
-                }
-
-                if (!draftDoc) continue;
-                const sanitizedParams = sanitizeDraftForTinaMutation(draftDoc);
-
-                await tinaApi.request(
-                  `mutation UpdateText($relativePath: String!, $params: TextMutation!) {
-                    updateText(relativePath: $relativePath, params: $params) {
-                      id
-                      title
-                      _sys { relativePath }
-                    }
-                  }`,
-                  {
-                    variables: {
-                      relativePath: `${draftDoc.fileName || draftDoc.textId || slug}.json`,
-                      params: sanitizedParams,
-                    },
-                  }
-                );
-
-                if (pending[slug]) {
-                  pending[slug].synced = true;
-                }
-              }
-
-              window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
-              commitBtn.textContent = "✅ Committed!";
-              setTimeout(() => bar.remove(), 2500);
-            } catch (err: unknown) {
-              commitBtn.textContent = "Commit Failed (Sign in required)";
-              commitBtn.disabled = false;
-              console.error("[Tina Sync Bar] Error committing drafts:", err);
-            }
-          };
-
-          document.body.appendChild(bar);
+          let container = document.getElementById("tina-draft-sync-container");
+          if (!container) {
+            container = document.createElement("div");
+            container.id = "tina-draft-sync-container";
+            document.body.appendChild(container);
+            const root = createRoot(container);
+            root.render(React.createElement(DraftSyncPrompt, { cms }));
+          }
         } catch (e) {
           console.error("Draft sync check error", e);
         }
