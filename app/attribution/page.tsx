@@ -2,6 +2,7 @@
 
 import { SiteNav } from "../../components/site-nav";
 import { SiteFooter } from "../../components/site-footer";
+import { PageHeader } from "../../components/page-header";
 import { AttributionCard } from "../../components/attribution-modal";
 import attributionData from "../../content/pages/attribution.json";
 import { useTina } from "tinacms/dist/react";
@@ -44,18 +45,18 @@ export default function AttributionPage() {
   const page = pageData?.attributionPage || attributionData;
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col justify-between">
       <SiteNav />
-      <main
-        className="site-shell"
-        style={{
-          maxWidth: "52rem",
-          margin: "0 auto",
-          padding: "2.5rem 1.5rem",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
+
+      {/* Standardized Reusable PageHeader */}
+      <PageHeader
+        containerClassName="max-w-3xl"
+        eyebrow="Corpus Attribution"
+        title="Scholarly Attribution & Citation"
+        metadata="Provenance, manuscript shelfmarks, and academic citation formats for the canonical Old English editions."
+      />
+
+      <main className="w-full max-w-3xl mx-auto px-6 mb-16 flex-1 flex justify-center">
         <AttributionCard
           slug="ohthere"
           title="The voyages of Ohthere and Wulfstan"
@@ -65,7 +66,8 @@ export default function AttributionPage() {
           showCloseButton={false}
         />
       </main>
+
       <SiteFooter />
-    </>
+    </div>
   );
 }

@@ -1,3 +1,6 @@
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --ink: #25231f;
   --muted-ink: #6d685f;
@@ -155,20 +158,19 @@ p {
 }
 
 h1 {
-  max-width: 32rem;
   margin-bottom: 0.75rem;
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  line-height: 1;
+  font-family: var(--font-serif, "Charis SIL", "Noto Serif", Georgia, serif);
+  font-size: clamp(1.85rem, 3.5vw, 2.25rem);
+  line-height: 1.2;
   font-weight: 500;
 }
 
 h2 {
-  margin-bottom: 1.5rem;
-  color: var(--accent);
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  margin-bottom: 1rem;
+  font-family: var(--font-serif, "Charis SIL", "Noto Serif", Georgia, serif);
+  font-size: 1.35rem;
+  font-weight: 500;
+  line-height: 1.3;
 }
 
 .source-line {
@@ -746,8 +748,10 @@ h2 {
   box-sizing: border-box;
   padding: 1.25rem;
   color: inherit;
-  border: 1px solid var(--rule);
-  background: rgba(247, 243, 234, 0.45);
+  background: #ffffff;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(231, 229, 228, 0.8);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   text-decoration: none;
 }
 
