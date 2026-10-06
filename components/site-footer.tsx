@@ -6,54 +6,20 @@ export function SiteFooter() {
   const feedbackUrl = "https://github.com/arii/glossy/issues/new?template=feedback.yml&title=Feedback%20%2F%20Report";
 
   return (
-    <footer
-      className="site-footer"
-      style={{
-        marginTop: "4rem",
-        borderTop: "1px solid var(--rule)",
-        background: "var(--surface)",
-        color: "var(--ink)",
-        padding: "1.75rem 1.5rem",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "76rem",
-          margin: "0 auto",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "1rem",
-          fontSize: "0.82rem",
-          color: "var(--muted-ink)",
-        }}
-      >
-        <div>
-          <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: "0.4rem" }}>
-            <span
-              style={{
-                fontFamily: "'Charis SIL', Georgia, serif",
-                fontWeight: 700,
-                color: "var(--ink)",
-                fontSize: "0.95rem",
-              }}
-            >
-              Glossy
-            </span>
-            <span>— Old English Interlinear Glossing &amp; Morphology</span>
+    <footer className="site-footer">
+      <div className="site-footer-inner">
+        <div className="site-footer-brand">
+          <div className="site-footer-title">
+            <span className="site-footer-name">Glossy</span>
+            <span className="site-footer-tagline">— Old English Interlinear Glossing &amp; Morphology</span>
           </div>
-          <div style={{ marginTop: "0.35rem", fontSize: "0.8rem", color: "var(--muted-ink)" }}>
+          <div className="site-footer-credits">
             Developed by{" "}
             <a
               href="https://boomtick.blog/services"
               target="_blank"
               rel="noopener noreferrer"
-              style={{
-                color: "var(--accent)",
-                textDecoration: "underline",
-                fontWeight: 600,
-              }}
+              className="site-footer-author-link"
             >
               Ariel Anders
             </a>{" "}
@@ -62,74 +28,34 @@ export function SiteFooter() {
               href="https://sites.google.com/view/tyler-lemon"
               target="_blank"
               rel="noopener noreferrer"
-              style={{
-                color: "var(--accent)",
-                textDecoration: "underline",
-                fontWeight: 600,
-              }}
+              className="site-footer-author-link"
             >
               Tyler Lemon
             </a>
           </div>
         </div>
 
-        <nav
-          style={{ display: "flex", gap: "1rem", alignItems: "center", flexWrap: "wrap" }}
-          aria-label="Footer Navigation"
-        >
-          <Link
-            href="/about"
-            style={{
-              color: "var(--ink)",
-              textDecoration: "none",
-              transition: "color 0.15s ease",
-            }}
-          >
+        <nav className="site-footer-nav" aria-label="Footer Navigation">
+          <Link href="/about" className="site-footer-link">
             About
           </Link>
-          <span style={{ color: "var(--rule)" }}>·</span>
-          <Link
-            href="/attribution"
-            style={{
-              color: "var(--ink)",
-              textDecoration: "none",
-              transition: "color 0.15s ease",
-            }}
-          >
+          <Link href="/attribution" className="site-footer-link">
             Attribution
           </Link>
-          <span style={{ color: "var(--rule)" }}>·</span>
-          <Link
-            href="/privacy"
-            style={{
-              color: "var(--ink)",
-              textDecoration: "none",
-              transition: "color 0.15s ease",
-            }}
-          >
+          <Link href="/privacy" className="site-footer-link">
             Privacy
           </Link>
-          <span style={{ color: "var(--rule)" }}>·</span>
           <a
             href={feedbackUrl}
             target="_blank"
             rel="noopener noreferrer"
-            style={{
-              color: "var(--ink)",
-              textDecoration: "none",
-              transition: "color 0.15s ease",
-            }}
+            className="site-footer-link"
           >
             Feedback / Report Bug
           </a>
-          <span style={{ color: "var(--rule)" }}>·</span>
           <a
             href="/admin/index.html"
-            style={{
-              color: "var(--accent)",
-              textDecoration: "none",
-              fontWeight: 600,
-            }}
+            className="site-footer-link site-footer-admin-link"
           >
             Admin Login
           </a>
