@@ -117,23 +117,7 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
                   </p>
                 </div>
 
-                {/* Document Metadata (clean typography) */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.45rem",
-                    fontSize: "0.78rem",
-                    color: "var(--muted-ink)",
-                    marginBottom: "1.25rem",
-                  }}
-                >
-                  <span>{choice.sentenceCount ?? 75} sentences</span>
-                  <span style={{ opacity: 0.6 }}>•</span>
-                  <span>{(choice.tokenCount ?? 1716).toLocaleString()} tokens</span>
-                  <span style={{ opacity: 0.6 }}>•</span>
-                  <span style={{ textTransform: "capitalize" }}>{choice.status ?? "Published"}</span>
-                </div>
+
               </div>
 
               {/* Action Buttons Row */}

@@ -223,7 +223,11 @@ export function GlossEditor({
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<{ kind: "idle" | "success" | "error"; message: string }>({
+  const [saveStatus, setSaveStatus] = useState<{
+    kind: "idle" | "success" | "error";
+    message: string;
+    details?: string;
+  }>({
     kind: "idle",
     message: "",
   });
@@ -517,62 +521,220 @@ export function GlossEditor({
     setIsSaving(true);
     setSaveStatus({ kind: "idle", message: "" });
     const legacyDoc = editorDocToTextDocument(documentState);
+    const targetSlug = legacyDoc.slug || initialDocument.slug || "ohthere";
+    const targetFileName = `${initialDocument.fileName || initialDocument.textId || targetSlug}.json`;
 
     try {
-      // 1. Try local server-side save if available (e.g. running local dev server)
-      try {
-        await fetch("/api/save-document", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: safeJsonStringify({
-            slug: initialDocument.slug,
-            fileName: initialDocument.fileName || initialDocument.textId || "ohthere",
-            document: legacyDoc,
-          }),
-        });
-      } catch {}
-
-      // 2. Try Tina GraphQL if datalayer is running
-      try {
-        await fetch(
-          process.env.NEXT_PUBLIC_TINA_LOCAL_URL ?? "http://localhost:4001/graphql",
-          {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: safeJsonStringify({
-              query: `mutation UpdateText($relativePath: String!, $params: DocumentUpdateMutation!) {
-                updateDocument(collection: "text", relativePath: $relativePath, params: $params) {
-                  ... on Text { _sys { relativePath } }
-                }
-              }`,
-              variables: {
-                relativePath: `${initialDocument.fileName || initialDocument.textId || "ohthere"}.json`,
-                params: { text: legacyDoc },
-              },
-            }),
-          },
-        );
-      } catch {}
-
-      // 3. Persist client-side snapshot in browser storage
+      // 1. Always persist client-side snapshot in browser storage (localStorage)
       const serialized = safeJsonStringify(documentState);
       setSavedSnapshot(serialized);
       try {
         window.localStorage.setItem(storageKey, serialized);
+        // Also save in TextDocument format for admin sync
+        window.localStorage.setItem(`glossy_draft_${targetSlug}`, safeJsonStringify(legacyDoc));
+
+        // Update pending drafts manifest
+        const pendingRaw = window.localStorage.getItem("glossy_pending_drafts");
+        const pending = pendingRaw ? JSON.parse(pendingRaw) : {};
+        pending[targetSlug] = {
+          slug: targetSlug,
+          title: legacyDoc.title || initialDocument.title,
+          updatedAt: new Date().toISOString(),
+          sentenceCount: legacyDoc.sentences?.length ?? 0,
+          wordCount: legacyDoc.sentences?.reduce((acc, s) => acc + (s.words?.length ?? 0), 0) ?? 0,
+          synced: false,
+        };
+        window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
       } catch {}
 
-      setSaveStatus({
-        kind: "success",
-        message: `Saved changes to browser storage! Use 'Download gb4e TeX' or 'Download JSON' for persistent local files.`,
-      });
+      // 2. Build full TextMutation payload
+      const mutationVariables = {
+        relativePath: targetFileName,
+        params: {
+          textId: legacyDoc.textId || targetSlug,
+          slug: targetSlug,
+          language: legacyDoc.language || "Old English",
+          author: legacyDoc.author || "",
+          title: legacyDoc.title || "",
+          source: legacyDoc.source || "",
+          sourceFile: legacyDoc.sourceFile || "",
+          sourceEdition: legacyDoc.sourceEdition || "",
+          status: legacyDoc.status || "draft",
+          texSource: legacyDoc.texSource || "",
+          sentences: (legacyDoc.sentences || []).map((sent) => ({
+            id: sent.id,
+            translation: sent.translation || "",
+            footnotes: sent.footnotes || [],
+            words: (sent.words || []).map((w) => ({
+              id: w.id,
+              originalWord: w.originalWord,
+              morphologicalGloss: w.morphologicalGloss || "",
+              trailingPunctuation: w.trailingPunctuation || "",
+              sourceGlossTex: w.sourceGlossTex || "",
+              analysis: w.analysis
+                ? {
+                    lemma: w.analysis.lemma || "",
+                    partOfSpeech: w.analysis.partOfSpeech || "",
+                    definition: w.analysis.definition || "",
+                    phonetic: w.analysis.phonetic || "",
+                    pronunciationSource: w.analysis.pronunciationSource || "",
+                    historicalNote: w.analysis.historicalNote || "",
+                    wiktionaryUrl: w.analysis.wiktionaryUrl || "",
+                    features: w.analysis.features
+                      ? {
+                          case: w.analysis.features.case,
+                          number: w.analysis.features.number,
+                          gender: w.analysis.features.gender,
+                          person:
+                            w.analysis.features.person != null
+                              ? Number(w.analysis.features.person)
+                              : undefined,
+                          tense: w.analysis.features.tense,
+                          mood: w.analysis.features.mood,
+                          degree: w.analysis.features.degree,
+                        }
+                      : undefined,
+                    morphemes: (w.analysis.morphemes || []).map((m) => ({
+                      form: m.form || "",
+                      gloss: m.gloss || "",
+                      kind: m.kind || "stem",
+                    })),
+                  }
+                : undefined,
+              review: w.review
+                ? {
+                    status: w.review.status || "source-checked",
+                    notes: w.review.notes || "",
+                    source: w.review.source
+                      ? {
+                          file: w.review.source.file || "",
+                          locator: w.review.source.locator || "",
+                        }
+                      : undefined,
+                  }
+                : undefined,
+            })),
+          })),
+        },
+      };
+
+      const updateMutationQuery = `mutation UpdateText($relativePath: String!, $params: TextMutation!) {
+        updateText(relativePath: $relativePath, params: $params) {
+          id
+          title
+          _sys { relativePath }
+        }
+      }`;
+
+      // 3. Attempt Tina GraphQL update (local datalayer or authenticated TinaCloud)
+      let graphQlSuccess = false;
+      const isLocalhost =
+        typeof window !== "undefined" &&
+        (window.location.hostname === "localhost" ||
+          window.location.hostname === "127.0.0.1");
+
+      if (isLocalhost) {
+        try {
+          const tinaUrl =
+            process.env.NEXT_PUBLIC_TINA_LOCAL_URL ?? "http://localhost:4001/graphql";
+          const res = await fetch(tinaUrl, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: safeJsonStringify({
+              query: updateMutationQuery,
+              variables: mutationVariables,
+            }),
+          });
+          const resJson = await res.json();
+          if (resJson?.data?.updateText || resJson?.data?.updateDocument) {
+            graphQlSuccess = true;
+          }
+        } catch {}
+      }
+
+      // If local didn't succeed, check for active TinaCloud session in browser
+      if (!graphQlSuccess && typeof window !== "undefined") {
+        try {
+          const authToken = window.localStorage.getItem("tinacms-auth");
+          if (authToken) {
+            const cloudUrl =
+              "https://content.tinajs.io/3.0/content/7cf6793a-dfc2-4a6b-ae23-c2665e22f286/github/main";
+            const res = await fetch(cloudUrl, {
+              method: "POST",
+              headers: {
+                "content-type": "application/json",
+                authorization: `Bearer ${authToken}`,
+              },
+              body: safeJsonStringify({
+                query: updateMutationQuery,
+                variables: mutationVariables,
+              }),
+            });
+            const resJson = await res.json();
+            if (resJson?.data?.updateText || resJson?.data?.updateDocument) {
+              graphQlSuccess = true;
+            }
+          }
+        } catch {}
+      }
+
+      if (graphQlSuccess) {
+        try {
+          const pendingRaw = window.localStorage.getItem("glossy_pending_drafts");
+          if (pendingRaw) {
+            const pending = JSON.parse(pendingRaw);
+            if (pending[targetSlug]) {
+              pending[targetSlug].synced = true;
+              window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
+            }
+          }
+        } catch {}
+
+        setSaveStatus({
+          kind: "success",
+          message: `Saved and synchronized directly to TinaCMS (content/texts/${targetFileName}) and browser storage.`,
+        });
+      } else {
+        setSaveStatus({
+          kind: "success",
+          message: `Saved working draft to browser storage (key: "${storageKey}"). To commit your changes directly to Git, open Tina Admin (↗) or click "Export JSON".`,
+        });
+      }
     } catch (error) {
+      const errMessage = error instanceof Error ? error.message : "The save operation failed.";
+      let errDetails = "";
+      if (error instanceof Error) {
+        errDetails = error.stack || error.message;
+      } else if (typeof error === "object" && error !== null) {
+        try {
+          errDetails = JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
+        } catch {
+          errDetails = String(error);
+        }
+      } else {
+        errDetails = String(error);
+      }
       setSaveStatus({
         kind: "error",
-        message: error instanceof Error ? error.message : "The save operation failed.",
+        message: errMessage,
+        details: errDetails,
       });
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleExportJson = () => {
+    if (!documentState) return;
+    const legacyDoc = editorDocToTextDocument(documentState);
+    const jsonStr = safeJsonStringify(legacyDoc, null, 2);
+    const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = window.document.createElement("a");
+    anchor.href = url;
+    anchor.download = `${initialDocument.fileName || initialDocument.textId || "ohthere"}.json`;
+    anchor.click();
+    URL.revokeObjectURL(url);
   };
 
   const handleExportLatex = () => {
@@ -808,12 +970,33 @@ export function GlossEditor({
 
               <button
                 type="button"
+                onClick={handleExportJson}
+                className="workspace-link"
+                title="Download complete JSON document"
+              >
+                Export JSON
+              </button>
+
+              <button
+                type="button"
                 onClick={handleExportLatex}
                 className="workspace-link"
                 style={{ background: "#f3eadb", color: "#7b3f2a" }}
+                title="Download gb4e LaTeX file"
               >
                 Export LaTeX
               </button>
+
+              <a
+                href="/admin/index.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="workspace-link"
+                title="Open Tina CMS Editorial Suite (Git-backed)"
+                style={{ textDecoration: "none", display: "inline-flex", alignItems: "center" }}
+              >
+                Tina Admin ↗
+              </a>
 
               {!isProtectedText && (
                 <button
@@ -847,6 +1030,7 @@ export function GlossEditor({
               disabled={isSaving}
               className="workspace-button"
               style={{ background: "var(--accent)", color: "#fff", borderColor: "var(--accent)", padding: "0.45rem 1.1rem" }}
+              title="Save working draft to browser storage and sync to TinaCMS / Git"
             >
               <Save style={{ width: "0.9rem", height: "0.9rem", marginRight: "0.35rem" }} />
               {isSaving ? "Saving..." : "Save to TinaCMS"}
@@ -856,8 +1040,70 @@ export function GlossEditor({
 
         {/* Global Action Alerts */}
         {saveStatus.message && (
-          <div className={`editor-save-status ${saveStatus.kind === "success" ? "is-success" : saveStatus.kind === "error" ? "is-error" : ""}`}>
-            <p style={{ margin: 0 }}>{saveStatus.message}</p>
+          <div
+            className={`editor-save-status ${
+              saveStatus.kind === "success"
+                ? "is-success"
+                : saveStatus.kind === "error"
+                ? "is-error"
+                : ""
+            }`}
+            style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+              <p style={{ margin: 0, fontWeight: 500 }}>{saveStatus.message}</p>
+              {saveStatus.kind === "error" && saveStatus.details && (
+                <button
+                  type="button"
+                  onClick={async (e) => {
+                    const btn = e.currentTarget;
+                    try {
+                      await navigator.clipboard.writeText(saveStatus.details || saveStatus.message);
+                      btn.textContent = "✓ Copied Error Details";
+                      setTimeout(() => {
+                        btn.textContent = "📋 Copy Error Details";
+                      }, 2500);
+                    } catch {
+                      btn.textContent = "Select Below (Ctrl+C)";
+                    }
+                  }}
+                  style={{
+                    background: "rgba(185, 28, 28, 0.15)",
+                    color: "#b91c1c",
+                    border: "1px solid #f87171",
+                    borderRadius: "0.25rem",
+                    padding: "0.25rem 0.6rem",
+                    fontSize: "0.75rem",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
+                  📋 Copy Error Details
+                </button>
+              )}
+            </div>
+            {saveStatus.kind === "error" && saveStatus.details && (
+              <pre
+                style={{
+                  userSelect: "text",
+                  WebkitUserSelect: "text",
+                  margin: 0,
+                  padding: "0.6rem 0.8rem",
+                  background: "rgba(0, 0, 0, 0.05)",
+                  color: "#991b1b",
+                  borderRadius: "0.375rem",
+                  fontSize: "0.75rem",
+                  lineHeight: 1.4,
+                  maxHeight: "8rem",
+                  overflowY: "auto",
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-all",
+                  border: "1px solid rgba(185, 28, 28, 0.2)",
+                }}
+              >
+                {saveStatus.details}
+              </pre>
+            )}
           </div>
         )}
 

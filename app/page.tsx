@@ -242,7 +242,7 @@ export default function Home() {
               }}
             >
               <span style={{ fontSize: "0.75rem", color: "#d6d3d1", fontFamily: "monospace", letterSpacing: "0.03em" }}>
-                Leipzig Interlinear Reader Preview
+                Interactive Reader Preview
               </span>
               <span
                 style={{
@@ -255,7 +255,7 @@ export default function Home() {
                   borderRadius: "0.25rem",
                 }}
               >
-                Cotton MS Tiberius B. i
+                Ohthere & Wulfstan
               </span>
             </div>
 

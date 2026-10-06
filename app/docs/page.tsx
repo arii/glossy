@@ -21,7 +21,6 @@ const DOCS_PAGE_QUERY = `
     docs(relativePath: $relativePath) {
       title
       eyebrow
-      heading
       description
       sections {
         id

@@ -3,6 +3,7 @@
 import { SiteNav } from "./site-nav";
 import { SiteFooter } from "./site-footer";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { TinaMarkdown, type Components } from "tinacms/dist/rich-text";
 import { getGlossRecords, getReadingPassage } from "../lib/passage-utils";
 import type { DictionaryEntry, ManuscriptDocument, TextDocument } from "../lib/types";
@@ -41,6 +42,7 @@ function ReadingPageInner({
   manuscripts = [],
   initialSlug,
 }: ReadingPageProps) {
+  const router = useRouter();
   const { activeTerm, setActiveTerm } = useGlossary();
 
   const visibleManuscripts = manuscripts.filter(
@@ -52,6 +54,11 @@ function ReadingPageInner({
           normalizeTitle(text.title) === normalizeTitle(manuscript.title),
       ),
   );
+
+  const availableTexts = [
+    ...texts.map((t) => ({ slug: t.slug, title: t.title })),
+    ...visibleManuscripts.map((m) => ({ slug: m.slug, title: m.title })),
+  ];
 
   const defaultSlug =
     initialSlug ??
@@ -183,6 +190,26 @@ function ReadingPageInner({
           <div>
             <h1 data-tina-field={activeManuscript?._tina_metadata?.title}>{currentTitle}</h1>
             <p className="source-line" data-tina-field={activeManuscript?._tina_metadata?.source}>{currentSource}</p>
+
+            {availableTexts && availableTexts.length > 1 && (
+              <div style={{ marginTop: "0.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <label htmlFor="viewer-text-select" style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--accent)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  Switch text:
+                </label>
+                <select
+                  id="viewer-text-select"
+                  value={selectedSlug}
+                  onChange={(e) => router.push(`/read/${e.target.value}`)}
+                  style={{ padding: "0.35rem 0.6rem", fontSize: "0.85rem", border: "1px solid var(--rule)", borderRadius: "0.25rem", background: "var(--surface)", color: "var(--ink)" }}
+                >
+                  {availableTexts.map((t) => (
+                    <option key={t.slug} value={t.slug}>
+                      {t.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
         </header>
 
