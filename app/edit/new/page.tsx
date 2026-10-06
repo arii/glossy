@@ -32,43 +32,43 @@ const PRESETS: Preset[] = [
         en: "Listen! We of the Spear-Danes in days of yore,",
       },
       {
-        oe: "þēod-cyning-a, þrym ġefrūnon,",
+        oe: "þēod-cyning-a, þrym ġe-frūn-on,",
         en: "of the people's kings, have heard of their glory,",
       },
       {
-        oe: "hū ðā æþelingas ellen fremedon.",
+        oe: "hū ðā æþeling-as ellen fremed-on.",
         en: "how those noble princes performed courageous deeds.",
       },
       {
-        oe: "Oft Scyld Scēfing sceaþena þrēatum,",
+        oe: "Oft Scyld Scēf-ing sceaþe-na þrēat-um,",
         en: "Often Scyld Scefing from troops of enemies,",
       },
       {
-        oe: "monegum mǣġþum, meodo-setl-a oftēah,",
+        oe: "manig-um mǣġþ-um, meodo-setl-a of-tēah,",
         en: "from many tribes, seized the mead-benches,",
       },
       {
-        oe: "egsode eorlas, syððan ǣrest wearð",
+        oe: "egs-od-e eorl-as, syððan ǣrest wearð",
         en: "terrified the earls, after he was first",
       },
       {
-        oe: "fēasceaft funden; hē þæs frōfre ġebād,",
+        oe: "fēa-sceaft fund-en; hē þæs frōfr-e ġe-bād,",
         en: "found destitute; he experienced solace for that,",
       },
       {
-        oe: "wēox under wolcnum, weorðmyndum þāh,",
+        oe: "wēox under wolcn-um, weorð-mynd-um þāh,",
         en: "grew under the clouds, prospered in honors,",
       },
       {
-        oe: "oðþæt him ǣġhwylċ þāra ymbsittendra",
+        oe: "oð-þæt him ǣġ-hwylċ þār-a ymb-sitt-end-ra",
         en: "until each of the surrounding peoples",
       },
       {
-        oe: "ofer hron-rād-e hȳran scolde,",
+        oe: "ofer hron-rād-e hȳr-an scol-d-e,",
         en: "across the whale-road had to obey him,",
       },
       {
-        oe: "gomban gyldan. Þæt wæs gōd cyning!",
+        oe: "gomb-an gyld-an. Þæt wæs gōd cyning!",
         en: "and pay tribute. That was a good king!",
       },
     ],
