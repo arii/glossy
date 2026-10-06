@@ -309,6 +309,9 @@ export function markPending(slug: string, doc: TextDocument, currentHash?: strin
     };
 
     storage.setItem(PENDING_MANIFEST_KEY, JSON.stringify(manifest));
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("glossy:drafts-updated"));
+    }
   } catch {}
 }
 
@@ -324,6 +327,9 @@ export function markDraftAsSynced(slug: string, syncedHash?: string): void {
         manifest[slug].baseHash = syncedHash;
       }
       storage.setItem(PENDING_MANIFEST_KEY, JSON.stringify(manifest));
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("glossy:drafts-updated"));
+      }
     }
   } catch {}
 }

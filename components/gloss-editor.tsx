@@ -35,6 +35,8 @@ import {
   Plus,
   X,
 } from "lucide-react";
+import { DraftSyncPrompt } from "./draft-sync-prompt";
+import { commitPendingDraft, isTinaAuthenticated } from "../lib/tina-sync";
 
 export interface EditorToken {
   id: string;
@@ -269,6 +271,7 @@ export function GlossEditor({
   const [metaGlossedBy, setMetaGlossedBy] = useState("");
   const [metaDate, setMetaDate] = useState("");
   const [metaSourceEdition, setMetaSourceEdition] = useState("");
+  const [showSyncPrompt, setShowSyncPrompt] = useState(false);
 
   const [workspaceTexts, setWorkspaceTexts] = useState<WorkspaceTextItem[]>(() =>
     getWorkspaceTexts({
@@ -687,6 +690,9 @@ export function GlossEditor({
           synced: false,
         };
         window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("glossy:drafts-updated"));
+        }
       } catch {}
 
       // 2. Build full TextMutation payload
@@ -826,26 +832,23 @@ export function GlossEditor({
         } catch {}
       }
 
-      if (graphQlSuccess) {
-        try {
-          const pendingRaw = window.localStorage.getItem("glossy_pending_drafts");
-          if (pendingRaw) {
-            const pending = JSON.parse(pendingRaw);
-            if (pending[targetSlug]) {
-              pending[targetSlug].synced = true;
-              window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
-            }
-          }
-        } catch {}
+      const commitRes = await commitPendingDraft(targetSlug);
 
+      if (commitRes.ok) {
         setSaveStatus({
           kind: "success",
-          message: `Saved and synchronized directly to TinaCMS (content/texts/${targetFileName}) and browser storage.`,
+          message: `Saved working draft and synchronized directly to TinaCMS / Git repository (${targetFileName}).`,
         });
+        setShowSyncPrompt(false);
       } else {
+        setShowSyncPrompt(true);
         setSaveStatus({
           kind: "success",
-          message: `Saved working draft to browser storage (key: "${storageKey}"). To commit your changes directly to Git, open Tina Admin (↗) or click "Export JSON".`,
+          message: `Saved working draft to browser storage. ${
+            isTinaAuthenticated()
+              ? 'Click "Commit Draft to Git" in the prompt below to publish your changes.'
+              : 'Sign in to Tina Admin to commit your changes to Git.'
+          }`,
         });
       }
     } catch (error) {
@@ -2070,6 +2073,18 @@ export function GlossEditor({
         </div>
       )}
 
+      <DraftSyncPrompt
+        forceShow={showSyncPrompt}
+        currentSlug={documentState.slug}
+        onSynced={() => {
+          setSaveStatus({
+            kind: "success",
+            message: "Successfully committed working draft to Git repository!",
+          });
+          setShowSyncPrompt(false);
+        }}
+        onDismiss={() => setShowSyncPrompt(false)}
+      />
       <SiteFooter />
     </>
   );
