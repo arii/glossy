@@ -70,10 +70,25 @@ export type InterlinearWord = {
   review?: ReviewMetadata;
 };
 
+export type NoteType =
+  | "manuscript_variant"
+  | "grammatical_note"
+  | "source_reference"
+  | "general";
+
+export type NoteItem = {
+  id: string;
+  targetWordIndex?: number;
+  marker?: string;
+  type: NoteType;
+  text: string;
+};
+
 export type ReadingSentence = {
   id: string;
   translation: string;
   footnotes?: string[];
+  notes?: NoteItem[];
   words: InterlinearWord[];
 };
 
@@ -85,6 +100,8 @@ export type PassageBlock = {
   id: string;
   segments: PassageSegment[];
   translation: string;
+  notes?: NoteItem[];
+  footnotes?: string[];
 };
 
 export type Passage = {

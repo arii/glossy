@@ -19,8 +19,61 @@ export default defineConfig({
     outputFolder: "admin",
     publicFolder: "public",
   },
+  media: {
+    tina: {
+      mediaRoot: "uploads",
+      publicFolder: "public",
+    },
+  },
   schema: {
     collections: [
+      {
+        name: "article",
+        label: "Articles / Blog",
+        path: "content/articles",
+        format: "md",
+        ui: {
+          router: ({ document }) => `/articles/${document._sys.filename}`,
+        },
+        fields: [
+          {
+            type: "string",
+            name: "title",
+            label: "Title",
+            isTitle: true,
+            required: true,
+          },
+          {
+            type: "string",
+            name: "author",
+            label: "Author",
+          },
+          {
+            type: "datetime",
+            name: "date",
+            label: "Published Date",
+          },
+          {
+            type: "image",
+            name: "coverImage",
+            label: "Cover Image",
+          },
+          {
+            type: "string",
+            name: "summary",
+            label: "Brief Summary / Excerpt",
+            ui: {
+              component: "textarea",
+            },
+          },
+          {
+            type: "rich-text",
+            name: "body",
+            label: "Article Content",
+            isBody: true,
+          },
+        ],
+      },
       {
         name: "text",
         label: "Texts",
@@ -56,6 +109,29 @@ export default defineConfig({
               { type: "string", name: "id", label: "Example ID", required: true },
               { type: "string", name: "translation", label: "English Translation", ui: { component: "textarea" } },
               { type: "string", name: "footnotes", label: "Footnotes", list: true, ui: { component: "textarea" } },
+              {
+                type: "object",
+                name: "notes",
+                label: "Structured Notes / Apparatus",
+                list: true,
+                ui: {
+                  itemProps: (item) => ({
+                    label: `${item?.marker || item?.id || "Note"}: ${item?.type || "general"}`,
+                  }),
+                },
+                fields: [
+                  { type: "string", name: "id", label: "Note ID", required: true },
+                  { type: "number", name: "targetWordIndex", label: "Target Word Index (1-based, optional)" },
+                  { type: "string", name: "marker", label: "Custom Marker (optional)" },
+                  {
+                    type: "string",
+                    name: "type",
+                    label: "Category / Type",
+                    options: ["manuscript_variant", "grammatical_note", "source_reference", "general"],
+                  },
+                  { type: "string", name: "text", label: "Note Text", required: true, ui: { component: "textarea" } },
+                ],
+              },
               {
                 type: "object",
                 name: "words",
@@ -567,10 +643,19 @@ export default defineConfig({
         });
 
         const footnotesRaw = Array.isArray(s.footnotes) ? s.footnotes : [];
+        const notesRaw = Array.isArray(s.notes) ? s.notes : [];
+        const notes = notesRaw.map((n: Record<string, unknown>) => ({
+          id: String(n.id || ""),
+          targetWordIndex: n.targetWordIndex != null ? Number(n.targetWordIndex) : undefined,
+          marker: n.marker ? String(n.marker) : undefined,
+          type: String(n.type || "general"),
+          text: String(n.text || ""),
+        }));
         return {
           id: String(s.id || ""),
           translation: String(s.translation || ""),
           footnotes: footnotesRaw.map((fn: unknown) => String(fn)),
+          notes,
           words,
         };
       });

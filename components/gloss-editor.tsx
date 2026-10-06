@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { SiteNav } from "./site-nav";
+import { PageHero } from "./page-hero";
 import { SiteFooter } from "./site-footer";
 import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
 import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
@@ -21,12 +22,17 @@ import type {
   Morpheme,
   PartOfSpeech,
   InflectionFeatures,
+  NoteItem,
+  NoteType,
 } from "../lib/types";
 import {
   BookOpen,
   RefreshCw,
   Save,
   Trash2,
+  FileText,
+  Plus,
+  X,
 } from "lucide-react";
 
 export interface EditorToken {
@@ -48,6 +54,7 @@ export interface EditorSentence {
   tokens: EditorToken[];
   freeTranslation: string;
   footnotes?: string[];
+  notes?: NoteItem[];
 }
 
 export interface EditorDocument {
@@ -139,6 +146,7 @@ export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
       id: sent.id || `sent-${sIdx + 1}`,
       freeTranslation: sent.translation || "",
       footnotes: sent.footnotes,
+      notes: sent.notes ? [...sent.notes] : undefined,
       tokens: (sent.words || []).map((w: InterlinearWord, tIdx: number) =>
         wordToEditorToken(w, sIdx, tIdx),
       ),
@@ -161,6 +169,7 @@ export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
       id: sent.id,
       translation: sent.freeTranslation,
       footnotes: sent.footnotes,
+      notes: sent.notes ? [...sent.notes] : undefined,
       words: sent.tokens.map((tok) => {
         const punctuationMatch = tok.sourceForm.match(/[.,;:!?]+$/);
         const originalCleanWord =
@@ -434,9 +443,61 @@ export function GlossEditor({
     activeSentence?.tokens.find((t) => t.id === activeTokenId) ||
     documentState?.sentences.flatMap((s) => s.tokens).find((t) => t.id === activeTokenId);
 
+  const activeTokenIndexInSent = activeSentence && activeToken
+    ? activeSentence.tokens.findIndex((t) => t.id === activeToken.id)
+    : -1;
+
   const currentIndex = documentState
     ? documentState.sentences.findIndex((s) => s.id === activeSentenceId)
     : -1;
+
+  const addNoteToSentence = useCallback((sentenceId: string, targetWordIndex?: number) => {
+    setDocumentState((prev) => ({
+      ...prev,
+      sentences: prev.sentences.map((sent) => {
+        if (sent.id !== sentenceId) return sent;
+        const currentNotes = sent.notes || [];
+        const noteNumber = currentNotes.length + 1;
+        const newNote: NoteItem = {
+          id: `fn-${sentenceId}-${Date.now()}-${noteNumber}`,
+          targetWordIndex,
+          marker: String(noteNumber),
+          type: "manuscript_variant",
+          text: "",
+        };
+        return {
+          ...sent,
+          notes: [...currentNotes, newNote],
+        };
+      }),
+    }));
+  }, []);
+
+  const updateSentenceNote = useCallback((sentenceId: string, noteId: string, patch: Partial<NoteItem>) => {
+    setDocumentState((prev) => ({
+      ...prev,
+      sentences: prev.sentences.map((sent) => {
+        if (sent.id !== sentenceId) return sent;
+        return {
+          ...sent,
+          notes: (sent.notes || []).map((n) => (n.id === noteId ? { ...n, ...patch } : n)),
+        };
+      }),
+    }));
+  }, []);
+
+  const removeSentenceNote = useCallback((sentenceId: string, noteId: string) => {
+    setDocumentState((prev) => ({
+      ...prev,
+      sentences: prev.sentences.map((sent) => {
+        if (sent.id !== sentenceId) return sent;
+        return {
+          ...sent,
+          notes: (sent.notes || []).filter((n) => n.id !== noteId),
+        };
+      }),
+    }));
+  }, []);
 
   const handlePrev = () => {
     if (documentState && currentIndex > 0) {
@@ -593,6 +654,13 @@ export function GlossEditor({
             id: sent.id,
             translation: sent.translation || "",
             footnotes: sent.footnotes || [],
+            notes: (sent.notes || []).map((n) => ({
+              id: n.id,
+              targetWordIndex: n.targetWordIndex,
+              marker: n.marker || "",
+              type: n.type || "general",
+              text: n.text || "",
+            })),
             words: (sent.words || []).map((w) => ({
               id: w.id,
               originalWord: w.originalWord,
@@ -935,111 +1003,112 @@ export function GlossEditor({
       <SiteNav current="edit" slug={initialDocument.slug} />
       <main className="site-shell">
         {/* Header with Workspace Actions */}
-        <header className="page-header" style={{ marginBottom: "1.5rem" }}>
-          <div>
-            <span className="sr-only">Editing workspace</span>
-            <h1>{documentState.title}</h1>
-            <p className="source-line" style={{ margin: "0.25rem 0 0" }}>
-              {documentState.author?.toLowerCase().includes("anonymous")
-                ? `${documentState.author} · ${documentState.date}`
-                : `Translated and glossed by ${documentState.author?.replace(/^(Translated and glossed by\s*)+/gi, "")} · ${documentState.date}`}
-            </p>
+        <PageHero
+          eyebrow="Editing workspace"
+          title={documentState.title}
+          description={
+            documentState.author?.toLowerCase().includes("anonymous")
+              ? `${documentState.author} · ${documentState.date}`
+              : `Translated and glossed by ${documentState.author?.replace(/^(Translated and glossed by\s*)+/gi, "")} · ${documentState.date}`
+          }
+          actions={
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
+              {workspaceTexts && workspaceTexts.length > 1 && (
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <label htmlFor="editor-text-select" style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--accent)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    Switch text:
+                  </label>
+                  <select
+                    id="editor-text-select"
+                    value={initialDocument.slug}
+                    onChange={(e) => router.push(`/edit/${e.target.value}`)}
+                    style={{ padding: "0.35rem 0.6rem", fontSize: "0.85rem", border: "1px solid var(--rule)", borderRadius: "0.25rem", background: "var(--surface)", color: "var(--ink)" }}
+                  >
+                    {workspaceTexts.map((t) => (
+                      <option key={t.slug} value={t.slug}>
+                        {t.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
-            {workspaceTexts && workspaceTexts.length > 1 && (
-              <div style={{ marginTop: "0.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <label htmlFor="editor-text-select" style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--accent)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                  Switch text:
-                </label>
-                <select
-                  id="editor-text-select"
-                  value={initialDocument.slug}
-                  onChange={(e) => router.push(`/edit/${e.target.value}`)}
-                  style={{ padding: "0.35rem 0.6rem", fontSize: "0.85rem", border: "1px solid var(--rule)", borderRadius: "0.25rem", background: "var(--surface)", color: "var(--ink)" }}
-                >
-                  {workspaceTexts.map((t) => (
-                    <option key={t.slug} value={t.slug}>
-                      {t.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-          </div>
+              <div className="workspace-actions" style={{ marginLeft: "auto" }}>
+                {(autosaveStatus === "saved" || autosaveStatus === "saving") && (
+                  <span className={`editor-dirty ${autosaveStatus === "saved" ? "is-clean" : "is-dirty"}`}>
+                    {autosaveStatus === "saved" ? "✓ Draft saved" : "Autosaving..."}
+                  </span>
+                )}
 
-          <div className="workspace-actions">
-            {(autosaveStatus === "saved" || autosaveStatus === "saving") && (
-              <span className={`editor-dirty ${autosaveStatus === "saved" ? "is-clean" : "is-dirty"}`}>
-                {autosaveStatus === "saved" ? "✓ Draft saved" : "Autosaving..."}
-              </span>
-            )}
+                <div style={{ display: "inline-flex", gap: "0.4rem", flexWrap: "wrap", alignItems: "center" }}>
+                  <button
+                    type="button"
+                    onClick={discardChanges}
+                    className="workspace-link"
+                  >
+                    Discard edits
+                  </button>
 
-            <div style={{ display: "inline-flex", gap: "0.4rem", flexWrap: "wrap", alignItems: "center" }}>
-              <button
-                type="button"
-                onClick={discardChanges}
-                className="workspace-link"
-              >
-                Discard edits
-              </button>
+                  <button
+                    type="button"
+                    onClick={handleExportJson}
+                    className="workspace-link"
+                    title="Download complete JSON document"
+                  >
+                    Export JSON
+                  </button>
 
-              <button
-                type="button"
-                onClick={handleExportJson}
-                className="workspace-link"
-                title="Download complete JSON document"
-              >
-                Export JSON
-              </button>
+                  <button
+                    type="button"
+                    onClick={handleExportLatex}
+                    className="workspace-link"
+                    style={{ background: "#f3eadb", color: "#7b3f2a" }}
+                    title="Download gb4e LaTeX file"
+                  >
+                    Export LaTeX
+                  </button>
 
-              <button
-                type="button"
-                onClick={handleExportLatex}
-                className="workspace-link"
-                style={{ background: "#f3eadb", color: "#7b3f2a" }}
-                title="Download gb4e LaTeX file"
-              >
-                Export LaTeX
-              </button>
+                  {!isProtectedText && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            `Are you sure you want to remove "${documentState.title}" from Glossy? This will delete its JSON data, LaTeX files, and local drafts.`,
+                          )
+                        ) {
+                          handleDeleteText();
+                        }
+                      }}
+                      disabled={isDeleting}
+                      className="workspace-link"
+                      style={{
+                        background: "rgba(220, 38, 38, 0.08)",
+                        color: "#b91c1c",
+                        borderColor: "#fca5a5",
+                      }}
+                    >
+                      <Trash2 style={{ width: "0.85rem", height: "0.85rem", marginRight: "0.35rem" }} />
+                      {isDeleting ? "Deleting..." : "Delete Text"}
+                    </button>
+                  )}
+                </div>
 
-              {!isProtectedText && (
                 <button
                   type="button"
-                  onClick={() => {
-                    if (
-                      window.confirm(
-                        `Are you sure you want to remove "${documentState.title}" from Glossy? This will delete its JSON data, LaTeX files, and local drafts.`,
-                      )
-                    ) {
-                      handleDeleteText();
-                    }
-                  }}
-                  disabled={isDeleting}
-                  className="workspace-link"
-                  style={{
-                    background: "rgba(220, 38, 38, 0.08)",
-                    color: "#b91c1c",
-                    borderColor: "#fca5a5",
-                  }}
+                  onClick={saveToTina}
+                  disabled={isSaving}
+                  className="workspace-button"
+                  style={{ background: "var(--accent)", color: "#fff", borderColor: "var(--accent)", padding: "0.45rem 1.1rem" }}
+                  title="Save working draft to browser storage (and sync to Git if connected)"
                 >
-                  <Trash2 style={{ width: "0.85rem", height: "0.85rem", marginRight: "0.35rem" }} />
-                  {isDeleting ? "Deleting..." : "Delete Text"}
+                  <Save style={{ width: "0.9rem", height: "0.9rem", marginRight: "0.35rem" }} />
+                  {isSaving ? "Saving..." : "Save draft"}
                 </button>
-              )}
+              </div>
             </div>
-
-            <button
-              type="button"
-              onClick={saveToTina}
-              disabled={isSaving}
-              className="workspace-button"
-              style={{ background: "var(--accent)", color: "#fff", borderColor: "var(--accent)", padding: "0.45rem 1.1rem" }}
-              title="Save working draft to browser storage (and sync to Git if connected)"
-            >
-              <Save style={{ width: "0.9rem", height: "0.9rem", marginRight: "0.35rem" }} />
-              {isSaving ? "Saving..." : "Save draft"}
-            </button>
-          </div>
-        </header>
+          }
+        />
 
         {/* Global Action Alerts */}
         {saveStatus.message && (
@@ -1190,16 +1259,53 @@ export function GlossEditor({
                     onClick={() => setActiveSentenceId(sent.id)}
                     className={`editor-sentence-card${isSentActive ? " is-active" : ""}`}
                   >
-                    <div className="editor-sentence-header">
-                      <h3 style={{ margin: 0, fontSize: "1.1rem", fontFamily: "'Charis SIL', 'Noto Serif', Georgia, serif", fontWeight: 700, color: "var(--accent)" }}>
-                        Sentence {actualIndex}
-                      </h3>
+                    <div className="editor-sentence-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", marginBottom: "0.5rem" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <h3 style={{ margin: 0, fontSize: "1.1rem", fontFamily: "'Charis SIL', 'Noto Serif', Georgia, serif", fontWeight: 700, color: "var(--accent)" }}>
+                          Sentence {actualIndex}
+                        </h3>
+                        {sent.notes && sent.notes.length > 0 && (
+                          <span style={{ fontSize: "0.75rem", background: "#fef3c7", color: "#92400e", border: "1px solid #fcd34d", borderRadius: "1rem", padding: "0.1rem 0.5rem", fontWeight: 600 }}>
+                            {sent.notes.length} {sent.notes.length === 1 ? "note" : "notes"}
+                          </span>
+                        )}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveSentenceId(sent.id);
+                          addNoteToSentence(sent.id);
+                        }}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "0.3rem",
+                          fontSize: "0.78rem",
+                          fontWeight: 600,
+                          color: "#7b3f2a",
+                          background: "#fbf7ee",
+                          border: "1px solid #dfcfb8",
+                          borderRadius: "0.3rem",
+                          padding: "0.25rem 0.55rem",
+                          cursor: "pointer",
+                        }}
+                        title="Add Note / Footnote to sentence"
+                      >
+                        <Plus style={{ width: "0.8rem", height: "0.8rem" }} />
+                        <span>Add Note / Footnote</span>
+                      </button>
                     </div>
 
                     {/* Word Chips */}
                     <div className="editor-tokens-list">
-                      {sent.tokens.map((tok) => {
+                      {sent.tokens.map((tok, tokIdx) => {
                         const isTokActive = tok.id === activeTokenId;
+                        const tokNotes = (sent.notes || []).filter(
+                          (n) => n.targetWordIndex === tokIdx || n.targetWordIndex === tokIdx + 1,
+                        );
+
                         return (
                           <button
                             key={tok.id}
@@ -1210,9 +1316,15 @@ export function GlossEditor({
                               setActiveTokenId(tok.id);
                             }}
                             className={`editor-word-chip${isTokActive ? " is-selected" : ""}`}
+                            style={{ position: "relative" }}
                           >
                             <span className="chip-form">
                               {tok.sourceForm}
+                              {tokNotes.length > 0 && (
+                                <sup style={{ fontSize: "0.68rem", fontWeight: 800, color: "#b45309", marginLeft: "2px" }}>
+                                  {tokNotes.map((n) => n.marker || "*").join(",")}
+                                </sup>
+                              )}
                             </span>
                             <span className="chip-gloss">
                               {tok.sourceGloss || tok.sourceForm}
@@ -1514,7 +1626,119 @@ export function GlossEditor({
                   />
                 </div>
 
-                {/* 10. Reader Popup Preview */}
+                {/* 10. Sentence Footnotes / Critical Apparatus */}
+                <fieldset className="editor-fieldset" style={{ marginTop: "1rem" }}>
+                  <legend style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                    <FileText style={{ width: "0.85rem", height: "0.85rem", color: "var(--accent)" }} />
+                    <span>Sentence Footnotes / Critical Apparatus ({activeSentence?.notes?.length || 0})</span>
+                  </legend>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "0.5rem" }}>
+                    {(activeSentence?.notes || []).map((note, nIdx) => (
+                      <div
+                        key={note.id || nIdx}
+                        style={{
+                          background: "#fbf7ee",
+                          border: "1px solid #dfcfb8",
+                          borderRadius: "0.375rem",
+                          padding: "0.6rem 0.75rem",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "0.4rem",
+                          position: "relative",
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <div style={{ display: "flex", gap: "0.35rem", alignItems: "center" }}>
+                            <input
+                              type="text"
+                              placeholder="Marker"
+                              value={note.marker || ""}
+                              onChange={(e) =>
+                                activeSentence &&
+                                updateSentenceNote(activeSentence.id, note.id, { marker: e.target.value })
+                              }
+                              style={{ width: "3.2rem", padding: "0.2rem 0.4rem", fontSize: "0.78rem", textAlign: "center" }}
+                            />
+                            <select
+                              value={note.type || "manuscript_variant"}
+                              onChange={(e) =>
+                                activeSentence &&
+                                updateSentenceNote(activeSentence.id, note.id, {
+                                  type: e.target.value as NoteType,
+                                })
+                              }
+                              style={{ padding: "0.2rem 0.4rem", fontSize: "0.78rem" }}
+                            >
+                              <option value="manuscript_variant">manuscript_variant</option>
+                              <option value="grammatical_note">grammatical_note</option>
+                              <option value="source_reference">source_reference</option>
+                              <option value="general">general</option>
+                            </select>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => activeSentence && removeSentenceNote(activeSentence.id, note.id)}
+                            style={{ background: "transparent", border: "none", color: "#b91c1c", cursor: "pointer" }}
+                            title="Remove note"
+                          >
+                            <X style={{ width: "0.85rem", height: "0.85rem" }} />
+                          </button>
+                        </div>
+
+                        {activeSentence && (
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                            <label style={{ fontSize: "0.72rem", color: "var(--muted-ink)" }}>Target Word:</label>
+                            <select
+                              value={note.targetWordIndex != null ? String(note.targetWordIndex) : ""}
+                              onChange={(e) =>
+                                updateSentenceNote(activeSentence.id, note.id, {
+                                  targetWordIndex: e.target.value !== "" ? Number(e.target.value) : undefined,
+                                })
+                              }
+                              style={{ padding: "0.15rem 0.35rem", fontSize: "0.75rem", flex: 1 }}
+                            >
+                              <option value="">Whole Sentence</option>
+                              {activeSentence.tokens.map((tok, tIdx) => (
+                                <option key={tok.id} value={tIdx + 1}>
+                                  Word #{tIdx + 1}: {tok.sourceForm}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+
+                        <textarea
+                          rows={2}
+                          placeholder="BL Cotton MS Tiberius B i reads 'hlaforde'..."
+                          value={note.text}
+                          onChange={(e) =>
+                            activeSentence &&
+                            updateSentenceNote(activeSentence.id, note.id, { text: e.target.value })
+                          }
+                          style={{ fontSize: "0.82rem", width: "100%" }}
+                        />
+                      </div>
+                    ))}
+
+                    <div style={{ display: "flex", gap: "0.5rem" }}>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          activeSentence &&
+                          addNoteToSentence(activeSentence.id, activeTokenIndexInSent >= 0 ? activeTokenIndexInSent + 1 : undefined)
+                        }
+                        className="add-morpheme-btn"
+                        style={{ fontSize: "0.8rem", padding: "0.35rem 0.75rem" }}
+                      >
+                        + Add Note for {activeToken ? `"${cleanHeaderWord}"` : "Sentence"}
+                      </button>
+                    </div>
+                  </div>
+                </fieldset>
+
+                {/* 11. Reader Popup Preview */}
                 <div className="editor-preview-card">
                   <h3>Reader Popup Preview</h3>
                   <p className="editor-preview-word">
