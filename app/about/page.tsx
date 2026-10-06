@@ -134,7 +134,19 @@ export default function AboutPage() {
               Maintainers &amp; Open Source
             </h2>
             <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1rem" }}>
-              Glossy is created and maintained by <strong>Tyler Lemon</strong> and community contributors interested in digital humanities, Anglo-Saxon studies, and linguistics pedagogy.
+              Glossy was created and engineered by <strong>Ariel Anders</strong> (
+              <a
+                href="https://boomtick.blog/services"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "var(--accent)", textDecoration: "underline", fontWeight: 600 }}
+              >
+                Ariel Anders Consulting
+              </a>
+              ), who architected the platform, the interactive Leipzig interlinear engine, the offline-first local workspace, and the automated verification suite.
+            </p>
+            <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1rem" }}>
+              <strong>Tyler Lemon</strong> served as the linguistic subject matter expert, meticulously glossing all texts in the canonical corpus, standardizing Old English lemmatization (including masculine nominative standards and strong adjective conventions), and ensuring philological fidelity to historical manuscript witnesses.
             </p>
             <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1.25rem" }}>
               The project is entirely open source under the MIT License. Contributions, bug reports, and morphological corrections are welcomed via GitHub.

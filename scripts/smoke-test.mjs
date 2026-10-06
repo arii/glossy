@@ -135,7 +135,20 @@ try {
   await check("/admin", ["Tina"]);
   await check("/admin/index.html", ["Tina"]);
 
-  await check("/about", ["About the Project", "Glossy · Digital Interlinear Philology"]);
+  await check("/", [
+    "Old English Corpus &amp; Editions",
+    "Developed by",
+    "Ariel Anders Consulting",
+    "https://boomtick.blog/services",
+  ]);
+
+  await check("/about", [
+    "About the Project",
+    "Glossy · Digital Interlinear Philology",
+    "Ariel Anders",
+    "Ariel Anders Consulting",
+    "Tyler Lemon",
+  ]);
   await check("/privacy", ["Privacy Policy", "We do not track you"]);
 
   // 404 Not Found Page check

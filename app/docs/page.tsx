@@ -92,6 +92,8 @@ export default function DocsPage() {
   const pageEyebrow = docs.eyebrow || "Linguistic Standards & System Architecture";
   const pageTitle = docs.title || "Documentation & Reference Guides";
 
+  const allSections = [...linguisticsSections, ...architectureSections];
+
   return (
     <>
       <SiteNav current="docs" slug="ohthere-wulfstan" />
@@ -100,6 +102,42 @@ export default function DocsPage() {
           <p className="eyebrow" data-tina-field={tinaField(docs, "eyebrow")}>{pageEyebrow}</p>
           <h1 className="docs-title" data-tina-field={tinaField(docs, "title")}>{pageTitle}</h1>
         </header>
+
+        {/* Mobile Collapsible TOC (Visible only on mobile screens <= 48rem) */}
+        <div className="docs-mobile-toc">
+          <details style={{ background: "var(--surface)", border: "1px solid var(--rule)", borderRadius: "0.5rem", padding: "0.75rem 1rem", marginBottom: "1.5rem" }}>
+            <summary style={{ fontWeight: 700, fontSize: "0.85rem", color: "var(--accent)", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <Layers style={{ width: "0.95rem", height: "0.95rem" }} /> Table of Contents ({allSections.length} Sections)
+            </summary>
+            <div style={{ marginTop: "0.75rem", display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+              {allSections.map((sec) => (
+                <button
+                  key={sec.id}
+                  type="button"
+                  onClick={() => scrollToSection(sec.id)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    textAlign: "left",
+                    background: "transparent",
+                    border: "none",
+                    padding: "0.35rem 0.5rem",
+                    fontSize: "0.82rem",
+                    color: "var(--ink)",
+                    cursor: "pointer",
+                    borderRadius: "0.25rem",
+                  }}
+                >
+                  <span className={`docs-nav-num ${sec.id.startsWith("section-a") ? "arch" : ""}`}>
+                    {sec.domainNum || sec.num}
+                  </span>
+                  <span>{sec.title}</span>
+                </button>
+              ))}
+            </div>
+          </details>
+        </div>
 
         {/* Two-Column Grid: Sticky TOC on Left, Content on Right */}
         <div className="docs-grid">

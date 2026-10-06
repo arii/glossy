@@ -47,18 +47,34 @@ export function SiteFooter() {
         }}
       >
         <div>
-          <span
-            style={{
-              fontFamily: "'Charis SIL', Georgia, serif",
-              fontWeight: 700,
-              color: "var(--ink)",
-              fontSize: "0.95rem",
-              marginRight: "0.5rem",
-            }}
-          >
-            Glossy
-          </span>
-          <span>— Old English Interlinear Glossing &amp; Morphology</span>
+          <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: "0.4rem" }}>
+            <span
+              style={{
+                fontFamily: "'Charis SIL', Georgia, serif",
+                fontWeight: 700,
+                color: "var(--ink)",
+                fontSize: "0.95rem",
+              }}
+            >
+              Glossy
+            </span>
+            <span>— Old English Interlinear Glossing &amp; Morphology</span>
+          </div>
+          <div style={{ marginTop: "0.35rem", fontSize: "0.8rem", color: "var(--muted-ink)" }}>
+            Developed by{" "}
+            <a
+              href="https://boomtick.blog/services"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: "var(--accent)",
+                textDecoration: "underline",
+                fontWeight: 600,
+              }}
+            >
+              Ariel Anders Consulting
+            </a>
+          </div>
         </div>
 
         <nav

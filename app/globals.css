@@ -842,13 +842,23 @@ h2 {
 
 .workspace-choice-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-  gap: 1rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  margin: 1.5rem auto 0;
+  gap: 1.5rem;
+  box-sizing: border-box;
 }
 
 .workspace-choice-card {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   padding: 1.25rem;
   color: inherit;
   border: 1px solid var(--rule);
@@ -1909,5 +1919,104 @@ h2 {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   margin-bottom: 0.6rem;
+}
+
+.docs-mobile-toc {
+  display: none;
+}
+
+/* Mobile Layout Optimizations: Workspace Choice and Documentation Pages */
+@media (max-width: 48rem) {
+  .workspace-choice {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.25rem 1rem;
+    margin: 1.5rem auto;
+    box-sizing: border-box;
+  }
+
+  .workspace-choice-list {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    width: 100% !important;
+  }
+
+  .workspace-choice-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Prevent sidebar from pushing content on mobile */
+  .docs-sidebar {
+    display: none !important;
+  }
+
+  .docs-mobile-toc {
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Force content to respect viewport width and eliminate horizontal shift */
+  .docs-grid {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .docs-content {
+    display: flex;
+    flex-direction: column;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden;
+  }
+
+  .docs-section {
+    padding: 1.25rem 1rem !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden;
+  }
+
+  .docs-section-heading {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .docs-section-h2 {
+    font-size: 1.25rem;
+    word-break: break-word;
+  }
+
+  .docs-code-tier {
+    padding: 1rem 0.75rem;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .docs-tier-grid,
+  .docs-tier-glosses {
+    min-width: 18rem;
+  }
+
+  .docs-table-wrapper {
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .docs-tier-cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
 }
 
