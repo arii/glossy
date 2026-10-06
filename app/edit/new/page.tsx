@@ -251,19 +251,23 @@ export default function NewTextPage() {
 
   return (
     <main className="workspace-shell">
-      <SiteNav current="edit" slug="" canEdit={false} />
-      
-      <section className="workspace-choice" style={{ maxWidth: "860px", margin: "0 auto", textAlign: "left" }}>
-        <p className="workspace-eyebrow">Glossy · Corpus Ingestion</p>
-        <h1 style={{ marginBottom: "0.5rem" }}>Gloss a New Old English Text</h1>
-        <p className="workspace-choice-copy" style={{ marginBottom: "1.5rem" }}>
-          Paste raw Old English sentences, select a classic preset (such as <em>Beowulf</em> or <em>Cædmon&apos;s Hymn</em>),
-          or paste LaTeX <code>gb4e</code> code. The ingestion engine will automatically tokenize, lemmatize, and initialize
-          your interlinear glosses.
-        </p>
+      <div className="workspace">
+        <header className="workspace-header" style={{ marginBottom: "2rem", display: "block" }}>
+          <SiteNav current="new" slug="" canEdit={false} />
+          <div style={{ marginTop: "1rem" }}>
+            <p className="workspace-eyebrow">Glossy · Corpus Ingestion</p>
+            <h1>Gloss a New Old English Text</h1>
+            <p className="workspace-choice-copy" style={{ maxWidth: "48rem" }}>
+              Paste raw Old English sentences, select a classic preset (such as <em>Beowulf</em> or <em>Cædmon&apos;s Hymn</em>),
+              or paste LaTeX <code>gb4e</code> code. The ingestion engine will automatically tokenize, lemmatize, and initialize
+              your interlinear glosses.
+            </p>
+          </div>
+        </header>
 
-        {/* Preset Selector */}
-        <div style={{ marginBottom: "1.5rem", padding: "1rem", background: "var(--color-surface, #f8fafc)", borderRadius: "8px", border: "1px solid var(--color-border, #e2e8f0)" }}>
+        <section className="workspace-choice" style={{ maxWidth: "100%", margin: "0 auto", textAlign: "left", background: "var(--surface)", border: "1px solid var(--rule)", borderRadius: "0.5rem", padding: "clamp(1.5rem, 3vw, 2.5rem)", boxShadow: "0 0.5rem 2rem rgba(64, 47, 29, 0.04)" }}>
+          {/* Preset Selector */}
+          <div style={{ marginBottom: "1.5rem", padding: "1rem", background: "#fbf7ee", borderRadius: "0.35rem", border: "1px solid var(--rule)" }}>
           <strong style={{ display: "block", marginBottom: "0.5rem", fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
             ⚡ Quick-Load Classic Presets
           </strong>
@@ -458,6 +462,7 @@ export default function NewTextPage() {
           </Link>
         </div>
       </section>
+      </div>
     </main>
   );
 }

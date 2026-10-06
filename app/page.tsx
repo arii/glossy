@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { loadManuscripts, loadTextDocuments } from "../lib/content";
+import { SiteNav } from "../components/site-nav";
 
 export const dynamic = "force-dynamic";
 
@@ -30,45 +31,45 @@ export default function Home() {
 
   return (
     <main className="workspace-shell">
-      <section className="workspace-choice">
-        <p className="workspace-eyebrow">Glossy · Interlinear texts</p>
-        <h1>Read a text or work on its glosses.</h1>
-        <p className="workspace-choice-copy">
-          The reader and editing workspace are separate. Choose a text below to read the published
-          version, open its live gloss editor, or start glossing a new Old English text (e.g. <em>Beowulf</em>, <em>Cædmon&apos;s Hymn</em>).
-        </p>
-        <div style={{ marginBottom: "2rem", display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-          <Link
-            href="/edit/new"
-            className="btn btn-primary"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              textDecoration: "none",
-              padding: "0.6rem 1.2rem",
-              fontWeight: 600,
-              fontSize: "0.95rem",
-            }}
-          >
-            <span>+</span> Gloss a New Text
-          </Link>
-          <Link
-            href="/docs"
-            className="btn btn-secondary"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              textDecoration: "none",
-              padding: "0.6rem 1.2rem",
-              fontSize: "0.95rem",
-            }}
-          >
-            📖 Architecture &amp; FAQ
-          </Link>
-        </div>
-        <div className="workspace-choice-list">
+      <div className="workspace">
+        <header className="workspace-header" style={{ marginBottom: "2rem", display: "block" }}>
+          <SiteNav current="home" />
+          <div style={{ marginTop: "1rem" }}>
+            <p className="workspace-eyebrow">Glossy · Interlinear texts</p>
+            <h1>Read a text or work on its glosses.</h1>
+            <p className="workspace-choice-copy" style={{ maxWidth: "48rem" }}>
+              The reader and editing workspace are separate. Choose a text below to read the published
+              version, open its live gloss editor, or start glossing a new Old English text (e.g. <em>Beowulf</em>, <em>Cædmon&apos;s Hymn</em>).
+            </p>
+            <div style={{ marginTop: "1.25rem", display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+              <Link
+                href="/edit/new"
+                className="workspace-link"
+                style={{
+                  background: "var(--accent)",
+                  color: "#fff",
+                  borderColor: "var(--accent)",
+                  fontWeight: 600,
+                  fontSize: "0.9rem",
+                }}
+              >
+                <span>+</span> Gloss a New Text
+              </Link>
+              <Link
+                href="/docs"
+                className="workspace-link"
+                style={{
+                  fontWeight: 600,
+                  fontSize: "0.9rem",
+                }}
+              >
+                Architecture &amp; FAQ
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        <div className="workspace-choice-list" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(20rem, 1fr))", gap: "1.25rem" }}>
           {choices.map((choice) => (
             <article className="workspace-choice-card" key={`${choice.kind}-${choice.slug}`}>
               <h2>{choice.title}</h2>
@@ -84,7 +85,7 @@ export default function Home() {
             </article>
           ))}
         </div>
-      </section>
+      </div>
     </main>
   );
 }

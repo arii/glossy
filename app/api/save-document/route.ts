@@ -19,6 +19,8 @@ export async function POST(request: Request) {
     const document = body.document;
     const fileName = body.fileName || document.textId || "ohthere";
     const slug = body.slug || document.slug || "ohthere-wulfstan";
+    document.textId = document.textId || fileName || slug;
+    document.slug = document.slug || slug;
 
     // 1. Export compilable LaTeX source
     const texSource = exportToGb4eLatex(document);
