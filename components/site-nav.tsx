@@ -6,7 +6,7 @@ import { installSafeJsonGlobal } from "../lib/safe-json";
 import { isWorkspaceSlug } from "../lib/local-drafts";
 
 type SiteNavProps = {
-  current?: "home" | "read" | "edit" | "docs" | "new";
+  current?: "home" | "read" | "edit" | "docs" | "new" | "articles";
   slug?: string;
 };
 
@@ -92,6 +92,12 @@ export function SiteNav({ current, slug }: SiteNavProps) {
             style={{ fontWeight: 600 }}
           >
             + New Text
+          </Link>
+          <Link
+            href="/articles"
+            aria-current={current === "articles" ? "page" : undefined}
+          >
+            Articles
           </Link>
           <Link
             href="/docs"
