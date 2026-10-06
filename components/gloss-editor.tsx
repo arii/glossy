@@ -8,7 +8,7 @@ import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
 import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
 import { safeJsonStringify } from "../lib/safe-json";
 import { isProtectedSlug } from "../lib/corpus-registry";
-import { computeDocumentHash } from "../lib/local-drafts";
+import { computeDocumentHash, deleteLocalDraft } from "../lib/local-drafts";
 import type {
   TextDocument,
   ReadingSentence,
