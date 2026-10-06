@@ -44,9 +44,12 @@ async function main() {
   }
 
   printStep("1. Building TinaCMS schemas & admin bundle");
-  const busy = await isPortBusy(9123);
+  const busy =
+    (await isPortBusy(9000)) ||
+    (await isPortBusy(9123)) ||
+    (await isPortBusy(4001));
   if (busy) {
-    console.log("ℹ️ Datalayer port 9123 is currently busy; reusing existing compiled schema.");
+    console.log("ℹ️ Tina dev server port (9000/9123/4001) is currently busy; reusing existing compiled schema.");
   } else {
     runCommand("npx", ["tinacms", "build", "--skip-cloud-checks"]);
   }
