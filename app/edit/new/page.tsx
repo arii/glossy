@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SiteNav } from "../../../components/site-nav";
+import { PageHero } from "../../../components/page-hero";
 import { SiteFooter } from "../../../components/site-footer";
 import { tokenizeAndLemmatizeSentence } from "../../../lib/lemmatizer";
 import { parseGb4e } from "../../../lib/gb4e";
@@ -471,27 +472,22 @@ export default function NewTextPage() {
     <>
       <SiteNav current="new" slug="ohthere" />
       <main className="site-shell">
-        <header className="page-header" style={{ marginBottom: "2rem" }}>
-          <p className="eyebrow" data-tina-field={tinaField(page, "eyebrow")}>
-            {page.eyebrow || "Glossy · Corpus Ingestion"}
-          </p>
-          <h1 data-tina-field={tinaField(page, "heading")}>
-            {page.heading || "Gloss a New Old English Text"}
-          </h1>
-          <p
-            className="source-line"
-            data-tina-field={tinaField(page, "description")}
-            style={{ maxWidth: "48rem", fontSize: "1.05rem", lineHeight: 1.6 }}
-          >
-            {page.description || (
+        <PageHero
+          eyebrow={page.eyebrow || "Glossy · Corpus Ingestion"}
+          eyebrowDataTinaField={tinaField(page, "eyebrow")}
+          title={page.heading || "Gloss a New Old English Text"}
+          titleDataTinaField={tinaField(page, "heading")}
+          description={
+            page.description || (
               <>
                 Paste raw Old English sentences, choose a classic preset (such as <em>Beowulf</em> or{" "}
                 <em>Cædmon&apos;s Hymn</em>), or paste LaTeX <code>gb4e</code> code. The ingestion engine will
                 automatically tokenize, lemmatize, and initialize your interlinear glosses.
               </>
-            )}
-          </p>
-        </header>
+            )
+          }
+          descriptionDataTinaField={tinaField(page, "description")}
+        />
 
         {/* Workspace Card */}
         <section

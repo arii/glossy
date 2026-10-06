@@ -1,6 +1,7 @@
 "use client";
 
 import { SiteNav } from "./site-nav";
+import { PageHero } from "./page-hero";
 import { SiteFooter } from "./site-footer";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -249,9 +250,9 @@ export function ReadingPage({
     <>
       <SiteNav current="read" slug={texts.some((text) => text.slug === selectedSlug) ? selectedSlug : (texts[0]?.slug ?? "ohthere-wulfstan")} />
       <main className="site-shell">
-        <header className="page-header" style={{ marginBottom: "2rem" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
-            <p className="eyebrow" style={{ margin: 0 }}>Old English visual gloss</p>
+        <PageHero
+          eyebrow="Old English visual gloss"
+          badge={
             <button
               type="button"
               onClick={() => setAttributionOpen(true)}
@@ -271,13 +272,12 @@ export function ReadingPage({
             >
               Attribution &amp; Citation
             </button>
-          </div>
-          <div>
-            <h1>{currentTitle}</h1>
-            <p className="source-line">{currentSource}</p>
-
-            {workspaceTexts && workspaceTexts.length > 1 && (
-              <div style={{ marginTop: "0.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          }
+          title={currentTitle}
+          description={currentSource}
+          actions={
+            workspaceTexts && workspaceTexts.length > 1 ? (
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <label htmlFor="viewer-text-select" style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--accent)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                   Switch text:
                 </label>
@@ -294,9 +294,9 @@ export function ReadingPage({
                   ))}
                 </select>
               </div>
-            )}
-          </div>
-        </header>
+            ) : null
+          }
+        />
 
         <AttributionModal
           isOpen={attributionOpen}

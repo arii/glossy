@@ -180,35 +180,25 @@ export function AttributionCard({
 
   return (
     <div
-      style={{
-        background: "var(--surface)",
-        border: "1px solid var(--rule)",
-        borderRadius: "0.6rem",
-        maxWidth: "44rem",
-        width: "100%",
-        maxHeight: "90vh",
-        overflowY: "auto",
-        boxShadow: "0 1.5rem 3rem rgba(0, 0, 0, 0.25)",
-        padding: "1.75rem",
-      }}
+      className="bg-white rounded-lg border border-stone-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ring-1 ring-stone-900/5 max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8"
       onClick={(e) => e.stopPropagation()}
     >
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", paddingBottom: "1rem", borderBottom: "1px solid var(--rule)", marginBottom: "1.25rem" }}>
+      <div className="flex justify-between items-start pb-4 border-b border-stone-200/80 mb-5">
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <Scroll style={{ width: "1.2rem", height: "1.2rem", color: "var(--accent)" }} />
+          <div className="flex items-center gap-2">
+            <Scroll className="w-5 h-5 text-amber-900" />
             <h2
               id="attribution-title"
               data-tina-field={tinaField(activeConfig, "heading")}
-              style={{ margin: 0, fontSize: "1.3rem", fontFamily: "'Charis SIL', Georgia, serif", color: "var(--ink)" }}
+              className="font-serif text-xl md:text-2xl font-medium text-stone-900 tracking-tight m-0"
             >
               {activeConfig.heading || "Scholarly Attribution & Citation"}
             </h2>
           </div>
           <p
             data-tina-field={tinaField(activeConfig, "description")}
-            style={{ margin: "0.25rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)" }}
+            className="font-sans text-xs text-stone-500 leading-relaxed mt-1 mb-0"
           >
             {activeConfig.description ? (
               <span>{activeConfig.description} (<em>{title}</em>)</span>
@@ -329,27 +319,21 @@ export function AttributionCard({
 
       {/* Tabbed Citation Formats */}
       <div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-          <span style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 700, color: "var(--accent)" }}>
+        <div className="flex justify-between items-center mb-3">
+          <span className="font-mono text-xs font-semibold tracking-wider uppercase text-stone-700">
             Cite This Edition
           </span>
-          <div style={{ display: "flex", gap: "0.35rem" }}>
+          <div className="inline-flex items-center gap-1 p-1 bg-stone-100 rounded-lg border border-stone-200/80">
             {(["bibtex", "unified", "apa", "chicago"] as const).map((tab) => (
               <button
                 key={tab}
                 type="button"
                 onClick={() => setActiveTab(tab)}
-                style={{
-                  padding: "0.2rem 0.55rem",
-                  borderRadius: "0.25rem",
-                  fontSize: "0.72rem",
-                  fontWeight: activeTab === tab ? 700 : 500,
-                  background: activeTab === tab ? "var(--accent)" : "#fbf7ee",
-                  color: activeTab === tab ? "#ffffff" : "var(--ink)",
-                  border: "1px solid var(--rule)",
-                  cursor: "pointer",
-                  textTransform: "uppercase",
-                }}
+                className={`px-2.5 py-1 rounded text-[11px] font-mono uppercase tracking-wider font-semibold transition-colors cursor-pointer ${
+                  activeTab === tab
+                    ? "bg-white text-stone-900 shadow-sm border border-stone-200/80"
+                    : "text-stone-600 hover:text-stone-900"
+                }`}
               >
                 {tab}
               </button>
