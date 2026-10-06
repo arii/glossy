@@ -22,12 +22,17 @@ import type {
   Morpheme,
   PartOfSpeech,
   InflectionFeatures,
+  NoteItem,
+  NoteType,
 } from "../lib/types";
 import {
   BookOpen,
   RefreshCw,
   Save,
   Trash2,
+  FileText,
+  Plus,
+  X,
 } from "lucide-react";
 
 export interface EditorToken {
@@ -49,6 +54,7 @@ export interface EditorSentence {
   tokens: EditorToken[];
   freeTranslation: string;
   footnotes?: string[];
+  notes?: NoteItem[];
 }
 
 export interface EditorDocument {
@@ -140,6 +146,7 @@ export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
       id: sent.id || `sent-${sIdx + 1}`,
       freeTranslation: sent.translation || "",
       footnotes: sent.footnotes,
+      notes: sent.notes ? [...sent.notes] : undefined,
       tokens: (sent.words || []).map((w: InterlinearWord, tIdx: number) =>
         wordToEditorToken(w, sIdx, tIdx),
       ),
@@ -162,6 +169,7 @@ export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
       id: sent.id,
       translation: sent.freeTranslation,
       footnotes: sent.footnotes,
+      notes: sent.notes ? [...sent.notes] : undefined,
       words: sent.tokens.map((tok) => {
         const punctuationMatch = tok.sourceForm.match(/[.,;:!?]+$/);
         const originalCleanWord =
@@ -435,9 +443,61 @@ export function GlossEditor({
     activeSentence?.tokens.find((t) => t.id === activeTokenId) ||
     documentState?.sentences.flatMap((s) => s.tokens).find((t) => t.id === activeTokenId);
 
+  const activeTokenIndexInSent = activeSentence && activeToken
+    ? activeSentence.tokens.findIndex((t) => t.id === activeToken.id)
+    : -1;
+
   const currentIndex = documentState
     ? documentState.sentences.findIndex((s) => s.id === activeSentenceId)
     : -1;
+
+  const addNoteToSentence = useCallback((sentenceId: string, targetWordIndex?: number) => {
+    setDocumentState((prev) => ({
+      ...prev,
+      sentences: prev.sentences.map((sent) => {
+        if (sent.id !== sentenceId) return sent;
+        const currentNotes = sent.notes || [];
+        const noteNumber = currentNotes.length + 1;
+        const newNote: NoteItem = {
+          id: `fn-${sentenceId}-${Date.now()}-${noteNumber}`,
+          targetWordIndex,
+          marker: String(noteNumber),
+          type: "manuscript_variant",
+          text: "",
+        };
+        return {
+          ...sent,
+          notes: [...currentNotes, newNote],
+        };
+      }),
+    }));
+  }, []);
+
+  const updateSentenceNote = useCallback((sentenceId: string, noteId: string, patch: Partial<NoteItem>) => {
+    setDocumentState((prev) => ({
+      ...prev,
+      sentences: prev.sentences.map((sent) => {
+        if (sent.id !== sentenceId) return sent;
+        return {
+          ...sent,
+          notes: (sent.notes || []).map((n) => (n.id === noteId ? { ...n, ...patch } : n)),
+        };
+      }),
+    }));
+  }, []);
+
+  const removeSentenceNote = useCallback((sentenceId: string, noteId: string) => {
+    setDocumentState((prev) => ({
+      ...prev,
+      sentences: prev.sentences.map((sent) => {
+        if (sent.id !== sentenceId) return sent;
+        return {
+          ...sent,
+          notes: (sent.notes || []).filter((n) => n.id !== noteId),
+        };
+      }),
+    }));
+  }, []);
 
   const handlePrev = () => {
     if (documentState && currentIndex > 0) {
@@ -594,6 +654,13 @@ export function GlossEditor({
             id: sent.id,
             translation: sent.translation || "",
             footnotes: sent.footnotes || [],
+            notes: (sent.notes || []).map((n) => ({
+              id: n.id,
+              targetWordIndex: n.targetWordIndex,
+              marker: n.marker || "",
+              type: n.type || "general",
+              text: n.text || "",
+            })),
             words: (sent.words || []).map((w) => ({
               id: w.id,
               originalWord: w.originalWord,
@@ -1192,16 +1259,53 @@ export function GlossEditor({
                     onClick={() => setActiveSentenceId(sent.id)}
                     className={`editor-sentence-card${isSentActive ? " is-active" : ""}`}
                   >
-                    <div className="editor-sentence-header">
-                      <h3 style={{ margin: 0, fontSize: "1.1rem", fontFamily: "'Charis SIL', 'Noto Serif', Georgia, serif", fontWeight: 700, color: "var(--accent)" }}>
-                        Sentence {actualIndex}
-                      </h3>
+                    <div className="editor-sentence-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", marginBottom: "0.5rem" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <h3 style={{ margin: 0, fontSize: "1.1rem", fontFamily: "'Charis SIL', 'Noto Serif', Georgia, serif", fontWeight: 700, color: "var(--accent)" }}>
+                          Sentence {actualIndex}
+                        </h3>
+                        {sent.notes && sent.notes.length > 0 && (
+                          <span style={{ fontSize: "0.75rem", background: "#fef3c7", color: "#92400e", border: "1px solid #fcd34d", borderRadius: "1rem", padding: "0.1rem 0.5rem", fontWeight: 600 }}>
+                            {sent.notes.length} {sent.notes.length === 1 ? "note" : "notes"}
+                          </span>
+                        )}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveSentenceId(sent.id);
+                          addNoteToSentence(sent.id);
+                        }}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "0.3rem",
+                          fontSize: "0.78rem",
+                          fontWeight: 600,
+                          color: "#7b3f2a",
+                          background: "#fbf7ee",
+                          border: "1px solid #dfcfb8",
+                          borderRadius: "0.3rem",
+                          padding: "0.25rem 0.55rem",
+                          cursor: "pointer",
+                        }}
+                        title="Add Note / Footnote to sentence"
+                      >
+                        <Plus style={{ width: "0.8rem", height: "0.8rem" }} />
+                        <span>Add Note / Footnote</span>
+                      </button>
                     </div>
 
                     {/* Word Chips */}
                     <div className="editor-tokens-list">
-                      {sent.tokens.map((tok) => {
+                      {sent.tokens.map((tok, tokIdx) => {
                         const isTokActive = tok.id === activeTokenId;
+                        const tokNotes = (sent.notes || []).filter(
+                          (n) => n.targetWordIndex === tokIdx || n.targetWordIndex === tokIdx + 1,
+                        );
+
                         return (
                           <button
                             key={tok.id}
@@ -1212,9 +1316,15 @@ export function GlossEditor({
                               setActiveTokenId(tok.id);
                             }}
                             className={`editor-word-chip${isTokActive ? " is-selected" : ""}`}
+                            style={{ position: "relative" }}
                           >
                             <span className="chip-form">
                               {tok.sourceForm}
+                              {tokNotes.length > 0 && (
+                                <sup style={{ fontSize: "0.68rem", fontWeight: 800, color: "#b45309", marginLeft: "2px" }}>
+                                  {tokNotes.map((n) => n.marker || "*").join(",")}
+                                </sup>
+                              )}
                             </span>
                             <span className="chip-gloss">
                               {tok.sourceGloss || tok.sourceForm}
@@ -1516,7 +1626,119 @@ export function GlossEditor({
                   />
                 </div>
 
-                {/* 10. Reader Popup Preview */}
+                {/* 10. Sentence Footnotes / Critical Apparatus */}
+                <fieldset className="editor-fieldset" style={{ marginTop: "1rem" }}>
+                  <legend style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                    <FileText style={{ width: "0.85rem", height: "0.85rem", color: "var(--accent)" }} />
+                    <span>Sentence Footnotes / Critical Apparatus ({activeSentence?.notes?.length || 0})</span>
+                  </legend>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "0.5rem" }}>
+                    {(activeSentence?.notes || []).map((note, nIdx) => (
+                      <div
+                        key={note.id || nIdx}
+                        style={{
+                          background: "#fbf7ee",
+                          border: "1px solid #dfcfb8",
+                          borderRadius: "0.375rem",
+                          padding: "0.6rem 0.75rem",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "0.4rem",
+                          position: "relative",
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <div style={{ display: "flex", gap: "0.35rem", alignItems: "center" }}>
+                            <input
+                              type="text"
+                              placeholder="Marker"
+                              value={note.marker || ""}
+                              onChange={(e) =>
+                                activeSentence &&
+                                updateSentenceNote(activeSentence.id, note.id, { marker: e.target.value })
+                              }
+                              style={{ width: "3.2rem", padding: "0.2rem 0.4rem", fontSize: "0.78rem", textAlign: "center" }}
+                            />
+                            <select
+                              value={note.type || "manuscript_variant"}
+                              onChange={(e) =>
+                                activeSentence &&
+                                updateSentenceNote(activeSentence.id, note.id, {
+                                  type: e.target.value as NoteType,
+                                })
+                              }
+                              style={{ padding: "0.2rem 0.4rem", fontSize: "0.78rem" }}
+                            >
+                              <option value="manuscript_variant">manuscript_variant</option>
+                              <option value="grammatical_note">grammatical_note</option>
+                              <option value="source_reference">source_reference</option>
+                              <option value="general">general</option>
+                            </select>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => activeSentence && removeSentenceNote(activeSentence.id, note.id)}
+                            style={{ background: "transparent", border: "none", color: "#b91c1c", cursor: "pointer" }}
+                            title="Remove note"
+                          >
+                            <X style={{ width: "0.85rem", height: "0.85rem" }} />
+                          </button>
+                        </div>
+
+                        {activeSentence && (
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                            <label style={{ fontSize: "0.72rem", color: "var(--muted-ink)" }}>Target Word:</label>
+                            <select
+                              value={note.targetWordIndex != null ? String(note.targetWordIndex) : ""}
+                              onChange={(e) =>
+                                updateSentenceNote(activeSentence.id, note.id, {
+                                  targetWordIndex: e.target.value !== "" ? Number(e.target.value) : undefined,
+                                })
+                              }
+                              style={{ padding: "0.15rem 0.35rem", fontSize: "0.75rem", flex: 1 }}
+                            >
+                              <option value="">Whole Sentence</option>
+                              {activeSentence.tokens.map((tok, tIdx) => (
+                                <option key={tok.id} value={tIdx + 1}>
+                                  Word #{tIdx + 1}: {tok.sourceForm}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+
+                        <textarea
+                          rows={2}
+                          placeholder="BL Cotton MS Tiberius B i reads 'hlaforde'..."
+                          value={note.text}
+                          onChange={(e) =>
+                            activeSentence &&
+                            updateSentenceNote(activeSentence.id, note.id, { text: e.target.value })
+                          }
+                          style={{ fontSize: "0.82rem", width: "100%" }}
+                        />
+                      </div>
+                    ))}
+
+                    <div style={{ display: "flex", gap: "0.5rem" }}>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          activeSentence &&
+                          addNoteToSentence(activeSentence.id, activeTokenIndexInSent >= 0 ? activeTokenIndexInSent + 1 : undefined)
+                        }
+                        className="add-morpheme-btn"
+                        style={{ fontSize: "0.8rem", padding: "0.35rem 0.75rem" }}
+                      >
+                        + Add Note for {activeToken ? `"${cleanHeaderWord}"` : "Sentence"}
+                      </button>
+                    </div>
+                  </div>
+                </fieldset>
+
+                {/* 11. Reader Popup Preview */}
                 <div className="editor-preview-card">
                   <h3>Reader Popup Preview</h3>
                   <p className="editor-preview-word">

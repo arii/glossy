@@ -58,6 +58,8 @@ export function getReadingPassage(document: TextDocument): Passage {
     blocks: (document.sentences ?? []).map((sentence) => ({
       id: sentence.id,
       translation: sentence.translation,
+      notes: sentence.notes,
+      footnotes: sentence.footnotes,
       segments: sentence.words.map((word) => ({
         type: "gloss",
         value: `${word.originalWord}${word.trailingPunctuation ?? ""}`,
