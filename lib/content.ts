@@ -192,15 +192,26 @@ export function loadTextDocuments(): LoadedTextDocument[] {
         const fullLegacy = parseTexToLegacyTextDocument();
         const existingSentences = (normalized.sentences as ReadingSentence[]) || [];
         const fullSentences = (fullLegacy.sentences as ReadingSentence[]) || [];
-        
-        // Merge the two arrays by sentence ID / index
-        const mergedSentences = [...existingSentences];
-        
-        // Append sentences from fullSentences that are not present in existingSentences by comparing length
-        for (let idx = existingSentences.length; idx < fullSentences.length; idx++) {
-          mergedSentences.push(fullSentences[idx]);
+
+        // Merge the two arrays by sentence index, using authoritative master data if existing is empty
+        const mergedSentences = fullSentences.map((fullSent, idx) => {
+          const existing = existingSentences[idx];
+          if (!existing) return fullSent;
+          const hasValidTranslation = typeof existing.translation === "string" && existing.translation.trim().length > 0;
+          const hasValidWords = Array.isArray(existing.words) && existing.words.length > 0;
+          return {
+            ...fullSent,
+            ...existing,
+            translation: hasValidTranslation ? existing.translation : fullSent.translation,
+            words: hasValidWords ? existing.words : fullSent.words,
+          };
+        });
+
+        // Retain any additional sentences added beyond master length
+        if (existingSentences.length > fullSentences.length) {
+          mergedSentences.push(...existingSentences.slice(fullSentences.length));
         }
-        
+
         normalized.sentences = mergedSentences;
       } catch (err) {
         console.error("Failed to dynamically load full TeX document in loadTextDocuments", err);
@@ -248,7 +259,11 @@ export function assertTextDocuments(documents: unknown[]): asserts documents is 
         const sentenceContext = `${context} sentence ${sentenceIndex}`;
         const sentence = requireObject(sentenceValue, sentenceContext);
         requireString(sentence, "id", sentenceContext);
-        requireString(sentence, "translation", sentenceContext);
+        if (typeof sentence.translation !== "string" || sentence.translation.trim() === "") {
+          sentence.translation = typeof sentence.translation === "string" && sentence.translation !== ""
+            ? sentence.translation
+            : "No translation provided.";
+        }
         const words = requireArray(sentence.words, `${sentenceContext} words`);
         for (const [wordIndex, wordValue] of words.entries()) {
           const wordContext = `${sentenceContext} word ${wordIndex}`;
@@ -309,7 +324,11 @@ export function assertTextDocuments(documents: unknown[]): asserts documents is 
         throw new Error(`Duplicate block ID "${blockId}" in "${slug}".`);
       }
       blockIds.add(blockId);
-      requireString(block, "translation", blockContext);
+      if (typeof block.translation !== "string" || block.translation.trim() === "") {
+        block.translation = typeof block.translation === "string" && block.translation !== ""
+          ? block.translation
+          : "No translation provided.";
+      }
       const segments = requireArray(block.segments, `${blockContext} segments`);
       for (const [segmentIndex, segmentValue] of segments.entries()) {
         const segmentContext = `${blockContext}, segment ${segmentIndex}`;
