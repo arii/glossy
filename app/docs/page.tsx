@@ -311,9 +311,10 @@ export default function DocsPage() {
                         type="button"
                         onClick={() => setAbbrOpen(!abbrOpen)}
                         className="docs-accordion-btn"
+                        aria-label="Toggle Glossing Abbreviations reference"
                       >
-                        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", minWidth: 0, flex: 1 }}>
-                          <BookOpen style={{ width: "1.1rem", height: "1.1rem", color: "var(--accent)", flexShrink: 0 }} />
+                        <div style={{ display: "flex", alignItems: "flex-start", gap: "0.65rem", minWidth: 0, flex: 1 }}>
+                          <BookOpen style={{ width: "1.1rem", height: "1.1rem", color: "var(--accent)", flexShrink: 0, marginTop: "0.15rem" }} />
                           <div style={{ minWidth: 0, overflowWrap: "break-word" }}>
                             <h3
                               style={{
@@ -322,28 +323,17 @@ export default function DocsPage() {
                                 fontWeight: 700,
                                 color: "var(--ink)",
                                 fontFamily: "'Charis SIL', Georgia, serif",
+                                lineHeight: 1.3,
                               }}
                             >
-                              Complete Reference: 42 Glossing Abbreviations
+                              Complete Reference: Glossing Abbreviations
                             </h3>
                             <p style={{ margin: "0.15rem 0 0", fontSize: "0.78rem", color: "var(--muted-ink)", overflowWrap: "break-word", wordBreak: "break-word" }}>
                               Defined in Section 2 of <code>references/Voyages_of_Ohthere_Wulfstan.tex</code>
                             </p>
                           </div>
                         </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexShrink: 0, marginLeft: "0.5rem" }}>
-                          <span
-                            style={{
-                              fontSize: "0.75rem",
-                              fontWeight: 700,
-                              color: "var(--accent)",
-                              background: "#f3eadb",
-                              padding: "0.2rem 0.5rem",
-                              borderRadius: "0.25rem",
-                            }}
-                          >
-                            {filteredAbbrs.length} tags
-                          </span>
+                        <div style={{ flexShrink: 0, marginLeft: "0.5rem", color: "var(--muted-ink)" }}>
                           {abbrOpen ? (
                             <ChevronDown style={{ width: "1rem", height: "1rem" }} />
                           ) : (
@@ -744,13 +734,13 @@ export default function DocsPage() {
                           className="docs-step-card"
                           style={{
                             display: "flex",
-                            background: "#fbf7ee",
+                            background: "var(--surface)",
                             border: "1px solid var(--rule)",
-                            borderRadius: "0.35rem",
+                            borderRadius: "0.5rem",
                           }}
                         >
-                          <span className="docs-nav-num arch" style={{ marginTop: "0.15rem" }} data-tina-field={tinaField(step, "num")}>
-                            {step.num}
+                          <span className="docs-step-num" data-tina-field={tinaField(step, "num")}>
+                            {step.num}.
                           </span>
                           <div>
                             <strong
@@ -759,13 +749,16 @@ export default function DocsPage() {
                                 display: "block",
                                 color: "var(--ink)",
                                 fontFamily: "'Charis SIL', Georgia, serif",
+                                fontSize: "0.95rem",
+                                fontWeight: 700,
+                                marginBottom: "0.2rem",
                               }}
                             >
                               {step.title}
                             </strong>
-                            <span data-tina-field={tinaField(step, "description")} style={{ fontSize: "0.82rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
+                            <p data-tina-field={tinaField(step, "description")} style={{ margin: 0, fontSize: "0.82rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
                               {step.description}
-                            </span>
+                            </p>
                           </div>
                         </div>
                       ))}

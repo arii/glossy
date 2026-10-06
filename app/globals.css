@@ -1574,7 +1574,18 @@ h2 {
 
 .docs-step-card {
   gap: 0.75rem;
-  padding: 0.85rem 1rem;
+  padding: 1rem;
+  align-items: flex-start;
+}
+
+.docs-step-num {
+  font-family: "Charis SIL", Georgia, serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--muted-ink);
+  user-select: none;
+  flex-shrink: 0;
+  margin-top: -0.1rem;
 }
 
 .docs-callout-box h4 {
