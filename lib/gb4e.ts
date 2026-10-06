@@ -2,6 +2,7 @@ import type {
   InflectionFeatures,
   InterlinearWord,
   Morpheme,
+  NoteItem,
   PartOfSpeech,
   ReadingSentence,
   TextDocument,
@@ -87,6 +88,13 @@ export function parseGb4e(source: string): Gb4eImport {
 
     const { text: translationText, notes } = extractFootnotes(body.slice(gltAt + 4));
     if (notes.length > 0) footnotes[id] = notes;
+
+    const structuredNotes: NoteItem[] = notes.map((noteText, nIdx) => ({
+      id: `fn-${id}-${nIdx + 1}`,
+      marker: String(nIdx + 1),
+      type: "manuscript_variant",
+      text: noteText,
+    }));
 
     const forms = splitOutsideBraces(lines[0]);
     const glosses = splitOutsideBraces(lines[1]);
@@ -181,6 +189,7 @@ export function parseGb4e(source: string): Gb4eImport {
       id,
       translation: cleanTranslation(translationText),
       footnotes: notes.length > 0 ? notes : undefined,
+      notes: structuredNotes.length > 0 ? structuredNotes : undefined,
       words,
     });
   }

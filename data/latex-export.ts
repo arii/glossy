@@ -87,7 +87,12 @@ ${document.sourceFile?.includes("Voyages") ? "\\addbibresource{Voyages_of_Ohther
       let translationText = sentence.translation;
       if (sentence.footnotes && sentence.footnotes.length > 0) {
         for (const footnote of sentence.footnotes) {
-          translationText += `\\footnote{${footnote}}`;
+          translationText += `\\footnote{${escapeTex(footnote)}}`;
+        }
+      }
+      if (sentence.notes && sentence.notes.length > 0) {
+        for (const note of sentence.notes) {
+          translationText += `\\footnote{${escapeTex(note.text)}}`;
         }
       }
 
@@ -95,6 +100,27 @@ ${document.sourceFile?.includes("Voyages") ? "\\addbibresource{Voyages_of_Ohther
     }
 
     tex += `\\end{xlist}\n\\end{exe}\n`;
+  }
+
+  const allNotes = sentences.flatMap((s, sIdx) => {
+    const sNum = s.id.match(/\d+$/)?.[0] || String(sIdx + 1);
+    const itemNotes = (s.notes || []).map((n) => {
+      let targetWord = "";
+      if (n.targetWordIndex != null && s.words[n.targetWordIndex - 1]) {
+        targetWord = s.words[n.targetWordIndex - 1].originalWord;
+      }
+      return `${sNum}${n.targetWordIndex ? `.${n.targetWordIndex}` : ""} ${targetWord ? `(${targetWord})` : ""}: ${n.text}`;
+    });
+    const fnNotes = (s.footnotes || []).map((f) => `${sNum}: ${f}`);
+    return [...itemNotes, ...fnNotes];
+  });
+
+  if (allNotes.length > 0) {
+    tex += `\n\\section*{Textual Notes}\n\\begin{enumerate}\n`;
+    for (const noteStr of allNotes) {
+      tex += `\\item ${escapeTex(noteStr)}\n`;
+    }
+    tex += `\\end{enumerate}\n`;
   }
 
   if (document.slug?.includes("ohthere") || document.textId === "ohthere") {

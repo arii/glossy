@@ -1,6 +1,7 @@
 "use client";
 
 import { SiteNav } from "../../components/site-nav";
+import { PageHero } from "../../components/page-hero";
 import { SiteFooter } from "../../components/site-footer";
 import { ShieldCheck } from "lucide-react";
 import privacyData from "../../content/pages/privacy.json";
@@ -58,38 +59,14 @@ export default function PrivacyPage() {
           }}
         >
           {/* Header */}
-          <header style={{ borderBottom: "1px solid var(--rule)", paddingBottom: "1.5rem", marginBottom: "2rem" }}>
-            <span
-              data-tina-field={tinaField(page, "eyebrow")}
-              style={{
-                display: "inline-block",
-                fontSize: "0.75rem",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                fontWeight: 700,
-                color: "var(--accent)",
-                marginBottom: "0.5rem",
-              }}
-            >
-              {page.eyebrow || "Privacy & Data Transparency"}
-            </span>
-            <h1
-              data-tina-field={tinaField(page, "heading")}
-              style={{
-                margin: "0 0 0.75rem",
-                fontFamily: "'Charis SIL', Georgia, serif",
-                fontSize: "2.25rem",
-                fontWeight: 700,
-                lineHeight: 1.2,
-                color: "var(--ink)",
-              }}
-            >
-              {page.heading || "Privacy Policy"}
-            </h1>
-            <p data-tina-field={tinaField(page, "description")} style={{ margin: 0, fontSize: "0.95rem", color: "var(--muted-ink)", lineHeight: 1.6 }}>
-              {page.description || "Effective Date: March 2025 · Last Updated: October 2026"}
-            </p>
-          </header>
+          <PageHero
+            eyebrow={page.eyebrow || "Privacy & Data Transparency"}
+            eyebrowDataTinaField={tinaField(page, "eyebrow")}
+            title={page.heading || "Privacy Policy"}
+            titleDataTinaField={tinaField(page, "heading")}
+            description={page.description || "Effective Date: March 2025 · Last Updated: October 2026"}
+            descriptionDataTinaField={tinaField(page, "description")}
+          />
 
           {/* Section: Core Philosophy */}
           <section style={{ marginBottom: "2rem" }}>

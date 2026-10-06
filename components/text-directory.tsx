@@ -141,17 +141,7 @@ export function TextDirectory({
     <div id="corpus-directory" className="corpus-directory-container" style={{ marginTop: "3.5rem" }}>
       {/* Section Header */}
       <div style={{ marginBottom: "1.25rem" }}>
-        <h2
-          style={{
-            fontFamily: "'Charis SIL', Georgia, serif",
-            fontSize: "1.35rem",
-            fontWeight: 700,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: "var(--ink)",
-            margin: "0 0 1.25rem",
-          }}
-        >
+        <h2 className="font-serif text-xl md:text-2xl font-medium text-stone-900 tracking-tight mb-4">
           Old English Corpus &amp; Editions
         </h2>
 
@@ -202,7 +192,7 @@ export function TextDirectory({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(21rem, 1fr))",
+          gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 18rem), 1fr))",
           gap: "1.25rem",
         }}
       >
@@ -217,18 +207,6 @@ export function TextDirectory({
             <div
               key={choice.slug}
               className="workspace-choice-card"
-              style={{
-                background: "#ffffff",
-                border: "1px solid var(--rule)",
-                borderRadius: "0.5rem",
-                padding: "1.25rem",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                minHeight: "13rem",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
-                position: "relative",
-              }}
             >
               <div>
                 {/* Top row: Title and Badges */}
@@ -350,71 +328,92 @@ export function TextDirectory({
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "0.4rem",
+                  flexWrap: "nowrap",
+                  gap: "0.35rem",
                   marginTop: "auto",
                   paddingTop: "0.75rem",
                   position: "relative",
+                  width: "100%",
                 }}
               >
-                <Link
-                  href={`/read/${choice.slug}`}
+                <div
                   style={{
-                    display: "inline-flex",
+                    display: "flex",
                     alignItems: "center",
                     gap: "0.35rem",
-                    padding: "0.38rem 0.75rem",
-                    borderRadius: "0.25rem",
-                    background: "var(--accent)",
-                    color: "#ffffff",
-                    fontSize: "0.82rem",
-                    fontWeight: 600,
-                    textDecoration: "none",
+                    flexShrink: 1,
+                    minWidth: 0,
                   }}
                 >
-                  <BookOpen style={{ width: "0.82rem", height: "0.82rem" }} /> Read
-                </Link>
+                  <Link
+                    href={`/read/${choice.slug}`}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "0.25rem",
+                      minHeight: "40px",
+                      padding: "0.4rem 0.6rem",
+                      borderRadius: "0.25rem",
+                      background: "var(--accent)",
+                      color: "#ffffff",
+                      fontSize: "0.82rem",
+                      fontWeight: 600,
+                      textDecoration: "none",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <BookOpen style={{ width: "0.85rem", height: "0.85rem" }} /> Read
+                  </Link>
 
-                <Link
-                  href={`/edit/${choice.slug}`}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.35rem",
-                    padding: "0.38rem 0.75rem",
-                    borderRadius: "0.25rem",
-                    background: "#ffffff",
-                    border: "1px solid var(--rule)",
-                    color: "var(--ink)",
-                    fontSize: "0.82rem",
-                    fontWeight: 600,
-                    textDecoration: "none",
-                  }}
-                >
-                  <Edit3 style={{ width: "0.82rem", height: "0.82rem" }} /> Edit
-                </Link>
+                  <Link
+                    href={`/edit/${choice.slug}`}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "0.25rem",
+                      minHeight: "40px",
+                      padding: "0.4rem 0.6rem",
+                      borderRadius: "0.25rem",
+                      background: "#ffffff",
+                      border: "1px solid var(--rule)",
+                      color: "var(--ink)",
+                      fontSize: "0.82rem",
+                      fontWeight: 600,
+                      textDecoration: "none",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <Edit3 style={{ width: "0.85rem", height: "0.85rem" }} /> Edit
+                  </Link>
 
-                <button
-                  type="button"
-                  onClick={() => setActiveModalChoice(choice)}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.35rem",
-                    padding: "0.38rem 0.75rem",
-                    borderRadius: "0.25rem",
-                    background: "#ffffff",
-                    border: "1px solid var(--rule)",
-                    color: "var(--ink)",
-                    fontSize: "0.82rem",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                  }}
-                >
-                  <Info style={{ width: "0.82rem", height: "0.82rem" }} /> Cite
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveModalChoice(choice)}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "0.25rem",
+                      minHeight: "40px",
+                      padding: "0.4rem 0.6rem",
+                      borderRadius: "0.25rem",
+                      background: "#ffffff",
+                      border: "1px solid var(--rule)",
+                      color: "var(--ink)",
+                      fontSize: "0.82rem",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <Info style={{ width: "0.85rem", height: "0.85rem" }} /> Cite
+                  </button>
+                </div>
 
                 {/* 3-dot context menu */}
-                <div style={{ marginLeft: "auto", position: "relative" }}>
+                <div style={{ marginLeft: "auto", position: "relative", flexShrink: 0 }}>
                   <button
                     type="button"
                     onClick={(e) => {
@@ -427,14 +426,16 @@ export function TextDirectory({
                       borderRadius: "0.25rem",
                       color: "var(--muted-ink)",
                       cursor: "pointer",
-                      padding: "0.38rem 0.45rem",
+                      minHeight: "44px",
+                      minWidth: "44px",
+                      padding: "0.5rem",
                       display: "inline-flex",
                       alignItems: "center",
                       justifyContent: "center",
                     }}
                     title="More actions"
                   >
-                    <MoreVertical style={{ width: "0.85rem", height: "0.85rem" }} />
+                    <MoreVertical style={{ width: "0.95rem", height: "0.95rem" }} />
                   </button>
 
                   {isMenuOpen && (
@@ -463,8 +464,9 @@ export function TextDirectory({
                         style={{
                           width: "100%",
                           textAlign: "left",
-                          padding: "0.45rem 0.75rem",
-                          fontSize: "0.8rem",
+                          minHeight: "44px",
+                          padding: "0.5rem 0.85rem",
+                          fontSize: "0.82rem",
                           background: "transparent",
                           border: "none",
                           color: "var(--ink)",
@@ -474,7 +476,7 @@ export function TextDirectory({
                           gap: "0.4rem",
                         }}
                       >
-                        <Info style={{ width: "0.8rem", height: "0.8rem" }} /> Scholarly Citation
+                        <Info style={{ width: "0.85rem", height: "0.85rem" }} /> Scholarly Citation
                       </button>
 
                       {(choice.isLocalOnly || choice.hasLocalDraft) && (
@@ -487,8 +489,9 @@ export function TextDirectory({
                           style={{
                             width: "100%",
                             textAlign: "left",
-                            padding: "0.45rem 0.75rem",
-                            fontSize: "0.8rem",
+                            minHeight: "44px",
+                            padding: "0.5rem 0.85rem",
+                            fontSize: "0.82rem",
                             background: "transparent",
                             border: "none",
                             color: "#b91c1c",
@@ -498,7 +501,7 @@ export function TextDirectory({
                             gap: "0.4rem",
                           }}
                         >
-                          <Trash2 style={{ width: "0.8rem", height: "0.8rem" }} />{" "}
+                          <Trash2 style={{ width: "0.85rem", height: "0.85rem" }} />{" "}
                           {choice.isLocalOnly ? "Delete Local Draft" : "Revert edits / Discard Draft"}
                         </button>
                       )}

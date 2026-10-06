@@ -99,10 +99,20 @@ export function sanitizeDraftForTinaMutation(
     });
 
     const footnotesRaw = Array.isArray(s.footnotes) ? s.footnotes : [];
+    const notesRaw = Array.isArray(s.notes) ? s.notes : [];
+    const notes = notesRaw.map((n: Record<string, unknown>) => ({
+      id: String(n.id || ""),
+      targetWordIndex: n.targetWordIndex != null ? Number(n.targetWordIndex) : undefined,
+      marker: n.marker ? String(n.marker) : undefined,
+      type: String(n.type || "general"),
+      text: String(n.text || ""),
+    }));
+
     return {
       id: String(s.id || ""),
       translation: String(s.translation || s.freeTranslation || ""),
       footnotes: footnotesRaw.map((fn: unknown) => String(fn)),
+      notes,
       words,
     };
   });
