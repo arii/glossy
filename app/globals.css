@@ -1,6 +1,6 @@
 :root {
   --ink: #25231f;
-  --muted-ink: #6d685f;
+  --muted-ink: #544e45;
   --paper: #f7f3ea;
   --surface: #fffdf8;
   --rule: #d8d0c1;
@@ -848,7 +848,7 @@ h2 {
 .editor-steps { margin: 0.5rem 0 1rem; padding-left: 1.25rem; color: #57534e; font-size: 0.95rem; }
 .editor-dirty { align-self: center; font-size: 0.9rem; }
 .editor-dirty.is-dirty { color: #b45309; font-weight: 600; }
-.editor-dirty.is-clean { color: #78716c; }
+.editor-dirty.is-clean { color: var(--muted-ink); }
 
 .editor-import { width: 100%; margin-top: 2.5rem; clear: both; }
 .editor-import textarea { font-family: monospace; width: 100%; }
@@ -1568,6 +1568,15 @@ h2 {
   color: var(--ink);
 }
 
+.docs-accordion-content {
+  padding: 1.25rem;
+}
+
+.docs-step-card {
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+}
+
 .docs-callout-box h4 {
   margin: 0 0 0.4rem;
   font: 700 0.8rem Arial, sans-serif;
@@ -1625,11 +1634,14 @@ h2 {
 
 .docs-section-h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: clamp(1.15rem, 3.5vw, 1.5rem);
   font-family: "Charis SIL", "Noto Serif", Georgia, serif;
   font-weight: 700;
   color: var(--ink);
-  line-height: 1.3;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .docs-body {
@@ -1660,7 +1672,7 @@ h2 {
   padding-bottom: 0.6rem;
   border-bottom: 1px solid #332d29;
   margin-bottom: 0.85rem;
-  color: #a8a29e;
+  color: #d6d3d1;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -1861,7 +1873,7 @@ h2 {
   }
 
   .docs-section {
-    padding: 1.25rem 1rem !important;
+    padding: 1.25rem 0.85rem !important;
     max-width: 100% !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
@@ -1871,15 +1883,16 @@ h2 {
   .docs-section-heading {
     flex-wrap: wrap;
     gap: 0.75rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
   }
 
   .docs-section-h2 {
-    font-size: 1.25rem;
-    word-break: break-word;
+    letter-spacing: -0.01em;
   }
 
   .docs-code-tier {
-    padding: 1rem 0.75rem;
+    padding: 0.85rem 0.75rem;
     max-width: 100%;
     min-width: 0;
     overflow-x: auto;
@@ -1890,6 +1903,33 @@ h2 {
   .docs-tier-grid,
   .docs-tier-glosses {
     min-width: 18rem;
+    gap: 0.75rem;
+  }
+
+  .docs-callout-box {
+    padding: 0.85rem 0.85rem;
+  }
+
+  .docs-tier-card {
+    padding: 0.85rem 0.85rem;
+  }
+
+  .docs-accordion-btn {
+    padding: 0.75rem 0.85rem;
+  }
+
+  .docs-accordion-content {
+    padding: 0.85rem 0.75rem;
+  }
+
+  .docs-step-card {
+    padding: 0.75rem 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .docs-table th,
+  .docs-table td {
+    padding: 0.5rem 0.6rem;
   }
 
   .docs-table-wrapper {
