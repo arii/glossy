@@ -5,11 +5,10 @@ import Link from "next/link";
 import { SiteNav } from "../components/site-nav";
 import { TextDirectory, type TextChoice } from "../components/text-directory";
 import { SiteFooter } from "../components/site-footer";
-import { ExternalLink, BookOpen, Edit3, Code2, Scroll } from "lucide-react";
+import { ExternalLink, BookOpen, Edit3, Code2 } from "lucide-react";
 import { useTina, tinaField } from "tinacms/dist/react";
 import homeContentData from "../content/pages/home.json";
 import { BUILT_IN_CORPUS } from "../lib/corpus-registry";
-import { AttributionModal } from "../components/attribution-modal";
 import type { HomePageContent } from "../lib/types";
 
 // Mock interactive token data for live hero preview widget
@@ -126,7 +125,6 @@ export default function Home() {
   });
 
   const page = ((pageData?.homePage || homeContentData) as unknown as HomePageContent) || (DEFAULT_HOME_CONTENT as HomePageContent);
-  const [isAttributionModalOpen, setIsAttributionModalOpen] = useState(false);
 
   const [previewMode, setPreviewMode] = useState<"reader" | "editor">("reader");
   const [selectedTokenIdx, setSelectedTokenIdx] = useState<number>(3); // default to 'hlāforde'
@@ -244,27 +242,6 @@ export default function Home() {
               >
                 <span>{page.secondaryAction?.label || "Explore Corpus ↓"}</span>
               </Link>
-              <button
-                type="button"
-                onClick={() => setIsAttributionModalOpen(true)}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "0.45rem",
-                  padding: "0.7rem 1.25rem",
-                  borderRadius: "0.35rem",
-                  background: "#fbf7ee",
-                  border: "1px solid var(--rule)",
-                  color: "var(--ink)",
-                  fontSize: "0.95rem",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "all 0.15s ease",
-                }}
-              >
-                <Scroll style={{ width: "1rem", height: "1rem", color: "var(--accent)" }} />
-                <span>Attribution & Citation</span>
-              </button>
             </div>
           </div>
 
@@ -640,13 +617,6 @@ export default function Home() {
         </section>
 
       </main>
-
-      <AttributionModal
-        isOpen={isAttributionModalOpen}
-        onClose={() => setIsAttributionModalOpen(false)}
-        content={page}
-        config={page}
-      />
 
       {/* Persistent Global Footer */}
       <SiteFooter />
