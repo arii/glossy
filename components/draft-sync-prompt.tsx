@@ -35,9 +35,18 @@ export function DraftSyncPrompt({
     refreshPendingDrafts();
   }, [refreshPendingDrafts, forceShow, currentSlug]);
 
+  useEffect(() => {
+    if (forceShow) {
+      setIsDismissed(false);
+    }
+  }, [forceShow]);
+
   // Listen for local draft updates in browser window
   useEffect(() => {
-    const handleStorageChange = () => refreshPendingDrafts();
+    const handleStorageChange = () => {
+      refreshPendingDrafts();
+      setIsDismissed(false);
+    };
     window.addEventListener("storage", handleStorageChange);
     window.addEventListener("glossy:drafts-updated", handleStorageChange);
     return () => {
