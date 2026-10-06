@@ -239,50 +239,26 @@ export function GlossEditor({
 
   const storageKey = `glossy_draft_${initialDocument.slug || initialDocument.textId || "ohthere"}`;
 
-  // Ingest from API (/api/master-tex)
+  // Restore from initial master document
   const loadFromMasterTex = useCallback(async () => {
     setIsLoading(true);
     try {
-      const query = new URLSearchParams();
-      if (initialDocument.sourceFile) query.set("sourceFile", initialDocument.sourceFile);
-      if (initialDocument.slug) query.set("slug", initialDocument.slug);
-
-      const response = await fetch(`/api/master-tex?${query.toString()}`);
-      if (!response.ok) {
-        const fallback = textDocumentToEditorDoc(initialDocument);
-        setDocumentState(fallback);
-        const dataStr = JSON.stringify(fallback);
-        setSavedSnapshot(dataStr);
-        try {
-          window.localStorage.setItem(storageKey, dataStr);
-        } catch {}
-        if (fallback.sentences.length > 0) {
-          setActiveSentenceId(fallback.sentences[0].id);
-          setActiveTokenId(fallback.sentences[0].tokens[0]?.id || "");
-        }
-        setSaveStatus({ kind: "success", message: "Loaded document directly from corpus definition!" });
-        return;
-      }
-
-      const data = (await response.json()) as TextDocument;
-      const editorDoc = textDocumentToEditorDoc(data);
-
-      setDocumentState(editorDoc);
-      const dataStr = JSON.stringify(editorDoc);
+      const fallback = textDocumentToEditorDoc(initialDocument);
+      setDocumentState(fallback);
+      const dataStr = JSON.stringify(fallback);
       setSavedSnapshot(dataStr);
       try {
         window.localStorage.setItem(storageKey, dataStr);
       } catch {}
-
-      if (editorDoc.sentences.length > 0) {
-        setActiveSentenceId(editorDoc.sentences[0].id);
-        setActiveTokenId(editorDoc.sentences[0].tokens[0]?.id || "");
+      if (fallback.sentences.length > 0) {
+        setActiveSentenceId(fallback.sentences[0].id);
+        setActiveTokenId(fallback.sentences[0].tokens[0]?.id || "");
       }
-      setSaveStatus({ kind: "success", message: "Successfully loaded document directly from Master TeX source!" });
+      setSaveStatus({ kind: "success", message: "Restored document to authoritative master edition!" });
     } catch (err) {
       setSaveStatus({
         kind: "error",
-        message: err instanceof Error ? err.message : "An error occurred while loading the TeX file.",
+        message: err instanceof Error ? err.message : "An error occurred while restoring the master edition.",
       });
     } finally {
       setIsLoading(false);
@@ -542,21 +518,20 @@ export function GlossEditor({
     const legacyDoc = editorDocToTextDocument(documentState);
 
     try {
-      const apiResponse = await fetch("/api/save-document", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          slug: initialDocument.slug,
-          fileName: initialDocument.fileName || initialDocument.textId || "ohthere",
-          document: legacyDoc,
-        }),
-      });
+      // 1. Try local server-side save if available (e.g. running local dev server)
+      try {
+        await fetch("/api/save-document", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            slug: initialDocument.slug,
+            fileName: initialDocument.fileName || initialDocument.textId || "ohthere",
+            document: legacyDoc,
+          }),
+        });
+      } catch {}
 
-      if (!apiResponse.ok) {
-        const errorData = await apiResponse.json();
-        throw new Error(errorData.error || "Failed to save document to server filesystem.");
-      }
-
+      // 2. Try Tina GraphQL if datalayer is running
       try {
         await fetch(
           process.env.NEXT_PUBLIC_TINA_LOCAL_URL ?? "http://localhost:4001/graphql",
@@ -578,11 +553,16 @@ export function GlossEditor({
         );
       } catch {}
 
+      // 3. Persist client-side snapshot in browser storage
       const serialized = JSON.stringify(documentState);
       setSavedSnapshot(serialized);
+      try {
+        window.localStorage.setItem(storageKey, serialized);
+      } catch {}
+
       setSaveStatus({
         kind: "success",
-        message: `Saved document to master TeX source and TinaCMS repository successfully!`,
+        message: `Saved changes to browser storage! Use 'Download gb4e TeX' or 'Download JSON' for persistent local files.`,
       });
     } catch (error) {
       setSaveStatus({
@@ -617,19 +597,16 @@ export function GlossEditor({
     if (isProtectedText) return;
     setIsDeleting(true);
     try {
-      const res = await fetch("/api/delete-document", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          slug: initialDocument.slug,
-          fileName: initialDocument.fileName || initialDocument.textId,
-        }),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || "Failed to delete text.");
-      }
+      try {
+        await fetch("/api/delete-document", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            slug: initialDocument.slug,
+            fileName: initialDocument.fileName || initialDocument.textId,
+          }),
+        });
+      } catch {}
 
       try {
         localStorage.removeItem(storageKey);

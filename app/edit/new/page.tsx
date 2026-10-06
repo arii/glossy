@@ -350,20 +350,23 @@ export default function NewTextPage() {
         blocks: [],
       };
 
-      const response = await fetch("/api/save-document", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          slug: slug,
-          fileName: slug,
-          document: documentPayload,
-        }),
-      });
+      // 1. Try local server-side save if available (e.g. running local dev server)
+      try {
+        await fetch("/api/save-document", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            slug: slug,
+            fileName: slug,
+            document: documentPayload,
+          }),
+        });
+      } catch {}
 
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || "Failed to save new text.");
-      }
+      // 2. Persist to browser storage
+      try {
+        window.localStorage.setItem(`glossy_draft_${slug}`, JSON.stringify(documentPayload));
+      } catch {}
 
       setStatusMessage({
         kind: "success",

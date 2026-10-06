@@ -38,18 +38,13 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
 
     setDeletingSlug(choice.slug);
     try {
-      const res = await fetch("/api/delete-document", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: choice.slug }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        alert(data.error || "Failed to remove text.");
-        setDeletingSlug(null);
-        return;
-      }
+      try {
+        await fetch("/api/delete-document", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ slug: choice.slug }),
+        });
+      } catch {}
 
       try {
         localStorage.removeItem(`glossy-editor-snapshot-v2-${choice.slug}`);
@@ -58,7 +53,7 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
       setChoices((prev) => prev.filter((item) => item.slug !== choice.slug));
       router.refresh();
     } catch {
-      alert("Network error while deleting text.");
+      alert("Error while removing text.");
     } finally {
       setDeletingSlug(null);
     }

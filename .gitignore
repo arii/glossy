@@ -3,8 +3,9 @@
 .env.*
 !.env.example
 .next/
+out/
 node_modules/
-.open-next
+.wrangler/
 /public/admin/
 /tina/__generated__/
 *.tsbuildinfo

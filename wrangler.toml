@@ -1,13 +1,11 @@
 name = "glossy"
-main = ".open-next/worker.js"
 compatibility_date = "2025-03-01"
-compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
 [assets]
-directory = ".open-next/assets"
+directory = "out"
 binding = "ASSETS"
+not_found_handling = "single-page-application"
 
 [vars]
 NEXT_PUBLIC_TINA_CLIENT_ID = "cc29fe7b-9d48-4d53-83f1-115a9f5f48b8"
 NEXT_PUBLIC_TINA_BRANCH = "main"
-TINA_BRANCH = "main"
