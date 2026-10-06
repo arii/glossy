@@ -185,7 +185,6 @@ export function ArticleClient({
   const author = articleFromTina?.author || initialArticle?.author;
   const date = articleFromTina?.date || initialArticle?.date;
   const coverImage = articleFromTina?.coverImage || initialArticle?.coverImage;
-  const summary = articleFromTina?.summary || initialArticle?.summary;
   const bodyContent = articleFromTina?.body;
   const rawMarkdownContent = initialArticle?.content;
 
@@ -249,7 +248,7 @@ export function ArticleClient({
                   gap: "0.25rem",
                 }}
               >
-                ← Articles &amp; Blog
+                ← Philology &amp; Digital Humanities Journal
               </Link>
             </div>
 
@@ -277,7 +276,7 @@ export function ArticleClient({
                     fontSize: "0.82rem",
                     color: "var(--muted-ink)",
                     fontFamily: "monospace",
-                    marginBottom: summary ? "1rem" : 0,
+                    marginBottom: 0,
                   }}
                 >
                   {author && (
@@ -296,21 +295,6 @@ export function ArticleClient({
                     </time>
                   )}
                 </div>
-              )}
-
-              {summary && (
-                <p
-                  data-tina-field={articleFromTina ? tinaField(articleFromTina, "summary") : undefined}
-                  style={{
-                    fontSize: "1.1rem",
-                    color: "var(--muted-ink)",
-                    margin: 0,
-                    lineHeight: 1.6,
-                    fontStyle: "italic",
-                  }}
-                >
-                  {summary}
-                </p>
               )}
             </header>
 

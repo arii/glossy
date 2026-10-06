@@ -22,7 +22,7 @@ export default function ArticlesIndexPage() {
               marginBottom: "0.5rem",
             }}
           >
-            Articles &amp; Blog
+            Philology &amp; Digital Humanities Journal
           </span>
           <h1
             style={{

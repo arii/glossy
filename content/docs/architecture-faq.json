@@ -1,17 +1,16 @@
 {
   "title": "Documentation & Reference Guides",
   "eyebrow": "Linguistic Standards & System Architecture",
-  "description": "Comprehensive reference guide split into linguistic editorial standards (Leipzig glossing, canonical OE headwords, Wiktionary/IPA) and system engineering architecture (local-first draft persistence, TinaCMS Git synchronization, automated QA test suites).",
+  "description": "Comprehensive reference guide for Leipzig interlinear glossing standards, morphological tagging, Wiktionary citation rules, and system architecture.",
   "canonicalRuleTitle": "Quick Canonical Rule",
   "canonicalRuleDescription": "All Old English adjectives default to Masculine Nominative Singular Strong citation form. Numerals 2 & 3 default to twēgen and þrīe.",
-  "architectureSpecTitle": "Data Pipeline & Verification",
-  "architectureSpecDescription": "Edits autosave locally to versioned draft envelopes (glossy:draft:v1:<slug>), deliberate saves register in the pending manifest, and authenticated TinaCMS sessions commit drafts to the Git repository.",
+  "architectureSpecTitle": "Data Pipeline & Architecture",
+  "architectureSpecDescription": "Edits autosave locally, deliberate saves register in the pending draft manifest, and authenticated TinaCMS sessions commit drafts to the Git repository.",
   "l1Intro": "An interlinear gloss is a standard linguistic format that presents original historical text with word-by-word and morpheme-by-morpheme grammatical breakdowns aligned directly underneath:",
   "l1TierHeaderTitle": "Three-Tier Interlinear Structure",
-  "l1TierHeaderBadge": "Leipzig Glossing Rules",
-  "l1TierTokens": "Ōhthere | sǣ-d-e | his hlāford-e",
-  "l1TierGlosses": "Ohthere | say-PST-IND.3SG | his.GEN lord-DAT.SG",
-  "l1TierTranslation": "“Ohthere said to his lord, King Alfred...”",
+  "l1TierTokens": "Nū | scylun | hergan | heofonrīces | Uard",
+  "l1TierGlosses": "now | must-PRS.PL | praise-INF | kingdom_of_heaven-GEN.SG | Guardian-ACC.SG",
+  "l1TierTranslation": "“Now we must praise the Guardian of the heavenly kingdom...”",
   "l2Paragraph1": "In Old English, every single adjective inflects into over 15 distinct surface endings depending on gender (masculine, feminine, neuter), grammatical case (nominative, accusative, genitive, dative, instrumental), number (singular, plural), and declension (strong vs weak).",
   "l2Paragraph2": "For instance, the word for all occurs in the text as eall, ealne, ealles, ealra, eallum, and ealle. Standard dictionaries (Bosworth-Toller, Sweet, Clark Hall, Wiktionary) universally choose the Masculine Nominative Singular Strong form (eall) as the single authoritative headword.",
   "l2CalloutTitle": "Ja/Jō-stem Adjectives Retaining Base \"-e\"",
@@ -23,9 +22,8 @@
   "l4IpaTitle": "IPA Phonetic Transcription Standard",
   "l4IpaSubtitle": "Pronunciation keys aligned with West Saxon phonology",
   "l4IpaIntro": "Phonetic transcriptions follow the International Phonetic Alphabet standards established for West Saxon Old English:",
-  "a1Intro": "Glossy allows scholars and learners to add any Old English text to the digital corpus at /edit/new. When new sentences are pasted (or loaded via classic presets like Beowulf: Prologue, Cædmon's Hymn, or The Wanderer):",
+  "a1Intro": "Glossy allows scholars and learners to add any Old English text to the digital corpus via + New Text. When new sentences are pasted or loaded via classic presets:",
   "a2Intro": "Glossy provides a reliable local-first persistence and publishing workflow to ensure seamless editing and Git-backed content management:",
-  "a3Intro": "Glossy maintains automated verification scripts to ensure 100% data integrity between raw LaTeX manuscripts, structured JSON content, and dictionary headwords:",
   "sections": [
     {
       "id": "section-l1",
@@ -74,14 +72,6 @@
       "num": "2",
       "eyebrow": "Architecture & Storage",
       "title": "Local Drafts, Manifest Tracking, & TinaCMS Publishing"
-    },
-    {
-      "id": "section-a3",
-      "domain": "architecture",
-      "domainNum": "A3",
-      "num": "3",
-      "eyebrow": "Quality Assurance",
-      "title": "Automated Quality Verification Suite"
     }
   ],
   "abbreviations": [
@@ -127,38 +117,6 @@
     { "abbr": "SUP", "name": "superlative", "desc": "Superlative degree (-ost, -est, -mest, e.g. norþmest)", "category": "Gender & Mood" },
     { "abbr": "THM", "name": "theme vowel", "desc": "Formative thematic vowel in Class 2 weak verbs (-i-, -o-)", "category": "Affixes & Morphemes" },
     { "abbr": "WK", "name": "weak declension (def.)", "desc": "Weak adjectival or nominal inflection (after article)", "category": "Declension" }
-  ],
-  "verificationTools": [
-    {
-      "name": "Lemma Accuracy Audit",
-      "command": "npm run validate:lemmas",
-      "target": "Audits tokens in the corpus verifying canonical lemma compliance and Wiktionary targets."
-    },
-    {
-      "name": "Source Alignment Validator",
-      "command": "npm run validate:source",
-      "target": "Validates token and gloss alignment across source-backed texts."
-    },
-    {
-      "name": "Draft Persistence Unit Tests",
-      "command": "npm run test:drafts",
-      "target": "Validates draft envelope storage, slug sanitization, and collision prevention."
-    },
-    {
-      "name": "Dictionary Sync",
-      "command": "npm run sync:dictionary",
-      "target": "Generates clean, normalized dictionary files in content/dictionary/."
-    },
-    {
-      "name": "Content Pre-compiler",
-      "command": "npm run compile:content",
-      "target": "Pre-compiles master TeX source into structured JSON."
-    },
-    {
-      "name": "TypeScript Typecheck",
-      "command": "npm run typecheck",
-      "target": "Strict type safety validation across the entire application codebase."
-    }
   ],
   "numeralCards": [
     {
@@ -233,19 +191,19 @@
   ],
   "storageTiers": [
     {
-      "tier": "Tier 1",
-      "timing": "300ms autosave",
+      "tier": "Storage Layer 1",
+      "timing": "Autosave",
       "title": "Browser Local Draft",
-      "description": "Every edit is automatically saved with a 300ms debounce to localStorage as a versioned draft envelope (glossy:draft:v1:<slug>), protecting working edits against accidental reloads."
+      "description": "Every edit is automatically saved locally to protect working edits against accidental reloads."
     },
     {
-      "tier": "Tier 2",
+      "tier": "Storage Layer 2",
       "timing": "Save Action",
       "title": "Pending Draft Manifest",
-      "description": "Clicking Save draft records the document in the glossy_pending_drafts manifest with an updated content hash and timestamp."
+      "description": "Clicking Save draft registers the document in the pending draft manifest with an updated content hash and timestamp."
     },
     {
-      "tier": "Tier 3",
+      "tier": "Storage Layer 3",
       "timing": "Authenticated Sign-In",
       "title": "TinaCMS Git Commit",
       "description": "Signing in through Tina Admin allows committing pending drafts directly to the Git-backed repository."

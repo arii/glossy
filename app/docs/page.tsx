@@ -46,7 +46,6 @@ const DOCS_PAGE_QUERY = `
       l4IpaIntro
       a1Intro
       a2Intro
-      a3Intro
       sections {
         id
         domain
@@ -66,11 +65,6 @@ const DOCS_PAGE_QUERY = `
         title
         description
         isFullWidth
-      }
-      verificationTools {
-        name
-        command
-        target
       }
       ingestionSteps {
         num
@@ -132,7 +126,6 @@ export default function DocsPage() {
   const secL4 = sections.find((s) => s.id === "section-l4");
   const secA1 = sections.find((s) => s.id === "section-a1");
   const secA2 = sections.find((s) => s.id === "section-a2");
-  const secA3 = sections.find((s) => s.id === "section-a3");
 
   const filteredAbbrs = abbreviations.filter((item) => {
     const matchCat = selectedCategory === "All" || item.category === selectedCategory;
@@ -166,7 +159,7 @@ export default function DocsPage() {
           eyebrowDataTinaField={tinaField(docs, "eyebrow")}
           title={pageTitle}
           titleDataTinaField={tinaField(docs, "title")}
-          description={docs.description || "Comprehensive guide to Leipzig interlinear glossing standards, morphological tagging, Wiktionary citation rules, and system architecture."}
+          description={docs.description || "Comprehensive reference guide for Leipzig interlinear glossing standards, morphological tagging, Wiktionary citation rules, and system architecture."}
           descriptionDataTinaField={tinaField(docs, "description")}
         />
 
@@ -223,7 +216,6 @@ export default function DocsPage() {
                 <div className="docs-toc-group">
                   <div className="docs-toc-group-header">
                     <span>Linguistics &amp; Editorial</span>
-                    <span>{linguisticsSections.length} Items</span>
                   </div>
                   {linguisticsSections.map((sec) => (
                     <button
@@ -241,7 +233,6 @@ export default function DocsPage() {
                 <div className="docs-toc-group">
                   <div className="docs-toc-group-header">
                     <span>System Architecture</span>
-                    <span>{architectureSections.length} Items</span>
                   </div>
                   {architectureSections.map((sec) => (
                     <button
@@ -289,28 +280,25 @@ export default function DocsPage() {
                         <span data-tina-field={tinaField(docs, "l1TierHeaderTitle")}>
                           {docs.l1TierHeaderTitle || "Three-Tier Interlinear Structure"}
                         </span>
-                        <span data-tina-field={tinaField(docs, "l1TierHeaderBadge")}>
-                          {docs.l1TierHeaderBadge || "Leipzig Glossing Rules"}
-                        </span>
                       </div>
                       <div className="docs-tier-grid" data-tina-field={tinaField(docs, "l1TierTokens")}>
-                        {(docs.l1TierTokens || "Ōhthere | sǣ-d-e | his hlāford-e").split("|").map((token, i) => (
+                        {(docs.l1TierTokens || "Nū | scylun | hergan | heofonrīces | Uard").split("|").map((token, i) => (
                           <div key={i}>{token.trim()}</div>
                         ))}
                       </div>
                       <div className="docs-tier-glosses" data-tina-field={tinaField(docs, "l1TierGlosses")}>
-                        {(docs.l1TierGlosses || "Ohthere | say-PST-IND.3SG | his.GEN lord-DAT.SG").split("|").map((gloss, i) => (
+                        {(docs.l1TierGlosses || "now | must-PRS.PL | praise-INF | kingdom_of_heaven-GEN.SG | Guardian-ACC.SG").split("|").map((gloss, i) => (
                           <div key={i} style={{ color: i === 0 ? "#d6d3d1" : "#fde68a" }}>
                             {gloss.trim()}
                           </div>
                         ))}
                       </div>
                       <div className="docs-tier-trans" data-tina-field={tinaField(docs, "l1TierTranslation")}>
-                        {docs.l1TierTranslation || "“Ohthere said to his lord, King Alfred...”"}
+                        {docs.l1TierTranslation || "“Now we must praise the Guardian of the heavenly kingdom...”"}
                       </div>
                     </div>
 
-                    {/* 37 Abbreviations Reference */}
+                    {/* Glossing Abbreviations Reference */}
                     <div style={{ marginTop: "1.5rem" }}>
                       <button
                         type="button"
@@ -333,9 +321,6 @@ export default function DocsPage() {
                             >
                               Complete Reference: Glossing Abbreviations
                             </h3>
-                            <p style={{ margin: "0.15rem 0 0", fontSize: "0.78rem", color: "var(--muted-ink)", overflowWrap: "break-word", wordBreak: "break-word" }}>
-                              Defined in Section 2 of <code>references/Voyages_of_Ohthere_Wulfstan.tex</code>
-                            </p>
                           </div>
                         </div>
                         <div style={{ flexShrink: 0, marginLeft: "0.5rem", color: "var(--muted-ink)" }}>
@@ -725,7 +710,7 @@ export default function DocsPage() {
 
                   <div className="docs-body">
                     <p data-tina-field={tinaField(docs, "a1Intro")}>
-                      {docs.a1Intro || "Glossy allows scholars and learners to add any Old English text to the digital corpus at /edit/new. When new sentences are pasted (or loaded via classic presets like Beowulf: Prologue, Cædmon's Hymn, or The Wanderer):"}
+                      {docs.a1Intro || "Glossy allows scholars and learners to add any Old English text to the digital corpus via + New Text. When new sentences are pasted or loaded via classic presets:"}
                     </p>
 
                     <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "1rem" }}>
@@ -842,63 +827,6 @@ export default function DocsPage() {
                           </div>
                         </div>
                       ))}
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section A3: Automated Verification Suite */}
-                <section id="section-a3" className="docs-section">
-                  <div className="docs-section-heading">
-                    <span className="docs-section-badge" style={{ background: "#334155" }}>
-                      {secA3?.domainNum || "A3"}
-                    </span>
-                    <div>
-                      <p className="docs-section-eyebrow" data-tina-field={secA3 ? tinaField(secA3, "eyebrow") : undefined} style={{ color: "#334155" }}>
-                        {secA3?.eyebrow || "Quality Assurance"}
-                      </p>
-                      <h2 className="docs-section-h2" data-tina-field={secA3 ? tinaField(secA3, "title") : undefined}>
-                        {secA3?.title || "Automated Quality Verification Suite"}
-                      </h2>
-                    </div>
-                  </div>
-
-                  <div className="docs-body">
-                    <p data-tina-field={tinaField(docs, "a3Intro")}>
-                      {docs.a3Intro || "Glossy maintains automated verification scripts to ensure 100% data integrity between raw LaTeX manuscripts, structured JSON content, and dictionary headwords:"}
-                    </p>
-
-                    <div className="docs-table-wrapper">
-                      <table className="docs-table">
-                        <thead>
-                          <tr>
-                            <th style={{ width: "12rem" }}>Tool / Script</th>
-                            <th style={{ width: "15rem" }}>Terminal Command</th>
-                            <th>Function &amp; Target</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {(
-                            (docs.verificationTools as Array<{
-                              name: string;
-                              command: string;
-                              target: string;
-                            }>) ||
-                            (docsData.verificationTools as Array<{
-                              name: string;
-                              command: string;
-                              target: string;
-                            }>) || []
-                          ).map((t, idx) => (
-                            <tr key={idx} data-tina-field={tinaField(t)}>
-                              <td data-tina-field={tinaField(t, "name")} style={{ fontWeight: 600 }}>{t.name}</td>
-                              <td>
-                                <span data-tina-field={tinaField(t, "command")} className="docs-tag-badge">{t.command}</span>
-                              </td>
-                              <td data-tina-field={tinaField(t, "target")} style={{ color: "var(--muted-ink)" }}>{t.target}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
                     </div>
                   </div>
                 </section>
