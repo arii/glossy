@@ -1,0 +1,16 @@
+{
+  "pageId": "attribution",
+  "title": "Scholarly Attribution & Citation Standards",
+  "eyebrow": "Academic Citation",
+  "heading": "Scholarly Attribution",
+  "description": "Select your preferred scholarly citation standard below. All formats capture digital platform provenance alongside manuscript witness attribution.",
+  "platformCreator": "Ariel Anders",
+  "defaultEditor": "Tyler Lemon",
+  "editionDate": "2026",
+  "booktitle": "Glossy: Digital Scholarly Editions of Old English Interlinear Texts",
+  "linguisticPackage": "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing",
+  "bibtexTemplate": "@incollection{{{bibtexKey}},\n  author       = {{{author}}},\n  title        = {{{{title}}}},\n  booktitle    = {{{booktitle}}},\n  year         = {{{year}}},\n  note         = {Digital platform created by {{platformCreator}}; {{editorNote}}. Interlinear glossing following Leipzig standards with gb4e LaTeX formatting},\n  url          = {{{url}}}\n}",
+  "unifiedTemplate": "{{author}}. {{year}}. {{title}}. In {{booktitle}}. Digital platform created by {{platformCreator}}. Source/Witness: {{source}}. {{linguisticPackage}}.",
+  "apaTemplate": "{{author}}. ({{year}}). {{title}} [Digital interlinear edition]. Glossy Old English Corpus. Platform created by {{platformCreator}}. {{source}}.",
+  "chicagoTemplate": "{{author}}, eds. {{year}}. \"{{title}}.\" {{booktitle}}. Platform created by {{platformCreator}}. Source: {{source}}."
+}

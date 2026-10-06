@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { installSafeJsonGlobal } from "../lib/safe-json";
+import { isWorkspaceSlug } from "../lib/local-drafts";
 
 type SiteNavProps = {
   current?: "home" | "read" | "edit" | "docs" | "new";
@@ -13,26 +14,46 @@ const DEFAULT_SLUG = "ohthere";
 const SLUG_STORAGE_KEY = "glossy_active_slug";
 
 export function SiteNav({ current, slug }: SiteNavProps) {
-  const [activeSlug, setActiveSlug] = useState<string>(slug || DEFAULT_SLUG);
+  const [activeSlug, setActiveSlug] = useState<string>(() => {
+    if (current === "home") return DEFAULT_SLUG;
+    return slug || DEFAULT_SLUG;
+  });
 
   useEffect(() => {
     installSafeJsonGlobal();
+
+    if (current === "home") {
+      setActiveSlug(DEFAULT_SLUG);
+      try {
+        const cachedSlug = window.localStorage.getItem(SLUG_STORAGE_KEY);
+        if (cachedSlug && !isWorkspaceSlug(cachedSlug)) {
+          window.localStorage.removeItem(SLUG_STORAGE_KEY);
+        }
+      } catch {}
+      return;
+    }
+
     if (slug && slug.trim()) {
       setActiveSlug(slug);
-      try {
-        window.localStorage.setItem(SLUG_STORAGE_KEY, slug);
-      } catch {}
+      if (isWorkspaceSlug(slug)) {
+        try {
+          window.localStorage.setItem(SLUG_STORAGE_KEY, slug);
+        } catch {}
+      }
     } else {
       try {
         const cachedSlug = window.localStorage.getItem(SLUG_STORAGE_KEY);
-        if (cachedSlug && cachedSlug.trim()) {
+        if (cachedSlug && cachedSlug.trim() && isWorkspaceSlug(cachedSlug)) {
           setActiveSlug(cachedSlug);
+        } else if (cachedSlug) {
+          window.localStorage.removeItem(SLUG_STORAGE_KEY);
+          setActiveSlug(DEFAULT_SLUG);
         }
       } catch {}
     }
-  }, [slug]);
+  }, [current, slug]);
 
-  const targetSlug = slug || activeSlug || DEFAULT_SLUG;
+  const targetSlug = current === "home" ? DEFAULT_SLUG : (slug || activeSlug || DEFAULT_SLUG);
 
   return (
     <header className="global-site-header">

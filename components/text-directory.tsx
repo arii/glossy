@@ -1,25 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Trash2,
   BookOpen,
   Edit3,
   Info,
   MoreVertical,
-  Upload,
   Search,
-  Plus,
   Lock,
 } from "lucide-react";
 import { AttributionModal } from "./attribution-modal";
-import { safeJsonParse } from "../lib/safe-json";
-import type { TextDocument } from "../lib/types";
 import {
   listLocalDrafts,
   deleteLocalDraft,
-  createLocalDocument,
 } from "../lib/local-drafts";
 import { isProtectedSlug, getBuiltInMetadata } from "../lib/corpus-registry";
 
@@ -43,7 +38,6 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
   const [activeModalChoice, setActiveModalChoice] = useState<TextChoice | null>(null);
   const [openMenuSlug, setOpenMenuSlug] = useState<string | null>(null);
   const [filterQuery, setFilterQuery] = useState<string>("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const reloadCorpus = useCallback(() => {
     if (typeof window === "undefined") return;
@@ -125,77 +119,6 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const content = event.target?.result as string;
-        if (!content) return;
-
-        let parsedDoc: TextDocument | null = null;
-        if (file.name.endsWith(".json")) {
-          parsedDoc = safeJsonParse<TextDocument>(content);
-        } else {
-          const lines = content.split(/\r?\n/).filter((l) => l.trim().length > 0);
-          const rawSlug = file.name
-            .replace(/\.[^/.]+$/, "")
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/^-+|-+$/g, "");
-          parsedDoc = {
-            title: file.name.replace(/\.[^/.]+$/, ""),
-            slug: rawSlug,
-            textId: rawSlug,
-            language: "Old English",
-            author: "Imported Document",
-            source: "Local Upload",
-            sourceFile: file.name,
-            status: "draft",
-            blocks: [],
-            sentences: lines.map((line, idx) => ({
-              id: `s-${idx + 1}`,
-              translation: "",
-              words: line.split(/\s+/).map((w, wIdx) => ({
-                id: `w-${idx + 1}-${wIdx + 1}`,
-                originalWord: w,
-                morphologicalGloss: "",
-              })),
-            })),
-          };
-        }
-
-        if (!parsedDoc || !parsedDoc.title || !parsedDoc.sentences) {
-          alert("Invalid file format. Please upload a valid Glossy JSON document or plain text file.");
-          return;
-        }
-
-        const res = createLocalDocument({
-          title: parsedDoc.title,
-          slug: parsedDoc.slug || parsedDoc.textId,
-          author: parsedDoc.author,
-          source: parsedDoc.source || "Local Upload",
-          sentences: parsedDoc.sentences,
-          overwrite: true,
-        });
-
-        if (!res.ok) {
-          alert(`Upload failed: ${res.error}`);
-          return;
-        }
-
-        alert(`Added "${parsedDoc.title}" to this browser's local drafts. (To publish, sign in via Tina Admin.)`);
-        reloadCorpus();
-      } catch {
-        alert("Failed to parse uploaded file.");
-      }
-    };
-    reader.readAsText(file);
-    e.target.value = "";
-  };
-
   const filteredChoices = choices.filter((c) => {
     if (!filterQuery.trim()) return true;
     const q = filterQuery.toLowerCase();
@@ -265,57 +188,6 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
                 boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
               }}
             />
-          </div>
-
-          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileUpload}
-              accept=".json,.txt"
-              style={{ display: "none" }}
-            />
-
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.4rem",
-                padding: "0.5rem 0.85rem",
-                borderRadius: "0.35rem",
-                border: "1px solid var(--rule)",
-                background: "#ffffff",
-                color: "var(--ink)",
-                fontSize: "0.82rem",
-                fontWeight: 600,
-                cursor: "pointer",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
-              }}
-              title="Upload a JSON or plain text file into your local browser workspace"
-            >
-              <Upload style={{ width: "0.85rem", height: "0.85rem" }} /> Upload JSON / File
-            </button>
-
-            <Link
-              href="/edit/new"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.4rem",
-                padding: "0.5rem 0.95rem",
-                borderRadius: "0.35rem",
-                background: "var(--accent)",
-                color: "#ffffff",
-                fontSize: "0.82rem",
-                fontWeight: 600,
-                textDecoration: "none",
-                boxShadow: "0 1px 3px rgba(123, 63, 42, 0.2)",
-              }}
-            >
-              <Plus style={{ width: "0.85rem", height: "0.85rem" }} /> + Ingest New Text
-            </Link>
           </div>
         </div>
       </div>

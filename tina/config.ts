@@ -152,6 +152,9 @@ export default defineConfig({
           router: ({ document }) => {
             if (document._sys.filename === "home") return "/";
             if (document._sys.filename === "ingest") return "/edit/new";
+            if (document._sys.filename === "privacy") return "/privacy";
+            if (document._sys.filename === "about") return "/about";
+            if (document._sys.filename === "attribution") return "/about";
             return `/${document._sys.filename}`;
           },
         },
@@ -179,6 +182,55 @@ export default defineConfig({
               { type: "string", name: "href", label: "Link URL" },
             ],
           },
+          { type: "string", name: "privacySummaryTitle", label: "Privacy Summary Title" },
+          { type: "string", name: "privacySummaryText", label: "Privacy Summary Text", ui: { component: "textarea" } },
+          {
+            type: "object",
+            name: "privacySections",
+            label: "Privacy Sections",
+            list: true,
+            ui: {
+              itemProps: (item) => ({ label: `${item?.num || "#"}. ${item?.title || "Section"}` }),
+            },
+            fields: [
+              { type: "string", name: "num", label: "Section Number" },
+              { type: "string", name: "title", label: "Section Title" },
+              { type: "string", name: "content", label: "Section Content", ui: { component: "textarea" } },
+              { type: "string", name: "bullets", label: "Bullet Points", list: true },
+            ],
+          },
+          { type: "string", name: "missionTitle", label: "About: Mission Title" },
+          { type: "string", name: "missionText", label: "About: Mission Text Paragraph 1", ui: { component: "textarea" } },
+          { type: "string", name: "missionText2", label: "About: Mission Text Paragraph 2", ui: { component: "textarea" } },
+          { type: "string", name: "capabilitiesTitle", label: "About: Capabilities Title" },
+          {
+            type: "object",
+            name: "capabilities",
+            label: "About: Capabilities",
+            list: true,
+            ui: {
+              itemProps: (item) => ({ label: item?.title || "Capability" }),
+            },
+            fields: [
+              { type: "string", name: "title", label: "Title" },
+              { type: "string", name: "description", label: "Description", ui: { component: "textarea" } },
+            ],
+          },
+          { type: "string", name: "maintainersTitle", label: "About: Maintainers Title" },
+          { type: "string", name: "maintainerAriel", label: "About: Maintainer Ariel", ui: { component: "textarea" } },
+          { type: "string", name: "maintainerTyler", label: "About: Maintainer Tyler", ui: { component: "textarea" } },
+          { type: "string", name: "maintainerLicense", label: "About: License", ui: { component: "textarea" } },
+          { type: "string", name: "architectureTitle", label: "About: Architecture Title" },
+          { type: "string", name: "architectureItems", label: "About: Architecture Items", list: true },
+          { type: "string", name: "platformCreator", label: "Attribution: Platform Creator" },
+          { type: "string", name: "defaultEditor", label: "Attribution: Default Editor" },
+          { type: "string", name: "editionDate", label: "Attribution: Edition Date" },
+          { type: "string", name: "booktitle", label: "Attribution: Book Title / Corpus Name" },
+          { type: "string", name: "linguisticPackage", label: "Attribution: Linguistic Package" },
+          { type: "string", name: "bibtexTemplate", label: "BibTeX Citation Template", ui: { component: "textarea" } },
+          { type: "string", name: "unifiedTemplate", label: "Unified / LSA Citation Template", ui: { component: "textarea" } },
+          { type: "string", name: "apaTemplate", label: "APA Citation Template", ui: { component: "textarea" } },
+          { type: "string", name: "chicagoTemplate", label: "Chicago Citation Template", ui: { component: "textarea" } },
         ],
       },
       {
@@ -197,6 +249,26 @@ export default defineConfig({
           { type: "string", name: "canonicalRuleDescription", label: "Quick Rule Description", ui: { component: "textarea" } },
           { type: "string", name: "architectureSpecTitle", label: "Architecture Spec Title" },
           { type: "string", name: "architectureSpecDescription", label: "Architecture Spec Description", ui: { component: "textarea" } },
+          { type: "string", name: "l1Intro", label: "L1: Intro Text", ui: { component: "textarea" } },
+          { type: "string", name: "l1TierHeaderTitle", label: "L1: Tier Header Title" },
+          { type: "string", name: "l1TierHeaderBadge", label: "L1: Tier Header Badge" },
+          { type: "string", name: "l1TierTokens", label: "L1: Tier Tokens" },
+          { type: "string", name: "l1TierGlosses", label: "L1: Tier Glosses" },
+          { type: "string", name: "l1TierTranslation", label: "L1: Tier Translation" },
+          { type: "string", name: "l2Paragraph1", label: "L2: Paragraph 1", ui: { component: "textarea" } },
+          { type: "string", name: "l2Paragraph2", label: "L2: Paragraph 2", ui: { component: "textarea" } },
+          { type: "string", name: "l2CalloutTitle", label: "L2: Callout Title" },
+          { type: "string", name: "l2CalloutBody", label: "L2: Callout Body", ui: { component: "textarea" } },
+          { type: "string", name: "l3Intro", label: "L3: Intro Text", ui: { component: "textarea" } },
+          { type: "string", name: "l4WiktionaryTitle", label: "L4: Wiktionary Title" },
+          { type: "string", name: "l4WiktionarySubtitle", label: "L4: Wiktionary Subtitle" },
+          { type: "string", name: "l4WiktionaryIntro", label: "L4: Wiktionary Intro Text", ui: { component: "textarea" } },
+          { type: "string", name: "l4IpaTitle", label: "L4: IPA Title" },
+          { type: "string", name: "l4IpaSubtitle", label: "L4: IPA Subtitle" },
+          { type: "string", name: "l4IpaIntro", label: "L4: IPA Intro Text", ui: { component: "textarea" } },
+          { type: "string", name: "a1Intro", label: "A1: Ingesting Intro Text", ui: { component: "textarea" } },
+          { type: "string", name: "a2Intro", label: "A2: Storage Intro Text", ui: { component: "textarea" } },
+          { type: "string", name: "a3Intro", label: "A3: QA Intro Text", ui: { component: "textarea" } },
           {
             type: "object",
             name: "sections",

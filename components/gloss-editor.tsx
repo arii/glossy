@@ -8,7 +8,12 @@ import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
 import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
 import { safeJsonStringify } from "../lib/safe-json";
 import { isProtectedSlug } from "../lib/corpus-registry";
-import { computeDocumentHash, deleteLocalDraft } from "../lib/local-drafts";
+import {
+  computeDocumentHash,
+  deleteLocalDraft,
+  getWorkspaceTexts,
+  type WorkspaceTextItem,
+} from "../lib/local-drafts";
 import type {
   TextDocument,
   ReadingSentence,
@@ -232,6 +237,24 @@ export function GlossEditor({
   const [autosaveStatus, setAutosaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const [workspaceTexts, setWorkspaceTexts] = useState<WorkspaceTextItem[]>(() =>
+    getWorkspaceTexts({
+      currentSlug: initialDocument.slug || initialDocument.textId,
+      allLoadedTexts: availableTexts,
+      excludeDeleted: true,
+    }),
+  );
+
+  useEffect(() => {
+    setWorkspaceTexts(
+      getWorkspaceTexts({
+        currentSlug: initialDocument.slug || initialDocument.textId,
+        allLoadedTexts: availableTexts,
+        excludeDeleted: true,
+      }),
+    );
+  }, [initialDocument.slug, initialDocument.textId, availableTexts]);
 
   // Backup snapshot for "Discard Changes" comparison
   const [savedSnapshot, setSavedSnapshot] = useState<string>(() =>
@@ -915,7 +938,7 @@ export function GlossEditor({
                 : `Translated and glossed by ${documentState.author?.replace(/^(Translated and glossed by\s*)+/gi, "")} · ${documentState.date}`}
             </p>
 
-            {availableTexts && availableTexts.length > 1 && (
+            {workspaceTexts && workspaceTexts.length > 1 && (
               <div style={{ marginTop: "0.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <label htmlFor="editor-text-select" style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--accent)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                   Switch text:
@@ -926,7 +949,7 @@ export function GlossEditor({
                   onChange={(e) => router.push(`/edit/${e.target.value}`)}
                   style={{ padding: "0.35rem 0.6rem", fontSize: "0.85rem", border: "1px solid var(--rule)", borderRadius: "0.25rem", background: "var(--surface)", color: "var(--ink)" }}
                 >
-                  {availableTexts.map((t) => (
+                  {workspaceTexts.map((t) => (
                     <option key={t.slug} value={t.slug}>
                       {t.title}
                     </option>

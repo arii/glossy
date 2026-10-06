@@ -1,15 +1,56 @@
-import type { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
 import { SiteNav } from "../../components/site-nav";
 import { SiteFooter } from "../../components/site-footer";
 import { ExternalLink, BookOpen, Edit3, Code2 } from "lucide-react";
+import aboutData from "../../content/pages/about.json";
+import { useTina, tinaField } from "tinacms/dist/react";
 
-export const metadata: Metadata = {
-  title: "About | Glossy · Old English Interlinear Glosses",
-  description: "Learn about Glossy, an open-access digital humanities workspace for Old English philology, Leipzig interlinear glossing, and LaTeX gb4e export.",
-};
+const ABOUT_PAGE_QUERY = `
+  query AboutPageQuery($relativePath: String!) {
+    page(relativePath: $relativePath) {
+      title
+      eyebrow
+      heading
+      description
+      missionTitle
+      missionText
+      missionText2
+      capabilitiesTitle
+      capabilities {
+        title
+        description
+      }
+      maintainersTitle
+      maintainerAriel
+      maintainerTyler
+      maintainerLicense
+      architectureTitle
+      architectureItems
+    }
+  }
+`;
+
+const INITIAL_ABOUT_DATA = { page: aboutData };
+const ABOUT_PAGE_VARS = { relativePath: "about.json" };
 
 export default function AboutPage() {
+  const { data: pageData } = useTina({
+    query: ABOUT_PAGE_QUERY,
+    variables: ABOUT_PAGE_VARS,
+    data: INITIAL_ABOUT_DATA,
+  });
+
+  const page = pageData?.page || aboutData;
+  const capabilities = (page.capabilities as Array<{
+    title: string;
+    description: string;
+  }>) || aboutData.capabilities || [];
+  const architectureItems = (page.architectureItems as string[]) || aboutData.architectureItems || [];
+
+  const capabilityIcons = [BookOpen, Edit3, Code2];
+
   return (
     <>
       <SiteNav />
@@ -27,6 +68,7 @@ export default function AboutPage() {
           {/* Header */}
           <header style={{ borderBottom: "1px solid var(--rule)", paddingBottom: "1.5rem", marginBottom: "2rem" }}>
             <span
+              data-tina-field={tinaField(page, "eyebrow")}
               style={{
                 display: "inline-block",
                 fontSize: "0.75rem",
@@ -37,9 +79,10 @@ export default function AboutPage() {
                 marginBottom: "0.5rem",
               }}
             >
-              About the Project
+              {page.eyebrow || "About the Project"}
             </span>
             <h1
+              data-tina-field={tinaField(page, "heading")}
               style={{
                 margin: "0 0 0.75rem",
                 fontFamily: "'Charis SIL', Georgia, serif",
@@ -49,16 +92,17 @@ export default function AboutPage() {
                 color: "var(--ink)",
               }}
             >
-              Glossy · Digital Interlinear Philology
+              {page.heading || "Glossy · Digital Interlinear Philology"}
             </h1>
-            <p style={{ margin: 0, fontSize: "1.05rem", color: "var(--muted-ink)", lineHeight: 1.6 }}>
-              An open-access digital humanities platform dedicated to historical linguistic annotation, standardized Leipzig interlinear glossing, and accessible manuscript reading.
+            <p data-tina-field={tinaField(page, "description")} style={{ margin: 0, fontSize: "1.05rem", color: "var(--muted-ink)", lineHeight: 1.6 }}>
+              {page.description || "An open-access digital humanities platform dedicated to historical linguistic annotation, standardized Leipzig interlinear glossing, and accessible manuscript reading."}
             </p>
           </header>
 
           {/* Section: Mission */}
           <section style={{ marginBottom: "2.25rem" }}>
             <h2
+              data-tina-field={tinaField(page, "missionTitle")}
               style={{
                 fontFamily: "'Charis SIL', Georgia, serif",
                 fontSize: "1.4rem",
@@ -66,19 +110,20 @@ export default function AboutPage() {
                 marginBottom: "0.75rem",
               }}
             >
-              The Mission
+              {page.missionTitle || "The Mission"}
             </h2>
-            <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1rem" }}>
-              Reading and analyzing historical languages like Old English requires balancing multiple layers of linguistic information: original orthography, morphological segmentation, grammatical case and verbal agreement, canonical dictionary headwords, and overarching narrative sense.
+            <p data-tina-field={tinaField(page, "missionText")} style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1rem" }}>
+              {page.missionText || "Reading and analyzing historical languages like Old English requires balancing multiple layers of linguistic information: original orthography, morphological segmentation, grammatical case and verbal agreement, canonical dictionary headwords, and overarching narrative sense."}
             </p>
-            <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: 0 }}>
-              Glossy brings these layers together in an intuitive, browser-based environment. Whether you are an undergraduate encountering Anglo-Saxon verse for the first time, a researcher compiling linguistic examples for publication, or a digital editor transcribing a manuscript witness, Glossy provides the precision tools needed for rigorous interlinear work.
+            <p data-tina-field={tinaField(page, "missionText2")} style={{ lineHeight: 1.7, color: "var(--ink)", margin: 0 }}>
+              {page.missionText2 || "Glossy brings these layers together in an intuitive, browser-based environment. Whether you are an undergraduate encountering Anglo-Saxon verse for the first time, a researcher compiling linguistic examples for publication, or a digital editor transcribing a manuscript witness, Glossy provides the precision tools needed for rigorous interlinear work."}
             </p>
           </section>
 
           {/* Section: Key Features */}
           <section style={{ marginBottom: "2.25rem" }}>
             <h2
+              data-tina-field={tinaField(page, "capabilitiesTitle")}
               style={{
                 fontFamily: "'Charis SIL', Georgia, serif",
                 fontSize: "1.4rem",
@@ -86,44 +131,34 @@ export default function AboutPage() {
                 marginBottom: "1rem",
               }}
             >
-              Key Capabilities
+              {page.capabilitiesTitle || "Key Capabilities"}
             </h2>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(15rem, 1fr))", gap: "1.25rem" }}>
-              <div style={{ padding: "1.25rem", borderRadius: "0.4rem", border: "1px solid var(--rule)", background: "rgba(0,0,0,0.01)" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                  <BookOpen style={{ width: "1.1rem", height: "1.1rem", color: "var(--accent)" }} />
-                  <strong style={{ fontSize: "0.95rem" }}>Leipzig Alignment</strong>
-                </div>
-                <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
-                  Rigorous three-tier interlinear formatting (orthography, morphemic gloss, and translation) conforming to the international Leipzig Glossing Rules.
-                </p>
-              </div>
-
-              <div style={{ padding: "1.25rem", borderRadius: "0.4rem", border: "1px solid var(--rule)", background: "rgba(0,0,0,0.01)" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                  <Edit3 style={{ width: "1.1rem", height: "1.1rem", color: "var(--accent)" }} />
-                  <strong style={{ fontSize: "0.95rem" }}>Live Editor Studio</strong>
-                </div>
-                <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
-                  Client-side token editor with lemma normalization, quick tag pickers, local browser draft storage, and custom text ingestion.
-                </p>
-              </div>
-
-              <div style={{ padding: "1.25rem", borderRadius: "0.4rem", border: "1px solid var(--rule)", background: "rgba(0,0,0,0.01)" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                  <Code2 style={{ width: "1.1rem", height: "1.1rem", color: "var(--accent)" }} />
-                  <strong style={{ fontSize: "0.95rem" }}>LaTeX gb4e Export</strong>
-                </div>
-                <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
-                  One-click export of compilable TeX source code utilizing standard linguistics packages for camera-ready academic papers.
-                </p>
-              </div>
+              {capabilities.map((cap, idx) => {
+                const IconComponent = capabilityIcons[idx % capabilityIcons.length];
+                return (
+                  <div
+                    key={idx}
+                    data-tina-field={tinaField(cap)}
+                    style={{ padding: "1.25rem", borderRadius: "0.4rem", border: "1px solid var(--rule)", background: "rgba(0,0,0,0.01)" }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                      <IconComponent style={{ width: "1.1rem", height: "1.1rem", color: "var(--accent)" }} />
+                      <strong data-tina-field={tinaField(cap, "title")} style={{ fontSize: "0.95rem" }}>{cap.title}</strong>
+                    </div>
+                    <p data-tina-field={tinaField(cap, "description")} style={{ margin: 0, fontSize: "0.85rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
+                      {cap.description}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </section>
 
           {/* Section: Maintainer & Open Source */}
           <section style={{ marginBottom: "2.25rem" }}>
             <h2
+              data-tina-field={tinaField(page, "maintainersTitle")}
               style={{
                 fontFamily: "'Charis SIL', Georgia, serif",
                 fontSize: "1.4rem",
@@ -131,42 +166,16 @@ export default function AboutPage() {
                 marginBottom: "0.75rem",
               }}
             >
-              Maintainers &amp; Open Source
+              {page.maintainersTitle || "Maintainers & Open Source"}
             </h2>
-            <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1rem" }}>
-              Glossy was created and engineered by <strong>Ariel Anders</strong> (
-              <a
-                href="https://boomtick.blog/services"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "var(--accent)", textDecoration: "underline", fontWeight: 600 }}
-              >
-                Ariel Anders Consulting
-              </a>
-              ), who architected the platform, the interactive Leipzig interlinear engine, the offline-first local workspace, and the automated verification suite.
+            <p data-tina-field={tinaField(page, "maintainerAriel")} style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1rem" }}>
+              {page.maintainerAriel || "Glossy was created and engineered by Ariel Anders (Ariel Anders Consulting), who architected the platform, the interactive Leipzig interlinear engine, the offline-first local workspace, and the automated verification suite."}
             </p>
-            <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1rem" }}>
-              <a
-                href="https://sites.google.com/view/tyler-lemon"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "var(--accent)", textDecoration: "underline", fontWeight: 600 }}
-              >
-                Tyler Lemon
-              </a>{" "}
-              served as the linguistic subject matter expert, meticulously glossing all texts in the canonical corpus, standardizing Old English lemmatization (including masculine nominative standards and strong adjective conventions), and ensuring philological fidelity to historical manuscript witnesses.
+            <p data-tina-field={tinaField(page, "maintainerTyler")} style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1rem" }}>
+              {page.maintainerTyler || "Tyler Lemon served as the linguistic subject matter expert, meticulously glossing all texts in the canonical corpus, standardizing Old English lemmatization (including masculine nominative standards and strong adjective conventions), and ensuring philological fidelity to historical manuscript witnesses."}
             </p>
-            <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1.25rem" }}>
-              The project is entirely open source under the{" "}
-              <a
-                href="https://github.com/arii/glossy/blob/main/LICENSE"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "var(--accent)", textDecoration: "underline", fontWeight: 600 }}
-              >
-                MIT License
-              </a>
-              . Contributions, bug reports, and morphological corrections are welcomed via GitHub.
+            <p data-tina-field={tinaField(page, "maintainerLicense")} style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1.25rem" }}>
+              {page.maintainerLicense || "The project is entirely open source under the MIT License. Contributions, bug reports, and morphological corrections are welcomed via GitHub."}
             </p>
 
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
@@ -226,6 +235,7 @@ export default function AboutPage() {
           {/* Section: Architecture */}
           <section>
             <h2
+              data-tina-field={tinaField(page, "architectureTitle")}
               style={{
                 fontFamily: "'Charis SIL', Georgia, serif",
                 fontSize: "1.4rem",
@@ -233,13 +243,12 @@ export default function AboutPage() {
                 marginBottom: "0.75rem",
               }}
             >
-              Technical Architecture
+              {page.architectureTitle || "Technical Architecture"}
             </h2>
-            <ul style={{ paddingLeft: "1.25rem", margin: 0, lineHeight: 1.7, color: "var(--ink)" }}>
-              <li><strong>Framework</strong>: Next.js with React 19 and TypeScript, configured for static HTML export (<code>output: &apos;export&apos;</code>).</li>
-              <li><strong>Hosting</strong>: Cloudflare Pages edge static delivery.</li>
-              <li><strong>Content Management</strong>: TinaCMS Git-backed draft commit integration.</li>
-              <li><strong>Privacy</strong>: Zero tracking cookies, zero analytics scripts, and client-side offline storage.</li>
+            <ul data-tina-field={tinaField(page, "architectureItems")} style={{ paddingLeft: "1.25rem", margin: 0, lineHeight: 1.7, color: "var(--ink)" }}>
+              {architectureItems.map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))}
             </ul>
           </section>
         </article>

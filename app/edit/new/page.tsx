@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SiteNav } from "../../../components/site-nav";
@@ -8,7 +8,8 @@ import { SiteFooter } from "../../../components/site-footer";
 import { tokenizeAndLemmatizeSentence } from "../../../lib/lemmatizer";
 import { parseGb4e } from "../../../lib/gb4e";
 import { createLocalDocument } from "../../../lib/local-drafts";
-import type { ReadingSentence } from "../../../lib/types";
+import type { ReadingSentence, TextDocument } from "../../../lib/types";
+import { safeJsonParse } from "../../../lib/safe-json";
 import ingestPageData from "../../../content/pages/ingest.json";
 import { useTina, tinaField } from "tinacms/dist/react";
 import {
@@ -16,6 +17,8 @@ import {
   BookOpen,
   RotateCcw,
   Check,
+  Upload,
+  Sparkles,
 } from "lucide-react";
 
 const INGEST_PAGE_QUERY = `
@@ -150,8 +153,8 @@ export default function NewTextPage() {
 
   const page = pageData?.page || ingestPageData;
 
-  // Top-level workflow tab: "custom" vs "preset"
-  const [workflowTab, setWorkflowTab] = useState<"custom" | "preset">("custom");
+  // Top-level workflow tab: "custom" vs "upload" vs "preset"
+  const [workflowTab, setWorkflowTab] = useState<"custom" | "upload" | "preset">("custom");
 
   // Default to empty state
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
@@ -164,6 +167,12 @@ export default function NewTextPage() {
   const [rawText, setRawText] = useState("");
   const [rawTranslations, setRawTranslations] = useState("");
   const [latexSource, setLatexSource] = useState("");
+
+  // File Upload State
+  const [uploadedSentences, setUploadedSentences] = useState<ReadingSentence[] | null>(null);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ kind: "idle" | "success" | "error"; text: string }>({
@@ -184,56 +193,98 @@ export default function NewTextPage() {
     return () => clearTimeout(timer);
   }, [toastMessage]);
 
-  const oeLinesList = rawText.split("\n").map((l) => l.trim()).filter(Boolean);
-  const enLinesList = rawTranslations.split("\n").map((l) => l.trim()).filter(Boolean);
-  const oeCount = oeLinesList.length;
-  const enCount = enLinesList.length;
-  const isLineCountMatched = oeCount > 0 && oeCount === enCount;
-  const isLineCountMismatch = oeCount > 0 && enCount > 0 && oeCount !== enCount;
+  const processUploadedFile = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const content = event.target?.result as string;
+        if (!content) return;
 
-  const getLineBadgeStyle = (): React.CSSProperties => {
-    if (isLineCountMatched) {
-      return {
-        fontSize: "0.75rem",
-        fontFamily: "monospace",
-        fontWeight: 700,
-        color: "#15803d",
-        background: "#dcfce7",
-        border: "1px solid #86efac",
-        padding: "0.15rem 0.45rem",
-        borderRadius: "0.25rem",
-        transition: "all 0.15s ease",
-      };
-    }
-    if (isLineCountMismatch) {
-      return {
-        fontSize: "0.75rem",
-        fontFamily: "monospace",
-        fontWeight: 700,
-        color: "#b91c1c",
-        background: "#fee2e2",
-        border: "1px solid #fca5a5",
-        padding: "0.15rem 0.45rem",
-        borderRadius: "0.25rem",
-        transition: "all 0.15s ease",
-      };
-    }
-    return {
-      fontSize: "0.75rem",
-      fontFamily: "monospace",
-      fontWeight: 600,
-      color: "var(--accent)",
-      background: "rgba(123, 63, 42, 0.08)",
-      border: "1px solid transparent",
-      padding: "0.15rem 0.45rem",
-      borderRadius: "0.25rem",
-      transition: "all 0.15s ease",
+        setUploadedFileName(file.name);
+
+        if (file.name.endsWith(".json")) {
+          const parsed = safeJsonParse<TextDocument>(content);
+          if (parsed && (parsed.title || parsed.slug) && Array.isArray(parsed.sentences) && parsed.sentences.length > 0) {
+            const docSlug =
+              parsed.slug ||
+              parsed.textId ||
+              file.name.replace(/\.[^/.]+$/, "").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+            setTitle(parsed.title || file.name.replace(/\.[^/.]+$/, ""));
+            setSlug(docSlug);
+            setAuthor(parsed.author || "Anonymous");
+            setSource(parsed.source || "Uploaded JSON Document");
+            setUploadedSentences(parsed.sentences);
+            setRawText(
+              parsed.sentences
+                .map((s) => s.words.map((w) => w.originalWord + (w.trailingPunctuation || "")).join(" "))
+                .join("\n")
+            );
+            setRawTranslations(parsed.sentences.map((s) => s.translation || "").join("\n"));
+            setInputMode("text");
+
+            const msg = `✓ Loaded Glossy JSON: "${parsed.title || file.name}" (${parsed.sentences.length} sentences).`;
+            setStatusMessage({ kind: "success", text: msg });
+            showToast(msg);
+          } else {
+            throw new Error("Invalid Glossy JSON structure: expected valid 'title' and non-empty 'sentences' array.");
+          }
+        } else if (file.name.endsWith(".tex")) {
+          const rawSlug = file.name
+            .replace(/\.[^/.]+$/, "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-");
+          setTitle(file.name.replace(/\.[^/.]+$/, ""));
+          setSlug(rawSlug);
+          setAuthor("Anonymous");
+          setSource(`Imported from ${file.name}`);
+          setLatexSource(content);
+          setInputMode("gb4e");
+          setUploadedSentences(null);
+
+          try {
+            const parsed = parseGb4e(content);
+            const count = parsed.sentences.length;
+            const msg = `✓ Loaded LaTeX file "${file.name}" with ${count} gb4e example${count === 1 ? "" : "s"}.`;
+            setStatusMessage({ kind: "success", text: msg });
+            showToast(msg);
+          } catch {
+            const msg = `✓ Loaded LaTeX file "${file.name}".`;
+            setStatusMessage({ kind: "success", text: msg });
+            showToast(msg);
+          }
+        } else {
+          // Plain text file (.txt)
+          const lines = content.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+          const rawSlug = file.name
+            .replace(/\.[^/.]+$/, "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-");
+          setTitle(file.name.replace(/\.[^/.]+$/, ""));
+          setSlug(rawSlug);
+          setAuthor("Anonymous");
+          setSource(`Imported from ${file.name}`);
+          setRawText(lines.join("\n"));
+          setRawTranslations("");
+          setInputMode("text");
+          setUploadedSentences(null);
+
+          const msg = `✓ Loaded text file "${file.name}" with ${lines.length} lines.`;
+          setStatusMessage({ kind: "success", text: msg });
+          showToast(msg);
+        }
+      } catch (err: unknown) {
+        const errorMsg = err instanceof Error ? err.message : "Failed to parse file.";
+        setStatusMessage({ kind: "error", text: errorMsg });
+        showToast(`Error: ${errorMsg}`);
+      }
     };
+    reader.readAsText(file);
   };
 
-  // Clear all fields to return to a clean blank state
   const handleClearForm = () => {
     setActivePresetId(null);
+    setUploadedSentences(null);
+    setUploadedFileName(null);
     setTitle("");
     setSlug("");
     setAuthor("");
@@ -296,7 +347,9 @@ export default function NewTextPage() {
     try {
       let sentences: ReadingSentence[] = [];
 
-      if (inputMode === "gb4e" && latexSource.trim()) {
+      if (uploadedSentences && uploadedSentences.length > 0) {
+        sentences = uploadedSentences;
+      } else if (inputMode === "gb4e" && latexSource.trim()) {
         const parsed = parseGb4e(latexSource);
         sentences = parsed.sentences;
       } else {
@@ -372,6 +425,44 @@ export default function NewTextPage() {
     }
   };
 
+  const oeLines = rawText.split("\n").map((l) => l.trim()).filter(Boolean);
+  const enLines = rawTranslations.split("\n").map((l) => l.trim()).filter(Boolean);
+  const oeCount = oeLines.length;
+  const enCount = enLines.length;
+  const isLineCountMatched = oeCount > 0 && enCount > 0 && oeCount === enCount;
+  const isLineCountMismatch = oeCount > 0 && enCount > 0 && oeCount !== enCount;
+
+  const getLineBadgeStyle = (): React.CSSProperties => {
+    if (isLineCountMatched) {
+      return {
+        fontSize: "0.72rem",
+        fontWeight: 700,
+        color: "#15803d",
+        background: "#dcfce7",
+        padding: "0.15rem 0.45rem",
+        borderRadius: "0.25rem",
+      };
+    }
+    if (isLineCountMismatch) {
+      return {
+        fontSize: "0.72rem",
+        fontWeight: 700,
+        color: "#b91c1c",
+        background: "#fee2e2",
+        padding: "0.15rem 0.45rem",
+        borderRadius: "0.25rem",
+      };
+    }
+    return {
+      fontSize: "0.72rem",
+      fontWeight: 600,
+      color: "var(--muted-ink)",
+      background: "#f3eadb",
+      padding: "0.15rem 0.45rem",
+      borderRadius: "0.25rem",
+    };
+  };
+
   const hasAnyContent = Boolean(
     title.trim() || slug.trim() || author.trim() || source.trim() || rawText.trim() || rawTranslations.trim() || latexSource.trim()
   );
@@ -442,6 +533,31 @@ export default function NewTextPage() {
               >
                 <FileText style={{ width: "0.95rem", height: "0.95rem" }} />
                 <span>Enter Custom Text</span>
+              </button>
+
+              <button
+                type="button"
+                role="tab"
+                aria-selected={workflowTab === "upload"}
+                onClick={() => setWorkflowTab("upload")}
+                className={`segmented-control-button ${workflowTab === "upload" ? "active" : ""}`}
+              >
+                <Upload style={{ width: "0.95rem", height: "0.95rem" }} />
+                <span>Upload File (.json, .txt, .tex)</span>
+                {uploadedFileName && (
+                  <span
+                    style={{
+                      fontSize: "0.68rem",
+                      fontWeight: 700,
+                      padding: "0.1rem 0.4rem",
+                      borderRadius: "1rem",
+                      background: "var(--accent)",
+                      color: "#ffffff",
+                    }}
+                  >
+                    Loaded
+                  </span>
+                )}
               </button>
 
               <button
@@ -622,6 +738,185 @@ export default function NewTextPage() {
                     </button>
                   );
                 })}
+              </div>
+            </div>
+          )}
+
+          {/* File Upload Workflow View */}
+          {workflowTab === "upload" && (
+            <div
+              style={{
+                marginBottom: "1.75rem",
+                padding: "1.5rem",
+                background: isDragging ? "rgba(123, 63, 42, 0.08)" : "#fbf7ee",
+                borderRadius: "0.45rem",
+                border: isDragging ? "2px dashed var(--accent)" : "1px solid #dfcfb8",
+                transition: "all 0.2s ease",
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setIsDragging(true);
+              }}
+              onDragLeave={(e) => {
+                e.preventDefault();
+                setIsDragging(false);
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                setIsDragging(false);
+                const file = e.dataTransfer.files?.[0];
+                if (file) {
+                  processUploadedFile(file);
+                }
+              }}
+            >
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    processUploadedFile(file);
+                  }
+                  e.target.value = "";
+                }}
+                accept=".json,.txt,.tex"
+                style={{ display: "none" }}
+              />
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "1.25rem 1rem",
+                  textAlign: "center",
+                }}
+              >
+                <div
+                  style={{
+                    width: "3.2rem",
+                    height: "3.2rem",
+                    borderRadius: "50%",
+                    background: "#ece3d3",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "0.85rem",
+                    color: "var(--accent)",
+                  }}
+                >
+                  <Upload style={{ width: "1.6rem", height: "1.6rem" }} />
+                </div>
+
+                <strong
+                  style={{
+                    display: "block",
+                    fontSize: "1.05rem",
+                    color: "var(--ink)",
+                    fontFamily: "'Charis SIL', Georgia, serif",
+                    marginBottom: "0.35rem",
+                  }}
+                >
+                  {uploadedFileName
+                    ? `Loaded File: ${uploadedFileName}`
+                    : "Drag & Drop Your Corpus File or Browse"}
+                </strong>
+
+                <p
+                  style={{
+                    margin: "0 0 1rem",
+                    fontSize: "0.82rem",
+                    color: "var(--muted-ink)",
+                    maxWidth: "30rem",
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {uploadedFileName ? (
+                    <>
+                      Document metadata and text content have been pre-filled below. You can review and adjust details in sections 1 &amp; 2, or ingest immediately.
+                    </>
+                  ) : (
+                    <>
+                      Accepts <strong>Glossy JSON</strong> (<code>.json</code>), <strong>LaTeX gb4e</strong> (<code>.tex</code>), and <strong>plain Old English</strong> (<code>.txt</code>).
+                    </>
+                  )}
+                </p>
+
+                <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", justifyContent: "center" }}>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.4rem",
+                      padding: "0.55rem 1.1rem",
+                      borderRadius: "0.35rem",
+                      background: uploadedFileName ? "#ffffff" : "var(--accent)",
+                      color: uploadedFileName ? "var(--ink)" : "#ffffff",
+                      border: uploadedFileName ? "1px solid var(--rule)" : "none",
+                      fontSize: "0.85rem",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                    }}
+                  >
+                    <Upload style={{ width: "0.9rem", height: "0.9rem" }} />
+                    <span>{uploadedFileName ? "Choose Different File" : "Browse File"}</span>
+                  </button>
+
+                  {uploadedFileName && (
+                    <button
+                      type="button"
+                      onClick={handleCreateDocument}
+                      disabled={isSubmitting}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "0.4rem",
+                        padding: "0.55rem 1.25rem",
+                        borderRadius: "0.35rem",
+                        background: "var(--accent)",
+                        color: "#ffffff",
+                        border: "none",
+                        fontSize: "0.85rem",
+                        fontWeight: 600,
+                        cursor: isSubmitting ? "not-allowed" : "pointer",
+                        boxShadow: "0 2px 6px rgba(123, 63, 42, 0.25)",
+                      }}
+                    >
+                      <Sparkles style={{ width: "0.9rem", height: "0.9rem" }} />
+                      <span>{isSubmitting ? "Ingesting..." : "Ingest & Open in Gloss Editor"}</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Supported format badges */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(13rem, 1fr))",
+                  gap: "0.75rem",
+                  marginTop: "1.25rem",
+                  paddingTop: "1.25rem",
+                  borderTop: "1px solid #e7dac9",
+                }}
+              >
+                <div style={{ fontSize: "0.78rem", color: "var(--muted-ink)", lineHeight: 1.4 }}>
+                  <span style={{ fontWeight: 700, color: "var(--ink)" }}>Glossy JSON (.json)</span>
+                  <p style={{ margin: "0.2rem 0 0" }}>Structured documents with pre-tokenized words, morphological tags, and translations.</p>
+                </div>
+                <div style={{ fontSize: "0.78rem", color: "var(--muted-ink)", lineHeight: 1.4 }}>
+                  <span style={{ fontWeight: 700, color: "var(--ink)" }}>LaTeX gb4e (.tex)</span>
+                  <p style={{ margin: "0.2rem 0 0" }}>Interlinear glosses using \gll, \glt, and Leipzig gloss tags parsed directly into sentences.</p>
+                </div>
+                <div style={{ fontSize: "0.78rem", color: "var(--muted-ink)", lineHeight: 1.4 }}>
+                  <span style={{ fontWeight: 700, color: "var(--ink)" }}>Plain Text (.txt)</span>
+                  <p style={{ margin: "0.2rem 0 0" }}>Raw Old English text (one sentence per line) automatically segmented and lemmatized.</p>
+                </div>
               </div>
             </div>
           )}

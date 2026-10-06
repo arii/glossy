@@ -1,6 +1,11 @@
 import type { TextDocument, PartOfSpeech } from "./types";
 import { safeJsonStringify } from "./safe-json";
-import { isBuiltInSlug } from "./corpus-registry";
+import {
+  isBuiltInSlug,
+  isProtectedSlug,
+  BUILT_IN_CORPUS,
+  getBuiltInMetadata,
+} from "./corpus-registry";
 
 export const DRAFT_STORAGE_PREFIX = "glossy:v1:draft:";
 export const PENDING_MANIFEST_KEY = "glossy_pending_drafts";
@@ -409,3 +414,65 @@ export function createLocalDocument(input: {
 
   return { ok: true, data: doc };
 }
+
+export interface WorkspaceTextItem {
+  slug: string;
+  title: string;
+}
+
+export function isWorkspaceSlug(slug: string): boolean {
+  if (!slug) return false;
+  const s = slug.toLowerCase();
+  if (isProtectedSlug(s)) return true;
+  return readDraft(s) !== null;
+}
+
+export function getWorkspaceTexts(options?: {
+  currentSlug?: string;
+  allLoadedTexts?: Array<{ slug: string; title: string }>;
+  excludeDeleted?: boolean;
+}): WorkspaceTextItem[] {
+  const { currentSlug, allLoadedTexts = [], excludeDeleted = true } = options || {};
+  const hiddenSlugs = excludeDeleted ? new Set(getHiddenSlugs()) : new Set<string>();
+
+  const items: WorkspaceTextItem[] = [];
+  const seenSlugs = new Set<string>();
+
+  // 1. Built-in corpus texts (currently Ohthere)
+  for (const text of BUILT_IN_CORPUS) {
+    const slug = text.slug;
+    if (!hiddenSlugs.has(slug) && !seenSlugs.has(slug)) {
+      items.push({ slug, title: text.title });
+      seenSlugs.add(slug);
+    }
+  }
+
+  // 2. Local drafts from user workspace
+  const drafts = listLocalDrafts();
+  for (const draft of drafts) {
+    const slug = draft.doc.slug || draft.doc.textId;
+    if (!slug) continue;
+    if (!hiddenSlugs.has(slug) && !seenSlugs.has(slug)) {
+      items.push({ slug, title: draft.doc.title || slug });
+      seenSlugs.add(slug);
+    }
+  }
+
+  // 3. Current active document, if opened directly via URL and not yet included
+  if (
+    currentSlug &&
+    !seenSlugs.has(currentSlug) &&
+    !(currentSlug.toLowerCase() === "ohthere-wulfstan" && seenSlugs.has("ohthere")) &&
+    (!excludeDeleted || !hiddenSlugs.has(currentSlug))
+  ) {
+    const match = allLoadedTexts.find(
+      (t) => t.slug.toLowerCase() === currentSlug.toLowerCase(),
+    );
+    const title = match?.title || getBuiltInMetadata(currentSlug)?.title || currentSlug;
+    items.push({ slug: currentSlug, title });
+    seenSlugs.add(currentSlug);
+  }
+
+  return items;
+}
+

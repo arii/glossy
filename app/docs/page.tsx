@@ -22,6 +22,30 @@ const DOCS_PAGE_QUERY = `
       title
       eyebrow
       description
+      canonicalRuleTitle
+      canonicalRuleDescription
+      architectureSpecTitle
+      architectureSpecDescription
+      l1Intro
+      l1TierHeaderTitle
+      l1TierHeaderBadge
+      l1TierTokens
+      l1TierGlosses
+      l1TierTranslation
+      l2Paragraph1
+      l2Paragraph2
+      l2CalloutTitle
+      l2CalloutBody
+      l3Intro
+      l4WiktionaryTitle
+      l4WiktionarySubtitle
+      l4WiktionaryIntro
+      l4IpaTitle
+      l4IpaSubtitle
+      l4IpaIntro
+      a1Intro
+      a2Intro
+      a3Intro
       sections {
         id
         domain
@@ -35,6 +59,36 @@ const DOCS_PAGE_QUERY = `
         name
         desc
         category
+      }
+      numeralCards {
+        badge
+        title
+        description
+        isFullWidth
+      }
+      verificationTools {
+        name
+        command
+        target
+      }
+      ingestionSteps {
+        num
+        title
+        description
+      }
+      wiktionaryGuidelines {
+        title
+        description
+      }
+      ipaSpecifications {
+        title
+        description
+      }
+      storageTiers {
+        tier
+        timing
+        title
+        description
       }
     }
   }
@@ -70,6 +124,14 @@ export default function DocsPage() {
 
   const linguisticsSections = sections.filter((s) => s.domain === "linguistics");
   const architectureSections = sections.filter((s) => s.domain === "architecture");
+
+  const secL1 = sections.find((s) => s.id === "section-l1");
+  const secL2 = sections.find((s) => s.id === "section-l2");
+  const secL3 = sections.find((s) => s.id === "section-l3");
+  const secL4 = sections.find((s) => s.id === "section-l4");
+  const secA1 = sections.find((s) => s.id === "section-a1");
+  const secA2 = sections.find((s) => s.id === "section-a2");
+  const secA3 = sections.find((s) => s.id === "section-a3");
 
   const filteredAbbrs = abbreviations.filter((item) => {
     const matchCat = selectedCategory === "All" || item.category === selectedCategory;
@@ -200,38 +262,46 @@ export default function DocsPage() {
                 {/* Section L1: Interlinear Glossing */}
                 <section id="section-l1" className="docs-section">
                   <div className="docs-section-heading">
-                    <span className="docs-section-badge">L1</span>
+                    <span className="docs-section-badge">{secL1?.domainNum || "L1"}</span>
                     <div>
-                      <p className="docs-section-eyebrow">Beginner&apos;s Primer</p>
-                      <h2 className="docs-section-h2">How Interlinear Glossing Works</h2>
+                      <p className="docs-section-eyebrow" data-tina-field={secL1 ? tinaField(secL1, "eyebrow") : undefined}>
+                        {secL1?.eyebrow || "Beginner's Primer"}
+                      </p>
+                      <h2 className="docs-section-h2" data-tina-field={secL1 ? tinaField(secL1, "title") : undefined}>
+                        {secL1?.title || "How Interlinear Glossing Works"}
+                      </h2>
                     </div>
                   </div>
 
                   <div className="docs-body">
-                    <p>
-                      An <strong>interlinear gloss</strong> is a standard linguistic format that presents original
-                      historical text with word-by-word and morpheme-by-morpheme grammatical breakdowns aligned directly
-                      underneath:
+                    <p data-tina-field={tinaField(docs, "l1Intro")}>
+                      {docs.l1Intro || "An interlinear gloss is a standard linguistic format that presents original historical text with word-by-word and morpheme-by-morpheme grammatical breakdowns aligned directly underneath:"}
                     </p>
 
                     {/* 3-Tier Code Block */}
                     <div className="docs-code-tier">
                       <div className="docs-tier-header">
-                        <span>Three-Tier Interlinear Structure</span>
-                        <span>Leipzig Glossing Rules</span>
+                        <span data-tina-field={tinaField(docs, "l1TierHeaderTitle")}>
+                          {docs.l1TierHeaderTitle || "Three-Tier Interlinear Structure"}
+                        </span>
+                        <span data-tina-field={tinaField(docs, "l1TierHeaderBadge")}>
+                          {docs.l1TierHeaderBadge || "Leipzig Glossing Rules"}
+                        </span>
                       </div>
-                      <div className="docs-tier-grid">
-                        <div>Ōhthere</div>
-                        <div>sǣ-d-e</div>
-                        <div>his hlāford-e</div>
+                      <div className="docs-tier-grid" data-tina-field={tinaField(docs, "l1TierTokens")}>
+                        {(docs.l1TierTokens || "Ōhthere | sǣ-d-e | his hlāford-e").split("|").map((token, i) => (
+                          <div key={i}>{token.trim()}</div>
+                        ))}
                       </div>
-                      <div className="docs-tier-glosses">
-                        <div style={{ color: "#a8a29e" }}>Ohthere</div>
-                        <div style={{ color: "#fde68a" }}>say-PST-IND.3SG</div>
-                        <div style={{ color: "#fde68a" }}>his.GEN lord-DAT.SG</div>
+                      <div className="docs-tier-glosses" data-tina-field={tinaField(docs, "l1TierGlosses")}>
+                        {(docs.l1TierGlosses || "Ohthere | say-PST-IND.3SG | his.GEN lord-DAT.SG").split("|").map((gloss, i) => (
+                          <div key={i} style={{ color: i === 0 ? "#a8a29e" : "#fde68a" }}>
+                            {gloss.trim()}
+                          </div>
+                        ))}
                       </div>
-                      <div className="docs-tier-trans">
-                        &ldquo;Ohthere said to his lord, King Alfred...&rdquo;
+                      <div className="docs-tier-trans" data-tina-field={tinaField(docs, "l1TierTranslation")}>
+                        {docs.l1TierTranslation || "“Ohthere said to his lord, King Alfred...”"}
                       </div>
                     </div>
 
@@ -391,40 +461,32 @@ export default function DocsPage() {
                 {/* Section L2: Adjective Citation Standards */}
                 <section id="section-l2" className="docs-section">
                   <div className="docs-section-heading">
-                    <span className="docs-section-badge">L2</span>
+                    <span className="docs-section-badge">{secL2?.domainNum || "L2"}</span>
                     <div>
-                      <p className="docs-section-eyebrow">Linguistic Standards</p>
-                      <h2 className="docs-section-h2">
-                        Why Adjectives Use Masculine Nominative Singular Strong Form
+                      <p className="docs-section-eyebrow" data-tina-field={secL2 ? tinaField(secL2, "eyebrow") : undefined}>
+                        {secL2?.eyebrow || "Linguistic Standards"}
+                      </p>
+                      <h2 className="docs-section-h2" data-tina-field={secL2 ? tinaField(secL2, "title") : undefined}>
+                        {secL2?.title || "Why Adjectives Use Masculine Nominative Singular Strong Form"}
                       </h2>
                     </div>
                   </div>
 
                   <div className="docs-body">
-                    <p>
-                      In Old English, every single adjective inflects into over 15 distinct surface endings depending
-                      on gender (masculine, feminine, neuter), grammatical case (nominative, accusative, genitive,
-                      dative, instrumental), number (singular, plural), and declension (strong vs weak).
+                    <p data-tina-field={tinaField(docs, "l2Paragraph1")}>
+                      {docs.l2Paragraph1 || "In Old English, every single adjective inflects into over 15 distinct surface endings depending on gender (masculine, feminine, neuter), grammatical case (nominative, accusative, genitive, dative, instrumental), number (singular, plural), and declension (strong vs weak)."}
                     </p>
-                    <p>
-                      For instance, the word for <em>all</em> occurs in the text as <code>eall</code>, <code>ealne</code>,{" "}
-                      <code>ealles</code>, <code>ealra</code>, <code>eallum</code>, and <code>ealle</code>. Standard
-                      dictionaries (Bosworth-Toller, Sweet, Clark Hall, Wiktionary) universally choose the{" "}
-                      <strong>Masculine Nominative Singular Strong</strong> form (
-                      <strong style={{ color: "var(--accent)" }}>eall</strong>) as the single authoritative headword.
+                    <p data-tina-field={tinaField(docs, "l2Paragraph2")}>
+                      {docs.l2Paragraph2 || "For instance, the word for all occurs in the text as eall, ealne, ealles, ealra, eallum, and ealle. Standard dictionaries (Bosworth-Toller, Sweet, Clark Hall, Wiktionary) universally choose the Masculine Nominative Singular Strong form (eall) as the single authoritative headword."}
                     </p>
 
                     <div className="docs-callout-box" style={{ marginTop: "1rem" }}>
-                      <h4>
+                      <h4 data-tina-field={tinaField(docs, "l2CalloutTitle")}>
                         <BookOpen style={{ width: "0.9rem", height: "0.9rem" }} />
-                        Ja/Jō-stem Adjectives Retaining Base &ldquo;-e&rdquo;
+                        {docs.l2CalloutTitle || "Ja/Jō-stem Adjectives Retaining Base \"-e\""}
                       </h4>
-                      <p style={{ margin: 0, fontSize: "0.85rem", lineHeight: 1.6, color: "var(--muted-ink)" }}>
-                        Certain adjectives historically belong to the <em>ja/jō</em>-stem class and legitimately end in{" "}
-                        <code>-e</code> in their masculine nominative singular strong citation form (e.g.{" "}
-                        <strong>wēste</strong> &ldquo;desert, waste&rdquo;, <strong>blīðe</strong> &ldquo;happy&rdquo;,{" "}
-                        <strong>clǣne</strong> &ldquo;clean&rdquo;, <strong>dȳre</strong> &ldquo;precious&rdquo;). The
-                        engine preserves these base forms without stripping their root vowel.
+                      <p data-tina-field={tinaField(docs, "l2CalloutBody")} style={{ margin: 0, fontSize: "0.85rem", lineHeight: 1.6, color: "var(--muted-ink)" }}>
+                        {docs.l2CalloutBody || "Certain adjectives historically belong to the ja/jō-stem class and legitimately end in -e in their masculine nominative singular strong citation form (e.g. wēste \"desert, waste\", blīðe \"happy\", clǣne \"clean\", dȳre \"precious\"). The engine preserves these base forms without stripping their root vowel."}
                       </p>
                     </div>
                   </div>
@@ -433,22 +495,30 @@ export default function DocsPage() {
                 {/* Section L3: Numeral Lemmatization Standard */}
                 <section id="section-l3" className="docs-section">
                   <div className="docs-section-heading">
-                    <span className="docs-section-badge">L3</span>
+                    <span className="docs-section-badge">{secL3?.domainNum || "L3"}</span>
                     <div>
-                      <p className="docs-section-eyebrow">Morphological Edge Cases</p>
-                      <h2 className="docs-section-h2">The Numeral Lemmatization Standard (Masculine Nominative)</h2>
+                      <p className="docs-section-eyebrow" data-tina-field={secL3 ? tinaField(secL3, "eyebrow") : undefined}>
+                        {secL3?.eyebrow || "Morphological Edge Cases"}
+                      </p>
+                      <h2 className="docs-section-h2" data-tina-field={secL3 ? tinaField(secL3, "title") : undefined}>
+                        {secL3?.title || "The Numeral Lemmatization Standard (Masculine Nominative)"}
+                      </h2>
                     </div>
                   </div>
 
                   <div className="docs-body">
-                    <p>
-                      Lemmatizing Old English numbers requires a clear rule: for numbers that don&apos;t have a singular
-                      form (e.g. 2, 3) or numbers above 1, we strictly cite the <strong>Masculine Nominative</strong>{" "}
-                      form:
+                    <p data-tina-field={tinaField(docs, "l3Intro")}>
+                      {docs.l3Intro || "Lemmatizing Old English numbers requires a clear rule: for numbers that don't have a singular form (e.g. 2, 3) or numbers above 1, we strictly cite the Masculine Nominative form:"}
                     </p>
 
                     <div className="docs-tier-cards-grid">
                       {(
+                        (docs.numeralCards as Array<{
+                          badge?: string;
+                          title: string;
+                          description: string;
+                          isFullWidth?: boolean;
+                        }>) ||
                         (docsData.numeralCards as Array<{
                           badge?: string;
                           title: string;
@@ -458,11 +528,12 @@ export default function DocsPage() {
                       ).map((card, idx) => (
                         <div
                           key={idx}
+                          data-tina-field={tinaField(card)}
                           className="docs-tier-card"
                           style={card.isFullWidth ? { gridColumn: "1 / -1" } : undefined}
                         >
                           <div>
-                            {card.badge && <span className="docs-tier-badge">{card.badge}</span>}
+                            {card.badge && <span className="docs-tier-badge" data-tina-field={tinaField(card, "badge")}>{card.badge}</span>}
                             <h4
                               style={{
                                 margin: "0 0 0.35rem",
@@ -486,10 +557,14 @@ export default function DocsPage() {
                 {/* Section L4: Wiktionary & IPA Standards */}
                 <section id="section-l4" className="docs-section">
                   <div className="docs-section-heading">
-                    <span className="docs-section-badge">L4</span>
+                    <span className="docs-section-badge">{secL4?.domainNum || "L4"}</span>
                     <div>
-                      <p className="docs-section-eyebrow">Lexicographic Standards</p>
-                      <h2 className="docs-section-h2">Official Wiktionary &amp; IPA Formatting Standards</h2>
+                      <p className="docs-section-eyebrow" data-tina-field={secL4 ? tinaField(secL4, "eyebrow") : undefined}>
+                        {secL4?.eyebrow || "Lexicographic Standards"}
+                      </p>
+                      <h2 className="docs-section-h2" data-tina-field={secL4 ? tinaField(secL4, "title") : undefined}>
+                        {secL4?.title || "Official Wiktionary & IPA Formatting Standards"}
+                      </h2>
                     </div>
                   </div>
 
@@ -505,6 +580,7 @@ export default function DocsPage() {
                           <BookOpen style={{ width: "1.1rem", height: "1.1rem", color: "var(--accent)" }} />
                           <div>
                             <h3
+                              data-tina-field={tinaField(docs, "l4WiktionaryTitle")}
                               style={{
                                 margin: 0,
                                 fontSize: "0.95rem",
@@ -513,10 +589,10 @@ export default function DocsPage() {
                                 fontFamily: "'Charis SIL', Georgia, serif",
                               }}
                             >
-                              Wiktionary Entry Naming Conventions
+                              {docs.l4WiktionaryTitle || "Wiktionary Entry Naming Conventions"}
                             </h3>
-                            <p style={{ margin: "0.15rem 0 0", fontSize: "0.78rem", color: "var(--muted-ink)" }}>
-                              Standard URL and anchor formatting according to official policy
+                            <p data-tina-field={tinaField(docs, "l4WiktionarySubtitle")} style={{ margin: "0.15rem 0 0", fontSize: "0.78rem", color: "var(--muted-ink)" }}>
+                              {docs.l4WiktionarySubtitle || "Standard URL and anchor formatting according to official policy"}
                             </p>
                           </div>
                         </div>
@@ -537,8 +613,8 @@ export default function DocsPage() {
                             background: "var(--surface)",
                           }}
                         >
-                          <p style={{ margin: "0 0 1rem", fontSize: "0.85rem", color: "var(--muted-ink)" }}>
-                            Glossy generates external reference links according to official{" "}
+                          <p data-tina-field={tinaField(docs, "l4WiktionaryIntro")} style={{ margin: "0 0 1rem", fontSize: "0.85rem", color: "var(--muted-ink)" }}>
+                            {docs.l4WiktionaryIntro || "Glossy generates external reference links according to official policies:"}{" "}
                             <a
                               href="https://en.wiktionary.org/wiki/Wiktionary:About_Old_English"
                               target="_blank"
@@ -547,17 +623,17 @@ export default function DocsPage() {
                             >
                               Wiktionary:About Old English{" "}
                               <ExternalLink style={{ width: "0.75rem", height: "0.75rem", display: "inline" }} />
-                            </a>{" "}
-                            policies:
+                            </a>
                           </p>
 
                           <div className="docs-tier-cards-grid" style={{ marginTop: 0 }}>
                             {(
+                              (docs.wiktionaryGuidelines as Array<{ title: string; description: string }>) ||
                               (docsData.wiktionaryGuidelines as Array<{ title: string; description: string }>) || []
                             ).map((g, idx) => (
-                              <div key={idx} className="docs-tier-card">
-                                <strong style={{ fontSize: "0.85rem", color: "var(--ink)" }}>{g.title}</strong>
-                                <p style={{ margin: "0.35rem 0 0", fontSize: "0.8rem", color: "var(--muted-ink)" }}>
+                              <div key={idx} data-tina-field={tinaField(g)} className="docs-tier-card">
+                                <strong data-tina-field={tinaField(g, "title")} style={{ fontSize: "0.85rem", color: "var(--ink)" }}>{g.title}</strong>
+                                <p data-tina-field={tinaField(g, "description")} style={{ margin: "0.35rem 0 0", fontSize: "0.8rem", color: "var(--muted-ink)" }}>
                                   {g.description}
                                 </p>
                               </div>
@@ -578,6 +654,7 @@ export default function DocsPage() {
                           <Terminal style={{ width: "1.1rem", height: "1.1rem", color: "var(--accent)" }} />
                           <div>
                             <h3
+                              data-tina-field={tinaField(docs, "l4IpaTitle")}
                               style={{
                                 margin: 0,
                                 fontSize: "0.95rem",
@@ -586,10 +663,10 @@ export default function DocsPage() {
                                 fontFamily: "'Charis SIL', Georgia, serif",
                               }}
                             >
-                              International Phonetic Alphabet (IPA) Specifications
+                              {docs.l4IpaTitle || "IPA Phonetic Transcription Standard"}
                             </h3>
-                            <p style={{ margin: "0.15rem 0 0", fontSize: "0.78rem", color: "var(--muted-ink)" }}>
-                              Pronunciation guidelines for Old English historical phonology
+                            <p data-tina-field={tinaField(docs, "l4IpaSubtitle")} style={{ margin: "0.15rem 0 0", fontSize: "0.78rem", color: "var(--muted-ink)" }}>
+                              {docs.l4IpaSubtitle || "Pronunciation keys aligned with West Saxon phonology"}
                             </p>
                           </div>
                         </div>
@@ -610,17 +687,21 @@ export default function DocsPage() {
                             background: "var(--surface)",
                           }}
                         >
+                          <p data-tina-field={tinaField(docs, "l4IpaIntro")} style={{ margin: "0 0 1rem", fontSize: "0.85rem", color: "var(--muted-ink)" }}>
+                            {docs.l4IpaIntro || "Phonetic transcriptions follow the International Phonetic Alphabet standards established for West Saxon Old English:"}
+                          </p>
                           <div className="docs-tier-cards-grid" style={{ marginTop: 0 }}>
-                            {((docsData.ipaSpecifications as Array<{ title: string; description: string }>) || []).map(
-                              (spec, idx) => (
-                                <div key={idx} className="docs-tier-card">
-                                  <strong style={{ fontSize: "0.85rem", color: "var(--ink)" }}>{spec.title}</strong>
-                                  <p style={{ margin: "0.35rem 0 0", fontSize: "0.8rem", color: "var(--muted-ink)" }}>
-                                    {spec.description}
-                                  </p>
-                                </div>
-                              ),
-                            )}
+                            {(
+                              (docs.ipaSpecifications as Array<{ title: string; description: string }>) ||
+                              (docsData.ipaSpecifications as Array<{ title: string; description: string }>) || []
+                            ).map((spec, idx) => (
+                              <div key={idx} data-tina-field={tinaField(spec)} className="docs-tier-card">
+                                <strong data-tina-field={tinaField(spec, "title")} style={{ fontSize: "0.85rem", color: "var(--ink)" }}>{spec.title}</strong>
+                                <p data-tina-field={tinaField(spec, "description")} style={{ margin: "0.35rem 0 0", fontSize: "0.8rem", color: "var(--muted-ink)" }}>
+                                  {spec.description}
+                                </p>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       )}
@@ -635,31 +716,31 @@ export default function DocsPage() {
                 <section id="section-a1" className="docs-section">
                   <div className="docs-section-heading">
                     <span className="docs-section-badge" style={{ background: "#334155" }}>
-                      A1
+                      {secA1?.domainNum || "A1"}
                     </span>
                     <div>
-                      <p className="docs-section-eyebrow" style={{ color: "#475569" }}>
-                        Corpus Expansion
+                      <p className="docs-section-eyebrow" data-tina-field={secA1 ? tinaField(secA1, "eyebrow") : undefined} style={{ color: "#475569" }}>
+                        {secA1?.eyebrow || "Corpus Expansion"}
                       </p>
-                      <h2 className="docs-section-h2">
-                        Ingesting &amp; Glossing New Texts (Beowulf, Cædmon, Custom OE)
+                      <h2 className="docs-section-h2" data-tina-field={secA1 ? tinaField(secA1, "title") : undefined}>
+                        {secA1?.title || "Ingesting & Glossing New Texts (Beowulf, Cædmon, Custom OE)"}
                       </h2>
                     </div>
                   </div>
 
                   <div className="docs-body">
-                    <p>
-                      Glossy allows scholars and learners to add any Old English text to the digital corpus at{" "}
-                      <strong>/edit/new</strong>. When new sentences are pasted (or loaded via classic presets like{" "}
-                      <em>Beowulf: Prologue</em>, <em>Cædmon&apos;s Hymn</em>, or <em>The Wanderer</em>):
+                    <p data-tina-field={tinaField(docs, "a1Intro")}>
+                      {docs.a1Intro || "Glossy allows scholars and learners to add any Old English text to the digital corpus at /edit/new. When new sentences are pasted (or loaded via classic presets like Beowulf: Prologue, Cædmon's Hymn, or The Wanderer):"}
                     </p>
 
                     <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "1rem" }}>
                       {(
+                        (docs.ingestionSteps as Array<{ num: string; title: string; description: string }>) ||
                         (docsData.ingestionSteps as Array<{ num: string; title: string; description: string }>) || []
                       ).map((step, idx) => (
                         <div
                           key={idx}
+                          data-tina-field={tinaField(step)}
                           style={{
                             display: "flex",
                             gap: "0.75rem",
@@ -669,11 +750,12 @@ export default function DocsPage() {
                             borderRadius: "0.35rem",
                           }}
                         >
-                          <span className="docs-nav-num arch" style={{ marginTop: "0.15rem" }}>
+                          <span className="docs-nav-num arch" style={{ marginTop: "0.15rem" }} data-tina-field={tinaField(step, "num")}>
                             {step.num}
                           </span>
                           <div>
                             <strong
+                              data-tina-field={tinaField(step, "title")}
                               style={{
                                 display: "block",
                                 color: "var(--ink)",
@@ -682,7 +764,7 @@ export default function DocsPage() {
                             >
                               {step.title}
                             </strong>
-                            <span style={{ fontSize: "0.82rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
+                            <span data-tina-field={tinaField(step, "description")} style={{ fontSize: "0.82rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
                               {step.description}
                             </span>
                           </div>
@@ -696,25 +778,31 @@ export default function DocsPage() {
                 <section id="section-a2" className="docs-section">
                   <div className="docs-section-heading">
                     <span className="docs-section-badge" style={{ background: "#334155" }}>
-                      A2
+                      {secA2?.domainNum || "A2"}
                     </span>
                     <div>
-                      <p className="docs-section-eyebrow" style={{ color: "#475569" }}>
-                        Architecture &amp; Storage
+                      <p className="docs-section-eyebrow" data-tina-field={secA2 ? tinaField(secA2, "eyebrow") : undefined} style={{ color: "#475569" }}>
+                        {secA2?.eyebrow || "Architecture & Storage"}
                       </p>
-                      <h2 className="docs-section-h2">
-                        Local Drafts, Manifest Tracking, &amp; TinaCMS Publishing
+                      <h2 className="docs-section-h2" data-tina-field={secA2 ? tinaField(secA2, "title") : undefined}>
+                        {secA2?.title || "Local Drafts, Manifest Tracking, & TinaCMS Publishing"}
                       </h2>
                     </div>
                   </div>
 
                   <div className="docs-body">
-                    <p>
-                      Glossy provides a reliable local-first persistence and publishing workflow to ensure seamless editing and Git-backed content management:
+                    <p data-tina-field={tinaField(docs, "a2Intro")}>
+                      {docs.a2Intro || "Glossy provides a reliable local-first persistence and publishing workflow to ensure seamless editing and Git-backed content management:"}
                     </p>
 
                     <div className="docs-tier-cards-grid">
                       {(
+                        (docs.storageTiers as Array<{
+                          tier: string;
+                          timing: string;
+                          title: string;
+                          description: string;
+                        }>) ||
                         (docsData.storageTiers as Array<{
                           tier: string;
                           timing: string;
@@ -722,7 +810,7 @@ export default function DocsPage() {
                           description: string;
                         }>) || []
                       ).map((tier, idx) => (
-                        <div key={idx} className="docs-tier-card">
+                        <div key={idx} data-tina-field={tinaField(tier)} className="docs-tier-card">
                           <div>
                             <div
                               style={{
@@ -732,14 +820,15 @@ export default function DocsPage() {
                                 marginBottom: "0.5rem",
                               }}
                             >
-                              <span className="docs-tier-badge" style={{ margin: 0 }}>
+                              <span className="docs-tier-badge" style={{ margin: 0 }} data-tina-field={tinaField(tier, "tier")}>
                                 {tier.tier}
                               </span>
-                              <span style={{ fontSize: "0.7rem", fontFamily: "monospace", color: "var(--muted-ink)" }}>
+                              <span data-tina-field={tinaField(tier, "timing")} style={{ fontSize: "0.7rem", fontFamily: "monospace", color: "var(--muted-ink)" }}>
                                 {tier.timing}
                               </span>
                             </div>
                             <h4
+                              data-tina-field={tinaField(tier, "title")}
                               style={{
                                 margin: "0 0 0.35rem",
                                 fontSize: "0.95rem",
@@ -750,7 +839,7 @@ export default function DocsPage() {
                             >
                               {tier.title}
                             </h4>
-                            <p style={{ margin: 0, fontSize: "0.82rem", lineHeight: 1.5, color: "var(--muted-ink)" }}>
+                            <p data-tina-field={tinaField(tier, "description")} style={{ margin: 0, fontSize: "0.82rem", lineHeight: 1.5, color: "var(--muted-ink)" }}>
                               {tier.description}
                             </p>
                           </div>
@@ -764,20 +853,21 @@ export default function DocsPage() {
                 <section id="section-a3" className="docs-section">
                   <div className="docs-section-heading">
                     <span className="docs-section-badge" style={{ background: "#334155" }}>
-                      A3
+                      {secA3?.domainNum || "A3"}
                     </span>
                     <div>
-                      <p className="docs-section-eyebrow" style={{ color: "#475569" }}>
-                        Quality Assurance
+                      <p className="docs-section-eyebrow" data-tina-field={secA3 ? tinaField(secA3, "eyebrow") : undefined} style={{ color: "#475569" }}>
+                        {secA3?.eyebrow || "Quality Assurance"}
                       </p>
-                      <h2 className="docs-section-h2">Automated Quality Verification Suite</h2>
+                      <h2 className="docs-section-h2" data-tina-field={secA3 ? tinaField(secA3, "title") : undefined}>
+                        {secA3?.title || "Automated Quality Verification Suite"}
+                      </h2>
                     </div>
                   </div>
 
                   <div className="docs-body">
-                    <p>
-                      Glossy maintains automated verification scripts to ensure 100% data integrity between raw LaTeX
-                      manuscripts, structured JSON content, and dictionary headwords:
+                    <p data-tina-field={tinaField(docs, "a3Intro")}>
+                      {docs.a3Intro || "Glossy maintains automated verification scripts to ensure 100% data integrity between raw LaTeX manuscripts, structured JSON content, and dictionary headwords:"}
                     </p>
 
                     <div className="docs-table-wrapper">
@@ -791,18 +881,23 @@ export default function DocsPage() {
                         </thead>
                         <tbody>
                           {(
+                            (docs.verificationTools as Array<{
+                              name: string;
+                              command: string;
+                              target: string;
+                            }>) ||
                             (docsData.verificationTools as Array<{
                               name: string;
                               command: string;
                               target: string;
                             }>) || []
                           ).map((t, idx) => (
-                            <tr key={idx}>
-                              <td style={{ fontWeight: 600 }}>{t.name}</td>
+                            <tr key={idx} data-tina-field={tinaField(t)}>
+                              <td data-tina-field={tinaField(t, "name")} style={{ fontWeight: 600 }}>{t.name}</td>
                               <td>
-                                <span className="docs-tag-badge">{t.command}</span>
+                                <span data-tina-field={tinaField(t, "command")} className="docs-tag-badge">{t.command}</span>
                               </td>
-                              <td style={{ color: "var(--muted-ink)" }}>{t.target}</td>
+                              <td data-tina-field={tinaField(t, "target")} style={{ color: "var(--muted-ink)" }}>{t.target}</td>
                             </tr>
                           ))}
                         </tbody>

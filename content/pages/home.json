@@ -5,11 +5,11 @@
   "heading": "Read a text or work on its glosses.",
   "description": "Read, edit, and publish morphologically tagged historical texts with standardized Leipzig three-tier alignment, canonical dictionary headwords, and compilable LaTeX gb4e export.",
   "primaryAction": {
-    "label": "+ Gloss a New Text",
+    "label": "Gloss a New Text",
     "href": "/edit/new"
   },
   "secondaryAction": {
-    "label": "Explore Corpus ↓",
+    "label": "Explore Corpus ",
     "href": "#corpus-directory"
   }
 }

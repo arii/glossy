@@ -7,7 +7,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getGlossRecords, getReadingPassage } from "../lib/passage-utils";
 import type { TextDocument } from "../lib/types";
-import { getLocalDraft, getHiddenSlugs, restoreHiddenText } from "../lib/local-drafts";
+import {
+  getLocalDraft,
+  getHiddenSlugs,
+  restoreHiddenText,
+  getWorkspaceTexts,
+  type WorkspaceTextItem,
+} from "../lib/local-drafts";
 import { AnnotatedPassage } from "./annotated-passage";
 import { GlossPopup } from "./gloss-popup";
 import { AttributionModal } from "./attribution-modal";
@@ -110,9 +116,23 @@ export function ReadingPage({
     } catch {}
   };
 
-  const availableTexts = texts
-    .filter((t) => !deletedSlugs.includes(t.slug))
-    .map((t) => ({ slug: t.slug, title: t.title }));
+  const [workspaceTexts, setWorkspaceTexts] = useState<WorkspaceTextItem[]>(() =>
+    getWorkspaceTexts({
+      currentSlug: selectedSlug,
+      allLoadedTexts: texts.map((t) => ({ slug: t.slug, title: t.title })),
+      excludeDeleted: true,
+    }),
+  );
+
+  useEffect(() => {
+    setWorkspaceTexts(
+      getWorkspaceTexts({
+        currentSlug: selectedSlug,
+        allLoadedTexts: texts.map((t) => ({ slug: t.slug, title: t.title })),
+        excludeDeleted: true,
+      }),
+    );
+  }, [selectedSlug, texts, deletedSlugs]);
 
   const baseText = texts.find((text) => text.slug === selectedSlug) ?? texts[0];
   const selectedText = localDraftText ?? baseText;
@@ -224,7 +244,7 @@ export function ReadingPage({
             <h1>{currentTitle}</h1>
             <p className="source-line">{currentSource}</p>
 
-            {availableTexts && availableTexts.length > 1 && (
+            {workspaceTexts && workspaceTexts.length > 1 && (
               <div style={{ marginTop: "0.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <label htmlFor="viewer-text-select" style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--accent)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                   Switch text:
@@ -235,7 +255,7 @@ export function ReadingPage({
                   onChange={(e) => router.push(`/read/${e.target.value}`)}
                   style={{ padding: "0.35rem 0.6rem", fontSize: "0.85rem", border: "1px solid var(--rule)", borderRadius: "0.25rem", background: "var(--surface)", color: "var(--ink)" }}
                 >
-                  {availableTexts.map((t) => (
+                  {workspaceTexts.map((t) => (
                     <option key={t.slug} value={t.slug}>
                       {t.title}
                     </option>

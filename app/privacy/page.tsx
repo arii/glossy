@@ -1,14 +1,48 @@
-import type { Metadata } from "next";
+"use client";
+
 import { SiteNav } from "../../components/site-nav";
 import { SiteFooter } from "../../components/site-footer";
 import { ShieldCheck } from "lucide-react";
+import privacyData from "../../content/pages/privacy.json";
+import { useTina, tinaField } from "tinacms/dist/react";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy | Glossy · Old English Interlinear Glosses",
-  description: "Privacy policy for Glossy: offline-first architecture, zero tracking cookies, local storage usage, and user data privacy.",
-};
+const PRIVACY_PAGE_QUERY = `
+  query PrivacyPageQuery($relativePath: String!) {
+    page(relativePath: $relativePath) {
+      title
+      eyebrow
+      heading
+      description
+      privacySummaryTitle
+      privacySummaryText
+      privacySections {
+        num
+        title
+        content
+        bullets
+      }
+    }
+  }
+`;
+
+const INITIAL_PRIVACY_DATA = { page: privacyData };
+const PRIVACY_PAGE_VARS = { relativePath: "privacy.json" };
 
 export default function PrivacyPage() {
+  const { data: pageData } = useTina({
+    query: PRIVACY_PAGE_QUERY,
+    variables: PRIVACY_PAGE_VARS,
+    data: INITIAL_PRIVACY_DATA,
+  });
+
+  const page = pageData?.page || privacyData;
+  const sections = (page.privacySections as Array<{
+    num?: string;
+    title: string;
+    content?: string;
+    bullets?: string[];
+  }>) || privacyData.privacySections || [];
+
   return (
     <>
       <SiteNav />
@@ -26,6 +60,7 @@ export default function PrivacyPage() {
           {/* Header */}
           <header style={{ borderBottom: "1px solid var(--rule)", paddingBottom: "1.5rem", marginBottom: "2rem" }}>
             <span
+              data-tina-field={tinaField(page, "eyebrow")}
               style={{
                 display: "inline-block",
                 fontSize: "0.75rem",
@@ -36,9 +71,10 @@ export default function PrivacyPage() {
                 marginBottom: "0.5rem",
               }}
             >
-              Privacy &amp; Data Transparency
+              {page.eyebrow || "Privacy & Data Transparency"}
             </span>
             <h1
+              data-tina-field={tinaField(page, "heading")}
               style={{
                 margin: "0 0 0.75rem",
                 fontFamily: "'Charis SIL', Georgia, serif",
@@ -48,10 +84,10 @@ export default function PrivacyPage() {
                 color: "var(--ink)",
               }}
             >
-              Privacy Policy
+              {page.heading || "Privacy Policy"}
             </h1>
-            <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--muted-ink)", lineHeight: 1.6 }}>
-              Effective Date: March 2025 · Last Updated: October 2026
+            <p data-tina-field={tinaField(page, "description")} style={{ margin: 0, fontSize: "0.95rem", color: "var(--muted-ink)", lineHeight: 1.6 }}>
+              {page.description || "Effective Date: March 2025 · Last Updated: October 2026"}
             </p>
           </header>
 
@@ -71,117 +107,42 @@ export default function PrivacyPage() {
             >
               <ShieldCheck style={{ width: "1.5rem", height: "1.5rem", color: "var(--accent)", flexShrink: 0, marginTop: "0.15rem" }} />
               <div>
-                <strong style={{ display: "block", color: "var(--ink)", fontSize: "0.95rem", marginBottom: "0.25rem" }}>
-                  Summary: We do not track you.
+                <strong data-tina-field={tinaField(page, "privacySummaryTitle")} style={{ display: "block", color: "var(--ink)", fontSize: "0.95rem", marginBottom: "0.25rem" }}>
+                  {page.privacySummaryTitle || "Summary: We do not track you."}
                 </strong>
-                <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
-                  Glossy is an offline-first scholarly application. We do not use tracking cookies, analytics trackers, or user telemetry. Your custom texts and edits remain entirely within your own browser.
+                <p data-tina-field={tinaField(page, "privacySummaryText")} style={{ margin: 0, fontSize: "0.85rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
+                  {page.privacySummaryText || "Glossy is an offline-first scholarly application. We do not use tracking cookies, analytics trackers, or user telemetry. Your custom texts and edits remain entirely within your own browser."}
                 </p>
               </div>
             </div>
 
-            <h2
-              style={{
-                fontFamily: "'Charis SIL', Georgia, serif",
-                fontSize: "1.35rem",
-                color: "var(--ink)",
-                marginBottom: "0.75rem",
-              }}
-            >
-              1. Information We Do Not Collect
-            </h2>
-            <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1rem" }}>
-              Unlike commercial web platforms, Glossy operates without tracking infrastructure. Specifically:
-            </p>
-            <ul style={{ paddingLeft: "1.25rem", margin: "0 0 1rem", lineHeight: 1.7, color: "var(--ink)" }}>
-              <li><strong>No tracking cookies</strong>: We do not set marketing, cross-site, or advertising cookies.</li>
-              <li><strong>No third-party analytics</strong>: We do not use Google Analytics, Mixpanel, Hotjar, or similar behavioral tracking scripts.</li>
-              <li><strong>No user telemetry</strong>: We do not record your keystrokes, reading speeds, or session replay data.</li>
-              <li><strong>No personal profiles</strong>: You do not need to register an account or provide personal information to read, gloss, or export texts.</li>
-            </ul>
-          </section>
-
-          {/* Section: Local Storage */}
-          <section style={{ marginBottom: "2rem" }}>
-            <h2
-              style={{
-                fontFamily: "'Charis SIL', Georgia, serif",
-                fontSize: "1.35rem",
-                color: "var(--ink)",
-                marginBottom: "0.75rem",
-              }}
-            >
-              2. Browser Storage (localStorage)
-            </h2>
-            <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1rem" }}>
-              To ensure that your work is not lost when refreshing the page or working offline, Glossy stores draft documents and editing snapshots in your web browser&apos;s <code>localStorage</code> under keys prefixed with:
-            </p>
-            <ul style={{ paddingLeft: "1.25rem", margin: "0 0 1rem", lineHeight: 1.7, color: "var(--ink)" }}>
-              <li><code>glossy:draft:v1:[slug]</code> (and compatibility key <code>glossy_draft_[slug]</code>): Holds local draft envelopes and working text documents in canonical schema format.</li>
-              <li><code>glossy_pending_drafts</code>: Manages the local manifest of drafts pending repository commit.</li>
-              <li><code>glossy_deleted_slugs</code>: Remembers built-in corpus texts you have chosen to hide locally on this device.</li>
-              <li><code>glossy_active_slug</code>: Remembers the last document you viewed or edited.</li>
-            </ul>
-            <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: 0 }}>
-              This data resides exclusively in your browser storage on this device. Drafts are not published to the repository until you explicitly commit them through an authenticated TinaCMS session, or download them manually via JSON/LaTeX export.
-            </p>
-          </section>
-
-          {/* Section: Third-Party Integrations */}
-          <section style={{ marginBottom: "2rem" }}>
-            <h2
-              style={{
-                fontFamily: "'Charis SIL', Georgia, serif",
-                fontSize: "1.35rem",
-                color: "var(--ink)",
-                marginBottom: "0.75rem",
-              }}
-            >
-              3. Third-Party Services
-            </h2>
-            <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1rem" }}>
-              Glossy interacts with the following external services only when you explicitly invoke them:
-            </p>
-            <ul style={{ paddingLeft: "1.25rem", margin: "0 0 1rem", lineHeight: 1.7, color: "var(--ink)" }}>
-              <li>
-                <strong>Cloudflare Pages</strong>: Glossy is hosted statically on Cloudflare Pages. Cloudflare may process basic HTTP request metadata (such as IP addresses and request headers) strictly for DDoS mitigation, caching, and edge routing in accordance with their privacy policy.
-              </li>
-              <li>
-                <strong>TinaCloud &amp; GitHub (Optional Admin Access)</strong>: If you authenticate as a repository maintainer via <code>/admin/index.html</code>, your session is authenticated through TinaCloud and GitHub OAuth to write git commits to the repository.
-              </li>
-              <li>
-                <strong>Lexicographical Links</strong>: When you click external links to Wiktionary or Bosworth-Toller, you navigate directly to those public resources, which govern their own data collection.
-              </li>
-            </ul>
-          </section>
-
-          {/* Section: Data Rights & Contact */}
-          <section>
-            <h2
-              style={{
-                fontFamily: "'Charis SIL', Georgia, serif",
-                fontSize: "1.35rem",
-                color: "var(--ink)",
-                marginBottom: "0.75rem",
-              }}
-            >
-              4. Controlling Your Data
-            </h2>
-            <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1rem" }}>
-              Since all draft data is stored locally in your browser, you retain complete sovereignty over your data. You can delete individual texts directly within the corpus directory or purge all Glossy storage at any time by clearing your browser&apos;s site data for this domain.
-            </p>
-            <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: 0 }}>
-              Questions or suggestions regarding privacy practices may be submitted via our{" "}
-              <a
-                href="https://github.com/arii/glossy/issues"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "var(--accent)", textDecoration: "underline" }}
-              >
-                GitHub Issues page
-              </a>
-              .
-            </p>
+            {sections.map((sec, idx) => (
+              <div key={idx} style={{ marginBottom: "2rem" }} data-tina-field={tinaField(sec)}>
+                <h2
+                  data-tina-field={tinaField(sec, "title")}
+                  style={{
+                    fontFamily: "'Charis SIL', Georgia, serif",
+                    fontSize: "1.35rem",
+                    color: "var(--ink)",
+                    marginBottom: "0.75rem",
+                  }}
+                >
+                  {sec.num ? `${sec.num}. ` : ""}{sec.title}
+                </h2>
+                {sec.content && (
+                  <p data-tina-field={tinaField(sec, "content")} style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1rem" }}>
+                    {sec.content}
+                  </p>
+                )}
+                {sec.bullets && sec.bullets.length > 0 && (
+                  <ul data-tina-field={tinaField(sec, "bullets")} style={{ paddingLeft: "1.25rem", margin: "0 0 1rem", lineHeight: 1.7, color: "var(--ink)" }}>
+                    {sec.bullets.map((bullet, bIdx) => (
+                      <li key={bIdx}>{bullet}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
           </section>
         </article>
       </main>
