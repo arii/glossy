@@ -30,7 +30,7 @@ export function AnnotatedPassage({
           if (segment.type === "text") {
             return (
               <span
-                className={selectedId ? "passage-text is-dimmed" : "passage-text"}
+                className="passage-text"
                 key={`${segment.value}-${index}`}
               >
                 {segment.value}
@@ -44,17 +44,21 @@ export function AnnotatedPassage({
           }
 
           const tags = record.sourceGloss.split(".");
+          const isSelected = selectedId === record.id;
 
           return (
-            <span key={`${segment.glossId}-${index}`} className="inline-gloss-unit">
+            <span
+              key={`${segment.glossId}-${index}`}
+              className={`inline-gloss-unit${isSelected ? " is-active-unit" : ""}`}
+            >
               <button
-                className={`gloss-trigger${record.analysis.morphemes.length > 1 ? " is-multi-morpheme" : ""}${selectedId === record.id ? " is-selected" : ""}${selectedId && selectedId !== record.id ? " is-dimmed" : ""}`}
+                className={`gloss-trigger${record.analysis.morphemes.length > 1 ? " is-multi-morpheme" : ""}${isSelected ? " is-selected" : ""}`}
                 type="button"
                 data-gloss-trigger={record.id}
-                aria-pressed={selectedId === record.id}
-                aria-expanded={selectedId === record.id}
+                aria-pressed={isSelected}
+                aria-expanded={isSelected}
                 aria-controls="gloss-popup"
-                data-selected={selectedId === record.id}
+                data-selected={isSelected}
                 onPointerOver={() => handleHover(record.id)}
                 onMouseOver={() => handleHover(record.id)}
                 onFocus={() => {

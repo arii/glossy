@@ -292,7 +292,7 @@ h2 {
 .gloss-trigger {
   display: inline;
   margin: 0;
-  padding: 0 0.08em;
+  padding: 0 0.12em;
   color: inherit;
   border: 0;
   border-bottom: 2px dotted var(--accent);
@@ -300,23 +300,36 @@ h2 {
   font: inherit;
   line-height: inherit;
   cursor: pointer;
-  border-radius: 0.2rem;
-  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  border-radius: 0.25rem;
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .gloss-trigger.is-multi-morpheme {
   border-bottom-style: solid;
   border-bottom-width: 3px;
-  background: linear-gradient(transparent 70%, rgba(123, 63, 42, 0.1) 70%);
+  background: linear-gradient(transparent 70%, rgba(123, 63, 42, 0.08) 70%);
 }
 
-.gloss-trigger:hover,
+.gloss-trigger:hover {
+  color: var(--accent);
+  background: rgba(180, 83, 9, 0.08);
+  border-bottom-color: var(--accent);
+}
+
 .gloss-trigger:focus-visible,
 .gloss-trigger.is-selected {
   color: var(--accent);
-  background: rgba(123, 63, 42, 0.14);
-  box-shadow: 0 0 0 2px rgba(123, 63, 42, 0.25);
+  font-weight: 700;
+  background: rgba(180, 83, 9, 0.16);
+  border-bottom: 3px solid var(--accent);
+  box-shadow: 0 0 0 2px rgba(180, 83, 9, 0.25), 0 2px 6px rgba(123, 63, 42, 0.1);
   outline: none;
+}
+
+.inline-gloss-unit.is-active-unit .source-gloss-token .tag-badge {
+  border-color: rgba(123, 63, 42, 0.35);
+  background: rgba(123, 63, 42, 0.08);
+  font-weight: 700;
 }
 
 .translation {
@@ -334,26 +347,31 @@ h2 {
 
 .gloss-sidebar-container {
   position: sticky;
-  top: 1.5rem;
-  max-height: calc(100vh - 3rem);
+  top: 4.5rem;
+  max-height: calc(100vh - 5.5rem);
   min-height: 10rem;
   overflow-y: auto;
+  padding-bottom: 1rem;
 }
 
 .empty-gloss {
   margin: 0;
-  padding: 1.25rem;
+  padding: 1.25rem 1.4rem;
   color: var(--muted-ink);
+  background: var(--surface);
   border: 1px dashed var(--rule);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 16px rgba(64, 47, 29, 0.04);
   font-size: 0.95rem;
   line-height: 1.5;
 }
 
 .gloss-popup {
-  padding: 1.25rem;
-  background: #f3eadb;
-  border: 1px solid #cdbba4;
-  box-shadow: 0 0.75rem 2rem rgba(64, 47, 29, 0.12);
+  padding: 1.25rem 1.4rem;
+  background: var(--surface);
+  border: 1px solid rgba(123, 63, 42, 0.24);
+  border-radius: 0.5rem;
+  box-shadow: 0 12px 32px rgba(64, 47, 29, 0.14), 0 2px 8px rgba(64, 47, 29, 0.06);
 }
 
 .popup-heading {
@@ -757,12 +775,7 @@ h2 {
 
 .passage-text,
 .gloss-trigger {
-  transition: color 160ms ease, background-color 160ms ease, opacity 160ms ease;
-}
-
-.passage-text.is-dimmed,
-.gloss-trigger.is-dimmed {
-  opacity: 0.58;
+  transition: color 160ms ease, background-color 160ms ease;
 }
 
 @media (max-width: 42rem) {
