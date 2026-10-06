@@ -47,6 +47,11 @@ export function computeDocumentHash(doc: TextDocument): string {
   return computeSimpleHash({
     slug: doc.slug,
     title: doc.title,
+    author: doc.author,
+    historicalAuthor: doc.historicalAuthor,
+    glossedBy: doc.glossedBy,
+    date: doc.date,
+    sourceEdition: doc.sourceEdition,
     sentences: (doc.sentences || []).map((s) => ({
       translation: s.translation,
       words: (s.words || []).map((w) => ({

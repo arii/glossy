@@ -196,7 +196,18 @@ export default function Home() {
             </div>
           }
           aside={
-            <div className="hero-preview-card">
+            <div
+              className="hero-preview-card"
+              style={{
+                background: "#1c1917",
+                color: "#fafaf9",
+                borderRadius: "0.6rem",
+                padding: "1.5rem",
+                boxShadow: "0 1rem 3rem rgba(0, 0, 0, 0.15)",
+                border: "1px solid #332d29",
+                width: "100%",
+              }}
+            >
             {/* Widget Header Bar with Mode Switcher */}
             <div
               style={{
