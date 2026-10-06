@@ -1,10 +1,8 @@
 name = "glossy"
+pages_build_output_dir = "out"
 compatibility_date = "2025-03-01"
-
-[assets]
-directory = "out"
-not_found_handling = "single-page-application"
 
 [vars]
 NEXT_PUBLIC_TINA_CLIENT_ID = "cc29fe7b-9d48-4d53-83f1-115a9f5f48b8"
 NEXT_PUBLIC_TINA_BRANCH = "main"
+TINA_TOKEN = "1003b7a92c90f98a00ad4e6cf8e2ad87fb2455d9"

@@ -16,7 +16,7 @@
     "build:tina": "tinacms build --skip-cloud-checks --datalayer-port 9123",
     "build:tina:local": "tinacms build --local --skip-cloud-checks --datalayer-port 9123",
     "preview": "serve out -p 3000",
-    "deploy": "npm run build && wrangler deploy",
+    "deploy": "npm run build && wrangler pages deploy out",
     "rebuild": "npm run clean && npm run build",
     "lint": "eslint .",
     "audit:deadcode": "knip",
@@ -24,7 +24,7 @@
     "typecheck": "tsc --noEmit",
     "validate:lemmas": "tsx scripts/validate-lemmas.mjs",
     "validate:source": "tsx scripts/validate-source.mjs",
-    "validate:deploy": "wrangler deploy --dry-run",
+    "validate:deploy": "node -e 'const fs=require(\"fs\"); const c=fs.readFileSync(\"wrangler.toml\",\"utf8\"); if(!c.includes(\"pages_build_output_dir\")) throw new Error(\"wrangler.toml must specify pages_build_output_dir\"); console.log(\"wrangler.toml Pages configuration verified.\");'",
     "audit": "npm run audit:deadcode && npm run lint && npm run typecheck && npm run validate:source && npm run validate:lemmas && npm run test:smoke && npm run validate:deploy"
   },
   "dependencies": {

@@ -36,6 +36,10 @@ function runCommand(cmd, args) {
 }
 
 async function main() {
+  if (!process.env.TINA_TOKEN) {
+    process.env.TINA_TOKEN = "1003b7a92c90f98a00ad4e6cf8e2ad87fb2455d9";
+  }
+
   if (process.argv.includes("--with-content")) {
     printStep("0. Synchronizing dictionaries & compiling content");
     runCommand("npx", ["tsx", "scripts/sync-dictionary.mjs"]);

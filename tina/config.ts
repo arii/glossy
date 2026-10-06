@@ -11,7 +11,7 @@ const clientId =
   "cc29fe7b-9d48-4d53-83f1-115a9f5f48b8";
 const token =
   process.env.TINA_TOKEN ||
-  null;
+  "1003b7a92c90f98a00ad4e6cf8e2ad87fb2455d9";
 
 export default defineConfig({
   branch,
