@@ -5,10 +5,10 @@ export function exportToGb4eLatex(document: TextDocument, customSentences?: Read
   const paragraphs = groupSentencesByParagraph(sentences);
 
   const title = document.title || "Untitled Document";
-  const rawAuthor = document.author || document.source || "";
+  const rawAuthor = document.glossedBy || document.author || document.source || "";
   const cleanAuthor = rawAuthor.replace(/^(Translated and glossed by\s*)+/gi, "").trim();
   const author = cleanAuthor
-    ? (cleanAuthor.toLowerCase().includes("anonymous") ? cleanAuthor : `Translated and glossed by ${cleanAuthor}`)
+    ? (cleanAuthor.toLowerCase().includes("translated and glossed by") ? cleanAuthor : `Translated and glossed by ${cleanAuthor}`)
     : "";
   const date = document.date || "September 30, 2026";
 
