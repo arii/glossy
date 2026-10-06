@@ -47,11 +47,14 @@ interface Abbreviation {
   category: "Person & Number" | "Case" | "Gender & Mood" | "Part of Speech" | "Affixes & Morphemes";
 }
 
+const INITIAL_DOCS_DATA = { docs: docsData };
+const DOCS_PAGE_VARS = { relativePath: "architecture-faq.json" };
+
 export default function DocsPage() {
   const { data: pageData } = useTina({
     query: DOCS_PAGE_QUERY,
-    variables: { relativePath: "architecture-faq.json" },
-    data: { docs: docsData },
+    variables: DOCS_PAGE_VARS,
+    data: INITIAL_DOCS_DATA,
   });
 
   const docs = pageData?.docs || docsData;

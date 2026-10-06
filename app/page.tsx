@@ -5,7 +5,7 @@ import Link from "next/link";
 import { SiteNav } from "../components/site-nav";
 import { TextDirectory, type TextChoice } from "../components/text-directory";
 import { SiteFooter } from "../components/site-footer";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, BookOpen, Edit3, Code2 } from "lucide-react";
 import { useTina, tinaField } from "tinacms/dist/react";
 import homeContentData from "../content/pages/home.json";
 
@@ -78,6 +78,11 @@ const DEFAULT_HOME_CONTENT = {
   },
 };
 
+const INITIAL_HOME_PAGE_DATA = {
+  page: (homeContentData as typeof DEFAULT_HOME_CONTENT) || DEFAULT_HOME_CONTENT,
+};
+const HOME_PAGE_VARS = { relativePath: "home.json" };
+
 const HOME_PAGE_QUERY = `
   query HomePageQuery($relativePath: String!) {
     page(relativePath: $relativePath) {
@@ -100,13 +105,16 @@ const HOME_PAGE_QUERY = `
 export default function Home() {
   const { data: pageData } = useTina({
     query: HOME_PAGE_QUERY,
-    variables: { relativePath: "home.json" },
-    data: { page: (homeContentData as typeof DEFAULT_HOME_CONTENT) || DEFAULT_HOME_CONTENT },
+    variables: HOME_PAGE_VARS,
+    data: INITIAL_HOME_PAGE_DATA,
   });
 
   const page = pageData?.page || (homeContentData as typeof DEFAULT_HOME_CONTENT) || DEFAULT_HOME_CONTENT;
 
-  const [selectedTokenIdx, setSelectedTokenIdx] = useState<number>(1); // default to 'sǣde'
+  const [previewMode, setPreviewMode] = useState<"reader" | "editor">("reader");
+  const [selectedTokenIdx, setSelectedTokenIdx] = useState<number>(3); // default to 'hlāforde'
+  const [editedLemma, setEditedLemma] = useState<string>("hlāford");
+  const [editedGloss, setEditedGloss] = useState<string>("lord-DAT.SG");
 
   // Pre-configured choices with complete attribution and metrics
   const choices: TextChoice[] = [
@@ -242,7 +250,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right Column: Interactive Live Gloss Preview Widget */}
+          {/* Right Column: Interactive Live Gloss & Morpheme Studio Preview */}
           <div
             className="hero-preview-card"
             style={{
@@ -255,20 +263,72 @@ export default function Home() {
               width: "100%",
             }}
           >
-            {/* Widget Header Bar */}
+            {/* Widget Header Bar with Mode Switcher */}
             <div
               style={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
+                flexWrap: "wrap",
+                gap: "0.5rem",
                 paddingBottom: "0.75rem",
                 borderBottom: "1px solid #332d29",
                 marginBottom: "1rem",
               }}
             >
-              <span style={{ fontSize: "0.75rem", color: "#d6d3d1", fontFamily: "monospace", letterSpacing: "0.03em" }}>
-                Interactive Reader Preview
-              </span>
+              <div
+                style={{
+                  display: "inline-flex",
+                  background: "#292524",
+                  borderRadius: "0.35rem",
+                  padding: "0.2rem",
+                  border: "1px solid #44403c",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setPreviewMode("reader")}
+                  style={{
+                    background: previewMode === "reader" ? "var(--accent)" : "transparent",
+                    color: previewMode === "reader" ? "#ffffff" : "#a8a29e",
+                    border: "none",
+                    borderRadius: "0.25rem",
+                    padding: "0.25rem 0.65rem",
+                    fontSize: "0.75rem",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.35rem",
+                    transition: "all 0.15s ease",
+                  }}
+                >
+                  <BookOpen style={{ width: "0.75rem", height: "0.75rem" }} />
+                  <span>Reader Preview</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPreviewMode("editor")}
+                  style={{
+                    background: previewMode === "editor" ? "var(--accent)" : "transparent",
+                    color: previewMode === "editor" ? "#ffffff" : "#a8a29e",
+                    border: "none",
+                    borderRadius: "0.25rem",
+                    padding: "0.25rem 0.65rem",
+                    fontSize: "0.75rem",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.35rem",
+                    transition: "all 0.15s ease",
+                  }}
+                >
+                  <Edit3 style={{ width: "0.75rem", height: "0.75rem" }} />
+                  <span>Editor Preview</span>
+                </button>
+              </div>
+
               <span
                 style={{
                   fontSize: "0.68rem",
@@ -276,121 +336,282 @@ export default function Home() {
                   background: "#292524",
                   border: "1px solid #44403c",
                   color: "#a8a29e",
-                  padding: "0.15rem 0.45rem",
+                  padding: "0.2rem 0.5rem",
                   borderRadius: "0.25rem",
                 }}
               >
-                Ohthere & Wulfstan
+                Cotton MS Tiberius B. i
               </span>
             </div>
 
-            {/* Clickable Token Gloss Row */}
-            <div style={{ marginBottom: "1.25rem" }}>
-              <p style={{ margin: "0 0 0.5rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "#a8a29e" }}>
-                Click any word to inspect grammatical features:
-              </p>
-              
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.65rem 0.85rem" }}>
-                {HERO_PREVIEW_TOKENS.map((token, idx) => {
-                  const isSelected = selectedTokenIdx === idx;
-                  return (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => setSelectedTokenIdx(idx)}
-                      style={{
-                        display: "inline-flex",
-                        flexDirection: "column",
-                        alignItems: "flex-start",
-                        background: isSelected ? "#3b2a22" : "transparent",
-                        border: isSelected ? "1px solid #fbbf24" : "1px solid transparent",
-                        borderRadius: "0.3rem",
-                        padding: "0.3rem 0.45rem",
-                        cursor: "pointer",
-                        textAlign: "left",
-                        transition: "all 0.15s ease",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: "1.1rem",
-                          fontFamily: "'Charis SIL', Georgia, serif",
-                          fontWeight: 700,
-                          color: isSelected ? "#fbbf24" : "#fde68a",
-                        }}
-                      >
-                        {token.word}
-                      </span>
-                      <span
-                        style={{
-                          fontSize: "0.72rem",
-                          fontFamily: "monospace",
-                          color: isSelected ? "#ffffff" : "#a8a29e",
-                        }}
-                      >
-                        {token.gloss}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Aligned Free Translation */}
-            <div
-              style={{
-                paddingTop: "0.75rem",
-                borderTop: "1px dashed #332d29",
-                marginBottom: "1rem",
-                fontStyle: "italic",
-                fontFamily: "'Charis SIL', Georgia, serif",
-                fontSize: "0.92rem",
-                color: "#d6d3d1",
-              }}
-            >
-              &ldquo;Ohthere said to his lord, King Alfred, that he lived the furthest north of all Norwegians.&rdquo;
-            </div>
-
-            {/* Selected Token Inspector Card */}
-            {activeToken && (
-              <div
-                style={{
-                  background: "#292524",
-                  border: "1px solid #44403c",
-                  borderRadius: "0.4rem",
-                  padding: "0.85rem 1rem",
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.35rem" }}>
-                  <div>
-                    <span style={{ fontSize: "1rem", fontFamily: "'Charis SIL', Georgia, serif", fontWeight: 700, color: "#fbbf24" }}>
-                      {activeToken.word.replace(/[.,]/g, "")}
-                    </span>
-                    <span style={{ fontSize: "0.75rem", color: "#a8a29e", marginLeft: "0.5rem" }}>
-                      Lemma: <strong style={{ color: "#fafaf9" }}>{activeToken.lemma}</strong> ({activeToken.pos})
-                    </span>
+            {/* Mode 1: Interactive Reader Preview */}
+            {previewMode === "reader" && (
+              <div>
+                <div style={{ marginBottom: "1.25rem" }}>
+                  <p style={{ margin: "0 0 0.5rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "#a8a29e" }}>
+                    Click any word to inspect grammatical features:
+                  </p>
+                  
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.65rem 0.85rem" }}>
+                    {HERO_PREVIEW_TOKENS.map((token, idx) => {
+                      const isSelected = selectedTokenIdx === idx;
+                      return (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => {
+                            setSelectedTokenIdx(idx);
+                            setEditedLemma(token.lemma);
+                            setEditedGloss(token.gloss);
+                          }}
+                          style={{
+                            display: "inline-flex",
+                            flexDirection: "column",
+                            alignItems: "flex-start",
+                            background: isSelected ? "#3b2a22" : "transparent",
+                            border: isSelected ? "1px solid #fbbf24" : "1px solid transparent",
+                            borderRadius: "0.3rem",
+                            padding: "0.3rem 0.45rem",
+                            cursor: "pointer",
+                            textAlign: "left",
+                            transition: "all 0.15s ease",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: "1.1rem",
+                              fontFamily: "'Charis SIL', Georgia, serif",
+                              fontWeight: 700,
+                              color: isSelected ? "#fbbf24" : "#fde68a",
+                            }}
+                          >
+                            {token.word}
+                          </span>
+                          <span
+                            style={{
+                              fontSize: "0.72rem",
+                              fontFamily: "monospace",
+                              color: isSelected ? "#ffffff" : "#a8a29e",
+                            }}
+                          >
+                            {token.gloss}
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
-
-                  <a
-                    href={activeToken.wiktionary}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{
-                      fontSize: "0.72rem",
-                      color: "#60a5fa",
-                      textDecoration: "none",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.2rem",
-                    }}
-                  >
-                    Wiktionary <ExternalLink style={{ width: "0.65rem", height: "0.65rem" }} />
-                  </a>
                 </div>
 
-                <p style={{ margin: 0, fontSize: "0.78rem", color: "#e7e5e4", lineHeight: 1.4 }}>
-                  {activeToken.analysis}
-                </p>
+                {/* Aligned Free Translation */}
+                <div
+                  style={{
+                    paddingTop: "0.75rem",
+                    borderTop: "1px dashed #332d29",
+                    marginBottom: "1rem",
+                    fontStyle: "italic",
+                    fontFamily: "'Charis SIL', Georgia, serif",
+                    fontSize: "0.92rem",
+                    color: "#d6d3d1",
+                  }}
+                >
+                  &ldquo;Ohthere said to his lord, King Alfred, that he lived the furthest north of all Norwegians.&rdquo;
+                </div>
+
+                {/* Selected Token Inspector Card */}
+                {activeToken && (
+                  <div
+                    style={{
+                      background: "#292524",
+                      border: "1px solid #44403c",
+                      borderRadius: "0.4rem",
+                      padding: "0.85rem 1rem",
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.35rem" }}>
+                      <div>
+                        <span style={{ fontSize: "1rem", fontFamily: "'Charis SIL', Georgia, serif", fontWeight: 700, color: "#fbbf24" }}>
+                          {activeToken.word.replace(/[.,]/g, "")}
+                        </span>
+                        <span style={{ fontSize: "0.75rem", color: "#a8a29e", marginLeft: "0.5rem" }}>
+                          Lemma: <strong style={{ color: "#fafaf9" }}>{activeToken.lemma}</strong> ({activeToken.pos})
+                        </span>
+                      </div>
+
+                      <a
+                        href={activeToken.wiktionary}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          fontSize: "0.72rem",
+                          color: "#60a5fa",
+                          textDecoration: "none",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "0.2rem",
+                        }}
+                      >
+                        Wiktionary <ExternalLink style={{ width: "0.65rem", height: "0.65rem" }} />
+                      </a>
+                    </div>
+
+                    <p style={{ margin: 0, fontSize: "0.78rem", color: "#e7e5e4", lineHeight: 1.4 }}>
+                      {activeToken.analysis}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Mode 2: Interactive Morpheme Studio / Editor Preview */}
+            {previewMode === "editor" && (
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+                  <span style={{ fontSize: "0.72rem", color: "#a8a29e", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                    Sentence 1 of 75 · Morphological Segmentation
+                  </span>
+                  <Link
+                    href="/edit/ohthere-wulfstan"
+                    style={{
+                      fontSize: "0.75rem",
+                      color: "#fbbf24",
+                      textDecoration: "none",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Open in Full Studio →
+                  </Link>
+                </div>
+
+                {/* Token breakdown fields */}
+                <div
+                  style={{
+                    background: "#292524",
+                    border: "1px solid #44403c",
+                    borderRadius: "0.4rem",
+                    padding: "0.85rem 1rem",
+                    marginBottom: "0.85rem",
+                  }}
+                >
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginBottom: "0.75rem" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.68rem", textTransform: "uppercase", color: "#a8a29e", marginBottom: "0.25rem" }}>
+                        Surface Form
+                      </label>
+                      <div
+                        style={{
+                          background: "#1c1917",
+                          border: "1px solid #44403c",
+                          borderRadius: "0.25rem",
+                          padding: "0.35rem 0.5rem",
+                          fontFamily: "'Charis SIL', Georgia, serif",
+                          fontSize: "0.95rem",
+                          fontWeight: 700,
+                          color: "#fbbf24",
+                        }}
+                      >
+                        hlāforde
+                      </div>
+                    </div>
+
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.68rem", textTransform: "uppercase", color: "#a8a29e", marginBottom: "0.25rem" }}>
+                        Dictionary Lemma
+                      </label>
+                      <input
+                        type="text"
+                        value={editedLemma}
+                        onChange={(e) => setEditedLemma(e.target.value)}
+                        style={{
+                          width: "100%",
+                          background: "#1c1917",
+                          border: "1px solid #44403c",
+                          borderRadius: "0.25rem",
+                          padding: "0.35rem 0.5rem",
+                          color: "#fafaf9",
+                          fontSize: "0.85rem",
+                          fontFamily: "'Charis SIL', Georgia, serif",
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.68rem", textTransform: "uppercase", color: "#a8a29e", marginBottom: "0.25rem" }}>
+                      Leipzig Gloss
+                    </label>
+                    <input
+                      type="text"
+                      value={editedGloss}
+                      onChange={(e) => setEditedGloss(e.target.value)}
+                      style={{
+                        width: "100%",
+                        background: "#1c1917",
+                        border: "1px solid #44403c",
+                        borderRadius: "0.25rem",
+                        padding: "0.35rem 0.5rem",
+                        color: "#fafaf9",
+                        fontSize: "0.82rem",
+                        fontFamily: "monospace",
+                        marginBottom: "0.5rem",
+                      }}
+                    />
+
+                    {/* Quick Leipzig Tag Chips */}
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", alignItems: "center" }}>
+                      <span style={{ fontSize: "0.65rem", color: "#78716c", marginRight: "0.2rem" }}>Tags:</span>
+                      {["DAT", "SG", "NOM", "ACC", "GEN", "PST", "IND", "3SG"].map((tag) => (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => {
+                            if (!editedGloss.includes(tag)) {
+                              setEditedGloss((prev) => (prev ? `${prev}.${tag}` : tag));
+                            }
+                          }}
+                          style={{
+                            background: editedGloss.includes(tag) ? "#451a03" : "#1c1917",
+                            border: editedGloss.includes(tag) ? "1px solid #d97706" : "1px solid #44403c",
+                            color: editedGloss.includes(tag) ? "#fbbf24" : "#d6d3d1",
+                            padding: "0.15rem 0.4rem",
+                            borderRadius: "0.2rem",
+                            fontSize: "0.65rem",
+                            fontFamily: "monospace",
+                            cursor: "pointer",
+                          }}
+                        >
+                          +{tag}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Live gb4e LaTeX export preview */}
+                <div
+                  style={{
+                    background: "#0c0a09",
+                    border: "1px solid #292524",
+                    borderRadius: "0.35rem",
+                    padding: "0.65rem 0.85rem",
+                    fontSize: "0.72rem",
+                    fontFamily: "monospace",
+                    color: "#a8a29e",
+                    lineHeight: 1.45,
+                    overflowX: "auto",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem", color: "#78716c", fontSize: "0.65rem" }}>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+                      <Code2 style={{ width: "0.7rem", height: "0.7rem" }} /> gb4e LaTeX Preview
+                    </span>
+                    <span>Compiles with pdfLaTeX / XeLaTeX</span>
+                  </div>
+                  <pre style={{ margin: 0, color: "#d6d3d1" }}>
+{`\\gll Ōhthere sǣde his hlāforde \\\\
+     Ohthere.NOM say-PST-IND.3SG 3SG.M.GEN ${editedGloss} \\\\
+\\glt \`Ohthere said to his lord, King Alfred...\'`}
+                  </pre>
+                </div>
               </div>
             )}
           </div>

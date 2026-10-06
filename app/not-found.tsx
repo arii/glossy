@@ -5,33 +5,47 @@ import Link from "next/link";
 import { SiteNav } from "../components/site-nav";
 import { SiteFooter } from "../components/site-footer";
 import { GlossEditor } from "../components/gloss-editor";
+import { ReadingPage } from "../components/reading-page";
 import { safeJsonParse } from "../lib/safe-json";
 import type { TextDocument } from "../lib/types";
 
 export default function NotFound() {
   const [draftDoc, setDraftDoc] = useState<TextDocument | null>(null);
+  const [routeMode, setRouteMode] = useState<"edit" | "read" | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const path = window.location.pathname;
-    // Support client-created drafts that are not pre-rendered static routes
+    let slug = "";
+    let mode: "edit" | "read" | null = null;
+
     if (path.startsWith("/edit/")) {
-      const slug = path.replace(/^\/edit\/?/, "").split("/")[0];
-      if (slug) {
-        const raw = window.localStorage.getItem(`glossy_draft_${slug}`);
-        if (raw) {
-          const parsed = safeJsonParse<TextDocument>(raw);
-          if (parsed && Array.isArray(parsed.sentences) && parsed.sentences.length > 0) {
-            setDraftDoc(parsed);
-          }
+      slug = path.replace(/^\/edit\/?/, "").split("/")[0];
+      mode = "edit";
+    } else if (path.startsWith("/read/")) {
+      slug = path.replace(/^\/read\/?/, "").split("/")[0];
+      mode = "read";
+    }
+
+    if (slug) {
+      const raw = window.localStorage.getItem(`glossy_draft_${slug}`);
+      if (raw) {
+        const parsed = safeJsonParse<TextDocument>(raw);
+        if (parsed && Array.isArray(parsed.sentences) && parsed.sentences.length > 0) {
+          setDraftDoc(parsed);
+          setRouteMode(mode);
         }
       }
     }
   }, []);
 
-  if (draftDoc) {
+  if (draftDoc && routeMode === "edit") {
     return <GlossEditor initialDocument={draftDoc} />;
+  }
+
+  if (draftDoc && routeMode === "read") {
+    return <ReadingPage texts={[draftDoc]} initialSlug={draftDoc.slug || draftDoc.textId} />;
   }
 
   return (

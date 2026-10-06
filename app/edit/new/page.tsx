@@ -136,13 +136,16 @@ const PRESETS: Preset[] = [
   },
 ];
 
+const INITIAL_INGEST_DATA = { page: ingestPageData };
+const INGEST_PAGE_VARS = { relativePath: "ingest.json" };
+
 export default function NewTextPage() {
   const router = useRouter();
 
   const { data: pageData } = useTina({
     query: INGEST_PAGE_QUERY,
-    variables: { relativePath: "ingest.json" },
-    data: { page: ingestPageData },
+    variables: INGEST_PAGE_VARS,
+    data: INITIAL_INGEST_DATA,
   });
 
   const page = pageData?.page || ingestPageData;

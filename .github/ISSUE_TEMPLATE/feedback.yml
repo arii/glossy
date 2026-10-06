@@ -1,0 +1,56 @@
+name: Feedback & Bug Report
+description: Submit a morphological gloss correction, translation fix, or bug report for Glossy.
+title: "Feedback: "
+labels: ["feedback", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for contributing to Glossy! Please provide relevant context, corrections, or observations below.
+  - type: dropdown
+    id: feedback_type
+    attributes:
+      label: Feedback Category
+      description: What kind of feedback or report are you submitting?
+      options:
+        - "Morphological / Gloss Correction"
+        - "Translation Improvement"
+        - "UI / Usability Bug"
+        - "LaTeX gb4e Export Issue"
+        - "Corpus / Manuscript Suggestion"
+        - "Feature Request"
+        - "Other"
+    validations:
+      required: true
+  - type: input
+    id: context_url
+    attributes:
+      label: Page URL or Passage Context
+      description: The URL or document slug / sentence where you encountered this.
+      placeholder: "https://glossed.pages.dev/read/ohthere-wulfstan or /edit/caedmon-hymn"
+    validations:
+      required: false
+  - type: textarea
+    id: description
+    attributes:
+      label: Description of Feedback / Issue
+      description: Please describe what happened or what could be improved.
+      placeholder: "Describe the issue or suggestion in detail..."
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_correction
+    attributes:
+      label: Proposed Correction (if applicable)
+      description: If proposing a linguistic or gloss tag correction, specify the target word, lemma, and suggested Leipzig tags.
+      placeholder: "Target: hlāforde\nCurrent gloss: lord-DAT.SG\nProposed correction: ..."
+    validations:
+      required: false
+  - type: textarea
+    id: environment
+    attributes:
+      label: Browser & Operating System
+      description: What browser and operating system were you using?
+      placeholder: "Chrome 128 on macOS / Firefox on Linux"
+    validations:
+      required: false

@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2, BookOpen, Edit3, Info, MoreVertical } from "lucide-react";
 import { AttributionModal } from "./attribution-modal";
+import { safeJsonParse } from "../lib/safe-json";
+import type { TextDocument } from "../lib/types";
 
 export type TextChoice = {
   slug: string;
@@ -16,6 +18,8 @@ export type TextChoice = {
   tokenCount?: number;
   status?: string;
   isProtected?: boolean;
+  isLocalOnly?: boolean;
+  hasLocalDraft?: boolean;
 };
 
 export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[] }) {
@@ -24,6 +28,63 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
   const [activeModalChoice, setActiveModalChoice] = useState<TextChoice | null>(null);
   const [openMenuSlug, setOpenMenuSlug] = useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    try {
+      const customChoices: TextChoice[] = [];
+      const localSlugsWithEdits = new Set<string>();
+
+      for (let i = 0; i < window.localStorage.length; i++) {
+        const key = window.localStorage.key(i);
+        if (key && key.startsWith("glossy_draft_")) {
+          const slug = key.replace(/^glossy_draft_/, "");
+          const raw = window.localStorage.getItem(key);
+          if (!raw) continue;
+
+          const parsed = safeJsonParse<TextDocument>(raw);
+          if (!parsed) continue;
+
+          const existsInInitial = initialChoices.some(
+            (c) => c.slug === slug || (parsed.textId && c.slug === parsed.textId)
+          );
+
+          if (existsInInitial) {
+            localSlugsWithEdits.add(slug);
+            if (parsed.textId) localSlugsWithEdits.add(parsed.textId);
+          } else {
+            const totalTokens = (parsed.sentences || []).reduce(
+              (acc, s) => acc + (s.words ? s.words.length : 0),
+              0
+            );
+            customChoices.push({
+              slug,
+              title: parsed.title || slug,
+              kind: "text",
+              author: parsed.author || "Custom Ingested Text",
+              source: parsed.source || "Local Browser Workspace",
+              sentenceCount: parsed.sentences?.length || 0,
+              tokenCount: totalTokens,
+              status: "draft",
+              isProtected: false,
+              isLocalOnly: true,
+            });
+          }
+        }
+      }
+
+      setChoices([
+        ...customChoices,
+        ...initialChoices.map((c) => ({
+          ...c,
+          hasLocalDraft: localSlugsWithEdits.has(c.slug),
+        })),
+      ]);
+    } catch {
+      // Ignore localStorage errors
+    }
+  }, [initialChoices]);
 
   const isProtected = (slug: string) =>
     slug === "ohthere-wulfstan" || slug === "ohthere";
@@ -48,6 +109,7 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
 
       try {
         localStorage.removeItem(`glossy-editor-snapshot-v2-${choice.slug}`);
+        localStorage.removeItem(`glossy_draft_${choice.slug}`);
       } catch {}
 
       setChoices((prev) => prev.filter((item) => item.slug !== choice.slug));
@@ -92,8 +154,8 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
               }}
             >
               <div>
-                {/* Header Row: Title */}
-                <div style={{ marginBottom: "0.5rem" }}>
+                {/* Header Row: Title & Badges */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem", marginBottom: "0.5rem" }}>
                   <h2
                     style={{
                       margin: 0,
@@ -105,6 +167,40 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
                   >
                     {choice.title}
                   </h2>
+
+                  {choice.isLocalOnly ? (
+                    <span
+                      style={{
+                        fontSize: "0.68rem",
+                        padding: "0.15rem 0.45rem",
+                        borderRadius: "0.25rem",
+                        background: "#fef3c7",
+                        color: "#92400e",
+                        border: "1px solid #fde68a",
+                        fontWeight: 600,
+                        whiteSpace: "nowrap",
+                        flexShrink: 0,
+                      }}
+                    >
+                      Local Only
+                    </span>
+                  ) : choice.hasLocalDraft ? (
+                    <span
+                      style={{
+                        fontSize: "0.68rem",
+                        padding: "0.15rem 0.45rem",
+                        borderRadius: "0.25rem",
+                        background: "#e0e7ff",
+                        color: "#3730a3",
+                        border: "1px solid #c7d2fe",
+                        fontWeight: 600,
+                        whiteSpace: "nowrap",
+                        flexShrink: 0,
+                      }}
+                    >
+                      Edited (Draft)
+                    </span>
+                  ) : null}
                 </div>
 
                 {/* Attribution & Manuscript Provenance */}

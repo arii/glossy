@@ -135,6 +135,9 @@ try {
   await check("/admin", ["Tina"]);
   await check("/admin/index.html", ["Tina"]);
 
+  await check("/about", ["About the Project", "Glossy · Digital Interlinear Philology"]);
+  await check("/privacy", ["Privacy Policy", "We do not track you"]);
+
   // 404 Not Found Page check
   const notFoundRes = await fetch(`${baseUrl}/non-existent-page`);
   const notFoundHtml = await notFoundRes.text();
@@ -143,7 +146,7 @@ try {
   }
 
   console.log(
-    `Smoke test passed for landing, all 4 corpus texts, editor (without redundant tina admin button), docs, ingestion, 404, and Tina CMS admin dashboard at ${baseUrl}.`,
+    `Smoke test passed for landing, all 4 corpus texts, editor (without redundant tina admin button), docs, about, privacy, ingestion, 404, and Tina CMS admin dashboard at ${baseUrl}.`,
   );
 } finally {
   if (serverProcess) {
