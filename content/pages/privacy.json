@@ -4,34 +4,31 @@
   "eyebrow": "Privacy & Data Transparency",
   "heading": "Privacy Policy",
   "description": "Effective Date: March 2025 · Last Updated: October 2026",
-  "privacySummaryTitle": "Summary: We do not track you.",
-  "privacySummaryText": "Glossy is an offline-first scholarly application. We do not use tracking cookies, analytics trackers, or user telemetry. Your custom texts and edits remain entirely within your own browser.",
+  "privacySummaryTitle": "Summary: Zero Behavioral Tracking",
+  "privacySummaryText": "Glossy is an offline-first scholarly application. Except for standard Cloudflare edge request logging for network security and content delivery (§3), we do not set tracking cookies, run analytics scripts, or collect user telemetry. Your custom texts and edits remain stored locally in your browser.",
   "privacySections": [
     {
       "num": "1",
       "title": "Information We Do Not Collect",
-      "content": "Unlike commercial web platforms, Glossy operates without tracking infrastructure. Specifically:",
       "bullets": [
-        "No tracking cookies: We do not set marketing, cross-site, or advertising cookies.",
-        "No third-party analytics: We do not use Google Analytics, Mixpanel, Hotjar, or similar behavioral tracking scripts.",
-        "No user telemetry: We do not record your keystrokes, reading speeds, or session replay data.",
-        "No personal profiles: You do not need to register an account or provide personal information to read, gloss, or export texts."
+        "Tracking & Analytics: We do not set marketing cookies, run behavioral analytics scripts, or record user telemetry.",
+        "Accounts & Authentication: No account registration is required to read, gloss, or export texts. An optional sign-in is available solely for repository maintainers accessing the TinaCMS content management interface."
       ]
     },
     {
       "num": "2",
       "title": "Browser Storage (localStorage)",
-      "content": "To ensure that your work is not lost when refreshing the page or working offline, Glossy stores draft documents and editing snapshots in your web browser's localStorage under keys prefixed with:",
+      "content": "To ensure that your work is preserved when refreshing the page or working offline, Glossy stores draft documents and workspace preferences locally in your web browser:",
       "bullets": [
-        "glossy:draft:v1:[slug] (and compatibility key glossy_draft_[slug]): Holds local draft envelopes and working text documents in canonical schema format.",
-        "glossy_pending_drafts: Holds the local index manifest of uncommitted drafts.",
-        "glossy_active_text_slug: Holds your last active reader selection."
+        "Local Document Drafts: Stores working drafts and editing snapshots of corpus texts.",
+        "Pending Draft Manifest: Maintains an index of uncommitted local edits across sessions.",
+        "Active Reader Selection: Remembers your last active text selection for seamless continuation."
       ]
     },
     {
       "num": "3",
       "title": "Static Hosting & Edge Delivery",
-      "content": "Glossy is delivered via Cloudflare Pages as a static application (Next.js static export). Server access logs are standard HTTP request logs processed by Cloudflare at the edge for basic DDoS protection and CDN caching.",
+      "content": "Glossy is delivered via Cloudflare Pages as a static application. Server access logs are standard HTTP request logs processed at Cloudflare's edge for basic DDoS protection and CDN caching.",
       "bullets": [
         "Standard request logs include IP address, request time, user-agent, and requested asset path.",
         "Edge access logs are ephemeral and are not linked to personal user identities."

@@ -18,6 +18,8 @@
   ],
   "ignoreDependencies": [
     "eslint-config-next",
-    "gray-matter"
+    "gray-matter",
+    "slate",
+    "slate-dom"
   ]
 }
