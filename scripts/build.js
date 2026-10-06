@@ -46,17 +46,7 @@ async function main() {
   if (busy) {
     console.log("ℹ️ Datalayer port 9123 is currently busy; reusing existing compiled schema.");
   } else {
-    const hasEnv =
-      process.env.NEXT_PUBLIC_TINA_CLIENT_ID &&
-      process.env.TINA_TOKEN &&
-      process.env.TINA_TOKEN !== "local-build-token";
-
-    const tinaArgs = hasEnv
-      ? ["build", "--skip-cloud-checks", "--datalayer-port", "9123"]
-      : ["build", "--local", "--skip-cloud-checks", "--datalayer-port", "9123"];
-
-    console.log(`Executing: npx tinacms ${tinaArgs.join(" ")}`);
-    runCommand("npx", ["tinacms", ...tinaArgs]);
+    runCommand("npx", ["tinacms", "build", "--skip-cloud-checks"]);
   }
 
   printStep("3. Building Next.js production output");

@@ -8,6 +8,7 @@ import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
 import { parseGb4e } from "../lib/gb4e";
 import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
 import { tokenizeAndLemmatizeSentence } from "../lib/lemmatizer";
+import { safeJsonStringify } from "../lib/safe-json";
 import type {
   TextDocument,
   ReadingSentence,
@@ -234,7 +235,7 @@ export function GlossEditor({
 
   // Backup snapshot for "Discard Changes" comparison
   const [savedSnapshot, setSavedSnapshot] = useState<string>(() =>
-    JSON.stringify(textDocumentToEditorDoc(initialDocument)),
+    safeJsonStringify(textDocumentToEditorDoc(initialDocument)),
   );
 
   const storageKey = `glossy_draft_${initialDocument.slug || initialDocument.textId || "ohthere"}`;
@@ -245,7 +246,7 @@ export function GlossEditor({
     try {
       const fallback = textDocumentToEditorDoc(initialDocument);
       setDocumentState(fallback);
-      const dataStr = JSON.stringify(fallback);
+      const dataStr = safeJsonStringify(fallback);
       setSavedSnapshot(dataStr);
       try {
         window.localStorage.setItem(storageKey, dataStr);
@@ -281,7 +282,7 @@ export function GlossEditor({
           window.localStorage.removeItem(storageKey);
           const fresh = textDocumentToEditorDoc(initialDocument);
           setDocumentState(fresh);
-          setSavedSnapshot(JSON.stringify(fresh));
+          setSavedSnapshot(safeJsonStringify(fresh));
           if (fresh.sentences.length > 0) {
             setActiveSentenceId(fresh.sentences[0].id);
             setActiveTokenId(fresh.sentences[0].tokens[0]?.id || "");
@@ -313,7 +314,7 @@ export function GlossEditor({
         };
 
         setDocumentState(sanitized);
-        setSavedSnapshot(JSON.stringify(sanitized));
+        setSavedSnapshot(safeJsonStringify(sanitized));
         if (sanitized.sentences.length > 0) {
           setActiveSentenceId(sanitized.sentences[0].id);
           setActiveTokenId(sanitized.sentences[0].tokens[0]?.id || "");
@@ -324,7 +325,7 @@ export function GlossEditor({
     } else {
       const initial = textDocumentToEditorDoc(initialDocument);
       setDocumentState(initial);
-      setSavedSnapshot(JSON.stringify(initial));
+      setSavedSnapshot(safeJsonStringify(initial));
       if (initial.sentences.length > 0) {
         setActiveSentenceId(initial.sentences[0].id);
         setActiveTokenId(initial.sentences[0].tokens[0]?.id || "");
@@ -338,7 +339,7 @@ export function GlossEditor({
 
     setAutosaveStatus("saving");
     const timer = window.setTimeout(() => {
-      const serialized = JSON.stringify(documentState);
+      const serialized = safeJsonStringify(documentState);
       try {
         window.localStorage.setItem(storageKey, serialized);
       } catch (e) {
@@ -523,7 +524,7 @@ export function GlossEditor({
         await fetch("/api/save-document", {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({
+          body: safeJsonStringify({
             slug: initialDocument.slug,
             fileName: initialDocument.fileName || initialDocument.textId || "ohthere",
             document: legacyDoc,
@@ -538,7 +539,7 @@ export function GlossEditor({
           {
             method: "POST",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({
+            body: safeJsonStringify({
               query: `mutation UpdateText($relativePath: String!, $params: DocumentUpdateMutation!) {
                 updateDocument(collection: "text", relativePath: $relativePath, params: $params) {
                   ... on Text { _sys { relativePath } }
@@ -554,7 +555,7 @@ export function GlossEditor({
       } catch {}
 
       // 3. Persist client-side snapshot in browser storage
-      const serialized = JSON.stringify(documentState);
+      const serialized = safeJsonStringify(documentState);
       setSavedSnapshot(serialized);
       try {
         window.localStorage.setItem(storageKey, serialized);
@@ -601,7 +602,7 @@ export function GlossEditor({
         await fetch("/api/delete-document", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+          body: safeJsonStringify({
             slug: initialDocument.slug,
             fileName: initialDocument.fileName || initialDocument.textId,
           }),

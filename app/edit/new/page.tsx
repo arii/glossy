@@ -7,6 +7,7 @@ import { SiteNav } from "../../../components/site-nav";
 import { SiteFooter } from "../../../components/site-footer";
 import { tokenizeAndLemmatizeSentence } from "../../../lib/lemmatizer";
 import { parseGb4e } from "../../../lib/gb4e";
+import { safeJsonStringify } from "../../../lib/safe-json";
 import type { TextDocument, ReadingSentence } from "../../../lib/types";
 import ingestPageData from "../../../content/pages/ingest.json";
 import { useTina, tinaField } from "tinacms/dist/react";
@@ -355,7 +356,7 @@ export default function NewTextPage() {
         await fetch("/api/save-document", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+          body: safeJsonStringify({
             slug: slug,
             fileName: slug,
             document: documentPayload,
@@ -365,7 +366,7 @@ export default function NewTextPage() {
 
       // 2. Persist to browser storage
       try {
-        window.localStorage.setItem(`glossy_draft_${slug}`, JSON.stringify(documentPayload));
+        window.localStorage.setItem(`glossy_draft_${slug}`, safeJsonStringify(documentPayload));
       } catch {}
 
       setStatusMessage({

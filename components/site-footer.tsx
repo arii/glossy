@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export function SiteFooter() {
   return (
     <footer className="site-footer" style={{ marginTop: "4rem", borderTop: "1px solid var(--rule)", background: "var(--surface)", color: "var(--ink)", padding: "1.75rem 1.5rem" }}>
@@ -12,15 +10,9 @@ export function SiteFooter() {
         </div>
 
         <nav style={{ display: "flex", gap: "1.25rem", alignItems: "center", flexWrap: "wrap" }} aria-label="Footer Navigation">
-          <Link href="/docs" style={{ color: "var(--ink)", textDecoration: "none" }}>
-            Documentation
-          </Link>
-          <Link href="/docs?tab=linguistics" style={{ color: "var(--muted-ink)", textDecoration: "none" }}>
-            Linguistic Standards
-          </Link>
-          <Link href="/admin" style={{ color: "var(--accent)", textDecoration: "none", fontWeight: 600 }}>
+          <a href="/admin/index.html" style={{ color: "var(--accent)", textDecoration: "none", fontWeight: 600 }}>
             Admin Login
-          </Link>
+          </a>
         </nav>
       </div>
     </footer>
