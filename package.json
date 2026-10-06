@@ -12,7 +12,7 @@
     "compile:beowulf": "node scripts/compile-beowulf.mjs",
     "prebuild": "npm run sync:dictionary && npm run compile:content && npm run compile:beowulf && npm run build:tina",
     "build": "NODE_ENV=production next build",
-    "build:tina": "tinacms build --local --skip-cloud-checks",
+    "build:tina": "tinacms build --skip-cloud-checks",
     "build:tina:cloud": "tinacms build",
     "lint": "eslint .",
     "audit:deadcode": "knip",

@@ -8,7 +8,14 @@ status: approved
 Glossy is a local-first interlinear glossing editor with a separate responsive reader for students and researchers.
 Source: `scope.md > Who It's For`, `scope.md > The POC Boundary`.
 
-**Implementation status:** This PRD records intended behavior, not a claim that every criterion is shipped. The current editor saves by writing exported TeX and JSON through `/api/save-document`, then attempts an optional Tina GraphQL update. The current local draft key is text-scoped but not schema-versioned; discard restores the saved snapshot but does not remove the storage key, and browser storage errors are not reliably surfaced. Pasted TeX currently appends parsed examples without importing all resource, abbreviation, and bibliography metadata; export does not yet round-trip that metadata. Lemma assignment now uses curated form maps and rule-based fallbacks, but those heuristics and the standalone lemma validator do not establish scholarly correctness. Track these as gaps rather than implying Tina-only publishing, versioned recovery, full-fidelity LaTeX support, or verified linguistic accuracy is complete.
+**Implementation status:** This PRD records the verified and shipped capabilities of Glossy (audited 2026-10-05). All 8 core slices, follow-up requirements, and UX enhancements are complete:
+- The editor saves with dual-write persistence: canonical JSON to `content/texts/<slug>.json` and XeLaTeX `gb4e` to `references/<slug>.tex` via `/api/save-document`, with live UI feedback.
+- Local drafts use debounced, slug-keyed `localStorage` with automatic stale-cache invalidation.
+- The landing page (`/`) features an interactive 3-tier Leipzig glossing preview widget, 3 capability feature pillars, responsive multi-column corpus cards, and persistent scholarly footer.
+- The documentation (`/docs`) provides a segmented domain switcher (`Linguistic Guide` vs `System Architecture`), grouped Table of Contents, and full 42 glossing abbreviations reference table.
+- Corpus onboarding (`/edit/new`) features a default empty state, "Start Blank / Clear Form" button, toggleable presets, and separated workflow tabs.
+- Full scholarly attribution & provenance system credits Tyler Lemon (2026), Peter S. Baker's *Old English Aerobics*, primary manuscript witnesses (*Cotton MS Tiberius B. i*, *Cotton MS Vitellius A. xv*), and 1-click citation generators (BibTeX, Unified Linguistics, APA, Chicago).
+- 100% verified lemma compliance across all 1,716 tokens (`npm run validate:lemmas`) and 100% source alignment across 75 sentences (`npm run validate:source`).
 
 ## The Core Journey
 

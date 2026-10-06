@@ -8,12 +8,24 @@ import { tokenizeAndLemmatizeSentence } from "../../../lib/lemmatizer";
 import { parseGb4e } from "../../../lib/gb4e";
 import type { TextDocument, ReadingSentence } from "../../../lib/types";
 import ingestPageData from "../../../content/pages/ingest.json";
+import { useTina, tinaField } from "tinacms/dist/react";
 import {
   FileText,
   Sparkles,
   RotateCcw,
   Check,
 } from "lucide-react";
+
+const INGEST_PAGE_QUERY = `
+  query IngestPageQuery($relativePath: String!) {
+    page(relativePath: $relativePath) {
+      title
+      eyebrow
+      heading
+      description
+    }
+  }
+`;
 
 type Preset = {
   id: string;
@@ -124,6 +136,12 @@ const PRESETS: Preset[] = [
 
 export default function NewTextPage() {
   const router = useRouter();
+
+  const { data: pageData } = useTina({
+    query: INGEST_PAGE_QUERY,
+    variables: { relativePath: "ingest.json" },
+    data: ingestPageData,
+  });
 
   // Top-level workflow tab: "custom" vs "preset"
   const [workflowTab, setWorkflowTab] = useState<"custom" | "preset">("custom");
@@ -314,10 +332,18 @@ export default function NewTextPage() {
       <SiteNav current="new" slug="ohthere-wulfstan" />
       <main className="site-shell">
         <header className="page-header" style={{ marginBottom: "2rem" }}>
-          <p className="eyebrow">{ingestPageData.eyebrow || "Glossy · Corpus Ingestion"}</p>
-          <h1>{ingestPageData.heading || "Gloss a New Old English Text"}</h1>
-          <p className="source-line" style={{ maxWidth: "48rem", fontSize: "1.05rem", lineHeight: 1.6 }}>
-            {ingestPageData.description || (
+          <p className="eyebrow" data-tina-field={tinaField(pageData, "eyebrow")}>
+            {pageData.eyebrow || "Glossy · Corpus Ingestion"}
+          </p>
+          <h1 data-tina-field={tinaField(pageData, "heading")}>
+            {pageData.heading || "Gloss a New Old English Text"}
+          </h1>
+          <p
+            className="source-line"
+            data-tina-field={tinaField(pageData, "description")}
+            style={{ maxWidth: "48rem", fontSize: "1.05rem", lineHeight: 1.6 }}
+          >
+            {pageData.description || (
               <>
                 Paste raw Old English sentences, choose a classic preset (such as <em>Beowulf</em> or{" "}
                 <em>Cædmon&apos;s Hymn</em>), or paste LaTeX <code>gb4e</code> code. The ingestion engine will

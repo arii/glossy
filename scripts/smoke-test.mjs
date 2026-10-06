@@ -68,5 +68,8 @@ await check("/edit/ohthere-wulfstan", [
 ]);
 await check("/read/ohthere-wulfstan", ["The voyages of Ohthere and Wulfstan"]);
 await check("/read/ohthere", ["The voyages of Ohthere and Wulfstan"]);
+await check("/docs", ["Documentation &amp; Reference Guides", "Leipzig"]);
+await check("/edit/new", ["Gloss a New Old English Text"]);
+await check("/admin", ["Tina"]);
 await check("/admin/index.html", ["Tina"]);
-console.log(`Smoke test passed for route choice, separate reader/editor, previews, and Tina admin at ${baseUrl}.`);
+console.log(`Smoke test passed for landing, reader, editor, docs, ingestion, and Tina CMS admin dashboard at ${baseUrl}.`);

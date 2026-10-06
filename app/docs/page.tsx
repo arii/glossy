@@ -14,6 +14,32 @@ import {
 } from "lucide-react";
 import docsData from "../../content/docs/architecture-faq.json";
 import { DocsDomain, DocSectionItem } from "../../lib/types";
+import { useTina, tinaField } from "tinacms/dist/react";
+
+const DOCS_PAGE_QUERY = `
+  query DocsPageQuery($relativePath: String!) {
+    docs(relativePath: $relativePath) {
+      title
+      eyebrow
+      heading
+      description
+      sections {
+        id
+        domain
+        domainNum
+        num
+        eyebrow
+        title
+      }
+      abbreviations {
+        abbr
+        name
+        desc
+        category
+      }
+    }
+  }
+`;
 
 interface Abbreviation {
   abbr: string;
@@ -79,6 +105,12 @@ const DEFAULT_SECTIONS: DocSectionItem[] = [
 ];
 
 export default function DocsPage() {
+  const { data: pageData } = useTina({
+    query: DOCS_PAGE_QUERY,
+    variables: { relativePath: "architecture-faq.json" },
+    data: docsData,
+  });
+
   const [activeDomain, setActiveDomain] = useState<DocsDomain>("all");
   const [abbrOpen, setAbbrOpen] = useState(true);
   const [abbrQuery, setAbbrQuery] = useState("");
@@ -109,8 +141,8 @@ export default function DocsPage() {
     }
   };
 
-  const abbreviations: Abbreviation[] = (docsData.abbreviations as Abbreviation[]) || DEFAULT_ABBREVIATIONS;
-  const sections: DocSectionItem[] = (docsData.sections as DocSectionItem[]) || DEFAULT_SECTIONS;
+  const abbreviations: Abbreviation[] = (pageData.abbreviations as Abbreviation[]) || DEFAULT_ABBREVIATIONS;
+  const sections: DocSectionItem[] = (pageData.sections as DocSectionItem[]) || DEFAULT_SECTIONS;
 
   const linguisticsSections = sections.filter((s) => s.domain === "linguistics");
   const architectureSections = sections.filter((s) => s.domain === "architecture");
@@ -140,10 +172,10 @@ export default function DocsPage() {
     }
   };
 
-  const pageEyebrow = docsData.eyebrow || "Linguistic Standards & System Architecture";
-  const pageTitle = docsData.title || "Documentation & Reference Guides";
+  const pageEyebrow = pageData.eyebrow || "Linguistic Standards & System Architecture";
+  const pageTitle = pageData.title || "Documentation & Reference Guides";
   const pageDesc =
-    docsData.description ||
+    pageData.description ||
     "Comprehensive reference guide split into linguistic editorial standards (Leipzig glossing, canonical OE headwords, Wiktionary/IPA) and system engineering architecture (dual-write storage, automated QA test suites).";
 
 
@@ -152,9 +184,9 @@ export default function DocsPage() {
       <SiteNav current="docs" slug="ohthere-wulfstan" />
       <main className="site-shell">
         <header className="page-header" style={{ marginBottom: "2rem" }}>
-          <p className="eyebrow">{pageEyebrow}</p>
-          <h1 className="docs-title">{pageTitle}</h1>
-          <p className="source-line" style={{ maxWidth: "52rem", fontSize: "1.05rem", lineHeight: 1.6 }}>
+          <p className="eyebrow" data-tina-field={tinaField(pageData, "eyebrow")}>{pageEyebrow}</p>
+          <h1 className="docs-title" data-tina-field={tinaField(pageData, "title")}>{pageTitle}</h1>
+          <p className="source-line" data-tina-field={tinaField(pageData, "description")} style={{ maxWidth: "52rem", fontSize: "1.05rem", lineHeight: 1.6 }}>
             {pageDesc}
           </p>
 

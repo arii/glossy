@@ -62,6 +62,11 @@ export function SiteFooter() {
                 ⚙️ Technical Architecture &amp; Data Model
               </Link>
             </li>
+            <li>
+              <Link href="/admin" style={{ color: "var(--accent)", textDecoration: "none", fontWeight: 600 }}>
+                ✏️ TinaCMS Content Studio (/admin)
+              </Link>
+            </li>
           </ul>
         </div>
 

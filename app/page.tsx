@@ -12,6 +12,7 @@ import {
   Database,
   ExternalLink,
 } from "lucide-react";
+import { useTina, tinaField } from "tinacms/dist/react";
 
 // Mock interactive token data for live hero preview widget
 const HERO_PREVIEW_TOKENS = [
@@ -65,7 +66,49 @@ const HERO_PREVIEW_TOKENS = [
   },
 ];
 
+// Default seed content for home page
+const DEFAULT_HOME_CONTENT = {
+  title: "Glossy · Interlinear Texts",
+  eyebrow: "Digital Humanities Platform",
+  heading: "Interlinear Glossing & Morphology for Old English",
+  description:
+    "Read, edit, and publish morphologically tagged historical texts with standardized Leipzig three-tier alignment, canonical dictionary headwords, and compilable LaTeX gb4e export.",
+  primaryAction: {
+    label: "+ Ingest & Gloss New Text",
+    href: "/edit/new",
+  },
+  secondaryAction: {
+    label: "Explore Corpus ↓",
+    href: "#corpus-directory",
+  },
+};
+
+const HOME_PAGE_QUERY = `
+  query HomePageQuery($relativePath: String!) {
+    page(relativePath: $relativePath) {
+      title
+      eyebrow
+      heading
+      description
+      primaryAction {
+        label
+        href
+      }
+      secondaryAction {
+        label
+        href
+      }
+    }
+  }
+`;
+
 export default function Home() {
+  const { data: pageData } = useTina({
+    query: HOME_PAGE_QUERY,
+    variables: { relativePath: "home.json" },
+    data: DEFAULT_HOME_CONTENT,
+  });
+
   const [selectedTokenIdx, setSelectedTokenIdx] = useState<number>(1); // default to 'sǣde'
 
   // Pre-configured choices with complete attribution and metrics
@@ -124,6 +167,7 @@ export default function Home() {
           {/* Left Column: Headline & Primary CTAs */}
           <div>
             <div
+              data-tina-field={tinaField(pageData, "eyebrow")}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -141,10 +185,11 @@ export default function Home() {
               }}
             >
               <Sparkles style={{ width: "0.8rem", height: "0.8rem" }} />
-              <span>Digital Humanities Platform</span>
+              <span>{pageData.eyebrow || "Digital Humanities Platform"}</span>
             </div>
 
             <h1
+              data-tina-field={tinaField(pageData, "heading")}
               style={{
                 fontSize: "clamp(2rem, 4vw, 2.75rem)",
                 fontFamily: "'Charis SIL', Georgia, serif",
@@ -154,10 +199,11 @@ export default function Home() {
                 margin: "0 0 1rem",
               }}
             >
-              Interlinear Glossing &amp; Morphology for Old English
+              {pageData.heading || "Interlinear Glossing & Morphology for Old English"}
             </h1>
 
             <p
+              data-tina-field={tinaField(pageData, "description")}
               style={{
                 fontSize: "1.05rem",
                 lineHeight: 1.65,
@@ -166,14 +212,14 @@ export default function Home() {
                 maxWidth: "34rem",
               }}
             >
-              Read, edit, and publish morphologically tagged historical texts with standardized 
-              Leipzig three-tier alignment, canonical dictionary headwords, and compilable LaTeX <code>gb4e</code> export.
+              {pageData.description || "Read, edit, and publish morphologically tagged historical texts with standardized Leipzig three-tier alignment, canonical dictionary headwords, and compilable LaTeX gb4e export."}
             </p>
 
             {/* Primary Action Button Row */}
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center", marginBottom: "1.5rem" }}>
               <Link
-                href="/edit/new"
+                href={pageData.primaryAction?.href || "/edit/new"}
+                data-tina-field={tinaField(pageData.primaryAction, "label")}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -189,7 +235,7 @@ export default function Home() {
                   transition: "all 0.15s ease",
                 }}
               >
-                <span>+</span> Ingest &amp; Gloss New Text
+                <span>{pageData.primaryAction?.label || "+ Ingest & Gloss New Text"}</span>
               </Link>
 
               <button

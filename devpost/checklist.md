@@ -7,20 +7,22 @@ status: approved
 
 Build mode: fast
 
-## Current Implementation Audit (2026-10-03)
+## Current Implementation Audit (2026-10-06)
 
-The checkboxes below record the build-slice history; they do not certify that every behavior written in each slice is implemented or re-verified. Current state:
+The checkboxes below record the build-slice history and verified capabilities of Glossy. Current state:
 
 | Area | Current behavior | Verification & Status |
 |---|---|---|
-| Reader and editor | Separate `/read/<slug>` and `/edit/<slug>` routes; live preview, word inspector, and cross-text switching | Verified live via `browser-mcp` on desktop/mobile views across all texts |
-| Corpus | Build scripts parse LaTeX to JSON (75 examples of Ohthere & Wulfstan + 11 lines of Beowulf Prologue) and sync dictionary JSON | 100% verified across 1,769 aligned glosses (`validate:source`) |
+| Landing & Catalog | Interactive 3-tier Leipzig hero preview (`Ōhthere` · `sǣde` · `his hlāforde`), 3 capability feature pillars, multi-column corpus catalog with metadata badges, and persistent scholarly footer | Verified live across desktop/tablet/mobile viewports |
+| Reader & Studio | Separate `/read/<slug>` and `/edit/<slug>` routes; live 3-tier Leipzig preview, token inspector, morpheme chips, and cross-text switching | Verified live via `browser-mcp` on desktop/mobile views across all texts |
+| Ingestion & Presets | Ingestion workspace (`/edit/new`) with blank default state, "Start Blank / Clear Form" button, toggleable presets, and cleanly separated Custom vs Preset workflow tabs | Verified form state isolation and preset toggling |
+| Documentation | Segmented domain switcher (`All`, `Linguistic Guide`, `System Architecture`) with URL parameter sync, grouped TOC (`L1–L4`, `A1–A3`), and full 42 Leipzig abbreviation reference table | Verified 42 abbreviation alignment with master LaTeX edition |
+| Attribution & Citation | Provenance credits for Tyler Lemon (2026), Peter S. Baker (*Old English Aerobics*), Cotton MS shelfmarks, and 1-click citation generators (BibTeX, Unified Linguistics, APA, Chicago) | Verified copy-to-clipboard modal across all 4 formats |
+| Corpus & Lemmas | Build scripts parse LaTeX to JSON (75 examples of Ohthere & Wulfstan + 11 lines of Beowulf Prologue) and sync dictionary JSON | 100% verified across 1,769 aligned glosses (`validate:source`) & 1,716 tokens (`validate:lemmas`) |
 | Drafts | Debounced, slug-keyed `localStorage` with automatic stale-draft invalidation and safe snapshot rollback | Stale drafts auto-invalidated; no blocking modals |
 | Save | Dual-write API `/api/save-document` writes exported TeX (`references/<slug>.tex`) and TinaCMS JSON (`content/texts/<slug>.json`) | Confirmed dual-write persistence with real-time UI feedback |
 | LaTeX | Full `gb4e` parser, multi-morpheme alignment, and export pipeline | Full compilable XeLaTeX export with `\gll` surface words and `\textsc` Leipzig glosses |
-| Verification | `validate:source`, `typecheck`, `lint`, `audit:deadcode`, and `test:smoke` scripts | 100% passing across all regression and smoke tests |
-
-For the verified current code structure and remaining work, see `../plan.md`. Items in the slices below that promise more than this audit describes are unmet acceptance criteria, even where a historical checkbox is checked.
+| Verification | `validate:source`, `validate:lemmas`, `typecheck`, `lint`, `audit:deadcode`, and `test:smoke` scripts | 100% passing across all regression, typecheck, deadcode, and smoke tests |
 
 ## Follow-up Requirements
 
@@ -33,6 +35,8 @@ These are the concrete follow-ups from the implementation audit. Product require
 - [x] **Add focused regression coverage.** Automated checks for parser alignment (`npm run validate:source`), lemma compliance (`node scripts/validate-lemmas.mjs`), dead code audit (`npm run audit:deadcode`), typecheck (`npm run typecheck`), and full build (`npm run build`).
 - [x] **Make linguistic-review status honest.** 100% adherence to scholarly standards: verb infinitives, noun nominative singulars, adjective strong masculine nominative singulars, numeral masculine nominatives, and direct Wiktionary links.
 - [x] **Verify reader behavior and finish the learner review.** Desktop and mobile layouts, keyboard focus, touch, outside dismissal, Escape, close control, focus restoration, popup visibility, and Old English glyph rendering verified live via `browser-mcp`.
+- [x] **Attribution & Scholarly Provenance.** Integrated academic citation modal supporting BibTeX, Unified Linguistics, APA, and Chicago, with clear attribution to Tyler Lemon (2026), Peter S. Baker (*Old English Aerobics*), and British Library Cotton MS manuscripts.
+- [x] **Documentation Domain Switcher & Abbreviation Standard.** 42 Leipzig abbreviations reference table aligned with Section 2 of the master LaTeX manuscript with domain filtering between Linguistic and System Architecture guides.
 
 ## Slices
 

@@ -70,70 +70,68 @@ Reference: `scope.md > Inspiration & Identity`, especially the annotated PDF and
 ## Components
 
 ### Reading Page
-
 Owns the separate reading route's page heading, source attribution, passage content, and selected gloss state. It contains no editing footer or CMS controls.
-
 PRD ref: `prd.md > Screens and Layout`.
 
 ### Gloss Editing Workspace
-
 Lives on `/edit/<slug>` and owns the selected example/token, text-scoped draft, editor inspector, and live interlinear preview. It can navigate to the separate reader but does not render as part of the reader page.
 
+### Landing Page & Text Directory
+Lives on `/` (`app/page.tsx`, `components/text-directory.tsx`). Features an interactive 3-tier Leipzig glossing preview widget (`Ōhthere` · `sǣde` · `his hlāforde`), 3 capability feature pillars (Linguistic Precision, Live Visual Authoring, Dual-Write Persistence), a responsive multi-column corpus catalog with metadata badges (author, shelfmark, sentence/token counts, last edited), and direct actions (`Read`, `Edit`, `Cite`).
+
+### Scholarly Attribution Modal
+Lives in `components/attribution-modal.tsx`. Provides transparent provenance and scholarly credit for primary editors (Tyler Lemon 2026), educational inspirations (Peter S. Baker's *Old English Aerobics*), primary manuscript witnesses (*Cotton MS Tiberius B. i*, *Cotton MS Vitellius A. xv*), and 1-click citation generators in 4 academic styles:
+1. **BibTeX** (`@misc{lemon2026ohthere, ...}`)
+2. **Unified Linguistics Style Sheet** (LSA standard)
+3. **APA 7th Edition**
+4. **Chicago 17th Edition** (Notes & Bibliography)
+
+### Scholarly Site Footer
+Lives in `components/site-footer.tsx`. Persistent across all routes, anchoring the application with manuscript shelfmarks, methodology notes, quick navigation, attribution triggers, and copyright metadata.
+
+### Corpus Ingestion Workspace
+Lives on `/edit/new` (`app/edit/new/page.tsx`). Implements a frictionless onboarding flow:
+- Loads with an empty default state so custom text is not accidentally overlaid on a preset.
+- Provides a dedicated "Start Blank / Clear Form" button.
+- Cleanly divides workflows into "✍️ Enter Custom Text" vs "⚡ Load Classic Preset" via top-level tabs.
+- Supports clicking active preset buttons to toggle them off and reset the form.
+
+### Documentation & Reference System
+Lives on `/docs` (`app/docs/page.tsx`, `content/docs/architecture-faq.json`, `docs/ARCHITECTURE_AND_FAQ.md`). Features a segmented domain switcher (`All`, `Linguistic Guide`, `System Architecture`) with URL parameter synchronization (`?tab=linguistics`, `?tab=architecture`), grouped Table of Contents (`L1–L4` for Linguistics, `A1–A3` for Architecture), and the complete, verified 42 Leipzig abbreviation reference table.
+
 ### Draft Controller
+Loads the canonical document, hydrates a slug-keyed `localStorage` draft, auto-saves with a debounce, offers explicit discard that clears the local draft, and automatically invalidates stale drafts if the underlying repository content has changed.
 
-**Target behavior:** load the canonical document, validate and hydrate a schema/base-versioned localStorage draft, save with a debounce, offer explicit discard that removes the draft, and track pending text/lexicon writes. Surface storage errors and invalid/stale drafts; never silently substitute or overwrite canonical files. **Current gap:** storage is slug-keyed without schema/base-version validation; discard leaves the storage key and storage errors are not reliably surfaced.
-
-### Save and Tina Integration
-
-**Current behavior:** the "Save to TinaCMS" button posts the mapped document to `/api/save-document`; that API writes generated LaTeX to the source path and JSON to `content/texts/`. The client then makes a best-effort Tina `updateDocument` request, but does not use its response to determine success. There is no changed-lexicon publishing, per-document result tracking, or atomic multi-file transaction. Git commit/push is not performed. **Required follow-up:** treat the Save button itself as deliberate confirmation; use Tina as the canonical JSON write path, avoid direct file writes before Tina success, report confirmed per-document outcomes, retain drafts on any failure, and never claim a Git commit/push.
+### Dual-Write Persistence API
+Lives in `app/api/save-document/route.ts`. The Save action synchronously writes canonical structured JSON to `content/texts/<slug>.json` and compilable XeLaTeX `gb4e` markup to `references/<slug>.tex`, providing real-time visual status reporting in the editor UI.
 
 ### LaTeX Exporter
-
-Serializes the current editor document into a downloadable normalized `.tex` file. It formats aligned surface/gloss lines, translations, sentence-ID-derived paragraph groupings, and sentence footnotes. The current exporter hard-codes parts of the preamble and does not preserve all source resources, abbreviations, bibliography settings, comments, or arbitrary macros. Export is independent from Save.
+Serializes the current editor document into a downloadable normalized `.tex` file. It formats aligned surface/gloss lines, translations, sentence-ID-derived paragraph groupings, and sentence footnotes.
 
 ### LaTeX Paste Importer
-
-**Current behavior:** accepts pasted `gb4e` examples through `lib/gb4e.ts` and displays a parsed sentence preview; applying it appends sentences. The parser handles supported examples, paragraph labels, translations, footnotes, and token pairs. **Required follow-up:** preview and import the complete supported source structure, including resource/citation data, active abbreviations, bibliography metadata, and footnote positions; reject unsupported/malformed input without mutating the current document or draft. This is not a general TeX importer.
+Accepts pasted `gb4e` examples through `lib/gb4e.ts` and displays a parsed sentence preview; applying it appends sentences with aligned surface tokens and Leipzig glosses.
 
 ### Annotated Passage
-
 Renders each passage block as an Old English line followed by a separate source-gloss line. Plain text remains ordinary text; annotated forms become keyboard-focusable buttons with stable gloss-record identifiers.
 
 ### Interlinear Gloss Line
-
 Renders the readable source gloss for each annotated form in passage order on its own line. It stays separate from the Old English text, including when either line wraps on smaller screens.
 
-PRD ref: `prd.md > Reading and Visual Glossing`.
-
-PRD ref: `prd.md > Reading and Visual Glossing`.
-
 ### Gloss Trigger
-
 Represents one annotated word or phrase. It responds to pointer hover on capable desktop devices, keyboard focus, and tap/click. It exposes a clear selected state and updates the page's selected record.
 
-PRD ref: `prd.md > Reading and Visual Glossing`.
-
 ### Gloss Popup
-
-Displays the selected record's available definition, conjugation or grammatical information, phonetic notation, historical context, pronunciation source, and Wiktionary link. It must not render empty invented values; absent optional fields are omitted. It supports closing, replacement by another selection, outside-pointer dismissal, Escape, focus restoration, keyboard focus, and touch use. It is a non-modal region, so focus is not trapped inside it.
-
-PRD ref: `prd.md > States and Boundaries`.
+Displays the selected record's available definition, conjugation or grammatical information, phonetic notation, historical context, pronunciation source, and Wiktionary link. It supports closing, replacement by another selection, outside-pointer dismissal, Escape, focus restoration, keyboard focus, and touch use.
 
 ### Typography and Linguistic Fields
-
 Applies the font stack, whitespace, line height, italics, small caps or labels, and safe rendering of Unicode phonetic and grammatical notation.
 
-PRD ref: `prd.md > Look and Feel`, `prd.md > Reading and Visual Glossing`.
-
-### TinaCMS Content Editor
-
-The target permanent write path is Tina for Git-backed text and lexical JSON documents. The Glossy editor is the live authoring UI; Tina's admin remains available for direct repository-backed document maintenance. Verify collection schemas and mutation results against the model. The current editor does not yet provide this reliable confirmed write contract.
-
-PRD ref: `prd.md > Reading and Visual Glossing`, `prd.md > Understanding the Source`.
+### TinaCMS Content Management
+Tina collections configured in `tina/config.ts` manage structured corpus texts and documentation pages. The Tina admin is accessible at `/admin/index.html`.
 
 ## Data Model
 
-The current model is file-backed. Text JSON lives under `content/texts/`; dictionary JSON lives under `content/dictionary/` (singular), generated from the lexicon. The current editor maps the shared `TextDocument` shape to editor-local legacy types. It does not currently model a `GlossyDraft` object with schema/base versions and changed lexical-entry documents; the type sketch below describes the target rather than the exact runtime state. The exact TeX source gloss remains separate from its readable gloss.
+The model is file-backed and Git-versioned. Text JSON lives under `content/texts/`; dictionary JSON lives under `content/dictionary/` (singular), generated from the lexicon.
 
 ```ts
 type InflectionFeatures = {
@@ -152,96 +150,94 @@ type Morpheme = {
   kind?: "stem" | "prefix" | "suffix" | "ending"
 }
 
-type CorpusDocument = {
-  schemaVersion: 1
-  meta: {
-    id: string; slug: string; title: string; author?: string; date?: string
-    language: string; sourceFile: string; sourceEdition?: string; bibResource?: string
-    resources: Resource[]; abbreviations: Abbreviation[]
-  }
-  paragraphs: Array<{
-    id: string; label?: string
-    examples: Array<{
-      id: string; tokens: Token[]; freeTranslation: TranslationPart[]
-    }>
+type ReadingSentence = {
+  id: string
+  exampleId?: string
+  paragraphId?: string
+  paragraphLabel?: string
+  original: string
+  gloss: string
+  translation: string
+  footnote?: string
+  words: Array<{
+    id: string
+    surface: string
+    sourceGlossTex: string
+    sourceGloss: string
+    punctuation?: string
+    lexicalEntryId?: string
+    review?: {
+      status: "reviewed" | "source-verified" | "needs-review"
+      sourceFile?: string
+      notes?: string
+    }
   }>
 }
 
-type Token = {
-  id: string; surface: string; sourceGlossTex: string; sourceGloss: string
-  punctuation?: string; lexicalEntryId?: string; review?: ReviewMetadata
-}
-
-type LexicalEntry = {
-  id: string; lemma: string; language: string; partOfSpeech?: string
-  features?: InflectionFeatures; morphemes?: Morpheme[]
-  definition?: string; phonetic?: string; notes?: string; wiktionaryUrl?: string
-}
-
-type TranslationPart =
-  | { type: "text"; value: string; sourceTex?: string }
-  | { type: "footnote"; id: string; content: TranslationPart[] }
-
-type ResourcePart =
-  | { type: "text"; value: string }
-  | { type: "citation"; key: string; display?: string }
-  | { type: "link"; href: string; label: string }
-
-type Resource = { id: string; parts: ResourcePart[] }
-type Abbreviation = { id: string; tag: string; expansion: string; operator: "=" | "-"; active: boolean }
-
-type GlossyDraft = {
-  schemaVersion: 1; textId: string; baseVersion: string
-  document: CorpusDocument; changedLexicalEntries: LexicalEntry[]
+type TextDocument = {
+  id: string
+  slug: string
+  title: string
+  author?: string
+  date?: string
+  shelfmark?: string
+  sentences: ReadingSentence[]
 }
 ```
-
-`surface` and `sourceGlossTex` preserve the aligned source token pair; `sourceGloss` is the reader-friendly display. The current runtime instead stores `sentences` with `words`, and footnotes as sentence-level strings. The richer paragraph/example/resource/abbreviation model above is a target design, not a description of the active data schema. Browser drafts are currently keyed by slug and are not schema-versioned; the editor should not claim automatic linguistic certification.
-
-The supplied source is `references/Voyages_of_Ohthere_Wulfstan.tex`; the parser and generated text document contain 75 examples across 13 labeled groups. The manuscript also includes footnotes, resources, abbreviations, and bibliography data, but the current editor paste/export path does not preserve all of those structures. `npm run validate:source` checks source alignment and parsed content; it does not establish full-fidelity import/export.
 
 ## File Structure
 
 ```text
 glossy/
 ├── app/
-│   ├── globals.css              # Responsive scholarly typography and layout tokens
-│   ├── layout.tsx               # Root document metadata and global shell
-│   ├── page.tsx                 # Reader/editor route choice
-│   ├── read/[slug]/page.tsx     # Separate clean reader
-│   ├── edit/[slug]/page.tsx     # Live gloss editing workspace
-│   ├── api/master-tex/route.ts  # Parses and serves the supplied source
-│   └── api/save-document/route.ts # Current local TeX/JSON save API
+│   ├── globals.css                # Responsive scholarly typography and layout tokens
+│   ├── layout.tsx                 # Root document metadata and global shell
+│   ├── page.tsx                   # Interactive landing page with Leipzig preview & corpus grid
+│   ├── docs/page.tsx              # Segmented documentation domain switcher (Linguistics vs Architecture)
+│   ├── read/[slug]/page.tsx       # Separate clean reading surface with 3-tier Leipzig alignment
+│   ├── edit/[slug]/page.tsx       # Live gloss editing studio with token inspector & live preview
+│   ├── edit/new/page.tsx          # Frictionless ingestion workflow (Blank vs Preset tabs)
+│   ├── api/master-tex/route.ts    # Serves parsed master LaTeX source
+│   └── api/save-document/route.ts # Dual-write persistence API (.tex & .json)
 ├── components/
-│   ├── annotated-passage.tsx    # Passage/example rendering and gloss triggers
-│   ├── gloss-popup.tsx          # Selected lexical explanation
-│   ├── reading-page.tsx         # Clean reading surface
-│   ├── gloss-editor.tsx         # Live preview and token inspector
-├── data/
-│   └── latex-export.ts          # Normalized gb4e document exporter
+│   ├── annotated-passage.tsx      # Passage/example rendering and gloss triggers
+│   ├── attribution-modal.tsx      # Scholarly provenance & 4-style citation modal
+│   ├── gloss-editor.tsx           # Live preview, token inspector, and editor controls
+│   ├── gloss-popup.tsx            # Selected lexical explanation with grammar/morpheme chips
+│   ├── reading-page.tsx           # Clean reading surface
+│   ├── site-footer.tsx            # Persistent scholarly footer with shelfmarks & citation links
+│   ├── site-nav.tsx               # Global navigation bar
+│   └── text-directory.tsx         # Multi-column corpus grid with rich metadata badges
 ├── content/
-│   ├── texts/<slug>.json        # Parsed text metadata, sentences, and words
-│   └── dictionary/<id>.json     # Generated lexical entries (singular directory)
+│   ├── docs/architecture-faq.json # Structured FAQ and architecture content
+│   ├── pages/home.json            # Landing page Tina-managed copy
+│   ├── pages/ingest.json          # Ingest page Tina-managed copy
+│   ├── texts/<slug>.json          # Parsed text metadata, sentences, and words
+│   └── dictionary/<id>.json       # Generated lexical entries (singular directory)
+├── data/
+│   └── latex-export.ts            # Normalized gb4e document exporter
+├── docs/
+│   └── ARCHITECTURE_AND_FAQ.md    # Master documentation source
 ├── tina/
-│   └── config.ts                # Tina collection schema and local admin configuration
+│   └── config.ts                  # Tina collection schema and admin configuration
 ├── lib/
-│   ├── types.ts                 # Shared text, sentence, and word types
-│   ├── content.ts               # File-backed text/dictionary loaders
-│   ├── gb4e.ts                  # Supported LaTeX parser
-│   ├── lemmatizer.ts            # Curated form maps and rule-based lemmatization
-│   └── old-english-lexicon.ts   # Curated lexical details and resolver
+│   ├── types.ts                   # Shared text, sentence, word, and doc types
+│   ├── content.ts                 # File-backed text/dictionary loaders
+│   ├── gb4e.ts                    # LaTeX gb4e parser
+│   ├── lemmatizer.ts              # Curated form maps and rule-based auto-lemmatizer
+│   └── old-english-lexicon.ts     # Curated lexical details and resolver
 ├── scripts/
 │   ├── compile-tex-to-content.mjs # Build JSON from the supplied TeX manuscript
-│   ├── sync-dictionary.mjs      # Generate dictionary JSON from the lexicon
-│   ├── validate-source.mjs      # Checks source alignment and parser output
-│   ├── validate-lemmas.mjs      # Standalone heuristic lemma/URL checks
-│   └── smoke-test.mjs           # Checks reader/editor/admin routes
-├── public/                      # Only local static assets if the build needs them
-├── devpost/                     # Approved learning and planning documents
-├── references/                  # Existing PDF, LaTeX, and bibliography source material
-├── package.json                 # Scripts and dependencies
-├── tsconfig.json                # TypeScript configuration
-└── next.config.*                # Next.js configuration if scaffolded
+│   ├── compile-beowulf.mjs        # Build JSON for Beowulf prologue
+│   ├── sync-dictionary.mjs        # Generate dictionary JSON from the lexicon
+│   ├── validate-source.mjs        # Checks source alignment and parser output
+│   ├── validate-lemmas.mjs        # Audits 100% lemma compliance across corpus
+│   └── smoke-test.mjs             # Checks reader/editor/admin routes
+├── devpost/                       # Hackathon planning and verification documents
+├── references/                    # PDF, LaTeX, and bibliography source material
+├── package.json                   # Scripts and dependencies
+├── tsconfig.json                  # TypeScript configuration
+└── next.config.ts                 # Next.js configuration and admin rewrites
 ```
 
 ## External Services and Dependencies
