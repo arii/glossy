@@ -66,10 +66,14 @@ try {
     "/edit/ohthere-wulfstan",
     "/read/beowulf-prologue",
     "/edit/beowulf-prologue",
+    "/read/caedmon-hymn",
+    "/edit/caedmon-hymn",
+    "/read/the-wanderer",
+    "/edit/the-wanderer",
   ]);
   const cardCount = [...landing.matchAll(/class="workspace-choice-card"/gu)].length;
-  if (cardCount < 1) {
-    throw new Error(`Expected at least one text on the landing page, found ${cardCount}.`);
+  if (cardCount < 4) {
+    throw new Error(`Expected at least 4 texts on the landing page, found ${cardCount}.`);
   }
 
   const reader = await check("/read/ohthere-wulfstan", [
@@ -83,6 +87,18 @@ try {
     "Gār-Den-a",
     "Listen! We of the Spear-Danes in days of yore,",
   ]);
+  await check("/read/caedmon-hymn", [
+    "Cædmon's Hymn",
+    "Nū",
+    "sculon",
+    "Guardian of the heavenly kingdom",
+  ]);
+  await check("/read/the-wanderer", [
+    "The Wanderer (Opening)",
+    "Oft",
+    "ānhaga",
+    "Often the solitary one awaits mercy",
+  ]);
   if (reader.includes("Edit this text") || reader.includes("Editorial &amp; CMS Tools")) {
     throw new Error("The reader must not contain editing or CMS controls.");
   }
@@ -90,7 +106,7 @@ try {
     throw new Error("The unreliable browser speech control should not appear in the reader.");
   }
 
-  await check("/edit/ohthere-wulfstan", [
+  const editorOhthere = await check("/edit/ohthere-wulfstan", [
     "Editing workspace",
     "Live preview",
     "Source form",
@@ -99,14 +115,35 @@ try {
     "Paste one or more gb4e",
     "Save to TinaCMS",
   ]);
-  await check("/read/ohthere-wulfstan", ["The voyages of Ohthere and Wulfstan"]);
+  if (editorOhthere.includes("Tina Admin ↗")) {
+    throw new Error("The editor header should not contain a redundant Tina Admin button.");
+  }
+
+  await check("/edit/caedmon-hymn", [
+    "Editing workspace",
+    "Live preview",
+    "Cædmon's Hymn",
+  ]);
+  await check("/edit/the-wanderer", [
+    "Editing workspace",
+    "Live preview",
+    "The Wanderer (Opening)",
+  ]);
   await check("/read/ohthere", ["The voyages of Ohthere and Wulfstan"]);
   await check("/docs", ["Documentation &amp; Reference Guides", "Leipzig"]);
   await check("/edit/new", ["Gloss a New Old English Text"]);
   await check("/admin", ["Tina"]);
   await check("/admin/index.html", ["Tina"]);
+
+  // 404 Not Found Page check
+  const notFoundRes = await fetch(`${baseUrl}/non-existent-page`);
+  const notFoundHtml = await notFoundRes.text();
+  if (!notFoundHtml.includes("404 - Not Found") || !notFoundHtml.includes("Return to Glossy Home")) {
+    throw new Error("404 page should render '404 - Not Found' and 'Return to Glossy Home'");
+  }
+
   console.log(
-    `Smoke test passed for landing, reader, editor, docs, ingestion, and Tina CMS admin dashboard at ${baseUrl}.`,
+    `Smoke test passed for landing, all 4 corpus texts, editor (without redundant tina admin button), docs, ingestion, 404, and Tina CMS admin dashboard at ${baseUrl}.`,
   );
 } finally {
   if (serverProcess) {

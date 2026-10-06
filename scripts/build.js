@@ -41,6 +41,7 @@ async function main() {
     runCommand("npx", ["tsx", "scripts/sync-dictionary.mjs"]);
     runCommand("npx", ["tsx", "scripts/compile-tex-to-content.mjs"]);
     runCommand("npx", ["tsx", "scripts/compile-beowulf.mjs"]);
+    runCommand("npx", ["tsx", "scripts/compile-presets.mjs"]);
   }
 
   printStep("1. Building TinaCMS schemas & admin bundle");

@@ -59,6 +59,14 @@ export function safeJsonStringify(
   );
 }
 
+export function safeJsonParse<T = unknown>(json: string): T | null {
+  try {
+    return JSON.parse(json) as T;
+  } catch {
+    return null;
+  }
+}
+
 export function installSafeJsonGlobal(): void {
   if (typeof window === "undefined") return;
 

@@ -132,6 +132,28 @@ export default function Home() {
       status: "published",
       isProtected: false,
     },
+    {
+      slug: "caedmon-hymn",
+      title: "Cædmon's Hymn",
+      kind: "text",
+      author: "Cædmon (Bede's Historia Ecclesiastica)",
+      source: "Cambridge, University Library, MS Kk. 5. 16 (Moore Bede)",
+      sentenceCount: 2,
+      tokenCount: 42,
+      status: "published",
+      isProtected: false,
+    },
+    {
+      slug: "the-wanderer",
+      title: "The Wanderer (Opening)",
+      kind: "text",
+      author: "Anonymous (Exeter Book)",
+      source: "Exeter, Cathedral Library, MS 3501, ff. 76v–79r",
+      sentenceCount: 2,
+      tokenCount: 26,
+      status: "published",
+      isProtected: false,
+    },
   ];
 
   const activeToken = HERO_PREVIEW_TOKENS[selectedTokenIdx];

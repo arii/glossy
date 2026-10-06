@@ -11,6 +11,7 @@
     "sync:dictionary": "tsx scripts/sync-dictionary.mjs",
     "compile:content": "tsx scripts/compile-tex-to-content.mjs",
     "compile:beowulf": "tsx scripts/compile-beowulf.mjs",
+    "compile:presets": "tsx scripts/compile-presets.mjs",
     "build": "node scripts/build.js",
     "build:next": "NODE_ENV=production next build",
     "build:tina": "tinacms build --skip-cloud-checks --datalayer-port 9123",

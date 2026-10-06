@@ -987,17 +987,6 @@ export function GlossEditor({
                 Export LaTeX
               </button>
 
-              <a
-                href="/admin/index.html"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="workspace-link"
-                title="Open Tina CMS Editorial Suite (Git-backed)"
-                style={{ textDecoration: "none", display: "inline-flex", alignItems: "center" }}
-              >
-                Tina Admin ↗
-              </a>
-
               {!isProtectedText && (
                 <button
                   type="button"
