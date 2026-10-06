@@ -138,8 +138,10 @@ try {
   await check("/", [
     "Old English Corpus &amp; Editions",
     "Developed by",
-    "Ariel Anders Consulting",
+    "Ariel Anders",
+    "Tyler Lemon",
     "https://boomtick.blog/services",
+    "https://sites.google.com/view/tyler-lemon",
   ]);
 
   await check("/about", [
@@ -148,6 +150,8 @@ try {
     "Ariel Anders",
     "Ariel Anders Consulting",
     "Tyler Lemon",
+    "https://sites.google.com/view/tyler-lemon",
+    "MIT License",
   ]);
   await check("/privacy", ["Privacy Policy", "We do not track you"]);
 

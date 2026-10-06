@@ -146,10 +146,27 @@ export default function AboutPage() {
               ), who architected the platform, the interactive Leipzig interlinear engine, the offline-first local workspace, and the automated verification suite.
             </p>
             <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1rem" }}>
-              <strong>Tyler Lemon</strong> served as the linguistic subject matter expert, meticulously glossing all texts in the canonical corpus, standardizing Old English lemmatization (including masculine nominative standards and strong adjective conventions), and ensuring philological fidelity to historical manuscript witnesses.
+              <a
+                href="https://sites.google.com/view/tyler-lemon"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "var(--accent)", textDecoration: "underline", fontWeight: 600 }}
+              >
+                Tyler Lemon
+              </a>{" "}
+              served as the linguistic subject matter expert, meticulously glossing all texts in the canonical corpus, standardizing Old English lemmatization (including masculine nominative standards and strong adjective conventions), and ensuring philological fidelity to historical manuscript witnesses.
             </p>
             <p style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1.25rem" }}>
-              The project is entirely open source under the MIT License. Contributions, bug reports, and morphological corrections are welcomed via GitHub.
+              The project is entirely open source under the{" "}
+              <a
+                href="https://github.com/arii/glossy/blob/main/LICENSE"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "var(--accent)", textDecoration: "underline", fontWeight: 600 }}
+              >
+                MIT License
+              </a>
+              . Contributions, bug reports, and morphological corrections are welcomed via GitHub.
             </p>
 
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>

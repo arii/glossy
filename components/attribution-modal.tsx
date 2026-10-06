@@ -32,50 +32,56 @@ export function AttributionModal({
 
   const provenanceData = isOhthere
     ? {
-        modernEditor: "Tyler Lemon",
+        platformCreator: "Ariel Anders",
+        subjectMatterExpert: "Tyler Lemon",
+        modernEditor: "Ariel Anders and Tyler Lemon",
         editionDate: "September 30, 2026",
         historicalAuthor: "King Alfred's Court (adaptation of Paulus Orosius)",
         historicalPeriod: "Late 9th Century (ca. 890 CE, West Saxon)",
         manuscriptShelfmark: "London, British Library, Cotton MS Tiberius B. i (ff. 5v–11v)",
         secondaryManuscript: "London, British Library, Additional MS 47967 (Lauderdale / Tollemache MS)",
         linguisticPackage: "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing",
-        bibtexKey: "Lemon2026Voyages",
+        bibtexKey: "AndersLemon2026Voyages",
       }
     : isBeowulf
     ? {
-        modernEditor: "Glossy Linguistic Engine (after Klaeber / Dobbie)",
+        platformCreator: "Ariel Anders",
+        subjectMatterExpert: "Tyler Lemon",
+        modernEditor: "Ariel Anders and Tyler Lemon (after Klaeber / Dobbie)",
         editionDate: "2026",
         historicalAuthor: "Anonymous Anglo-Saxon Poet",
         historicalPeriod: "Late West Saxon (ca. 8th–11th Century)",
         manuscriptShelfmark: "London, British Library, Cotton MS Vitellius A. xv (Nowell Codex, ff. 129r–198v)",
         secondaryManuscript: "Thorkelin Transcripts A and B (1787)",
         linguisticPackage: "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing",
-        bibtexKey: "BeowulfPrologue2026",
+        bibtexKey: "AndersLemon2026Beowulf",
       }
     : {
-        modernEditor: author || "Curated Contributor",
+        platformCreator: "Ariel Anders",
+        subjectMatterExpert: author || "Tyler Lemon",
+        modernEditor: `Ariel Anders and ${author || "Tyler Lemon"}`,
         editionDate: "2026",
         historicalAuthor: "Historical Anglo-Saxon Scribe",
         historicalPeriod: "Old English (ca. 700–1100 CE)",
         manuscriptShelfmark: source || "Historical Manuscript",
         secondaryManuscript: "N/A",
         linguisticPackage: "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing",
-        bibtexKey: `${(slug || "text").replace(/[^a-zA-Z0-9]/g, "")}2026`,
+        bibtexKey: `AndersLemon2026${(slug || "text").replace(/[^a-zA-Z0-9]/g, "")}`,
       };
 
   const citations: Record<CitationFormat, string> = {
     bibtex: `@incollection{${provenanceData.bibtexKey},
-  author       = {${provenanceData.modernEditor}},
+  author       = {Anders, Ariel and Lemon, Tyler},
   title        = {{${title}}},
   booktitle    = {Glossy: Digital Scholarly Editions of Old English Interlinear Texts},
   year         = {2026},
   origdate     = {ca. 890},
-  note         = {Manuscript witness: ${provenanceData.manuscriptShelfmark}. Interlinear glossing following Leipzig standards with gb4e LaTeX formatting},
-  url          = {https://glossy.local/read/${slug}}
+  note         = {Digital platform created by Ariel Anders; linguistic glossing and annotation by Tyler Lemon. Manuscript witness: ${provenanceData.manuscriptShelfmark}. Interlinear glossing following Leipzig standards with gb4e LaTeX formatting},
+  url          = {https://glossed.pages.dev/read/${slug}}
 }`,
-    unified: `${provenanceData.modernEditor}. 2026. ${title}. In Glossy: Digital Scholarly Editions of Old English Interlinear Texts. London: British Library witness (${provenanceData.manuscriptShelfmark}). Leipzig interlinear glossing in gb4e.`,
-    apa: `${provenanceData.modernEditor}. (2026). ${title} [Digital interlinear edition]. Glossy Old English Corpus. ${provenanceData.manuscriptShelfmark}.`,
-    chicago: `${provenanceData.modernEditor}, ed. 2026. "${title}." Glossy: Digital Scholarly Editions of Old English Interlinear Texts. Manuscript: ${provenanceData.manuscriptShelfmark}.`,
+    unified: `Anders, Ariel & Tyler Lemon. 2026. ${title}. In Glossy: Digital Scholarly Editions of Old English Interlinear Texts. Digital platform created by Ariel Anders; linguistic glossing by Tyler Lemon. London: British Library witness (${provenanceData.manuscriptShelfmark}). Leipzig interlinear glossing in gb4e.`,
+    apa: `Anders, A., & Lemon, T. (2026). ${title} [Digital interlinear edition]. Glossy Old English Corpus. Platform created by Ariel Anders; linguistic glossing by Tyler Lemon. ${provenanceData.manuscriptShelfmark}.`,
+    chicago: `Anders, Ariel, and Tyler Lemon, eds. 2026. "${title}." Glossy: Digital Scholarly Editions of Old English Interlinear Texts. Platform created by Ariel Anders; linguistic glossing by Tyler Lemon. Manuscript: ${provenanceData.manuscriptShelfmark}.`,
   };
 
   const copyToClipboard = async (format: CitationFormat) => {
@@ -154,10 +160,35 @@ export function AttributionModal({
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.5rem", background: "#fbf7ee", padding: "1rem", borderRadius: "0.4rem", border: "1px solid #dfcfb8" }}>
           <div>
             <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}>
-              <User style={{ width: "0.75rem", height: "0.75rem" }} /> Modern Linguistic Editor
+              <User style={{ width: "0.75rem", height: "0.75rem" }} /> Digital Platform Creator
             </span>
             <p style={{ margin: "0.2rem 0 0", fontSize: "0.88rem", fontWeight: 600, color: "var(--ink)" }}>
-              {provenanceData.modernEditor} ({provenanceData.editionDate})
+              <a
+                href="https://boomtick.blog/services"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "inherit", textDecoration: "underline" }}
+              >
+                Ariel Anders
+              </a>{" "}
+              (Ariel Anders Consulting)
+            </p>
+          </div>
+
+          <div>
+            <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}>
+              <User style={{ width: "0.75rem", height: "0.75rem" }} /> Linguistic Subject Matter Expert
+            </span>
+            <p style={{ margin: "0.2rem 0 0", fontSize: "0.88rem", fontWeight: 600, color: "var(--ink)" }}>
+              <a
+                href="https://sites.google.com/view/tyler-lemon"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "inherit", textDecoration: "underline" }}
+              >
+                Tyler Lemon
+              </a>{" "}
+              ({provenanceData.editionDate})
             </p>
           </div>
 
@@ -170,7 +201,7 @@ export function AttributionModal({
             </p>
           </div>
 
-          <div style={{ gridColumn: "1 / -1" }}>
+          <div>
             <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}>
               <BookOpen style={{ width: "0.75rem", height: "0.75rem" }} /> Primary Manuscript Shelfmark
             </span>
@@ -181,10 +212,10 @@ export function AttributionModal({
 
           <div style={{ gridColumn: "1 / -1" }}>
             <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}>
-              <ShieldCheck style={{ width: "0.75rem", height: "0.75rem" }} /> Standards &amp; Inspiration
+              <ShieldCheck style={{ width: "0.75rem", height: "0.75rem" }} /> Collaborative Development &amp; Standards
             </span>
             <p style={{ margin: "0.2rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
-              Interlinear formatting follows the <em>Leipzig Glossing Rules</em> with LaTeX <code>gb4e</code> alignment. Canonical lemmas referenced to <em>Bosworth-Toller</em> and <em>Wiktionary</em>. Digital visual gloss design inspired by Peter S. Baker&apos;s <em>Old English Aerobics</em> (oldenglishaerobics.net).
+              Developed through the collaborative partnership of <strong>Ariel Anders</strong> (software architecture, digital platform, and automated verification suite) and <strong>Tyler Lemon</strong> (linguistic subject matter expertise, Old English glossing, and grammatical accuracy). Interlinear formatting conforms to the international <em>Leipzig Glossing Rules</em> with LaTeX <code>gb4e</code> alignment, canonical lemmatization referenced to <em>Bosworth-Toller</em> and <em>Wiktionary</em>, and visual gloss layout inspired by Peter S. Baker&apos;s <em>Old English Aerobics</em> (oldenglishaerobics.net).
             </p>
           </div>
         </div>

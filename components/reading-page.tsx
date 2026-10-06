@@ -4,9 +4,12 @@ import { SiteNav } from "./site-nav";
 import { SiteFooter } from "./site-footer";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { TinaMarkdown, type Components } from "tinacms/dist/rich-text";
 import { getGlossRecords, getReadingPassage } from "../lib/passage-utils";
 import type { DictionaryEntry, ManuscriptDocument, TextDocument } from "../lib/types";
+import { safeJsonParse } from "../lib/safe-json";
+import { editorDocToTextDocument, type EditorDocument } from "./gloss-editor";
 import { AnnotatedPassage } from "./annotated-passage";
 import { GlossPopup } from "./gloss-popup";
 import { GlossaryPanel, GlossWord, GlossaryProvider, useGlossary } from "./glossary";
@@ -45,6 +48,15 @@ function ReadingPageInner({
   const router = useRouter();
   const { activeTerm, setActiveTerm } = useGlossary();
 
+  const [deletedSlugs, setDeletedSlugs] = useState<string[]>([]);
+  const [localDraftText, setLocalDraftText] = useState<TextDocument | null>(null);
+  const [isClientReady, setIsClientReady] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [pinnedId, setPinnedId] = useState<string | null>(null);
+  const [attributionOpen, setAttributionOpen] = useState(false);
+  const lastTriggerId = useRef<string | null>(null);
+  const glossAreaRef = useRef<HTMLElement | null>(null);
+
   const visibleManuscripts = manuscripts.filter(
     (manuscript) =>
       !texts.some(
@@ -55,11 +67,6 @@ function ReadingPageInner({
       ),
   );
 
-  const availableTexts = [
-    ...texts.map((t) => ({ slug: t.slug, title: t.title })),
-    ...visibleManuscripts.map((m) => ({ slug: m.slug, title: m.title })),
-  ];
-
   const defaultSlug =
     initialSlug ??
     texts[0]?.slug ??
@@ -67,37 +74,35 @@ function ReadingPageInner({
     "";
 
   const selectedSlug = defaultSlug;
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [pinnedId, setPinnedId] = useState<string | null>(null);
-  const lastTriggerId = useRef<string | null>(null);
-  const glossAreaRef = useRef<HTMLElement | null>(null);
 
-  const activeManuscript = visibleManuscripts.find((m) => m.slug === selectedSlug);
-  const selectedText = texts.find((text) => text.slug === selectedSlug) ?? (activeManuscript ? undefined : texts[0]);
-  const glossRecords = selectedText ? getGlossRecords(selectedText) : {};
-  const readingPassage = selectedText ? getReadingPassage(selectedText) : undefined;
-  const selectedRecord = selectedId ? glossRecords[selectedId] : undefined;
+  useEffect(() => {
+    try {
+      const rawDeleted = window.localStorage.getItem("glossy_deleted_slugs");
+      if (rawDeleted) {
+        const parsed = safeJsonParse<string[]>(rawDeleted);
+        if (parsed) setDeletedSlugs(parsed);
+      }
+    } catch {}
 
-  const currentTitle = activeManuscript?.title ?? readingPassage?.title;
-  const currentSource = activeManuscript?.source ?? readingPassage?.source;
+    try {
+      const draftRaw = window.localStorage.getItem(`glossy_draft_${selectedSlug}`);
+      if (draftRaw) {
+        const parsed = safeJsonParse<EditorDocument | TextDocument>(draftRaw);
+        if (parsed && typeof parsed === "object" && "sentences" in parsed && Array.isArray(parsed.sentences) && parsed.sentences.length > 0) {
+          const firstSentence = parsed.sentences[0];
+          if (firstSentence && "tokens" in firstSentence) {
+            setLocalDraftText(editorDocToTextDocument(parsed as EditorDocument));
+          } else if (firstSentence && "words" in firstSentence) {
+            setLocalDraftText(parsed as TextDocument);
+          }
+        }
+      } else {
+        setLocalDraftText(null);
+      }
+    } catch {}
 
-  const selectOnHover = (id: string) => {
-    if (!pinnedId) {
-      setSelectedId(id);
-    }
-  };
-
-  const pinSelection = (id: string) => {
-    lastTriggerId.current = id;
-    setSelectedId(id);
-    setPinnedId(id);
-  };
-
-
-
-  const rememberTrigger = (id: string) => {
-    lastTriggerId.current = id;
-  };
+    setIsClientReady(true);
+  }, [selectedSlug]);
 
   const closeGloss = useCallback(() => {
     setSelectedId(null);
@@ -150,6 +155,103 @@ function ReadingPageInner({
     };
   }, [selectedId, activeTerm, closeGloss]);
 
+  const handleRestore = () => {
+    try {
+      const raw = window.localStorage.getItem("glossy_deleted_slugs");
+      if (raw) {
+        const parsed = safeJsonParse<string[]>(raw) || [];
+        const updated = parsed.filter((s) => s !== selectedSlug);
+        window.localStorage.setItem("glossy_deleted_slugs", JSON.stringify(updated));
+        setDeletedSlugs(updated);
+      }
+    } catch {}
+  };
+
+  const availableTexts = [
+    ...texts.filter((t) => !deletedSlugs.includes(t.slug)).map((t) => ({ slug: t.slug, title: t.title })),
+    ...visibleManuscripts.filter((m) => !deletedSlugs.includes(m.slug)).map((m) => ({ slug: m.slug, title: m.title })),
+  ];
+
+  const activeManuscript = visibleManuscripts.find((m) => m.slug === selectedSlug);
+  const baseText = texts.find((text) => text.slug === selectedSlug) ?? (activeManuscript ? undefined : texts[0]);
+  const selectedText = localDraftText ?? baseText;
+  const glossRecords = selectedText ? getGlossRecords(selectedText) : {};
+  const readingPassage = selectedText ? getReadingPassage(selectedText) : undefined;
+  const selectedRecord = selectedId ? glossRecords[selectedId] : undefined;
+
+  const currentTitle = activeManuscript?.title ?? readingPassage?.title;
+  const currentSource = activeManuscript?.source ?? readingPassage?.source;
+
+  const isDeletedLocally = isClientReady && deletedSlugs.includes(selectedSlug);
+
+  if (isDeletedLocally) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <SiteNav current="read" slug={selectedSlug} />
+        <main className="site-shell" style={{ maxWidth: "44rem", margin: "4rem auto", padding: "2.5rem 2rem", textAlign: "center", background: "var(--surface)", border: "1px solid var(--rule)", borderRadius: "0.5rem", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}>
+          <h2 style={{ fontFamily: "'Charis SIL', Georgia, serif", fontSize: "1.75rem", color: "var(--ink)", marginBottom: "0.75rem" }}>
+            Text Removed from Workspace
+          </h2>
+          <p style={{ color: "var(--muted-ink)", marginBottom: "1.75rem", fontSize: "1rem", lineHeight: 1.6 }}>
+            <em>{currentTitle || selectedSlug}</em> was removed from your local corpus. You can restore it to read and inspect its interlinear glosses, or return to the main directory.
+          </p>
+          <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
+            <button
+              type="button"
+              onClick={handleRestore}
+              style={{
+                padding: "0.6rem 1.25rem",
+                borderRadius: "0.35rem",
+                background: "var(--accent)",
+                color: "#ffffff",
+                fontWeight: 600,
+                border: "none",
+                cursor: "pointer",
+                fontSize: "0.9rem",
+              }}
+            >
+              Restore Text to Corpus
+            </button>
+            <Link
+              href="/"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                padding: "0.6rem 1.25rem",
+                borderRadius: "0.35rem",
+                background: "#fbf7ee",
+                color: "var(--ink)",
+                fontWeight: 600,
+                border: "1px solid var(--rule)",
+                textDecoration: "none",
+                fontSize: "0.9rem",
+              }}
+            >
+              Return to Corpus Directory
+            </Link>
+          </div>
+        </main>
+        <SiteFooter />
+      </div>
+    );
+  }
+
+  const selectOnHover = (id: string) => {
+    if (!pinnedId) {
+      setSelectedId(id);
+    }
+  };
+
+  const pinSelection = (id: string) => {
+    lastTriggerId.current = id;
+    setSelectedId(id);
+    setPinnedId(id);
+  };
+
+  const rememberTrigger = (id: string) => {
+    lastTriggerId.current = id;
+  };
+
   const markdownComponents: Components<{
     GlossWord: { text?: string; dictEntry?: string | DictionaryEntry };
   }> = {
@@ -157,8 +259,6 @@ function ReadingPageInner({
       <GlossWord text={String(props?.text ?? "")} dictEntry={props?.dictEntry} />
     ),
   };
-
-  const [attributionOpen, setAttributionOpen] = useState(false);
 
   return (
     <>

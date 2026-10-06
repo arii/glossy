@@ -72,7 +72,20 @@ export function SiteFooter() {
                 fontWeight: 600,
               }}
             >
-              Ariel Anders Consulting
+              Ariel Anders
+            </a>{" "}
+            with{" "}
+            <a
+              href="https://sites.google.com/view/tyler-lemon"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: "var(--accent)",
+                textDecoration: "underline",
+                fontWeight: 600,
+              }}
+            >
+              Tyler Lemon
             </a>
           </div>
         </div>
