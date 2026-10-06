@@ -1,6 +1,16 @@
 import assert from "node:assert/strict";
 import { BUILT_IN_CORPUS, isBuiltInSlug, isProtectedSlug, getBuiltInMetadata } from "../lib/corpus-registry.ts";
-import { isWorkspaceSlug, getWorkspaceTexts, DRAFT_STORAGE_PREFIX, PENDING_MANIFEST_KEY, markPending } from "../lib/local-drafts.ts";
+import {
+  isWorkspaceSlug,
+  getWorkspaceTexts,
+  DRAFT_STORAGE_PREFIX,
+  PENDING_MANIFEST_KEY,
+  markPending,
+  createLocalDocument,
+  readDraft,
+  listLocalDrafts,
+  computeDocumentHash,
+} from "../lib/local-drafts.ts";
 import { sanitizeDraftForTinaMutation, isTinaAuthenticated, commitPendingDraft } from "../lib/tina-sync.ts";
 
 console.log("Running Drafts & Registry Unit Tests...");
@@ -159,8 +169,57 @@ const pendingRawAfter = mockStore.get(PENDING_MANIFEST_KEY);
 const pendingAfter = JSON.parse(pendingRawAfter);
 assert.equal(pendingAfter["caedmon-hymn"].synced, true, "After commit, pending draft synced flag must be true");
 
+// Test 9: Draft Persistence and Non-Deletion on Baseline Hash Match
+const newDocResult = createLocalDocument({
+  title: "Beowulf: Prologue (Lines 1–11)",
+  slug: "beowulf-prologue",
+  author: "Anonymous",
+  sentences: [
+    {
+      id: "sent-1",
+      translation: "Listen! We of the Spear-Danes in days of yore...",
+      words: [
+        {
+          id: "w-1",
+          originalWord: "Hwæt",
+          morphologicalGloss: "listen",
+          sourceGlossTex: "listen",
+        },
+      ],
+    },
+  ],
+  overwrite: true,
+});
+
+assert.equal(newDocResult.ok, true, "createLocalDocument should succeed for beowulf-prologue");
+const savedDraft = readDraft("beowulf-prologue");
+assert.ok(savedDraft, "readDraft must return the newly created beowulf-prologue draft");
+assert.equal(savedDraft.doc.title, "Beowulf: Prologue (Lines 1–11)");
+
+// Compute hash and verify equality
+const docHash = computeDocumentHash(savedDraft.doc);
+assert.equal(docHash, savedDraft.baseHash, "Doc hash should equal stored base hash");
+
+// Ensure draft persists in listLocalDrafts and getWorkspaceTexts
+const localDraftsList = listLocalDrafts();
+assert.ok(
+  localDraftsList.some((d) => d.doc.slug === "beowulf-prologue"),
+  "listLocalDrafts must include beowulf-prologue",
+);
+
+const updatedWorkspaceTexts = getWorkspaceTexts({ currentSlug: "beowulf-prologue" });
+assert.ok(
+  updatedWorkspaceTexts.some((t) => t.slug === "beowulf-prologue"),
+  "getWorkspaceTexts must list beowulf-prologue",
+);
+assert.ok(
+  updatedWorkspaceTexts.some((t) => t.slug === "ohthere"),
+  "getWorkspaceTexts must list ohthere alongside beowulf-prologue",
+);
+
 // Clean up
 mockStore.delete(`${DRAFT_STORAGE_PREFIX}caedmon-hymn`);
+mockStore.delete(`${DRAFT_STORAGE_PREFIX}beowulf-prologue`);
 delete global.window;
 
 console.log("✓ All draft and corpus registry tests passed successfully!");

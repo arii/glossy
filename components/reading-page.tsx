@@ -126,13 +126,22 @@ export function ReadingPage({
   );
 
   useEffect(() => {
-    setWorkspaceTexts(
-      getWorkspaceTexts({
-        currentSlug: selectedSlug,
-        allLoadedTexts: texts.map((t) => ({ slug: t.slug, title: t.title })),
-        excludeDeleted: true,
-      }),
-    );
+    const updateWorkspace = () => {
+      setWorkspaceTexts(
+        getWorkspaceTexts({
+          currentSlug: selectedSlug,
+          allLoadedTexts: texts.map((t) => ({ slug: t.slug, title: t.title })),
+          excludeDeleted: true,
+        }),
+      );
+    };
+    updateWorkspace();
+    window.addEventListener("glossy:drafts-updated", updateWorkspace);
+    window.addEventListener("storage", updateWorkspace);
+    return () => {
+      window.removeEventListener("glossy:drafts-updated", updateWorkspace);
+      window.removeEventListener("storage", updateWorkspace);
+    };
   }, [selectedSlug, texts, deletedSlugs]);
 
   const baseText = texts.find((text) => text.slug === selectedSlug) ?? texts[0];
@@ -283,7 +292,13 @@ export function ReadingPage({
                 </label>
                 <select
                   id="viewer-text-select"
-                  value={selectedSlug}
+                  value={
+                    workspaceTexts.some((t) => t.slug === selectedSlug)
+                      ? selectedSlug
+                      : selectedSlug === "ohthere-wulfstan"
+                      ? "ohthere"
+                      : selectedSlug
+                  }
                   onChange={(e) => router.push(`/read/${e.target.value}`)}
                   style={{ padding: "0.35rem 0.6rem", fontSize: "0.85rem", border: "1px solid var(--rule)", borderRadius: "0.25rem", background: "var(--surface)", color: "var(--ink)" }}
                 >

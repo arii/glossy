@@ -13,6 +13,7 @@ import {
   computeDocumentHash,
   deleteLocalDraft,
   getWorkspaceTexts,
+  writeDraft,
   type WorkspaceTextItem,
 } from "../lib/local-drafts";
 import type {
@@ -282,13 +283,22 @@ export function GlossEditor({
   );
 
   useEffect(() => {
-    setWorkspaceTexts(
-      getWorkspaceTexts({
-        currentSlug: initialDocument.slug || initialDocument.textId,
-        allLoadedTexts: availableTexts,
-        excludeDeleted: true,
-      }),
-    );
+    const updateWorkspace = () => {
+      setWorkspaceTexts(
+        getWorkspaceTexts({
+          currentSlug: initialDocument.slug || initialDocument.textId,
+          allLoadedTexts: availableTexts,
+          excludeDeleted: true,
+        }),
+      );
+    };
+    updateWorkspace();
+    window.addEventListener("glossy:drafts-updated", updateWorkspace);
+    window.addEventListener("storage", updateWorkspace);
+    return () => {
+      window.removeEventListener("glossy:drafts-updated", updateWorkspace);
+      window.removeEventListener("storage", updateWorkspace);
+    };
   }, [initialDocument.slug, initialDocument.textId, availableTexts]);
 
   // Backup snapshot for "Discard Changes" comparison
@@ -415,31 +425,9 @@ export function GlossEditor({
   useEffect(() => {
     if (!documentState || isLoading) return;
 
-    // Skip autosaving if no edits have actually been made compared to the baseline master edition
     const currentDoc = editorDocToTextDocument(documentState);
-    const currentHash = computeDocumentHash(currentDoc);
-
-    if (currentHash === baselineHash) {
-      try {
-        const slug = documentState.slug || "ohthere";
-        window.localStorage.removeItem(storageKey);
-        window.localStorage.removeItem(`glossy_draft_${slug}`);
-        window.localStorage.removeItem(`glossy:v1:draft:${slug}`);
-        // Also remove from pending manifest if present
-        const pendingRaw = window.localStorage.getItem("glossy_pending_drafts");
-        if (pendingRaw) {
-          const pending = JSON.parse(pendingRaw);
-          if (pending[slug]) {
-            delete pending[slug];
-            window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
-          }
-        }
-      } catch {}
-      setAutosaveStatus("idle");
-      return;
-    }
-
     const currentStr = safeJsonStringify(documentState);
+
     if (currentStr === savedSnapshot) {
       setAutosaveStatus("idle");
       return;
@@ -448,9 +436,8 @@ export function GlossEditor({
     setAutosaveStatus("saving");
     const timer = window.setTimeout(() => {
       try {
-        window.localStorage.setItem(storageKey, currentStr);
-        // Also save text document format for sync consistency
-        window.localStorage.setItem(`glossy_draft_${documentState.slug}`, safeJsonStringify(currentDoc));
+        const targetSlug = documentState.slug || initialDocument.slug || "ohthere";
+        writeDraft(targetSlug, currentDoc);
       } catch (e) {
         console.warn("LocalStorage quota exceeded, skipping local cache:", e);
       }
@@ -458,7 +445,7 @@ export function GlossEditor({
     }, 300);
 
     return () => window.clearTimeout(timer);
-  }, [documentState, isLoading, storageKey, savedSnapshot, baselineHash]);
+  }, [documentState, isLoading, savedSnapshot, initialDocument.slug]);
 
   // Find active sentence and active token
   const activeSentence = documentState?.sentences.find((s) => s.id === activeSentenceId);
@@ -628,18 +615,20 @@ export function GlossEditor({
     setIsEditingMetadata(false);
   };
 
-  // Discard changes to restore initial snapshot and completely remove draft
+  // Discard changes to restore initial snapshot
   const discardChanges = () => {
     try {
       const fallback = textDocumentToEditorDoc(initialDocument);
       setDocumentState(fallback);
       setSavedSnapshot(safeJsonStringify(fallback));
 
-      const slug = initialDocument.slug || initialDocument.textId || "ohthere";
-      deleteLocalDraft(slug);
-      try {
-        window.localStorage.removeItem(storageKey);
-      } catch {}
+      if (isProtectedText) {
+        const slug = initialDocument.slug || initialDocument.textId || "ohthere";
+        deleteLocalDraft(slug);
+        try {
+          window.localStorage.removeItem(storageKey);
+        } catch {}
+      }
 
       if (fallback.sentences.length > 0) {
         setActiveSentenceId(fallback.sentences[0].id);
@@ -647,7 +636,9 @@ export function GlossEditor({
       }
       setSaveStatus({
         kind: "success",
-        message: "All local edits discarded. Reverted completely to the authoritative master edition.",
+        message: isProtectedText
+          ? "All local edits discarded. Reverted completely to the authoritative master edition."
+          : "Unsaved edits discarded. Reverted to initial document state.",
       });
       setAutosaveStatus("idle");
     } catch {
@@ -1113,7 +1104,13 @@ export function GlossEditor({
                   </label>
                   <select
                     id="editor-text-select"
-                    value={initialDocument.slug}
+                    value={
+                      workspaceTexts.some((t) => t.slug === initialDocument.slug)
+                        ? initialDocument.slug
+                        : initialDocument.slug === "ohthere-wulfstan"
+                        ? "ohthere"
+                        : initialDocument.slug
+                    }
                     onChange={(e) => router.push(`/edit/${e.target.value}`)}
                     style={{ padding: "0.35rem 0.6rem", fontSize: "0.85rem", border: "1px solid var(--rule)", borderRadius: "0.25rem", background: "var(--surface)", color: "var(--ink)" }}
                   >

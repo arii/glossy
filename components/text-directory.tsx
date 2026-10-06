@@ -112,6 +112,13 @@ export function TextDirectory({
 
   useEffect(() => {
     reloadCorpus();
+    const handleUpdate = () => reloadCorpus();
+    window.addEventListener("glossy:drafts-updated", handleUpdate);
+    window.addEventListener("storage", handleUpdate);
+    return () => {
+      window.removeEventListener("glossy:drafts-updated", handleUpdate);
+      window.removeEventListener("storage", handleUpdate);
+    };
   }, [reloadCorpus]);
 
   // Close context menu on outside click
