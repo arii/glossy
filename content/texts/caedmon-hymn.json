@@ -4,10 +4,14 @@
   "slug": "caedmon-hymn",
   "language": "Old English",
   "author": "Cædmon (Bede's Historia Ecclesiastica)",
+  "editor": "Tyler Lemon",
+  "shelfmark": "CUL MS Kk. 5. 16, fol. 128v (Moore Bede)",
+  "dialect": "Northumbrian (Early Old English)",
+  "historicalDate": "c. 658–680 AD (MS c. 737 AD)",
   "title": "Cædmon's Hymn",
   "source": "Cambridge, University Library, MS Kk. 5. 16 (Moore Bede)",
   "sourceFile": "references/Caedmon_Hymn.tex",
-  "sourceEdition": "",
+  "sourceEdition": "Dobbie (1942), ASPR VI",
   "status": "published",
   "sentences": [
     {

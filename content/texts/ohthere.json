@@ -4,11 +4,15 @@
   "textId": "ohthere",
   "slug": "ohthere-wulfstan",
   "language": "Old English",
-  "author": "Tyler Lemon",
+  "author": "Alfred the Great's Circle / Anonymous",
+  "editor": "Tyler Lemon",
+  "shelfmark": "BL Cotton MS Tiberius B i, fol. 11r–15v",
+  "dialect": "Early West Saxon",
+  "historicalDate": "c. 890–900 AD",
   "title": "The voyages of Ohthere and Wulfstan",
-  "source": "Tyler Lemon · September 30, 2026",
+  "source": "London, British Library, Cotton MS Tiberius B i, fol. 11r–15v",
   "sourceFile": "references/Voyages_of_Ohthere_Wulfstan.tex",
-  "sourceEdition": "",
+  "sourceEdition": "Old English Orosius (ed. Bately 1980 / Sweet)",
   "status": "published",
   "sentences": [
     {

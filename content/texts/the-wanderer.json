@@ -3,8 +3,13 @@
   "slug": "the-wanderer",
   "title": "The Wanderer (Opening)",
   "author": "Anonymous (Exeter Book)",
+  "editor": "Tyler Lemon",
+  "shelfmark": "Exeter Cathedral Library MS 3501, fol. 76v–79r (Exeter Book)",
+  "dialect": "Late West Saxon",
+  "historicalDate": "c. 10th Century AD (MS c. 970 AD)",
   "source": "Exeter, Cathedral Library, MS 3501, ff. 76v–79r",
   "sourceFile": "references/The_Wanderer.tex",
+  "sourceEdition": "Krapp & Dobbie (1936), ASPR III",
   "language": "Old English",
   "status": "published",
   "sentences": [

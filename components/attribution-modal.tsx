@@ -39,6 +39,11 @@ export interface AttributionCardProps {
   slug?: string;
   title?: string;
   author?: string;
+  editor?: string;
+  shelfmark?: string;
+  dialect?: string;
+  historicalDate?: string;
+  sourceEdition?: string;
   source?: string;
   config?: AttributionConfig;
   content?: AttributionConfig;
@@ -49,8 +54,13 @@ export interface AttributionCardProps {
 export function AttributionCard({
   slug = "ohthere",
   title = "The voyages of Ohthere and Wulfstan",
-  author = "Tyler Lemon",
-  source = "London, British Library, Additional MS 47967, ff. 5v–6r",
+  author,
+  editor,
+  shelfmark,
+  dialect,
+  historicalDate,
+  sourceEdition,
+  source,
   config,
   content,
   onDone,
@@ -61,12 +71,19 @@ export function AttributionCard({
   const [activeTab, setActiveTab] = useState<CitationFormat>("bibtex");
 
   const builtIn = getBuiltInMetadata(slug);
-  const isBuiltIn = Boolean(builtIn);
 
   const activePlatformCreator = activeConfig.platformCreator || initialAttributionData.platformCreator || "Ariel Anders";
   const activePlatformCreatorUrl = activeConfig.platformCreatorUrl || initialAttributionData.platformCreatorUrl || "https://boomtick.blog/services";
-  const activeDefaultEditor = builtIn?.editor || activeConfig.defaultEditor || initialAttributionData.defaultEditor || "Tyler Lemon";
+
+  const activeEditor = editor || builtIn?.editor || activeConfig.defaultEditor || initialAttributionData.defaultEditor || "Tyler Lemon";
   const activeDefaultEditorUrl = activeConfig.defaultEditorUrl || initialAttributionData.defaultEditorUrl || "https://sites.google.com/view/tyler-lemon";
+
+  const activeAuthor = author || builtIn?.author || "Anonymous";
+  const activeShelfmark = shelfmark || builtIn?.shelfmark || builtIn?.witness || source || builtIn?.source || "BL Cotton MS Tiberius B i, fol. 11r–15v";
+  const activeDialect = dialect || builtIn?.dialect || "Early West Saxon";
+  const activeHistoricalDate = historicalDate || builtIn?.historicalDate || builtIn?.origDate || "c. 890–900 AD";
+  const activeSourceEdition = sourceEdition || builtIn?.sourceEdition || "Old English Orosius (ed. Bately 1980 / Sweet)";
+
   const activeEditionDate = activeConfig.editionDate || initialAttributionData.editionDate || "2026";
   const activeBooktitle = activeConfig.booktitle || initialAttributionData.booktitle || "Glossy: Digital Scholarly Editions of Old English Interlinear Texts";
   const activeLinguisticPackage =
@@ -80,67 +97,30 @@ export function AttributionCard({
   const activeStandardsStatement =
     activeConfig.attributionStandardsStatement ||
     initialAttributionData.attributionStandardsStatement ||
-    `Developed through the collaborative partnership of ${activePlatformCreator} (software architecture, digital platform, and automated verification suite) and ${activeDefaultEditor} (linguistic subject matter expertise, Old English glossing, and grammatical accuracy). Interlinear formatting conforms to the international Leipzig Glossing Rules with LaTeX gb4e alignment, canonical lemmatization referenced to Bosworth-Toller and Wiktionary, and visual gloss layout inspired by Peter S. Baker's Old English Aerobics (oldenglishaerobics.net).`;
+    `Developed through the collaborative partnership of ${activePlatformCreator} (software architecture, digital platform, and automated verification suite) and ${activeEditor} (linguistic subject matter expertise, Old English glossing, and grammatical accuracy). Interlinear formatting conforms to the international Leipzig Glossing Rules with LaTeX gb4e alignment, canonical lemmatization referenced to Bosworth-Toller and Wiktionary, and visual gloss layout inspired by Peter S. Baker's Old English Aerobics (oldenglishaerobics.net).`;
 
-  const provenanceData = builtIn
-    ? {
-        platformCreator: activePlatformCreator,
-        subjectMatterExpert: activeDefaultEditor,
-        modernEditor: `${activePlatformCreator} and ${activeDefaultEditor}`,
-        editionDate: activeEditionDate,
-        historicalAuthor: builtIn.author,
-        historicalPeriod: builtIn.origDate || "c. 890–900 AD",
-        manuscriptShelfmark: builtIn.witness || builtIn.source,
-        secondaryManuscript: "Tollemache / Cotton transcripts",
-        linguisticPackage: activeLinguisticPackage,
-        bibtexKey: `AndersLemon${activeEditionDate}${slug.replace(/[^a-zA-Z0-9]/g, "")}`,
-      }
-    : {
-        platformCreator: activePlatformCreator,
-        subjectMatterExpert: author || "Custom Editor",
-        modernEditor: author || "Local Editor",
-        editionDate: activeEditionDate,
-        historicalAuthor: author || "Unknown",
-        historicalPeriod: "Old English",
-        manuscriptShelfmark: source || "Local Draft / Custom Source",
-        secondaryManuscript: "N/A",
-        linguisticPackage: activeLinguisticPackage,
-        bibtexKey: `GlossyDraft${activeEditionDate}${(slug || "text").replace(/[^a-zA-Z0-9]/g, "")}`,
-      };
+  const bibtexKey = `Glossy${activeEditionDate}${slug.replace(/[^a-zA-Z0-9]/g, "")}`;
 
   const creatorSurname = activePlatformCreator.split(" ").slice(-1)[0];
   const creatorGiven = activePlatformCreator.split(" ").slice(0, -1).join(" ") || activePlatformCreator;
-  const editorSurname = activeDefaultEditor.split(" ").slice(-1)[0];
-  const editorGiven = activeDefaultEditor.split(" ").slice(0, -1).join(" ") || activeDefaultEditor;
+  const editorSurname = activeEditor.split(" ").slice(-1)[0];
+  const editorGiven = activeEditor.split(" ").slice(0, -1).join(" ") || activeEditor;
 
-  const bibtexAuthor = isBuiltIn
-    ? `${creatorSurname}, ${creatorGiven} and ${editorSurname}, ${editorGiven}`
-    : author || activePlatformCreator;
-
-  const unifiedAuthor = isBuiltIn
-    ? `${creatorSurname}, ${creatorGiven} & ${activeDefaultEditor}`
-    : author || "Anonymous";
-
-  const apaAuthor = isBuiltIn
-    ? `${creatorSurname}, ${creatorGiven.charAt(0)}., & ${editorSurname}, ${editorGiven.charAt(0)}.`
-    : author || "Anonymous";
-
-  const chicagoAuthor = isBuiltIn
-    ? `${creatorSurname}, ${creatorGiven}, and ${activeDefaultEditor}`
-    : author || "Anonymous";
+  const bibtexAuthor = `${creatorSurname}, ${creatorGiven} and ${editorSurname}, ${editorGiven}`;
+  const unifiedAuthor = `${creatorSurname}, ${creatorGiven} & ${activeEditor}`;
+  const apaAuthor = `${creatorSurname}, ${creatorGiven.charAt(0)}., & ${editorSurname}, ${editorGiven.charAt(0)}.`;
+  const chicagoAuthor = `${creatorSurname}, ${creatorGiven}, and ${activeEditor}`;
 
   const baseVars = {
-    bibtexKey: provenanceData.bibtexKey,
+    bibtexKey,
     title,
     booktitle: activeBooktitle,
     year: activeEditionDate,
     platformCreator: activePlatformCreator,
-    defaultEditor: activeDefaultEditor,
-    editorNote: isBuiltIn
-      ? `linguistic glossing and annotation by ${activeDefaultEditor}`
-      : `source: ${provenanceData.manuscriptShelfmark}`,
+    defaultEditor: activeEditor,
+    editorNote: `linguistic glossing and annotation by ${activeEditor}; source edition: ${activeSourceEdition}`,
     url: `https://glossed.pages.dev/read/${slug}`,
-    source: provenanceData.manuscriptShelfmark,
+    source: activeShelfmark,
     linguisticPackage: activeLinguisticPackage,
   };
 
@@ -265,29 +245,30 @@ export function AttributionCard({
         {/* Tile 2: Linguistic Subject Matter Expert */}
         <div>
           <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}>
-            <User style={{ width: "0.75rem", height: "0.75rem" }} /> Linguistic Subject Matter Expert
+            <User style={{ width: "0.75rem", height: "0.75rem" }} /> Editor / Glossing Attribution
           </span>
           <p
             data-tina-field={tinaField(activeConfig, "defaultEditor")}
             style={{ margin: "0.2rem 0 0", fontSize: "0.88rem", fontWeight: 600, color: "var(--ink)" }}
           >
-            {isBuiltIn ? (
-              activeDefaultEditorUrl ? (
-                <a
-                  href={activeDefaultEditorUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: "inherit", textDecoration: "underline" }}
-                >
-                  {activeDefaultEditor}
-                </a>
-              ) : (
-                activeDefaultEditor
-              )
+            {activeDefaultEditorUrl && activeEditor === activeConfig.defaultEditor ? (
+              <a
+                href={activeDefaultEditorUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "inherit", textDecoration: "underline" }}
+              >
+                {activeEditor}
+              </a>
             ) : (
-              author || "User Contribution"
+              activeEditor
             )}
           </p>
+          {activeAuthor && activeAuthor !== activeEditor && (
+            <p style={{ margin: "0.15rem 0 0", fontSize: "0.75rem", color: "var(--muted-ink)" }}>
+              Author: {activeAuthor}
+            </p>
+          )}
         </div>
 
         {/* Tile 3: Historical Date & Dialect */}
@@ -296,7 +277,7 @@ export function AttributionCard({
             <Calendar style={{ width: "0.75rem", height: "0.75rem" }} /> Historical Date &amp; Dialect
           </span>
           <p style={{ margin: "0.2rem 0 0", fontSize: "0.88rem", fontWeight: 600, color: "var(--ink)" }}>
-            {provenanceData.historicalPeriod}
+            {activeHistoricalDate}{activeDialect ? ` (${activeDialect})` : ""}
           </p>
         </div>
 
@@ -306,8 +287,13 @@ export function AttributionCard({
             <BookOpen style={{ width: "0.75rem", height: "0.75rem" }} /> Primary Manuscript Shelfmark
           </span>
           <p style={{ margin: "0.2rem 0 0", fontSize: "0.85rem", color: "var(--ink)" }}>
-            {provenanceData.manuscriptShelfmark}
+            {activeShelfmark}
           </p>
+          {activeSourceEdition && (
+            <p style={{ margin: "0.15rem 0 0", fontSize: "0.75rem", color: "var(--muted-ink)" }}>
+              Edition: {activeSourceEdition}
+            </p>
+          )}
         </div>
 
         {/* Tile 5: Collaborative Development & Standards */}
@@ -434,6 +420,11 @@ export interface AttributionModalProps {
   slug?: string;
   title?: string;
   author?: string;
+  editor?: string;
+  shelfmark?: string;
+  dialect?: string;
+  historicalDate?: string;
+  sourceEdition?: string;
   source?: string;
   config?: AttributionConfig;
   content?: AttributionConfig;
@@ -444,8 +435,13 @@ export function AttributionModal({
   onClose,
   slug = "ohthere",
   title = "The voyages of Ohthere and Wulfstan",
-  author = "Tyler Lemon",
-  source = "London, British Library, Additional MS 47967, ff. 5v–6r",
+  author,
+  editor,
+  shelfmark,
+  dialect,
+  historicalDate,
+  sourceEdition,
+  source,
   config,
   content,
 }: AttributionModalProps) {
@@ -474,6 +470,11 @@ export function AttributionModal({
         slug={slug}
         title={title}
         author={author}
+        editor={editor}
+        shelfmark={shelfmark}
+        dialect={dialect}
+        historicalDate={historicalDate}
+        sourceEdition={sourceEdition}
         source={source}
         config={resolvedConfig}
         onDone={onClose}
