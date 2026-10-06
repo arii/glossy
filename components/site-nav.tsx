@@ -5,8 +5,7 @@ type SiteNavProps = {
   slug?: string;
 };
 
-export function SiteNav({ current, slug = "ohthere-wulfstan" }: SiteNavProps) {
-  const activeSlug = slug && slug.trim().length > 0 ? slug : "ohthere-wulfstan";
+export function SiteNav({ current }: SiteNavProps) {
 
   return (
     <header className="global-site-header">
@@ -22,16 +21,10 @@ export function SiteNav({ current, slug = "ohthere-wulfstan" }: SiteNavProps) {
         </div>
         <nav className="site-nav" aria-label="Site">
           <Link
-            href={`/read/${activeSlug}`}
-            aria-current={current === "read" ? "page" : undefined}
+            href="/"
+            aria-current={current === "home" ? "page" : undefined}
           >
-            Read
-          </Link>
-          <Link
-            href={`/edit/${activeSlug}`}
-            aria-current={current === "edit" ? "page" : undefined}
-          >
-            Edit
+            Corpus
           </Link>
           <Link
             href="/edit/new"
@@ -41,10 +34,16 @@ export function SiteNav({ current, slug = "ohthere-wulfstan" }: SiteNavProps) {
             + New Text
           </Link>
           <Link
-            href="/docs"
+            href="/docs#section-l1"
             aria-current={current === "docs" ? "page" : undefined}
           >
-            Architecture &amp; FAQ
+            Linguistic Standards
+          </Link>
+          <Link
+            href="/docs#section-a1"
+            aria-current={current === "docs" ? "page" : undefined}
+          >
+            System Architecture
           </Link>
         </nav>
       </div>

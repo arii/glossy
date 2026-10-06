@@ -1,6 +1,7 @@
 "use client";
 
 import { SiteNav } from "./site-nav";
+import { SiteFooter } from "./site-footer";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TinaMarkdown, type Components } from "tinacms/dist/rich-text";
 import { getGlossRecords, getReadingPassage } from "../lib/passage-utils";
@@ -278,6 +279,7 @@ function ReadingPageInner({
           </section>
         </div>
       </main>
+      <SiteFooter />
     </>
   );
 }

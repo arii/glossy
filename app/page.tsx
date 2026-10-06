@@ -145,14 +145,6 @@ export default function Home() {
         <section className="hero-two-column">
           {/* Left Column: Headline & Primary CTAs */}
           <div>
-            <p
-              className="eyebrow"
-              data-tina-field={tinaField(pageData, "eyebrow")}
-              style={{ margin: "0 0 0.5rem" }}
-            >
-              {pageData.eyebrow || "Interlinear Texts"}
-            </p>
-
             <h1
               data-tina-field={tinaField(pageData, "heading")}
               style={{

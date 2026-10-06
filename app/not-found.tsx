@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SiteNav } from "../components/site-nav";
+import { SiteFooter } from "../components/site-footer";
 
 export default function NotFound() {
   return (
@@ -16,6 +17,7 @@ export default function NotFound() {
           </p>
         </div>
       </main>
+      <SiteFooter />
     </>
   );
 }

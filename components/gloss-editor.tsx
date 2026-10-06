@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { SiteNav } from "./site-nav";
+import { SiteFooter } from "./site-footer";
 import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
 import { parseGb4e } from "../lib/gb4e";
 import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
@@ -1428,6 +1429,7 @@ export function GlossEditor({
           </div>
         </section>
       </main>
+      <SiteFooter />
     </>
   );
 }

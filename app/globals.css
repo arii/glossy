@@ -364,11 +364,11 @@ h2 {
 }
 
 .gloss-popup {
-  padding: 1.25rem 1.4rem;
+  padding: 1.35rem 1.5rem;
   background: var(--surface);
-  border: 1px solid rgba(123, 63, 42, 0.24);
-  border-radius: 0.5rem;
-  box-shadow: 0 12px 32px rgba(64, 47, 29, 0.14), 0 2px 8px rgba(64, 47, 29, 0.06);
+  border: 1px solid rgba(123, 63, 42, 0.28);
+  border-radius: 0.6rem;
+  box-shadow: 0 16px 40px rgba(64, 47, 29, 0.16), 0 4px 12px rgba(64, 47, 29, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
 }
 
 .popup-heading {

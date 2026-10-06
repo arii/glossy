@@ -113,13 +113,31 @@ export function TextDirectory({ initialChoices }: { initialChoices: TextChoice[]
                 </div>
 
                 {/* Attribution & Manuscript Provenance */}
-                <div style={{ marginBottom: "1.25rem", fontSize: "0.82rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
+                <div style={{ marginBottom: "0.75rem", fontSize: "0.82rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
                   <p style={{ margin: "0 0 0.25rem", fontWeight: 600, color: "var(--ink)" }}>
                     {displayAuthor}
                   </p>
                   <p style={{ margin: 0, fontSize: "0.78rem" }}>
                     {displaySource}
                   </p>
+                </div>
+
+                {/* Document Metadata (clean typography) */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.45rem",
+                    fontSize: "0.78rem",
+                    color: "var(--muted-ink)",
+                    marginBottom: "1.25rem",
+                  }}
+                >
+                  <span>{choice.sentenceCount ?? 75} sentences</span>
+                  <span style={{ opacity: 0.6 }}>•</span>
+                  <span>{(choice.tokenCount ?? 1716).toLocaleString()} tokens</span>
+                  <span style={{ opacity: 0.6 }}>•</span>
+                  <span style={{ textTransform: "capitalize" }}>{choice.status ?? "Published"}</span>
                 </div>
               </div>
 

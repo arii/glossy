@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SiteNav } from "../../../components/site-nav";
+import { SiteFooter } from "../../../components/site-footer";
 import { tokenizeAndLemmatizeSentence } from "../../../lib/lemmatizer";
 import { parseGb4e } from "../../../lib/gb4e";
 import type { TextDocument, ReadingSentence } from "../../../lib/types";
@@ -164,6 +165,19 @@ export default function NewTextPage() {
     kind: "idle",
     text: "",
   });
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+  };
+
+  useEffect(() => {
+    if (!toastMessage) return;
+    const timer = setTimeout(() => {
+      setToastMessage(null);
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, [toastMessage]);
 
   const oeLinesList = rawText.split("\n").map((l) => l.trim()).filter(Boolean);
   const enLinesList = rawTranslations.split("\n").map((l) => l.trim()).filter(Boolean);
@@ -233,10 +247,12 @@ export default function NewTextPage() {
   const handlePresetToggle = (preset: Preset) => {
     if (activePresetId === preset.id) {
       handleClearForm();
+      const msg = `Deselected "${preset.title}". Form reset to blank.`;
       setStatusMessage({
         kind: "idle",
-        text: `Deselected "${preset.title}". Form reset to blank.`,
+        text: msg,
       });
+      showToast(msg);
     } else {
       setActivePresetId(preset.id);
       setTitle(preset.title);
@@ -247,10 +263,12 @@ export default function NewTextPage() {
       setRawText(preset.lines.map((l) => l.oe).join("\n"));
       setRawTranslations(preset.lines.map((l) => l.en).join("\n"));
       setInputMode("text");
+      const msg = `✓ Loaded preset: ${preset.title} (${preset.lines.length} lines)`;
       setStatusMessage({
         kind: "success",
         text: `✓ Loaded preset: ${preset.title} (${preset.lines.length} lines with Old English and English translation).`,
       });
+      showToast(msg);
     }
   };
 
@@ -970,6 +988,33 @@ export default function NewTextPage() {
           </div>
         </section>
       </main>
+
+      {toastMessage && (
+        <aside
+          role="status"
+          aria-live="polite"
+          style={{
+            position: "fixed",
+            bottom: "2rem",
+            right: "2rem",
+            zIndex: 1000,
+            background: "#1c1917",
+            color: "#fbf7ee",
+            padding: "0.75rem 1.25rem",
+            borderRadius: "0.45rem",
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.25)",
+            fontSize: "0.88rem",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            animation: "fadeIn 0.2s ease-out",
+          }}
+        >
+          <span>{toastMessage}</span>
+        </aside>
+      )}
+
+      <SiteFooter />
     </>
   );
 }

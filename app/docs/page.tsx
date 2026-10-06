@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { SiteNav } from "../../components/site-nav";
+import { SiteFooter } from "../../components/site-footer";
 import {
   BookOpen,
   Layers,
@@ -106,19 +107,6 @@ export default function DocsPage() {
                   <Layers style={{ width: "1rem", height: "1rem" }} />
                   <span>Table of Contents</span>
                 </div>
-                <span
-                  style={{
-                    fontSize: "0.7rem",
-                    fontFamily: "monospace",
-                    fontWeight: 700,
-                    background: "#ece3d3",
-                    padding: "0.15rem 0.45rem",
-                    borderRadius: "0.25rem",
-                    color: "var(--accent)",
-                  }}
-                >
-                  {sections.length} Sections
-                </span>
               </div>
 
               {/* Grouped TOC Navigation */}
@@ -784,6 +772,7 @@ export default function DocsPage() {
           </div>
         </div>
       </main>
+      <SiteFooter />
     </>
   );
 }

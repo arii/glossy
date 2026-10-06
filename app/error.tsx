@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { SiteNav } from "../components/site-nav";
+import { SiteFooter } from "../components/site-footer";
 
 export default function ErrorPage({
   reset,
@@ -26,6 +27,7 @@ export default function ErrorPage({
           </p>
         </div>
       </main>
+      <SiteFooter />
     </>
   );
 }
