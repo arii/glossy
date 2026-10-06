@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { SiteNav } from "./site-nav";
 import { PageHero } from "./page-hero";
@@ -27,7 +27,6 @@ import type {
 } from "../lib/types";
 import {
   BookOpen,
-  Edit,
   RefreshCw,
   Save,
   Trash2,
@@ -94,6 +93,68 @@ function stripLatexFootnotes(text: string): string {
     }
   }
   return result;
+}
+
+export function InlineEdit({
+  value,
+  onSave,
+  placeholder,
+  className = "",
+  inputClassName = "",
+}: {
+  value: string;
+  onSave: (val: string) => void;
+  placeholder?: string;
+  className?: string;
+  inputClassName?: string;
+}) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempValue, setTempValue] = useState(value);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditing) {
+      setTempValue(value);
+      inputRef.current?.focus();
+    }
+  }, [isEditing, value]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      setIsEditing(false);
+      if (tempValue !== value) onSave(tempValue);
+    } else if (e.key === "Escape") {
+      setIsEditing(false);
+      setTempValue(value);
+    }
+  };
+
+  if (isEditing) {
+    return (
+      <input
+        ref={inputRef}
+        value={tempValue}
+        onChange={(e) => setTempValue(e.target.value)}
+        onBlur={() => {
+          setIsEditing(false);
+          if (tempValue !== value) onSave(tempValue);
+        }}
+        onKeyDown={handleKeyDown}
+        className={`border-b border-stone-800 bg-transparent px-1 py-0.5 outline-none ${inputClassName || className}`}
+        style={{ width: `${Math.max(tempValue.length, 2)}ch`, maxWidth: "100%" }}
+      />
+    );
+  }
+
+  return (
+    <span
+      onClick={() => setIsEditing(true)}
+      className={`cursor-pointer hover:underline hover:bg-stone-200/50 rounded px-1 -mx-1 ${className}`}
+      title="Click to edit"
+    >
+      {value || placeholder}
+    </span>
+  );
 }
 
 export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number): EditorToken {
@@ -263,14 +324,6 @@ export function GlossEditor({
   const [autosaveStatus, setAutosaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isEditingMetadata, setIsEditingMetadata] = useState(false);
-
-  // Metadata modal form state
-  const [metaTitle, setMetaTitle] = useState("");
-  const [metaHistoricalAuthor, setMetaHistoricalAuthor] = useState("");
-  const [metaGlossedBy, setMetaGlossedBy] = useState("");
-  const [metaDate, setMetaDate] = useState("");
-  const [metaSourceEdition, setMetaSourceEdition] = useState("");
   const [showSyncPrompt, setShowSyncPrompt] = useState(false);
 
   const [workspaceTexts, setWorkspaceTexts] = useState<WorkspaceTextItem[]>(() =>
@@ -595,38 +648,6 @@ export function GlossEditor({
     },
     [activeTokenId],
   );
-
-  // Open metadata editing modal initialized with current state
-  const handleOpenMetadataModal = () => {
-    setMetaTitle(documentState.title || "");
-    setMetaHistoricalAuthor(documentState.historicalAuthor || "Anonymous");
-    setMetaGlossedBy(documentState.glossedBy || documentState.author || "");
-    setMetaDate(documentState.date || "");
-    setMetaSourceEdition(documentState.sourceEdition || "");
-    setIsEditingMetadata(true);
-  };
-
-  const handleSaveMetadata = (e: React.FormEvent) => {
-    e.preventDefault();
-    const updatedTitle = metaTitle.trim() || documentState.title;
-    const updatedHistAuthor = metaHistoricalAuthor.trim() || "Anonymous";
-    const updatedGlossedBy = metaGlossedBy.trim() || documentState.author || "Tyler Lemon";
-    const updatedDate = metaDate.trim() || documentState.date;
-    const updatedSourceEdition = metaSourceEdition.trim();
-
-    setDocumentState((prev) => ({
-      ...prev,
-      title: updatedTitle,
-      author: updatedGlossedBy,
-      historicalAuthor: updatedHistAuthor,
-      glossedBy: updatedGlossedBy,
-      date: updatedDate,
-      sourceEdition: updatedSourceEdition,
-      source: `${updatedGlossedBy} · ${updatedDate}`,
-    }));
-
-    setIsEditingMetadata(false);
-  };
 
   // Discard changes to restore initial snapshot and completely remove draft
   const discardChanges = () => {
@@ -1061,47 +1082,58 @@ export function GlossEditor({
         <PageHero
           eyebrow="Editing workspace"
           title={
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
-              <span>{documentState.title}</span>
-              <button
-                type="button"
-                onClick={handleOpenMetadataModal}
-                className="workspace-link"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "0.3rem",
-                  padding: "0.25rem 0.6rem",
-                  fontSize: "0.8rem",
-                  fontWeight: 600,
-                  color: "var(--accent)",
-                  borderColor: "var(--rule)",
-                  background: "#fbf7ee",
-                }}
-                title="Edit document title, author, date, and manuscript shelfmark"
-              >
-                <Edit style={{ width: "0.85rem", height: "0.85rem" }} />
-                Edit Details
-              </button>
-            </div>
+            <InlineEdit
+              value={documentState.title}
+              onSave={(val) => setDocumentState((prev) => ({ ...prev, title: val }))}
+              placeholder="Document Title"
+            />
           }
           description={
             <div>
-              <p className="source-line" style={{ margin: 0 }}>
-                {documentState.historicalAuthor && documentState.historicalAuthor !== "Anonymous" && (
-                  <span style={{ fontWeight: 600, marginRight: "0.4rem" }}>
-                    [{documentState.historicalAuthor}]
-                  </span>
-                )}
-                {documentState.author?.toLowerCase().includes("anonymous")
-                  ? `${documentState.author} · ${documentState.date}`
-                  : `Translated and glossed by ${documentState.author?.replace(/^(Translated and glossed by\s*)+/gi, "")} · ${documentState.date}`}
+              <p className="source-line text-sm text-stone-600 flex items-center gap-1.5 flex-wrap" style={{ margin: 0 }}>
+                <span style={{ fontWeight: 600 }}>
+                  [<InlineEdit
+                    value={documentState.historicalAuthor || "Anonymous"}
+                    onSave={(v) => setDocumentState((p) => ({ ...p, historicalAuthor: v }))}
+                    placeholder="Anonymous"
+                  />]
+                </span>
+                <span style={{ marginLeft: "0.4rem" }}>
+                  {documentState.author?.toLowerCase().includes("anonymous") ? "" : "Translated and glossed by"}
+                </span>
+                <InlineEdit
+                  value={documentState.author?.replace(/^(Translated and glossed by\s*)+/gi, "") || ""}
+                  onSave={(v) =>
+                    setDocumentState((p) => ({
+                      ...p,
+                      author: v,
+                      glossedBy: v,
+                      source: `${v} · ${p.date}`,
+                    }))
+                  }
+                  placeholder="Anonymous"
+                  className="font-medium"
+                />
+                <span>·</span>
+                <InlineEdit
+                  value={documentState.date}
+                  onSave={(v) =>
+                    setDocumentState((p) => ({
+                      ...p,
+                      date: v,
+                      source: `${p.author} · ${v}`,
+                    }))
+                  }
+                  placeholder="Add date"
+                />
               </p>
-              {documentState.sourceEdition && (
-                <p style={{ margin: "0.15rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)" }}>
-                  Witness / Shelfmark: {documentState.sourceEdition}
-                </p>
-              )}
+              <p style={{ margin: "0.15rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)" }}>
+                Witness / Shelfmark: <InlineEdit
+                  value={documentState.sourceEdition || ""}
+                  onSave={(v) => setDocumentState((p) => ({ ...p, sourceEdition: v }))}
+                  placeholder="Add shelfmark"
+                />
+              </p>
             </div>
           }
           actions={
@@ -1881,197 +1913,6 @@ export function GlossEditor({
           </aside>
         </div>
       </main>
-
-      {/* Edit Document Details Modal */}
-      {isEditingMetadata && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="edit-metadata-title"
-          style={{
-            position: "fixed",
-            inset: 0,
-            backgroundColor: "rgba(28, 25, 23, 0.65)",
-            backdropFilter: "blur(3px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "1rem",
-            zIndex: 9999,
-          }}
-          onClick={() => setIsEditingMetadata(false)}
-        >
-          <div
-            style={{
-              background: "var(--surface)",
-              border: "1px solid var(--rule)",
-              borderRadius: "0.6rem",
-              maxWidth: "36rem",
-              width: "100%",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              boxShadow: "0 1.5rem 3rem rgba(0, 0, 0, 0.25)",
-              padding: "1.75rem",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                paddingBottom: "0.85rem",
-                borderBottom: "1px solid var(--rule)",
-                marginBottom: "1.25rem",
-              }}
-            >
-              <div>
-                <h2
-                  id="edit-metadata-title"
-                  style={{
-                    margin: 0,
-                    fontSize: "1.25rem",
-                    fontFamily: "'Charis SIL', Georgia, serif",
-                    color: "var(--ink)",
-                  }}
-                >
-                  Edit Document Details
-                </h2>
-                <p style={{ margin: "0.2rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)" }}>
-                  Update original title, historical author, glossing attribution, and shelfmark.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsEditingMetadata(false)}
-                aria-label="Close dialog"
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "var(--muted-ink)",
-                  cursor: "pointer",
-                  padding: "0.25rem",
-                  borderRadius: "0.25rem",
-                }}
-              >
-                <X style={{ width: "1.25rem", height: "1.25rem" }} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSaveMetadata} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-              <div className="editor-form-group" style={{ marginBottom: 0 }}>
-                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Original Text Title
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. The Voyages of Ohthere and Wulfstan"
-                  value={metaTitle}
-                  onChange={(e) => setMetaTitle(e.target.value)}
-                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
-                />
-              </div>
-
-              <div className="editor-form-group" style={{ marginBottom: 0 }}>
-                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Historical Author / Speaker
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Anonymous, King Alfred, Cædmon, Bede"
-                  value={metaHistoricalAuthor}
-                  onChange={(e) => setMetaHistoricalAuthor(e.target.value)}
-                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
-                />
-              </div>
-
-              <div className="editor-form-group" style={{ marginBottom: 0 }}>
-                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Glossed / Edited By (Translator / Linguist)
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Tyler Lemon"
-                  value={metaGlossedBy}
-                  onChange={(e) => setMetaGlossedBy(e.target.value)}
-                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
-                />
-              </div>
-
-              <div className="editor-form-group" style={{ marginBottom: 0 }}>
-                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Date (Historical Composition or Release Date)
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. c. 890–900 AD or September 30, 2026"
-                  value={metaDate}
-                  onChange={(e) => setMetaDate(e.target.value)}
-                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
-                />
-              </div>
-
-              <div className="editor-form-group" style={{ marginBottom: 0 }}>
-                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Source Edition / Manuscript Shelfmark
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. BL Cotton MS Tiberius B i, fol. 11r–15v"
-                  value={metaSourceEdition}
-                  onChange={(e) => setMetaSourceEdition(e.target.value)}
-                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
-                />
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  gap: "0.6rem",
-                  marginTop: "0.75rem",
-                  paddingTop: "0.85rem",
-                  borderTop: "1px solid var(--rule)",
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={() => setIsEditingMetadata(false)}
-                  style={{
-                    padding: "0.45rem 1rem",
-                    borderRadius: "0.35rem",
-                    border: "1px solid var(--rule)",
-                    background: "var(--surface)",
-                    color: "var(--ink)",
-                    fontSize: "0.85rem",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  style={{
-                    padding: "0.45rem 1.1rem",
-                    borderRadius: "0.35rem",
-                    border: "none",
-                    background: "var(--accent)",
-                    color: "#ffffff",
-                    fontSize: "0.85rem",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                  }}
-                >
-                  Save Details
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       <DraftSyncPrompt
         forceShow={showSyncPrompt}
