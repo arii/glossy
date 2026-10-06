@@ -350,78 +350,92 @@ export function TextDirectory({
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  flexWrap: "wrap",
-                  gap: "0.5rem",
+                  flexWrap: "nowrap",
+                  gap: "0.35rem",
                   marginTop: "auto",
                   paddingTop: "0.75rem",
                   position: "relative",
+                  width: "100%",
                 }}
               >
-                <Link
-                  href={`/read/${choice.slug}`}
+                <div
                   style={{
-                    display: "inline-flex",
+                    display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
                     gap: "0.35rem",
-                    minHeight: "44px",
-                    padding: "0.5rem 0.85rem",
-                    borderRadius: "0.25rem",
-                    background: "var(--accent)",
-                    color: "#ffffff",
-                    fontSize: "0.85rem",
-                    fontWeight: 600,
-                    textDecoration: "none",
+                    flexShrink: 1,
+                    minWidth: 0,
                   }}
                 >
-                  <BookOpen style={{ width: "0.9rem", height: "0.9rem" }} /> Read
-                </Link>
+                  <Link
+                    href={`/read/${choice.slug}`}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "0.25rem",
+                      minHeight: "40px",
+                      padding: "0.4rem 0.6rem",
+                      borderRadius: "0.25rem",
+                      background: "var(--accent)",
+                      color: "#ffffff",
+                      fontSize: "0.82rem",
+                      fontWeight: 600,
+                      textDecoration: "none",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <BookOpen style={{ width: "0.85rem", height: "0.85rem" }} /> Read
+                  </Link>
 
-                <Link
-                  href={`/edit/${choice.slug}`}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "0.35rem",
-                    minHeight: "44px",
-                    padding: "0.5rem 0.85rem",
-                    borderRadius: "0.25rem",
-                    background: "#ffffff",
-                    border: "1px solid var(--rule)",
-                    color: "var(--ink)",
-                    fontSize: "0.85rem",
-                    fontWeight: 600,
-                    textDecoration: "none",
-                  }}
-                >
-                  <Edit3 style={{ width: "0.9rem", height: "0.9rem" }} /> Edit
-                </Link>
+                  <Link
+                    href={`/edit/${choice.slug}`}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "0.25rem",
+                      minHeight: "40px",
+                      padding: "0.4rem 0.6rem",
+                      borderRadius: "0.25rem",
+                      background: "#ffffff",
+                      border: "1px solid var(--rule)",
+                      color: "var(--ink)",
+                      fontSize: "0.82rem",
+                      fontWeight: 600,
+                      textDecoration: "none",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <Edit3 style={{ width: "0.85rem", height: "0.85rem" }} /> Edit
+                  </Link>
 
-                <button
-                  type="button"
-                  onClick={() => setActiveModalChoice(choice)}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "0.35rem",
-                    minHeight: "44px",
-                    padding: "0.5rem 0.85rem",
-                    borderRadius: "0.25rem",
-                    background: "#ffffff",
-                    border: "1px solid var(--rule)",
-                    color: "var(--ink)",
-                    fontSize: "0.85rem",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                  }}
-                >
-                  <Info style={{ width: "0.9rem", height: "0.9rem" }} /> Cite
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveModalChoice(choice)}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "0.25rem",
+                      minHeight: "40px",
+                      padding: "0.4rem 0.6rem",
+                      borderRadius: "0.25rem",
+                      background: "#ffffff",
+                      border: "1px solid var(--rule)",
+                      color: "var(--ink)",
+                      fontSize: "0.82rem",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <Info style={{ width: "0.85rem", height: "0.85rem" }} /> Cite
+                  </button>
+                </div>
 
                 {/* 3-dot context menu */}
-                <div style={{ marginLeft: "auto", position: "relative" }}>
+                <div style={{ marginLeft: "auto", position: "relative", flexShrink: 0 }}>
                   <button
                     type="button"
                     onClick={(e) => {
