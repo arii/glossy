@@ -30,6 +30,7 @@ export function GlossPopup({ record, onClose }: GlossPopupProps) {
       aria-labelledby="gloss-popup-heading"
       tabIndex={-1}
     >
+      <div className="sheet-handle" aria-hidden="true" />
       <div className="popup-heading">
         <div>
           <p className="field-label">Selected word</p>
