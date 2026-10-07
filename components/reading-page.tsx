@@ -142,7 +142,9 @@ export function ReadingPage({
   const selectedRecord = selectedId ? glossRecords[selectedId] : undefined;
 
   const currentTitle = readingPassage?.title;
-  const currentSource = readingPassage?.source;
+  const witnessShelfmark = selectedText?.shelfmark || "BL Cotton MS Tiberius B i, fol. 11r–15v";
+  const sourceEdition = selectedText?.sourceEdition || "Old English Orosius (ed. Bately 1980 / Sweet)";
+  const currentSource = `Witness: ${witnessShelfmark} · Critical Edition: ${sourceEdition}`;
 
   const isDeletedLocally = isClientReady && deletedSlugs.includes(selectedSlug);
 
@@ -251,7 +253,7 @@ export function ReadingPage({
       <SiteNav current="read" slug={texts.some((text) => text.slug === selectedSlug) ? selectedSlug : (texts[0]?.slug ?? "ohthere-wulfstan")} />
       <main className="site-shell">
         <PageHero
-          eyebrow="Old English visual gloss"
+          eyebrow="Interlinear"
           badge={
             <button
               type="button"
@@ -313,8 +315,7 @@ export function ReadingPage({
         />
 
         <div className="reading-layout">
-          <section className="passage" aria-labelledby="passage-heading">
-            <h2 id="passage-heading">Text</h2>
+          <section className="passage" aria-label="Passage text">
             {readingPassage?.blocks ? (
               readingPassage.blocks.map((block) => (
                 <div className="passage-block" key={block.id}>

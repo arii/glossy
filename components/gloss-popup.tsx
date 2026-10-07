@@ -9,7 +9,6 @@ type GlossPopupProps = {
 export function GlossPopup({ record, onClose }: GlossPopupProps) {
   const { analysis } = record;
   const isMultiMorpheme = analysis.morphemes.length > 1;
-  const formattedFeatures = formatFeatures(analysis.features);
 
   // Hide definitions that merely restate the Leipzig gloss (e.g. "king-DAT.SG", "DET.DEF.DAT.SG.N")
   const rawDef = analysis.definition?.trim() ?? "";
@@ -83,13 +82,6 @@ export function GlossPopup({ record, onClose }: GlossPopupProps) {
         )}
       </div>
 
-      {formattedFeatures ? (
-        <div className="gloss-field">
-          <p className="field-label">Inflection</p>
-          <p>{formattedFeatures}</p>
-        </div>
-      ) : null}
-
       {cleanDefinition && (
         <div className="gloss-field">
           <p className="field-label">Definition</p>
@@ -132,8 +124,3 @@ function explainGloss(gloss: string) {
   return explanations[gloss] ?? "Source gloss abbreviation";
 }
 
-function formatFeatures(features: GlossRecord["analysis"]["features"]) {
-  return Object.entries(features)
-    .map(([key, value]) => `${key}: ${value}`)
-    .join(" · ");
-}
