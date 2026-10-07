@@ -6,6 +6,8 @@ type ReadPageProps = {
   params: Promise<{ slug: string }>;
 };
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   const texts = loadTextDocuments();
   assertTextDocuments(texts);
