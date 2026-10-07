@@ -704,9 +704,7 @@ export function GlossEditor({
     setIsSaving(true);
     setSaveStatus({ kind: "idle", message: "" });
     const textDoc = editorDocToTextDocument(documentState);
-    const legacyDoc = textDoc;
     const targetSlug = textDoc.slug || initialDocument.slug || "ohthere";
-    const targetFileName = `${targetSlug}.json`;
 
     try {
       const res = writeDraft(targetSlug, textDoc);
