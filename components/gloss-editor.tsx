@@ -993,7 +993,11 @@ export function GlossEditor({
                 <div className="workspace-action-grid">
                   <button
                     type="button"
-                    onClick={discardChanges}
+                    onClick={() => {
+                      if (window.confirm("Are you sure you want to discard your edits? This cannot be undone.")) {
+                        discardChanges();
+                      }
+                    }}
                     className="workspace-link"
                   >
                     Discard edits
@@ -1185,6 +1189,7 @@ export function GlossEditor({
               <input
                 type="text"
                 placeholder="Filter by word or transla..."
+                aria-label="Filter documents"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="editor-search-input"
