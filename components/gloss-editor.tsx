@@ -711,19 +711,21 @@ export function GlossEditor({
       try {
         window.localStorage.setItem(storageKey, serialized);
         // Also save in TextDocument format for admin sync
-        delete (legacyDoc as Record<string, unknown>).texSource;
-        delete (legacyDoc as Record<string, unknown>)["tex-source"];
-        window.localStorage.setItem(`glossy_draft_${targetSlug}`, safeJsonStringify(legacyDoc));
+        delete (textDoc as Record<string, unknown>).texSource;
+        delete (textDoc as Record<string, unknown>)["tex-source"];
+
+
+        window.localStorage.setItem(`glossy_draft_${targetSlug}`, safeJsonStringify(textDoc));
 
         // Update pending drafts manifest
         const pendingRaw = window.localStorage.getItem("glossy_pending_drafts");
         const pending = pendingRaw ? JSON.parse(pendingRaw) : {};
         pending[targetSlug] = {
           slug: targetSlug,
-          title: legacyDoc.title || initialDocument.title,
+          title: textDoc.title || initialDocument.title,
           updatedAt: new Date().toISOString(),
-          sentenceCount: legacyDoc.sentences?.length ?? 0,
-          wordCount: legacyDoc.sentences?.reduce((acc, s) => acc + (s.words?.length ?? 0), 0) ?? 0,
+          sentenceCount: textDoc.sentences?.length ?? 0,
+          wordCount: textDoc.sentences?.reduce((acc, s) => acc + (s.words?.length ?? 0), 0) ?? 0,
           synced: false,
         };
         window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
@@ -733,23 +735,24 @@ export function GlossEditor({
       } catch {}
 
       // 2. Build full TextMutation payload
+      const targetFileName = `${targetSlug}.json`;
       const mutationVariables = {
         relativePath: targetFileName,
         params: {
-          textId: legacyDoc.textId || targetSlug,
+          textId: textDoc.textId || targetSlug,
           slug: targetSlug,
-          language: legacyDoc.language || "Old English",
-          author: legacyDoc.author || "",
-          editor: legacyDoc.editor,
-          shelfmark: legacyDoc.shelfmark,
-          dialect: legacyDoc.dialect,
-          historicalDate: legacyDoc.historicalDate,
-          title: legacyDoc.title || "",
-          source: legacyDoc.source || "",
-          sourceFile: legacyDoc.sourceFile || "",
-          sourceEdition: legacyDoc.sourceEdition || "",
-          status: legacyDoc.status || "draft",
-          sentences: (legacyDoc.sentences || []).map((sent) => ({
+          language: textDoc.language || "Old English",
+          author: textDoc.author || "",
+          editor: textDoc.editor,
+          shelfmark: textDoc.shelfmark,
+          dialect: textDoc.dialect,
+          historicalDate: textDoc.historicalDate,
+          title: textDoc.title || "",
+          source: textDoc.source || "",
+          sourceFile: textDoc.sourceFile || "",
+          sourceEdition: textDoc.sourceEdition || "",
+          status: textDoc.status || "draft",
+          sentences: (textDoc.sentences || []).map((sent) => ({
             id: sent.id,
             translation: sent.translation || "",
             footnotes: sent.footnotes && sent.footnotes.length > 0 ? sent.footnotes : undefined,
@@ -880,7 +883,7 @@ export function GlossEditor({
       if (commitRes.ok) {
         setSaveStatus({
           kind: "error",
-          message: res.message || "Failed to save local draft.",
+          message: commitRes.error || "Failed to save local draft.",
         });
       } else {
         const serialized = safeJsonStringify(documentState);
@@ -911,10 +914,12 @@ export function GlossEditor({
 
   const handleExportJson = () => {
     if (!documentState) return;
-    const legacyDoc = editorDocToTextDocument(documentState);
-    delete (legacyDoc as Record<string, unknown>).texSource;
-    delete (legacyDoc as Record<string, unknown>)["tex-source"];
-    const jsonStr = safeJsonStringify(legacyDoc, null, 2);
+    const textDoc = editorDocToTextDocument(documentState);
+
+
+    delete (textDoc as Record<string, unknown>).texSource;
+    delete (textDoc as Record<string, unknown>)["tex-source"];
+    const jsonStr = safeJsonStringify(textDoc, null, 2);
     const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const anchor = window.document.createElement("a");
@@ -926,8 +931,8 @@ export function GlossEditor({
 
   const handleExportLatex = () => {
     if (!documentState) return;
-    const legacyDoc = editorDocToTextDocument(documentState);
-    const tex = exportToGb4eLatex(legacyDoc);
+    const textDoc = editorDocToTextDocument(documentState);
+    const tex = exportToGb4eLatex(textDoc);
 
     const blob = new Blob([tex], { type: "application/x-tex;charset=utf-8" });
     const url = URL.createObjectURL(blob);
