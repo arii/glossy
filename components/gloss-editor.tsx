@@ -1665,6 +1665,48 @@ export function GlossEditor({
 
                   </div>
                 </fieldset>
+
+                {/* 11. Reader Popup Preview */}
+                <div className="editor-preview-card">
+                  <h3>Reader Popup Preview</h3>
+                  <p className="editor-preview-word">
+                    {activeToken.lemma || cleanHeaderWord}
+                    <span className="editor-preview-pos">
+                      ({activeToken.pos || "unclassified"})
+                    </span>
+                  </p>
+
+                  {activeToken.explanation && (
+                    <p style={{ margin: "0.4rem 0", fontSize: "0.95rem", color: "var(--ink)" }}>
+                      {activeToken.explanation}
+                    </p>
+                  )}
+
+                  {activeToken.morphemes && activeToken.morphemes.length > 0 && (
+                    <div className="editor-preview-morphemes">
+                      <strong>Morphemes Breakdown</strong>
+                      <span>
+                        {activeToken.morphemes
+                          .map((m) => `${m.form || "?"} = ${m.gloss || "?"}`)
+                          .join("   ")}
+                      </span>
+                    </div>
+                  )}
+
+                  {activeToken.wiktionaryUrl && (
+                    <div style={{ marginTop: "0.6rem" }}>
+                      <a
+                        href={activeToken.wiktionaryUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="reference-link"
+                        style={{ fontSize: "0.85rem", color: "var(--accent)", fontWeight: 700 }}
+                      >
+                        Open in Wiktionary ↗
+                      </a>
+                    </div>
+                  )}
+                </div>
               </div>
             ) : (
               <p style={{ color: "var(--muted-ink)", fontSize: "0.9rem" }}>
