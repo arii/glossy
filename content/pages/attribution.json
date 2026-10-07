@@ -1,9 +1,9 @@
 {
   "apaCitationTemplate": "{{author}}. ({{year}}). {{title}} [Digital interlinear edition]. Glossy Old English Corpus. Platform created by {{platformCreator}}. {{source}}.",
   "attributionLinguisticPackage": "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing",
-  "attributionStandardsStatement": "Developed through the collaborative partnership of Ariel Anders (software architecture, digital platform, and automated verification suite) and Tyler Lemon (linguistic subject matter expertise, Old English glossing, and grammatical accuracy). Interlinear formatting conforms to the international Leipzig Glossing Rules with LaTeX gb4e alignment, canonical lemmatization referenced to Bosworth-Toller and Wiktionary, and visual gloss layout inspired by Peter S. Baker's Old English Aerobics (oldenglishaerobics.net).",
+  "attributionStandardsStatement": "Interlinear formatting conforms to international Leipzig Glossing Rules with LaTeX gb4e alignment, canonical lemmatization referenced to Bosworth-Toller and Wiktionary, and visual gloss layout inspired by Peter S. Baker's Old English Aerobics (oldenglishaerobics.net).",
   "attributionStandardsTitle": "Collaborative Development & Standards",
-  "bibtexCitationTemplate": "@incollection{{{bibtexKey}},\n  author       = {{{author}}},\n  title        = {{{{title}}}},\n  booktitle    = {{{booktitle}}},\n  year         = {{{year}}},\n  note         = {Digital platform created by {{platformCreator}}; {{editorNote}}. Interlinear glossing following Leipzig standards with gb4e LaTeX formatting},\n  url          = {{{url}}}\n}",
+  "bibtexCitationTemplate": "@incollection{{{bibtexKey}},\n  author       = {{{author}}},\n  title        = {{{{title}}}},\n  booktitle    = {{{booktitle}}},\n  year         = {{{year}}},\n  note         = {Interlinear glossing following Leipzig standards with gb4e LaTeX formatting},\n  url          = {{{url}}}\n}",
   "booktitle": "Glossy: Digital Scholarly Editions of Old English Interlinear Texts",
   "chicagoCitationTemplate": "{{author}}, eds. {{year}}. \"{{title}}.\" {{booktitle}}. Platform created by {{platformCreator}}. Source: {{source}}.",
   "defaultEditor": "Tyler Lemon",
@@ -13,7 +13,7 @@
   "eyebrow": "Academic Citation",
   "heading": "Scholarly Attribution & Citation",
   "pageId": "attribution",
-  "platformCreator": "Ari Anders",
+  "platformCreator": "Ariel Anders",
   "platformCreatorUrl": "https://boomtick.blog/services",
   "title": "Scholarly Attribution & Citation Standards",
   "unifiedLsaCitationTemplate": "{{author}}. {{year}}. {{title}}. In {{booktitle}}. Digital platform created by {{platformCreator}}. Source/Witness: {{source}}. {{linguisticPackage}}."
