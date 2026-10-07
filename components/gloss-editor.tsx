@@ -155,7 +155,7 @@ export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number
 }
 
 export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
-  const rawAuthor = doc.author || (doc.source ? doc.source.split(/[·•]/)[0]?.trim() : "Tyler Lemon");
+  const rawAuthor = doc.author || (doc.source ? doc.source.split(/[·•]/)[0]?.trim() : "");
   const glossedByMatch =
     doc.glossedBy ||
     doc.editor ||
@@ -163,12 +163,12 @@ export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
       ? "Tyler Lemon"
       : rawAuthor.replace(/^(Translated and glossed by\s*)+/gi, "").trim());
   const dateMatch =
-    doc.date || (doc.source ? doc.source.split(/[·•]/)[1]?.trim() : "September 30, 2026");
+    doc.date || (doc.source ? doc.source.split(/[·•]/)[1]?.trim() : "");
 
   return {
-    textId: doc.textId || "ohthere",
-    slug: doc.slug || "ohthere-wulfstan",
-    title: doc.title || "The voyages of Ohthere and Wulfstan",
+    textId: doc.textId || "",
+    slug: doc.slug || "",
+    title: doc.title || "",
     author: glossedByMatch,
     historicalAuthor: doc.historicalAuthor || (doc.author?.includes("Alfred") ? doc.author : undefined),
     glossedBy: glossedByMatch,
@@ -178,7 +178,7 @@ export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
     historicalDate: doc.historicalDate,
     date: doc.date || dateMatch,
     source: doc.source || `${glossedByMatch} · ${dateMatch}`,
-    sourceFile: doc.sourceFile || "references/Voyages_of_Ohthere_Wulfstan.tex",
+    sourceFile: doc.sourceFile || "",
     sourceEdition: doc.sourceEdition || undefined,
     language: "Old English",
     status: doc.status || "published",
@@ -275,8 +275,6 @@ export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
     blocks: doc.blocks || [],
   };
 
-  delete (result as Record<string, unknown>).texSource;
-  delete (result as Record<string, unknown>)["tex-source"];
 
   return result;
 }
@@ -344,7 +342,7 @@ export function GlossEditor({
     safeJsonStringify(textDocumentToEditorDoc(initialDocument)),
   );
 
-  const currentSlug = initialDocument.slug || initialDocument.textId || "ohthere";
+  const currentSlug = initialDocument.slug || initialDocument.textId || "";
 
   // Compute baseline hash from the normalized version of initialDocument
   const baselineHash = useMemo(() => {
@@ -629,7 +627,7 @@ export function GlossEditor({
   const handleOpenMetadataModal = () => {
     setMetaTitle(documentState.title || "");
     setMetaHistoricalAuthor(documentState.historicalAuthor || "Anonymous");
-    setMetaGlossedBy(documentState.glossedBy || documentState.editor || "Tyler Lemon");
+    setMetaGlossedBy(documentState.glossedBy || documentState.editor || "");
     setMetaDate(documentState.date || "");
     setMetaSourceEdition(documentState.sourceEdition || documentState.shelfmark || "");
     setIsEditingMetadata(true);
@@ -639,7 +637,7 @@ export function GlossEditor({
     e.preventDefault();
     const updatedTitle = metaTitle.trim() || documentState.title;
     const updatedHistAuthor = metaHistoricalAuthor.trim() || "Anonymous";
-    const updatedGlossedBy = metaGlossedBy.trim() || "Tyler Lemon";
+    const updatedGlossedBy = metaGlossedBy.trim() || "";
     const updatedDate = metaDate.trim() || documentState.date;
     const updatedSourceEdition = metaSourceEdition.trim();
 
@@ -727,14 +725,12 @@ export function GlossEditor({
   const handleExportJson = () => {
     if (!documentState) return;
     const legacyDoc = editorDocToTextDocument(documentState);
-    delete (legacyDoc as Record<string, unknown>).texSource;
-    delete (legacyDoc as Record<string, unknown>)["tex-source"];
     const jsonStr = safeJsonStringify(legacyDoc, null, 2);
     const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const anchor = window.document.createElement("a");
     anchor.href = url;
-    anchor.download = `${initialDocument.fileName || initialDocument.textId || "ohthere"}.json`;
+    anchor.download = `${initialDocument.fileName || initialDocument.textId || ""}.json`;
     anchor.click();
     URL.revokeObjectURL(url);
   };
@@ -748,7 +744,7 @@ export function GlossEditor({
     const url = URL.createObjectURL(blob);
     const anchor = window.document.createElement("a");
     anchor.href = url;
-    anchor.download = `${initialDocument.fileName || initialDocument.textId || "ohthere"}.tex`;
+    anchor.download = `${initialDocument.fileName || initialDocument.textId || ""}.tex`;
     anchor.click();
     URL.revokeObjectURL(url);
   };
@@ -967,7 +963,7 @@ export function GlossEditor({
                     [{documentState.historicalAuthor}{documentState.historicalDate ? `, ${documentState.historicalDate}` : ""}]
                   </span>
                 )}
-                Translated and glossed by {documentState.glossedBy || documentState.author || "Tyler Lemon"} · {documentState.date}
+                Translated and glossed by {documentState.glossedBy || documentState.author || ""} · {documentState.date}
               </p>
               {(documentState.sourceEdition || documentState.shelfmark) && (
                 <p style={{ margin: "0.15rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)" }}>
