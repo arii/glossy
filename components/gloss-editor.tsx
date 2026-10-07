@@ -702,7 +702,9 @@ export function GlossEditor({
     setIsSaving(true);
     setSaveStatus({ kind: "idle", message: "" });
     const textDoc = editorDocToTextDocument(documentState);
+    const legacyDoc = textDoc;
     const targetSlug = textDoc.slug || initialDocument.slug || "ohthere";
+    const targetFileName = `${targetSlug}.json`;
 
     try {
       // 1. Always persist client-side snapshot in browser storage (localStorage)
@@ -877,10 +879,10 @@ export function GlossEditor({
 
       const commitRes = await commitPendingDraft(targetSlug);
 
-      if (commitRes.ok) {
+      if (!commitRes.ok) {
         setSaveStatus({
           kind: "error",
-          message: res.message || "Failed to save local draft.",
+          message: commitRes.error || "Failed to save local draft.",
         });
       } else {
         const serialized = safeJsonStringify(documentState);
