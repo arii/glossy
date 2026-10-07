@@ -202,28 +202,10 @@ export async function commitPendingDraft(
   let draftDoc: Record<string, unknown> | null = null;
   let textDoc: TextDocument | null = null;
 
-  // 1. Try reading via local-drafts module
   const storedDraft = readDraft(slug);
   if (storedDraft?.doc) {
     textDoc = storedDraft.doc;
     draftDoc = storedDraft.doc as unknown as Record<string, unknown>;
-  } else {
-    // 2. Direct localStorage fallback
-    const v1Key = `glossy:v1:draft:${slug}`;
-    const rawV1 = window.localStorage.getItem(v1Key);
-    if (rawV1) {
-      try {
-        const env = JSON.parse(rawV1);
-        draftDoc = env.doc || env;
-      } catch {}
-    } else {
-      const legacyRaw = window.localStorage.getItem(`glossy_draft_${slug}`);
-      if (legacyRaw) {
-        try {
-          draftDoc = JSON.parse(legacyRaw);
-        } catch {}
-      }
-    }
   }
 
   if (!draftDoc) {

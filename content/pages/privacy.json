@@ -17,9 +17,10 @@
     },
     {
       "bullets": [
-        "glossy:draft:v1:[slug] (and compatibility key glossy_draft_[slug]): Holds local draft envelopes and working text documents in canonical schema format.",
+        "glossy:v1:draft:<slug>: Holds local draft envelopes and working text documents in canonical schema format.",
         "glossy_pending_drafts: Holds the local index manifest of uncommitted drafts.",
-        "glossy_active_text_slug: Holds your last active reader selection."
+        "glossy_deleted_slugs: Holds the index of hidden or removed built-in corpus texts.",
+        "glossy_active_slug: Holds your last active corpus selection."
       ],
       "content": "To ensure that your work is not lost when refreshing the page or working offline, Glossy stores draft documents and editing snapshots in your web browser's localStorage under keys prefixed with:",
       "num": "2",

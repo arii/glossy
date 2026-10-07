@@ -1,6 +1,19 @@
 import assert from "node:assert/strict";
 import { BUILT_IN_CORPUS, isBuiltInSlug, isProtectedSlug, getBuiltInMetadata } from "../lib/corpus-registry.ts";
-import { isWorkspaceSlug, getWorkspaceTexts, DRAFT_STORAGE_PREFIX, PENDING_MANIFEST_KEY, markPending, writeDraft, listPending } from "../lib/local-drafts.ts";
+import {
+  isWorkspaceSlug,
+  getWorkspaceTexts,
+  DRAFT_STORAGE_PREFIX,
+  PENDING_MANIFEST_KEY,
+  markPending,
+  writeDraft,
+  readDraft,
+  listPending,
+  deleteLocalDraft,
+  getActiveSlug,
+  setActiveSlug,
+  clearActiveSlug,
+} from "../lib/local-drafts.ts";
 import { sanitizeDraftForTinaMutation, isTinaAuthenticated, commitPendingDraft } from "../lib/tina-sync.ts";
 
 console.log("Running Unified TinaCMS Commit Pipeline & Sync Status Unit Tests...");
@@ -158,8 +171,80 @@ writeDraft("caedmon-hymn", updatedCaedmonDoc);
 const pending3 = listPending()["caedmon-hymn"];
 assert.equal(pending3.synced, false, "Editing a committed document must reset synced to false");
 
+// Test 8: Legacy Key Migration Tests
+mockStore.clear();
+const legacyDocKey = "glossy_draft_legacy-text";
+const legacyDocVal = {
+  textId: "legacy-text",
+  slug: "legacy-text",
+  title: "Legacy Corpus Text",
+  author: "Ancient Author",
+  sentences: [
+    {
+      id: "s1",
+      freeTranslation: "Legacy translation.",
+      tokens: [
+        {
+          id: "w1",
+          sourceForm: "Word",
+          sourceGloss: "gloss",
+          lemma: "word",
+          pos: "noun",
+          explanation: "a word",
+        },
+      ],
+    },
+  ],
+};
+mockStore.set(legacyDocKey, JSON.stringify(legacyDocVal));
+
+const migratedDraft = readDraft("legacy-text");
+assert.ok(migratedDraft, "readDraft must migrate legacy document");
+assert.equal(migratedDraft.doc.title, "Legacy Corpus Text", "migrated doc title must match");
+assert.equal(migratedDraft.doc.sentences[0].words[0].originalWord, "Word", "editor tokens shape must convert to canonical words shape");
+assert.equal(mockStore.has(legacyDocKey), false, "legacy key glossy_draft_legacy-text must be removed after migration");
+assert.ok(mockStore.has(`${DRAFT_STORAGE_PREFIX}legacy-text`), "migrated draft must be stored under glossy:v1:draft: legacy-text");
+
+// Test 9: Quota Exceeded Behavior
+const originalSetItem = window.localStorage.setItem;
+window.localStorage.setItem = () => {
+  const err = new Error("QuotaExceededError: DOM Exception 22");
+  throw err;
+};
+
+const quotaRes = writeDraft("quota-test", { slug: "quota-test", title: "Quota Test" });
+assert.equal(quotaRes.ok, false, "Quota exceeded writeDraft must return ok: false");
+assert.equal(quotaRes.reason, "quota", "Quota exceeded writeDraft reason must be quota");
+assert.ok(quotaRes.message.includes("quota exceeded"), "Quota exceeded message must inform user");
+
+// Restore mock setItem
+window.localStorage.setItem = originalSetItem;
+
+// Test 10: Corrupted JSON Parsing Recovery
+mockStore.set(`${DRAFT_STORAGE_PREFIX}corrupt-text`, "INVALID_NON_JSON{{{");
+const corruptDraft = readDraft("corrupt-text");
+assert.equal(corruptDraft, null, "Corrupted JSON in draft key must safely return null without throwing");
+
+// Test 11: Draft Deletion and Manifest Cleanup
+mockStore.clear();
+writeDraft("text-to-delete", { slug: "text-to-delete", title: "Text To Delete" });
+assert.ok(listPending()["text-to-delete"], "Draft must exist in pending manifest");
+
+const deleteRes = deleteLocalDraft("text-to-delete");
+assert.equal(deleteRes, true, "deleteLocalDraft must return true");
+assert.equal(mockStore.has(`${DRAFT_STORAGE_PREFIX}text-to-delete`), false, "v1 draft key must be removed");
+assert.equal(listPending()["text-to-delete"], undefined, "Deleted draft must be removed from pending manifest");
+
+// Test 12: Active Slug Helper Operations
+mockStore.clear();
+assert.equal(getActiveSlug(), null, "Initial active slug should be null");
+setActiveSlug("beowulf");
+assert.equal(getActiveSlug(), "beowulf", "getActiveSlug must return set active slug");
+clearActiveSlug();
+assert.equal(getActiveSlug(), null, "clearActiveSlug must remove active slug");
+
 // Clean up
 mockStore.clear();
 delete global.window;
 
-console.log("✓ All unified commit pipeline and sync status unit tests passed successfully!");
+console.log("✓ All unified commit pipeline, storage migration, quota & active-slug unit tests passed successfully!");

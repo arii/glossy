@@ -10,6 +10,7 @@ import {
 export const DRAFT_STORAGE_PREFIX = "glossy:v1:draft:";
 export const PENDING_MANIFEST_KEY = "glossy_pending_drafts";
 export const HIDDEN_SLUGS_KEY = "glossy_deleted_slugs";
+export const ACTIVE_SLUG_KEY = "glossy_active_slug";
 
 export interface StoredDraft {
   version: 1;
@@ -161,15 +162,22 @@ export function readDraft(slug: string): StoredDraft | null {
       if (convertedDoc && convertedDoc.title) {
         delete (convertedDoc as Record<string, unknown>).texSource;
         delete (convertedDoc as Record<string, unknown>)["tex-source"];
-        const envelope: StoredDraft = {
+        // Migrate to versioned storage and delete legacy keys
+        const writeRes = writeDraft(slug, convertedDoc);
+        for (const lkToRemove of legacyKeys) {
+          try {
+            storage.removeItem(lkToRemove);
+          } catch {}
+        }
+        if (writeRes.ok && writeRes.data) {
+          return writeRes.data;
+        }
+        return {
           version: 1,
           doc: convertedDoc,
           baseHash: computeDocumentHash(convertedDoc),
           updatedAt: new Date().toISOString(),
         };
-        // Migrate to versioned storage
-        writeDraft(slug, convertedDoc);
-        return envelope;
       }
     } catch {}
   }
@@ -374,6 +382,49 @@ export function restoreAllHiddenTexts(): void {
 
   try {
     storage.removeItem(HIDDEN_SLUGS_KEY);
+  } catch {}
+}
+
+export function getActiveSlug(): string | null {
+  const storage = getStorage();
+  if (!storage) return null;
+  try {
+    return storage.getItem(ACTIVE_SLUG_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function setActiveSlug(slug: string): boolean {
+  const storage = getStorage();
+  if (!storage || !slug) return false;
+  try {
+    storage.setItem(ACTIVE_SLUG_KEY, slug);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function clearActiveSlug(): boolean {
+  const storage = getStorage();
+  if (!storage) return false;
+  try {
+    storage.removeItem(ACTIVE_SLUG_KEY);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function cleanupObsoleteKeys(): void {
+  const storage = getStorage();
+  if (!storage) return;
+  try {
+    const obsoleteKeys = ["glossy_document_ohthere_full", "glossy_document_ohthere_full_v2"];
+    for (const k of obsoleteKeys) {
+      storage.removeItem(k);
+    }
   } catch {}
 }
 
