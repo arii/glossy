@@ -5,6 +5,7 @@
     "components/**/*.{ts,tsx}",
     "lib/**/*.{ts,tsx}",
     "scripts/**/*.{js,mjs,ts}",
+    "tests/**/*.{ts,tsx}",
     "tina/config.ts"
   ],
   "ignoreDependencies": ["eslint-config-next", "gray-matter"],
@@ -12,6 +13,7 @@
     "app/**/*.{ts,tsx}",
     "components/**/*.{ts,tsx}",
     "lib/**/*.{ts,tsx}",
-    "scripts/**/*.{js,mjs,ts}"
+    "scripts/**/*.{js,mjs,ts}",
+    "tests/**/*.{ts,tsx}"
   ]
 }
