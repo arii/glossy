@@ -135,14 +135,14 @@ export function ReadingPage({
     );
   }, [selectedSlug, texts, deletedSlugs]);
 
-  // ⚡ Bolt: Memoize base lookup so we don't scan the entire corpus on every render.
+  // Memoize base lookup so we don't scan the entire corpus on every render.
   const baseText = useMemo(() => texts.find((text) => text.slug === selectedSlug), [texts, selectedSlug]);
   const selectedText = localDraftText ?? baseText;
 
-  // ⚡ Bolt: Memoize heavy object instantiation from getGlossRecords to prevent unnecessary downstream re-renders.
+  // Memoize heavy object instantiation from getGlossRecords to prevent unnecessary downstream re-renders.
   const glossRecords = useMemo(() => selectedText ? getGlossRecords(selectedText) : {}, [selectedText]);
 
-  // ⚡ Bolt: Memoize the reading passage transformation which involves nested array iterations.
+  // Memoize the reading passage transformation which involves nested array iterations.
   const readingPassage = useMemo(() => selectedText ? getReadingPassage(selectedText) : undefined, [selectedText]);
   const selectedRecord = selectedId ? glossRecords[selectedId] : undefined;
 
@@ -151,7 +151,7 @@ export function ReadingPage({
   const sourceEdition = selectedText?.sourceEdition;
   const currentSource = witnessShelfmark && sourceEdition ? `Witness: ${witnessShelfmark} · Critical Edition: ${sourceEdition}` : "";
 
-    // ⚡ Bolt: Aggregate all notes across sentences
+    // Aggregate all notes across sentences
   // Memoized because flatMap and nested iterations are expensive to run on every state change (e.g. hover).
   const aggregatedApparatus = useMemo(() => {
     const doc = selectedText || { slug: "", textId: "" };
