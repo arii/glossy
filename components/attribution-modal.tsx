@@ -77,11 +77,11 @@ export function AttributionCard({
 
   const builtIn = getBuiltInMetadata(slug);
 
-  const activePlatformCreator = activeConfig.platformCreator ?? initialAttributionData.platformCreator;
-  const activePlatformCreatorUrl = activeConfig.platformCreatorUrl ?? initialAttributionData.platformCreatorUrl;
+  const activePlatformCreator = activeConfig.platformCreator ?? CONFIG.PLATFORM_CREATOR;
+  const activePlatformCreatorUrl = activeConfig.platformCreatorUrl ?? CONFIG.PLATFORM_CREATOR_URL;
 
-  const activeEditor = editor ?? builtIn?.editor ?? activeConfig.defaultEditor ?? initialAttributionData.defaultEditor;
-  const activeDefaultEditorUrl = activeConfig.defaultEditorUrl ?? initialAttributionData.defaultEditorUrl;
+  const activeEditor = editor ?? builtIn?.editor ?? activeConfig.defaultEditor ?? CONFIG.DEFAULT_EDITOR;
+  const activeDefaultEditorUrl = activeConfig.defaultEditorUrl ?? CONFIG.DEFAULT_EDITOR_URL;
 
   const activeAuthor = author ?? builtIn?.author ?? "Anonymous";
   const activeShelfmark = shelfmark ?? builtIn?.shelfmark ?? builtIn?.witness ?? source ?? builtIn?.source ?? "BL Cotton MS Tiberius B i, fol. 11r–15v";

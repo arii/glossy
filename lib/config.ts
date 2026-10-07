@@ -1,3 +1,5 @@
+import attributionData from "../content/pages/attribution.json";
+
 export const CONFIG = {
   PORT: Number(process.env.PORT ?? 3000),
   TINA_PORT: Number(process.env.TINA_PORT ?? 4001),
@@ -10,6 +12,10 @@ export const CONFIG = {
     process.env.HEAD ??
     "main",
   TINA_TOKEN: process.env.TINA_TOKEN ?? "",
+  DEFAULT_EDITOR: attributionData.defaultEditor,
+  DEFAULT_EDITOR_URL: attributionData.defaultEditorUrl,
+  PLATFORM_CREATOR: attributionData.platformCreator,
+  PLATFORM_CREATOR_URL: attributionData.platformCreatorUrl,
   isLocal(hostname: string): boolean {
     return hostname === "localhost" || hostname === "127.0.0.1";
   },

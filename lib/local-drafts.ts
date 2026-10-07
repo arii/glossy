@@ -6,6 +6,7 @@ import {
   BUILT_IN_CORPUS,
   getBuiltInMetadata,
 } from "./corpus-registry";
+import { CONFIG } from "./config";
 
 export const DRAFT_STORAGE_PREFIX = "glossy:v1:draft:";
 export const PENDING_MANIFEST_KEY = "glossy:v1:pending_drafts";
@@ -338,7 +339,7 @@ export function createLocalDocument(input: {
     slug: generatedSlug,
     title,
     author: input.author?.trim() || "Anonymous",
-    editor: input.editor?.trim() || "Tyler Lemon",
+    editor: input.editor?.trim() || CONFIG.DEFAULT_EDITOR,
     shelfmark: input.shelfmark?.trim(),
     dialect: input.dialect?.trim(),
     historicalDate: input.historicalDate?.trim(),
