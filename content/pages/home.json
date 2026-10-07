@@ -4,12 +4,7 @@
   "heading": "Read a text or work on its glosses.",
   "pageId": "home",
   "primaryAction": {
-    "href": "/edit/new",
-    "label": "Gloss a New Text"
-  },
-  "secondaryAction": {
-    "href": "#corpus-directory",
-    "label": "Explore Corpus"
-  },
-  "title": "Glossy · Interlinear Texts"
+    "label": "Gloss a New Text",
+    "href": "/edit/new"
+  }
 }

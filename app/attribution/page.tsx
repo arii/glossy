@@ -66,11 +66,11 @@ export default function AttributionPage() {
           }}
         >
           <PageHero
-            eyebrow={page.eyebrow || "Scholarly Attribution"}
+            eyebrow={page.eyebrow || "Academic Citation"}
             eyebrowDataTinaField={tinaField(page, "eyebrow")}
-            title={page.heading || "Attribution & Citation"}
+            title={page.heading || "Scholarly Attribution & Citation"}
             titleDataTinaField={tinaField(page, "heading")}
-            description={page.description || "Official bibliographical citations and platform credits for the Glossy Old English corpus."}
+            description={page.description || "Provenance, manuscript shelfmarks, and academic citation formats for digital scholarly editions of Old English interlinear texts."}
             descriptionDataTinaField={tinaField(page, "description")}
           />
           <AttributionCard

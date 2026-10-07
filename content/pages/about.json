@@ -24,7 +24,7 @@
   "description": "An open-access digital humanities platform dedicated to historical linguistic annotation, standardized Leipzig interlinear glossing, and accessible manuscript reading.",
   "eyebrow": "About the Project",
   "heading": "Glossy · Digital Interlinear Philology",
-  "maintainerAriel": "Glossy was created and engineered by Ariel Anders (Ariel Anders Consulting), who architected the platform, the interactive Leipzig interlinear engine, the offline-first local workspace, and the automated verification suite.",
+  "maintainerAriel": "Glossy was engineered by Ariel Anders, who architected the platform, the interactive Leipzig interlinear engine, the offline-first local workspace, and the automated verification suite.",
   "maintainerLicense": "The project is entirely open source under the MIT License. Contributions, bug reports, and morphological corrections are welcomed via GitHub.",
   "maintainerTyler": "Tyler Lemon served as the linguistic subject matter expert, meticulously glossing all texts in the canonical corpus, standardizing Old English lemmatization (including masculine nominative standards and strong adjective conventions), and ensuring philological fidelity to historical manuscript witnesses.",
   "maintainersTitle": "Maintainers & Open Source",

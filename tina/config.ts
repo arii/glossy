@@ -81,6 +81,8 @@ export default defineConfig({
           { type: "string", name: "slug", label: "Reader Slug", required: true },
           { type: "string", name: "language", label: "Language", required: true },
           { type: "string", name: "author", label: "Author / Speaker" },
+          { type: "string", name: "historicalAuthor", label: "Historical Author" },
+          { type: "string", name: "glossedBy", label: "Glossed By" },
           { type: "string", name: "editor", label: "Editor / Glossing Attribution" },
           { type: "string", name: "shelfmark", label: "Primary Manuscript Shelfmark" },
           { type: "string", name: "dialect", label: "Dialect" },
@@ -168,6 +170,8 @@ export default defineConfig({
                           { type: "string", name: "tense", label: "Tense" },
                           { type: "string", name: "mood", label: "Mood" },
                           { type: "string", name: "degree", label: "Degree" },
+                          { type: "string", name: "declension", label: "Declension", options: ["strong", "weak"] },
+                          { type: "string", name: "voice", label: "Voice", options: ["active", "passive"] },
                         ],
                       },
                       {
@@ -181,6 +185,7 @@ export default defineConfig({
                           }),
                         },
                         fields: [
+                          { type: "string", name: "id", label: "Morpheme ID" },
                           { type: "string", name: "form", label: "Form" },
                           { type: "string", name: "gloss", label: "Gloss" },
                           { type: "string", name: "kind", label: "Type", options: ["stem", "prefix", "suffix", "ending"] },
