@@ -96,93 +96,6 @@ function stripLatexFootnotes(text: string): string {
   return result;
 }
 
-export function InlineEdit({
-  value,
-  onSave,
-  placeholder,
-  className = "",
-  inputClassName = "",
-  iconSize = "w-3 h-3",
-  isTitle = false,
-}: {
-  value: string;
-  onSave: (val: string) => void;
-  placeholder?: string;
-  className?: string;
-  inputClassName?: string;
-  iconSize?: string;
-  isTitle?: boolean;
-}) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [tempValue, setTempValue] = useState(value);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (isEditing) {
-      inputRef.current?.focus();
-    }
-  }, [isEditing]);
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      setIsEditing(false);
-      if (tempValue !== value) onSave(tempValue);
-    } else if (e.key === "Escape") {
-      setIsEditing(false);
-      setTempValue(value);
-    }
-  };
-
-  const handleWrapperKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      setTempValue(value);
-      setIsEditing(true);
-    }
-  };
-
-  if (isEditing) {
-    return (
-      <input
-        ref={inputRef}
-        value={tempValue}
-        onChange={(e) => setTempValue(e.target.value)}
-        onBlur={() => {
-          setIsEditing(false);
-          if (tempValue !== value) onSave(tempValue);
-        }}
-        onKeyDown={handleKeyDown}
-        className={`border-b border-stone-800 bg-transparent px-1 py-0.5 outline-none ${inputClassName || className}`}
-        style={{ width: `${Math.max(tempValue.length, 2)}ch`, maxWidth: "100%" }}
-      />
-    );
-  }
-
-  // Common wrapper styles
-  const baseWrapper = `group inline-flex items-center gap-1 transition-colors relative cursor-pointer ${className}`;
-
-  // Title gets simple dotted underline, secondary fields get chip styles
-  const styles = isTitle
-    ? `${baseWrapper} border-b border-stone-300 border-dashed hover:border-stone-800 hover:bg-stone-100 rounded px-1 -mx-1`
-    : `${baseWrapper} bg-white border border-stone-200 rounded px-1.5 py-0.5 hover:ring-1 hover:ring-stone-300 hover:bg-stone-50 shadow-sm`;
-
-  return (
-    <span
-      onClick={() => {
-        setTempValue(value);
-        setIsEditing(true);
-      }}
-      onKeyDown={handleWrapperKeyDown}
-      tabIndex={0}
-      className={styles}
-      title="Click to edit"
-    >
-      <span>{value || placeholder}</span>
-      <Edit className={`${iconSize} text-stone-400 opacity-0 group-hover:opacity-100 transition-opacity ml-1`} />
-    </span>
-  );
-}
-
 export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number): EditorToken {
   const inflections = w.analysis?.features || {};
   const lex = resolveOldEnglishLexicon(w.originalWord, w.morphologicalGloss || w.originalWord);
@@ -318,6 +231,152 @@ export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
   delete (result as Record<string, unknown>)["tex-source"];
 
   return result;
+}
+
+export function InlineTitle({
+  initialTitle,
+  onSave,
+}: {
+  initialTitle: string;
+  onSave: (title: string) => void;
+}) {
+  const [title, setTitle] = useState(initialTitle);
+  const [editing, setEditing] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editing) inputRef.current?.focus();
+  }, [editing]);
+
+  useEffect(() => setTitle(initialTitle), [initialTitle]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      setEditing(false);
+      onSave(title);
+    } else if (e.key === "Escape") {
+      setEditing(false);
+      setTitle(initialTitle);
+    }
+  };
+
+  if (editing) {
+    return (
+      <input
+        ref={inputRef}
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        onBlur={() => {
+          setEditing(false);
+          onSave(title);
+        }}
+        onKeyDown={handleKeyDown}
+        className="border-b border-stone-800 bg-transparent outline-none"
+        style={{ width: `${Math.max(1, title.length)}ch` }}
+      />
+    );
+  }
+
+  return (
+    <span
+      onClick={() => setEditing(true)}
+      className="cursor-pointer hover:underline hover:bg-stone-200/50 rounded px-1 -mx-1"
+      title="Click to edit title"
+    >
+      {title}
+    </span>
+  );
+}
+
+export function InlineMetadata({
+  initialAuthor,
+  initialDate,
+  onSave,
+}: {
+  initialAuthor: string;
+  initialDate: string;
+  onSave: (meta: { author: string; date: string }) => void;
+}) {
+  const [author, setAuthor] = useState(initialAuthor);
+  const [date, setDate] = useState(initialDate);
+  const [editing, setEditing] = useState<"author" | "date" | null>(null);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editing) inputRef.current?.focus();
+  }, [editing]);
+
+  useEffect(() => setAuthor(initialAuthor), [initialAuthor]);
+  useEffect(() => setDate(initialDate), [initialDate]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      setEditing(null);
+      onSave({ author, date });
+    } else if (e.key === "Escape") {
+      setEditing(null);
+      setAuthor(initialAuthor);
+      setDate(initialDate);
+    }
+  };
+
+  return (
+    <span className="text-sm text-stone-600 flex items-center gap-1.5 flex-wrap">
+      <span>Translated and glossed by</span>
+
+      {/* Author Inline Field */}
+      {editing === "author" ? (
+        <input
+          ref={inputRef}
+          value={author}
+          onChange={(e) => setAuthor(e.target.value)}
+          onBlur={() => {
+            setEditing(null);
+            onSave({ author, date });
+          }}
+          onKeyDown={handleKeyDown}
+          style={{ width: `${Math.max(1, author.length)}ch` }}
+          className="border-b border-stone-800 bg-transparent px-1 py-0.5 text-sm font-medium outline-none"
+        />
+      ) : (
+        <span
+          onClick={() => setEditing("author")}
+          className="cursor-pointer font-medium hover:underline hover:bg-stone-200/50 rounded px-1 -mx-1"
+          title="Click to edit"
+        >
+          {author || "Anonymous"}
+        </span>
+      )}
+
+      <span>·</span>
+
+      {/* Date Inline Field */}
+      {editing === "date" ? (
+        <input
+          ref={inputRef}
+          type="text"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          onBlur={() => {
+            setEditing(null);
+            onSave({ author, date });
+          }}
+          onKeyDown={handleKeyDown}
+          style={{ width: `${Math.max(1, date.length)}ch` }}
+          className="border-b border-stone-800 bg-transparent px-1 py-0.5 text-sm outline-none"
+        />
+      ) : (
+        <span
+          onClick={() => setEditing("date")}
+          className="cursor-pointer hover:underline hover:bg-stone-200/50 rounded px-1 -mx-1"
+          title="Click to edit"
+        >
+          {date || "Add date"}
+        </span>
+      )}
+    </span>
+  );
 }
 
 export function GlossEditor({
@@ -674,6 +733,7 @@ export function GlossEditor({
     },
     [activeTokenId],
   );
+
 
   // Discard changes to restore initial snapshot and completely remove draft
   const discardChanges = () => {
@@ -1108,64 +1168,45 @@ export function GlossEditor({
         <PageHero
           eyebrow="Editing workspace"
           title={
-            <InlineEdit
-              value={documentState.title}
-              onSave={(val) => setDocumentState((prev) => ({ ...prev, title: val }))}
-              placeholder="Document Title"
-              iconSize="w-5 h-5"
-              isTitle={true}
-            />
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
+              <InlineTitle
+                initialTitle={documentState.title}
+                onSave={(newTitle) =>
+                  setDocumentState((prev) => ({
+                    ...prev,
+                    title: newTitle,
+                  }))
+                }
+              />
+            </div>
           }
           description={
-            <div className="flex flex-col gap-2 mt-2">
-              <div className="flex flex-wrap items-center gap-2 text-sm text-stone-600">
-                <InlineEdit
-                  value={documentState.historicalAuthor || "Anonymous"}
-                  onSave={(v) => setDocumentState((p) => ({ ...p, historicalAuthor: v }))}
-                  placeholder="Anonymous"
-                  iconSize="w-3.5 h-3.5"
-                />
-
-                {documentState.author?.toLowerCase().includes("anonymous") ? null : (
-                  <span className="text-stone-400 mx-1">Translated and glossed by</span>
+            <div>
+              <p className="source-line flex flex-wrap items-center gap-1.5" style={{ margin: 0 }}>
+                {documentState.historicalAuthor && documentState.historicalAuthor !== "Anonymous" && (
+                  <span style={{ fontWeight: 600, marginRight: "0.4rem" }}>
+                    [{documentState.historicalAuthor}]
+                  </span>
                 )}
-                <InlineEdit
-                  value={documentState.author?.replace(/^(Translated and glossed by\s*)+/gi, "") || ""}
-                  onSave={(v) =>
-                    setDocumentState((p) => ({
-                      ...p,
-                      author: v,
-                      glossedBy: v,
-                      source: `${v} · ${p.date}`,
-                    }))
-                  }
-                  placeholder="Anonymous"
-                  className="font-medium"
-                  iconSize="w-3.5 h-3.5"
+                <InlineMetadata
+                  initialAuthor={documentState.author?.replace(/^(Translated and glossed by\s*)+/gi, "") || ""}
+                  initialDate={documentState.date || ""}
+                  onSave={({ author, date }) => {
+                    setDocumentState((prev) => ({
+                      ...prev,
+                      author: author,
+                      glossedBy: author,
+                      date: date,
+                      source: `${author} · ${date}`,
+                    }));
+                  }}
                 />
-
-                <InlineEdit
-                  value={documentState.date}
-                  onSave={(v) =>
-                    setDocumentState((p) => ({
-                      ...p,
-                      date: v,
-                      source: `${p.author} · ${v}`,
-                    }))
-                  }
-                  placeholder="Add date"
-                  iconSize="w-3.5 h-3.5"
-                />
-              </div>
-              <div className="flex items-center gap-2 text-sm text-stone-500">
-                Witness / Shelfmark:
-                <InlineEdit
-                  value={documentState.sourceEdition || ""}
-                  onSave={(v) => setDocumentState((p) => ({ ...p, sourceEdition: v }))}
-                  placeholder="Add shelfmark"
-                  iconSize="w-3.5 h-3.5"
-                />
-              </div>
+              </p>
+              {documentState.sourceEdition && (
+                <p style={{ margin: "0.15rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)" }}>
+                  Witness / Shelfmark: {documentState.sourceEdition}
+                </p>
+              )}
             </div>
           }
           actions={

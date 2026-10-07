@@ -1,38 +1,52 @@
-
-> glossy@0.1.0 dev
-> node scripts/dev.js
-
-Starting TinaCMS dev server with Next.js (port 4001 + 3000)...
-(node:329118) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/scripts/dev.js is not specified and it doesn't parse as CommonJS.
-Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
-To eliminate this warning, add "type": "module" to /app/package.json.
-(Use `node --trace-warnings ...` to show where the warning was created)
-🦙 TinaCMS Dev Server is initializing...
-[2K[1GIndexing local files ⠋[2K[1GIndexing local files ⠙[2K[1GIndexing local files ⠹[2K[1GIndexing local files ⠸
-│
-○  ✅ 🦙 TinaCMS Dev Server is active: ─────────────────────────────────────╮
-│                                                                          │
-│  🦙 TinaCMS URLs                                                         │
-│     CMS:                <your-dev-server-url>/admin/index.html           │
-│     API playground:     <your-dev-server-url>/admin/index.html#/graphql  │
-│     API url:            http://localhost:4001/graphql                    │
-│                                                                          │
-│  🤖 Auto-generated files                                                 │
-│     GraphQL Client:     tina/__generated__/client.ts                     │
-│     Typescript Types:   tina/__generated__/types.ts                      │
-│                                                                          │
-│                                                                          │
-├──────────────────────────────────────────────────────────────────────────╯
-Running web application with command: next dev -p 3000 -H 0.0.0.0
+ ⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
    ▲ Next.js 15.5.27
-   - Local:        http://localhost:3000
-   - Network:      http://0.0.0.0:3000
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.0.2:3001
 
  ✓ Starting...
- ✓ Ready in 3.3s
+ ✓ Ready in 2.3s
+ ○ Compiling / ...
+ ✓ Compiled / in 2.3s (733 modules)
+ GET / 200 in 3470ms
+ GET / 200 in 133ms
+ GET / 200 in 107ms
+ ○ Compiling /read/[slug] ...
+ ✓ Compiled /read/[slug] in 994ms (751 modules)
+ GET /read/ohthere 200 in 3667ms
+ GET /read/beowulf-prologue 200 in 354ms
+ GET /read/caedmon-hymn 200 in 278ms
+ GET /read/the-wanderer 200 in 269ms
  ○ Compiling /edit/[slug] ...
- ✓ Compiled /edit/[slug] in 8.1s (738 modules)
- GET /edit/ohthere 200 in 11523ms
- GET /edit/ohthere 200 in 1086ms
- GET /edit/ohthere 200 in 1617ms
- ✓ Compiled in 822ms (724 modules)
+ ✓ Compiled /edit/[slug] in 638ms (757 modules)
+ GET /edit/ohthere 200 in 2667ms
+ GET /edit/caedmon-hymn 200 in 149ms
+ GET /edit/the-wanderer 200 in 128ms
+ GET /read/ohthere 200 in 1323ms
+ ○ Compiling /docs ...
+ ✓ Compiled /docs in 809ms (776 modules)
+ GET /docs 200 in 1160ms
+ ○ Compiling /articles ...
+ ✓ Compiled /articles in 924ms (832 modules)
+ GET /articles 200 in 1483ms
+ ○ Compiling /articles/[slug] ...
+ ✓ Compiled /articles/[slug] in 976ms (853 modules)
+ GET /articles/welcome 200 in 2154ms
+ ○ Compiling /edit/new ...
+ ✓ Compiled /edit/new in 1038ms (874 modules)
+ GET /edit/new 200 in 1329ms
+ ○ Compiling /admin ...
+ ✓ Compiled /admin in 542ms (881 modules)
+ GET /admin 200 in 744ms
+ GET / 200 in 145ms
+ ○ Compiling /about ...
+ ✓ Compiled /about in 561ms (890 modules)
+ GET /about 200 in 796ms
+ ○ Compiling /privacy ...
+ ✓ Compiled /privacy in 589ms (901 modules)
+ GET /privacy 200 in 827ms
+ ○ Compiling /attribution ...
+ ✓ Compiled /attribution in 610ms (908 modules)
+ GET /attribution 200 in 893ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 650ms (912 modules)
+ GET /non-existent-page 404 in 890ms
