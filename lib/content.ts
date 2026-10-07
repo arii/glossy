@@ -185,9 +185,6 @@ export function assertTextDocuments(documents: unknown[]): asserts documents is 
 }
 
 function normalizeDocumentShape(document: Record<string, unknown>, fileName: string): Record<string, unknown> {
-  delete document.texSource;
-  delete document["tex-source"];
-
   if (!Array.isArray(document.sentences)) {
     throw new Error(`Text document "${fileName}" must contain a sentences array.`);
   }
