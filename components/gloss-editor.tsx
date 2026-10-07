@@ -13,6 +13,7 @@ import {
   computeDocumentHash,
   deleteLocalDraft,
   getWorkspaceTexts,
+  writeDraft,
   type WorkspaceTextItem,
 } from "../lib/local-drafts";
 import type {
@@ -700,9 +701,8 @@ export function GlossEditor({
 
     setIsSaving(true);
     setSaveStatus({ kind: "idle", message: "" });
-    const legacyDoc = editorDocToTextDocument(documentState);
-    const targetSlug = legacyDoc.slug || initialDocument.slug || "ohthere";
-    const targetFileName = `${initialDocument.fileName || initialDocument.textId || targetSlug}.json`;
+    const textDoc = editorDocToTextDocument(documentState);
+    const targetSlug = textDoc.slug || initialDocument.slug || "ohthere";
 
     try {
       // 1. Always persist client-side snapshot in browser storage (localStorage)
@@ -879,39 +879,30 @@ export function GlossEditor({
 
       if (commitRes.ok) {
         setSaveStatus({
-          kind: "success",
-          message: `Saved working draft and synchronized directly to TinaCMS / Git repository (${targetFileName}).`,
+          kind: "error",
+          message: res.message || "Failed to save local draft.",
         });
-        setShowSyncPrompt(false);
       } else {
+        const serialized = safeJsonStringify(documentState);
+        setSavedSnapshot(serialized);
+        try {
+          window.localStorage.setItem(storageKey, serialized);
+        } catch {}
         setShowSyncPrompt(true);
         setSaveStatus({
           kind: "success",
           message: `Saved working draft to browser storage. ${
             isTinaAuthenticated()
               ? 'Click "Commit Draft to Git" in the prompt below to publish your changes.'
-              : 'Sign in to Tina Admin to commit your changes to Git.'
+              : "Sign in to Tina Admin to commit your changes to Git."
           }`,
         });
       }
     } catch (error) {
       const errMessage = error instanceof Error ? error.message : "The save operation failed.";
-      let errDetails = "";
-      if (error instanceof Error) {
-        errDetails = error.stack || error.message;
-      } else if (typeof error === "object" && error !== null) {
-        try {
-          errDetails = JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
-        } catch {
-          errDetails = String(error);
-        }
-      } else {
-        errDetails = String(error);
-      }
       setSaveStatus({
         kind: "error",
         message: errMessage,
-        details: errDetails,
       });
     } finally {
       setIsSaving(false);
