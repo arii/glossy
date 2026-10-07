@@ -15,8 +15,8 @@ The dedicated editor provides instant client-side downloads for compilable **LaT
 
 1. The editor opens a text at `/edit/<slug>` and selects an example/token.
 2. The inspector edits source form, literal/readable gloss, translation, and linguistic analysis while the interlinear preview and explanation panel update in real time.
-3. Edits are debounced and saved to `localStorage` under a versioned envelope (`glossy:draft:v1:<slug>`) containing the canonical `TextDocument`.
-4. The editor reviews the current draft and chooses **Save draft**, which updates `glossy_pending_drafts` with an updated content hash and timestamp.
+3. Edits are debounced and saved to `localStorage` under a versioned envelope (`glossy:v1:draft:<slug>`) containing the canonical `TextDocument`.
+4. The editor reviews the current draft and chooses **Save draft**, which updates `glossy:v1:pending_drafts` with an updated content hash and timestamp.
 5. In Tina Admin (`/admin/index.html`), authenticated users can commit pending drafts directly to the Git repository.
 6. The editor can download a `.tex` or `.json` export at any time.
 7. A reader opens `/read/<slug>`; no editor controls appear on that page. Hover/focus/tap opens the linked lexical explanation.
@@ -31,7 +31,7 @@ The dedicated editor provides instant client-side downloads for compilable **LaT
 
 ## Local Drafts & Persistence Architecture
 
-1. **Storage Key Format**: `glossy:draft:v1:<slug>`
+1. **Storage Key Format**: `glossy:v1:draft:<slug>`
 2. **Envelope Schema**:
    ```typescript
    interface DraftEnvelope {
@@ -42,5 +42,5 @@ The dedicated editor provides instant client-side downloads for compilable **LaT
      updatedAt: string;
    }
    ```
-3. **Commit Manifest**: `glossy_pending_drafts` stores `{ [slug]: { slug, title, updatedAt, contentHash, wordCount, synced } }`.
+3. **Commit Manifest**: `glossy:v1:pending_drafts` stores `{ [slug]: { slug, title, updatedAt, contentHash, wordCount, synced } }`.
 4. **Publishing Flow**: `commitDocumentToTina()` in `lib/tina-sync.ts` validates, sanitizes, and submits GraphQL mutations through TinaCMS when authenticated.

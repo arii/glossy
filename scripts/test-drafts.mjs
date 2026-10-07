@@ -13,6 +13,7 @@ import {
   getActiveSlug,
   setActiveSlug,
   clearActiveSlug,
+  getTinaAuthToken,
 } from "../lib/local-drafts.ts";
 import { sanitizeDraftForTinaMutation, commitPendingDraft } from "../lib/tina-sync.ts";
 
@@ -269,6 +270,12 @@ setActiveSlug("beowulf");
 assert.equal(getActiveSlug(), "beowulf", "getActiveSlug must return set active slug");
 clearActiveSlug();
 assert.equal(getActiveSlug(), null, "clearActiveSlug must remove active slug");
+
+// Test 12: Tina Auth Token Helper Operations
+mockStore.clear();
+assert.equal(getTinaAuthToken(), null, "Initial tina auth token should be null");
+mockStore.set("tinacms-auth", "mock-jwt-token-12345");
+assert.equal(getTinaAuthToken(), "mock-jwt-token-12345", "getTinaAuthToken must retrieve stored token");
 
 // Clean up
 mockStore.clear();

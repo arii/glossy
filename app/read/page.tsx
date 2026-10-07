@@ -71,6 +71,11 @@ function ReadClient() {
   );
 }
 
+/**
+ * Client-side reader fallback route for query-parameter drafts (/read?slug=...).
+ * Explicit <Suspense> boundary wraps useSearchParams() to prevent de-opting the route
+ * or root layout from Next.js static site generation (output: 'export').
+ */
 export default function ReadRootPage() {
   return (
     <Suspense

@@ -1,5 +1,11 @@
 import type { TextDocument } from "./types";
-import { readDraft, listPending, markDraftAsSynced, computeDocumentHash } from "./local-drafts";
+import {
+  readDraft,
+  listPending,
+  markDraftAsSynced,
+  computeDocumentHash,
+  getTinaAuthToken,
+} from "./local-drafts";
 import { TINA_LOCAL_GRAPHQL_URL, getTinaCloudUrl } from "./tina-config";
 
 export type CommitOutcome = "committed" | "needs-login" | "unreachable" | "rejected";
@@ -171,8 +177,8 @@ export function isTinaAuthenticated(cms?: unknown): boolean {
     return true;
   }
 
-  // Check stored auth token
-  const token = window.localStorage.getItem("tinacms-auth");
+  // Check stored auth token via centralized storage helper
+  const token = getTinaAuthToken();
   return Boolean(token);
 }
 
@@ -305,8 +311,8 @@ export async function commitPendingDraft(
     }
   }
 
-  // Attempt 3: TinaCloud with tinacms-auth token
-  const authToken = window.localStorage.getItem("tinacms-auth");
+  // Attempt 3: TinaCloud with tinacms-auth token via centralized storage helper
+  const authToken = getTinaAuthToken();
   if (authToken) {
     try {
       const cloudUrl = getTinaCloudUrl();

@@ -8,9 +8,10 @@ import {
 } from "./corpus-registry";
 
 export const DRAFT_STORAGE_PREFIX = "glossy:v1:draft:";
-export const PENDING_MANIFEST_KEY = "glossy_pending_drafts";
-export const HIDDEN_SLUGS_KEY = "glossy_deleted_slugs";
-export const ACTIVE_SLUG_KEY = "glossy_active_slug";
+export const PENDING_MANIFEST_KEY = "glossy:v1:pending_drafts";
+export const HIDDEN_SLUGS_KEY = "glossy:v1:deleted_slugs";
+export const ACTIVE_SLUG_KEY = "glossy:v1:active_slug";
+export const TINA_AUTH_STORAGE_KEY = "tinacms-auth";
 
 export interface StoredDraft {
   version: 1;
@@ -444,4 +445,14 @@ export function clearActiveSlug(): void {
   try {
     storage.removeItem(ACTIVE_SLUG_KEY);
   } catch {}
+}
+
+export function getTinaAuthToken(): string | null {
+  const storage = getStorage();
+  if (!storage) return null;
+  try {
+    return storage.getItem(TINA_AUTH_STORAGE_KEY);
+  } catch {
+    return null;
+  }
 }

@@ -104,8 +104,8 @@ Glossy separates client-side authoring from Git-backed publishing:
 
 1. **Client-Side Authoring (Glossy Editor UX)**:
    - Editors work within Glossy's specialized interlinear editor (`/edit/[slug]` and `/edit/new`).
-   - Edits autosave in real-time to browser `localStorage` as versioned envelopes (`glossy:draft:v1:<slug>`).
-2. **Pending Manifest (`glossy_pending_drafts`)**:
+   - Edits autosave in real-time to browser `localStorage` as versioned envelopes (`glossy:v1:draft:<slug>`).
+2. **Pending Manifest (`glossy:v1:pending_drafts`)**:
    - Every saved or modified draft is atomically registered in the pending manifest with content hash, timestamp, and word count.
 3. **TinaCMS Git Propagation**:
    - TinaCMS is configured for simple site copy editing (`home.json`, FAQs) and provides an authenticated commit bridge.

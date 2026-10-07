@@ -8,7 +8,7 @@ status: approved
 Glossy is a local-first interlinear glossing editor with a separate responsive reader for students, researchers, and linguistic editors.
 
 **Implementation status:** This PRD records the verified and shipped capabilities of Glossy (audited 2026-10-06). All core slices, follow-up requirements, and UX enhancements are complete:
-- The editor saves drafts locally via a versioned envelope (`glossy:draft:v1:<slug>`) and registers them in the `glossy_pending_drafts` manifest, with client-side JSON and LaTeX (`gb4e`) export.
+- The editor saves drafts locally via a versioned envelope (`glossy:v1:draft:<slug>`) and registers them in the `glossy:v1:pending_drafts` manifest, with client-side JSON and LaTeX (`gb4e`) export.
 - Authenticated TinaCMS session enables committing pending drafts directly into the Git repository.
 - The landing page (`/`) features an interactive 3-tier Leipzig glossing preview widget, 3 capability feature pillars, responsive multi-column corpus cards without metric clutter, and persistent scholarly footer.
 - The documentation (`/docs`) provides a segmented domain switcher (`Linguistic Guide` vs `System Architecture`), grouped Table of Contents, and full 42 glossing abbreviations reference table.
@@ -21,7 +21,7 @@ Glossy is a local-first interlinear glossing editor with a separate responsive r
 1. The editor opens the authoring workspace for a text, starts a new text using the shared model, or uploads a JSON/text file.
 2. The editor selects a sentence/example and sees its surface line, source-gloss line, translation, and word details in an interactive live preview.
 3. Selecting a token opens an inspector where the editor can update its exact surface, source gloss, lexical link, morphology, pronunciation, and explanation; changes appear in the preview immediately.
-4. Changes are autosaved as a text-scoped browser-local draft envelope (`glossy:draft:v1:<slug>`).
+4. Changes are autosaved as a text-scoped browser-local draft envelope (`glossy:v1:draft:<slug>`).
 5. The editor reloads or returns later and recovers the draft seamlessly.
 6. The editor presses **Save draft** to record a pending draft with updated content hash and timestamp.
 7. To commit changes to the Git repository, the user signs in via Tina Admin (`/admin/index.html`) where the sync bar commits pending drafts.

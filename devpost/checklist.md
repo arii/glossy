@@ -19,13 +19,13 @@ The checkboxes below record the build-slice history and verified capabilities of
 | Documentation | Grouped TOC (`L1–L4`, `A1–A2`), and full 42 Leipzig abbreviation reference table | Verified 42 abbreviation alignment with master LaTeX edition |
 | Attribution & Citation | Provenance credits for Tyler Lemon (2026), British Library Cotton MS manuscripts, and 1-click citation generators (BibTeX, Unified Linguistics, APA, Chicago) | Verified modal and citation copy across all 4 formats |
 | Corpus & Lemmas | Build scripts parse LaTeX to JSON (75 examples of Ohthere & Wulfstan + 11 lines of Beowulf Prologue) and sync dictionary JSON | 100% verified across source glosses (`validate:source`) & canonical lemmas (`validate:lemmas`) |
-| Local Drafts | Versioned `glossy:draft:v1:<slug>` envelope storing canonical `TextDocument` with atomic `glossy_pending_drafts` manifest tracking | Verified via unit tests (`test:drafts`) |
+| Local Drafts | Versioned `glossy:v1:draft:<slug>` envelope storing canonical `TextDocument` with atomic `glossy:v1:pending_drafts` manifest tracking | Verified via unit tests (`test:drafts`) |
 | Publishing & Export | Authenticated TinaCMS Git commit bridge and client-side JSON / LaTeX `gb4e` export | Confirmed local draft persistence and clean export download |
 | Verification | `validate:source`, `validate:lemmas`, `test:drafts`, `typecheck`, `lint`, and `test:smoke` scripts | 100% passing across all regression, unit, and smoke tests |
 
 ## Follow-up Requirements
 
-- [x] **Make Save report the actual persistence result.** Save creates a local draft envelope (`glossy:draft:v1:<slug>`) and updates `glossy_pending_drafts` manifest; Tina Admin commits drafts to Git when authenticated.
+- [x] **Make Save report the actual persistence result.** Save creates a local draft envelope (`glossy:v1:draft:<slug>`) and updates `glossy:v1:pending_drafts` manifest; Tina Admin commits drafts to Git when authenticated.
 - [x] **Complete safe draft recovery.** Versioned envelope stores canonical `TextDocument` with baseHash and updatedAt; autosave and Save write the same shape.
 - [x] **Import the supplied manuscript structure in preview-first flow.** Parse 13 paragraph groups and 75 examples with aligned surface tokens, translations, morphemes, and lemmas with 100% accuracy.
 - [x] **Export supported structure from the current draft.** Preserves document metadata, paragraph/example grouping, aligned tokens, translations, and LaTeX gb4e formatting via export tool.

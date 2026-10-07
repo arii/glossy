@@ -77,6 +77,11 @@ function EditClient() {
   );
 }
 
+/**
+ * Client-side editor fallback route for query-parameter drafts (/edit?slug=...).
+ * Explicit <Suspense> boundary wraps useSearchParams() to prevent de-opting the route
+ * or root layout from Next.js static site generation (output: 'export').
+ */
 export default function EditRootPage() {
   return (
     <Suspense
