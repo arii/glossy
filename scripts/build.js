@@ -2,6 +2,8 @@ import { spawnSync } from "child_process";
 import { existsSync } from "node:fs";
 import net from "net";
 
+const TINA_PORT = Number(process.env.TINA_PORT ?? 4001);
+
 function printStep(step) {
   console.log(`\n🚀 [BUILD STEP] ${step}...`);
 }
@@ -52,10 +54,10 @@ async function main() {
   const busy =
     (await isPortBusy(9000)) ||
     (await isPortBusy(9123)) ||
-    (await isPortBusy(4001));
+    (await isPortBusy(TINA_PORT));
 
   if (busy && hasGeneratedFiles) {
-    console.log("ℹ️ Tina dev server port (9000/9123/4001) is currently busy; reusing existing compiled schema.");
+    console.log(`ℹ️ Tina dev server port (9000/9123/${TINA_PORT}) is currently busy; reusing existing compiled schema.`);
   } else {
     const tinaBin = existsSync("./node_modules/.bin/tinacms") ? "./node_modules/.bin/tinacms" : "tinacms";
     const res = spawnSync(tinaBin, ["build", "--skip-cloud-checks", "--datalayer-port", "9123"], {
