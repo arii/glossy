@@ -907,6 +907,11 @@ export function GlossEditor({
   }
 
 
+  // Clean, displayable form for the selected token header
+  const cleanHeaderWord = activeToken?.sourceForm
+    ? activeToken.sourceForm.replace(/[.,;:!?]+$/, "")
+    : "";
+
   return (
     <>
       <SiteNav current="edit" slug={initialDocument.slug} />
