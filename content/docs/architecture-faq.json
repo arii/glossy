@@ -1,7 +1,7 @@
 {
-  "a1Intro": "Glossy allows scholars and learners to add any Old English text to the digital corpus at /edit/new. When new sentences are pasted (or loaded via classic presets like Beowulf: Prologue, Cædmon's Hymn, or The Wanderer):",
+  "a1Intro": "Scholars and learners can expand the corpus via + New Text by pasting new sentences or loading presets like Beowulf: Prologue, Cædmon's Hymn, or The Wanderer:",
   "a2Intro": "Glossy provides a reliable local-first persistence and publishing workflow to ensure seamless editing and Git-backed content management:",
-  "a3Intro": "Glossy maintains automated verification scripts to ensure 100% data integrity between raw LaTeX manuscripts, structured JSON content, and dictionary headwords:",
+  "a3Intro": "",
   "abbreviations": [
     {
       "abbr": "1",
@@ -256,11 +256,11 @@
       "name": "weak declension (def.)"
     }
   ],
-  "architectureSpecDescription": "Edits autosave locally to versioned draft envelopes (glossy:draft:v1:<slug>), deliberate saves register in the pending manifest, and authenticated TinaCMS sessions commit drafts to the Git repository.",
+  "architectureSpecDescription": "Edits autosave locally as draft documents, deliberate saves register in the pending manifest, and authenticated TinaCMS sessions commit drafts to the Git repository.",
   "architectureSpecTitle": "Data Pipeline & Verification",
   "canonicalRuleDescription": "All Old English adjectives default to Masculine Nominative Singular Strong citation form. Numerals 2 & 3 default to twēgen and þrīe.",
   "canonicalRuleTitle": "Quick Canonical Rule",
-  "description": "Comprehensive reference guide split into linguistic editorial standards (Leipzig glossing, canonical OE headwords, Wiktionary/IPA) and system engineering architecture (local-first draft persistence, TinaCMS Git synchronization, automated QA test suites).",
+  "description": "Comprehensive reference guide split into linguistic editorial standards and system engineering architecture.",
   "eyebrow": "Linguistic Standards & System Architecture",
   "ingestionSteps": [
     {
@@ -292,12 +292,12 @@
       "title": "Uninflected Citation"
     }
   ],
-  "l1Intro": "An interlinear gloss is a standard linguistic format that presents original historical text with word-by-word and morpheme-by-morpheme grammatical breakdowns aligned directly underneath:",
-  "l1TierGlosses": "Ohthere | say-PST-IND.3SG | his.GEN lord-DAT.SG",
-  "l1TierHeaderBadge": "Leipzig Glossing Rules",
+  "l1Intro": "An interlinear gloss is a standard linguistic format following Leipzig glossing standards that presents original historical text with word-by-word and morpheme-by-morpheme grammatical breakdowns aligned directly underneath:",
+  "l1TierGlosses": "what | we.NOM | Spear-Dane-GEN.PL | in | yore-day-DAT.PL",
+  "l1TierHeaderBadge": "",
   "l1TierHeaderTitle": "Three-Tier Interlinear Structure",
-  "l1TierTokens": "Ōhthere | sǣ-d-e | his hlāford-e",
-  "l1TierTranslation": "“Ohthere said to his lord, King Alfred...”",
+  "l1TierTokens": "Hwæt | wē | Gār-Den-a | in | ġeār-dag-um",
+  "l1TierTranslation": "“Lo! We have heard of the Spear-Danes in days of yore...”",
   "l2CalloutBody": "Certain adjectives historically belong to the ja/jō-stem class and legitimately end in -e in their masculine nominative singular strong citation form (e.g. wēste \"desert, waste\", blīðe \"happy\", clǣne \"clean\", dȳre \"precious\"). The engine preserves these base forms without stripping their root vowel.",
   "l2CalloutTitle": "Ja/Jō-stem Adjectives Retaining Base \"-e\"",
   "l2Paragraph1": "In Old English, every single adjective inflects into over 15 distinct surface endings depending on gender (masculine, feminine, neuter), grammatical case (nominative, accusative, genitive, dative, instrumental), number (singular, plural), and declension (strong vs weak).",
@@ -380,69 +380,30 @@
       "id": "section-a2",
       "num": "2",
       "title": "Local Drafts, Manifest Tracking, & TinaCMS Publishing"
-    },
-    {
-      "domain": "architecture",
-      "domainNum": "A3",
-      "eyebrow": "Quality Assurance",
-      "id": "section-a3",
-      "num": "3",
-      "title": "Automated Quality Verification Suite"
     }
   ],
   "storageTiers": [
     {
-      "description": "Every edit is automatically saved with a 300ms debounce to localStorage as a versioned draft envelope (glossy:draft:v1:<slug>), protecting working edits against accidental reloads.",
-      "tier": "Tier 1",
-      "timing": "300ms autosave",
+      "description": "Every edit is automatically saved to local storage, protecting working edits against accidental reloads.",
+      "tier": "Layer 1",
+      "timing": "Autosave",
       "title": "Browser Local Draft"
     },
     {
-      "description": "Clicking Save draft records the document in the glossy_pending_drafts manifest with an updated content hash and timestamp.",
-      "tier": "Tier 2",
+      "description": "Clicking Save draft records the document in the pending drafts manifest with an updated content hash and timestamp.",
+      "tier": "Layer 2",
       "timing": "Save Action",
       "title": "Pending Draft Manifest"
     },
     {
       "description": "Signing in through Tina Admin allows committing pending drafts directly to the Git-backed repository.",
-      "tier": "Tier 3",
+      "tier": "Layer 3",
       "timing": "Authenticated Sign-In",
       "title": "TinaCMS Git Commit"
     }
   ],
   "title": "Documentation & Reference Guides",
-  "verificationTools": [
-    {
-      "command": "npm run validate:lemmas",
-      "name": "Lemma Accuracy Audit",
-      "target": "Audits tokens in the corpus verifying canonical lemma compliance and Wiktionary targets."
-    },
-    {
-      "command": "npm run validate:source",
-      "name": "Source Alignment Validator",
-      "target": "Validates token and gloss alignment across source-backed texts."
-    },
-    {
-      "command": "npm run test:drafts",
-      "name": "Draft Persistence Unit Tests",
-      "target": "Validates draft envelope storage, slug sanitization, and collision prevention."
-    },
-    {
-      "command": "npm run sync:dictionary",
-      "name": "Dictionary Sync",
-      "target": "Generates clean, normalized dictionary files in content/dictionary/."
-    },
-    {
-      "command": "npm run compile:content",
-      "name": "Content Pre-compiler",
-      "target": "Pre-compiles master TeX source into structured JSON."
-    },
-    {
-      "command": "npm run typecheck",
-      "name": "TypeScript Typecheck",
-      "target": "Strict type safety validation across the entire application codebase."
-    }
-  ],
+  "verificationTools": [],
   "wiktionaryGuidelines": [
     {
       "description": "Vowel macrons (ā, ē, ī, ō, ū, ȳ) and palatal dots (ċ, ġ) are modern editorial additions and are omitted from page titles (e.g. secgan, hlaford).",
