@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { BUILT_IN_CORPUS, isBuiltInSlug, isProtectedSlug, getBuiltInMetadata } from "../lib/corpus-registry.ts";
-import { isWorkspaceSlug, getWorkspaceTexts, DRAFT_STORAGE_PREFIX, PENDING_MANIFEST_KEY, markPending, writeDraft, listPending } from "../lib/local-drafts.ts";
-import { sanitizeDraftForTinaMutation, isTinaAuthenticated, commitPendingDraft } from "../lib/tina-sync.ts";
+import { isWorkspaceSlug, getWorkspaceTexts, writeDraft, listPending } from "../lib/local-drafts.ts";
+import { sanitizeDraftForTinaMutation, commitPendingDraft } from "../lib/tina-sync.ts";
 
 console.log("Running Unified TinaCMS Commit Pipeline & Sync Status Unit Tests...");
 

@@ -711,7 +711,7 @@ export function GlossEditor({
       if (!res.ok) {
         setSaveStatus({
           kind: "error",
-          message: commitRes.error || "Failed to save local draft.",
+          message: res.error || res.message || "Failed to save local draft.",
         });
       } else {
         const serialized = safeJsonStringify(documentState);

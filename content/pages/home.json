@@ -4,7 +4,7 @@
   "heading": "Read a text or work on its glosses.",
   "pageId": "home",
   "primaryAction": {
-    "label": "Gloss a New Text",
-    "href": "/edit/new"
+    "href": "/edit/new",
+    "label": "Gloss a New Text"
   }
 }
