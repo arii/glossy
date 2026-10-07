@@ -16,4 +16,9 @@ export default defineConfig([
     "public/admin/**",
     "tina/__generated__/**",
   ]),
+  {
+    rules: {
+      "@next/next/no-html-link-for-pages": "off"
+    }
+  }
 ]);
