@@ -77,16 +77,16 @@ export function TextDirectory({
 
           customChoices.push({
             slug,
-            title: doc.title || meta?.title || slug,
+            title: doc.title ?? meta?.title ?? slug,
             kind: "text",
-            author: doc.author || meta?.author || "Custom Ingested Text",
-            editor: doc.editor || meta?.editor,
-            shelfmark: doc.shelfmark || meta?.shelfmark || meta?.witness,
-            dialect: doc.dialect || meta?.dialect,
-            historicalDate: doc.historicalDate || meta?.historicalDate || meta?.origDate,
-            sourceEdition: doc.sourceEdition || meta?.sourceEdition,
-            source: doc.source || meta?.source || "Local Browser Workspace",
-            witness: doc.shelfmark || doc.source || meta?.shelfmark || meta?.witness || "Local Browser Draft",
+            author: doc.author ?? meta?.author ?? "Custom Ingested Text",
+            editor: doc.editor ?? meta?.editor,
+            shelfmark: doc.shelfmark ?? meta?.shelfmark ?? meta?.witness,
+            dialect: doc.dialect ?? meta?.dialect,
+            historicalDate: doc.historicalDate ?? meta?.historicalDate ?? meta?.origDate,
+            sourceEdition: doc.sourceEdition ?? meta?.sourceEdition,
+            source: doc.source ?? meta?.source ?? "Local Browser Workspace",
+            witness: doc.shelfmark ?? doc.source ?? meta?.shelfmark ?? meta?.witness ?? "Local Browser Draft",
             sentenceCount: sCount,
             tokenCount: tCount,
             status: "draft",
@@ -101,13 +101,13 @@ export function TextDirectory({
         const meta = getBuiltInMetadata(c.slug);
         return {
           ...c,
-          author: c.author || meta?.author,
-          editor: c.editor || meta?.editor,
-          shelfmark: c.shelfmark || meta?.shelfmark || meta?.witness,
-          dialect: c.dialect || meta?.dialect,
-          historicalDate: c.historicalDate || meta?.historicalDate || meta?.origDate,
-          sourceEdition: c.sourceEdition || meta?.sourceEdition,
-          witness: c.shelfmark || c.witness || meta?.shelfmark || meta?.witness || c.source,
+          author: c.author ?? meta?.author,
+          editor: c.editor ?? meta?.editor,
+          shelfmark: c.shelfmark ?? meta?.shelfmark ?? meta?.witness,
+          dialect: c.dialect ?? meta?.dialect,
+          historicalDate: c.historicalDate ?? meta?.historicalDate ?? meta?.origDate,
+          sourceEdition: c.sourceEdition ?? meta?.sourceEdition,
+          witness: c.shelfmark ?? c.witness ?? meta?.shelfmark ?? meta?.witness ?? c.source,
           hasLocalDraft: localSlugsWithEdits.has(c.slug) || localSlugsWithEdits.has(meta?.slug || "") || localSlugsWithEdits.has(meta?.textId || ""),
         };
       });
@@ -179,8 +179,8 @@ export function TextDirectory({
         {choices.map((choice) => {
           const isMenuOpen = openMenuSlug === choice.slug;
           const meta = getBuiltInMetadata(choice.slug);
-          const displayAuthor = choice.author || meta?.author || "Anonymous";
-          const displayWitness = choice.witness || meta?.witness || choice.source || "";
+          const displayAuthor = choice.author ?? meta?.author ?? "Anonymous";
+          const displayWitness = choice.witness ?? meta?.witness ?? choice.source ?? "";
 
           return (
             <div

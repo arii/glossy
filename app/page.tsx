@@ -73,7 +73,7 @@ const DEFAULT_HOME_CONTENT = {
 };
 
 const INITIAL_HOME_PAGE_DATA = {
-  homePage: (homeContentData as unknown as HomePageContent) || (DEFAULT_HOME_CONTENT as HomePageContent),
+  homePage: (homeContentData as HomePageContent) ?? DEFAULT_HOME_CONTENT,
 };
 const HOME_PAGE_VARS = { relativePath: "home.json" };
 
@@ -99,7 +99,7 @@ export default function Home() {
     data: INITIAL_HOME_PAGE_DATA,
   });
 
-  const page = ((pageData?.homePage || homeContentData) as unknown as HomePageContent) || (DEFAULT_HOME_CONTENT as HomePageContent);
+  const page = (pageData?.homePage as HomePageContent | undefined) ?? (homeContentData as HomePageContent) ?? DEFAULT_HOME_CONTENT;
 
   const [previewMode, setPreviewMode] = useState<"reader" | "editor">("reader");
   const [selectedTokenIdx, setSelectedTokenIdx] = useState<number>(3); // default to 'hlāforde'

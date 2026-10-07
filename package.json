@@ -23,13 +23,15 @@
     "format:check": "prettier --check \"**/*.json\"",
     "lint": "eslint .",
     "audit:deadcode": "knip",
+    "test": "npm run test:schemas && npm run test:drafts && npm run test:smoke",
+    "test:schemas": "tsx tests/schemas/corpus-validation.test.ts",
     "test:smoke": "node scripts/smoke-test.mjs",
     "test:drafts": "tsx scripts/test-drafts.mjs",
     "typecheck": "tsc --noEmit",
     "validate:lemmas": "tsx scripts/validate-lemmas.mjs",
     "validate:source": "tsx scripts/validate-source.mjs",
     "validate:deploy": "node -e 'const fs=require(\"fs\"); const c=fs.readFileSync(\"wrangler.toml\",\"utf8\"); if(!c.includes(\"pages_build_output_dir\")) throw new Error(\"wrangler.toml must specify pages_build_output_dir\"); console.log(\"wrangler.toml Pages configuration verified.\");'",
-    "audit": "npm run audit:deadcode && npm run lint && npm run typecheck && npm run validate:source && npm run validate:lemmas && npm run test:smoke && npm run validate:deploy"
+    "audit": "npm run audit:deadcode && npm run lint && npm run typecheck && npm run test:schemas && npm run validate:source && npm run validate:lemmas && npm run test:smoke && npm run validate:deploy"
   },
   "dependencies": {
     "@google/genai": "^2.27.0",
@@ -39,7 +41,8 @@
     "next": "15.5.27",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "tinacms": "^3.14.1"
+    "tinacms": "^3.14.1",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.7",

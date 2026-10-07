@@ -9,6 +9,7 @@ import type {
   AttributionPageContent,
   DocsPageContent,
 } from "./types";
+import { TextDocumentSchema } from "./schemas/corpus";
 
 export { getGlossRecords, getReadingPassage } from "./passage-utils";
 
@@ -126,7 +127,8 @@ export function loadTextDocuments(): LoadedTextDocument[] {
   const documents = fileNames.map((fileName) => {
     const filePath = path.join(contentDirectory, fileName);
     const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as unknown;
-    const normalized = normalizeDocumentShape(requireObject(parsed, `Text document "${fileName}"`), fileName);
+    const validated = TextDocumentSchema.parse(parsed);
+    const normalized = normalizeDocumentShape(requireObject(validated, `Text document "${fileName}"`), fileName);
 
     return { ...normalized, fileName: path.basename(fileName, ".json") } as LoadedTextDocument;
   });
