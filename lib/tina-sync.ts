@@ -37,7 +37,7 @@ export function sanitizeDraftForTinaMutation(
         id: String(w.id || ""),
         originalWord: String(w.originalWord || w.sourceForm || ""),
         morphologicalGloss: String(w.morphologicalGloss || w.sourceGloss || ""),
-        trailingPunctuation: String(w.trailingPunctuation || ""),
+        trailingPunctuation: w.trailingPunctuation ? String(w.trailingPunctuation) : undefined,
         sourceGlossTex: String(w.sourceGlossTex || w.literalTexGloss || ""),
       };
 
@@ -50,14 +50,14 @@ export function sanitizeDraftForTinaMutation(
           lemma: String(a.lemma || w.lemma || ""),
           partOfSpeech: String(a.partOfSpeech || w.pos || ""),
           definition: String(a.definition || w.explanation || ""),
-          phonetic: String(a.phonetic || w.ipa || ""),
-          pronunciationSource: String(a.pronunciationSource || ""),
-          historicalNote: String(a.historicalNote || ""),
-          wiktionaryUrl: String(a.wiktionaryUrl || w.wiktionaryUrl || ""),
+          phonetic: (a.phonetic || w.ipa) ? String(a.phonetic || w.ipa) : undefined,
+          pronunciationSource: a.pronunciationSource ? String(a.pronunciationSource) : undefined,
+          historicalNote: a.historicalNote ? String(a.historicalNote) : undefined,
+          wiktionaryUrl: (a.wiktionaryUrl || w.wiktionaryUrl) ? String(a.wiktionaryUrl || w.wiktionaryUrl) : undefined,
         };
 
         const featuresRaw = (a.features || w.inflections || {}) as Record<string, unknown>;
-        if (featuresRaw && typeof featuresRaw === "object") {
+        if (featuresRaw && typeof featuresRaw === "object" && Object.keys(featuresRaw).length > 0) {
           const featuresObj: Record<string, unknown> = {};
           if (featuresRaw.case) featuresObj.case = String(featuresRaw.case);
           if (featuresRaw.number) featuresObj.number = String(featuresRaw.number);
@@ -77,12 +77,17 @@ export function sanitizeDraftForTinaMutation(
           : Array.isArray(w.morphemes)
           ? w.morphemes
           : [];
-        analysisObj.morphemes = morphemesRaw.map((m: Record<string, unknown>) => ({
-          form: String(m.form || ""),
-          gloss: String(m.gloss || ""),
-          kind: String(m.kind || "stem"),
-        }));
+        analysisObj.morphemes = morphemesRaw.map((m: Record<string, unknown>) => {
+          const res: Record<string, unknown> = {
+            form: String(m.form || ""),
+            gloss: String(m.gloss || ""),
+          };
+          if (m.id) res.id = String(m.id);
+          if (m.kind) res.kind = String(m.kind);
+          return res;
+        });
 
+        Object.keys(analysisObj).forEach((k) => analysisObj[k] === undefined && delete analysisObj[k]);
         wordObj.analysis = analysisObj;
       }
 
@@ -101,6 +106,7 @@ export function sanitizeDraftForTinaMutation(
         };
       }
 
+      Object.keys(wordObj).forEach((k) => wordObj[k] === undefined && delete wordObj[k]);
       return wordObj;
     });
 
@@ -114,31 +120,35 @@ export function sanitizeDraftForTinaMutation(
       text: String(n.text || ""),
     }));
 
-    return {
+    const sentObj: Record<string, unknown> = {
       id: String(s.id || ""),
       translation: String(s.translation || s.freeTranslation || ""),
-      footnotes: footnotesRaw.map((fn: unknown) => String(fn)),
-      notes,
+      footnotes: footnotesRaw.length > 0 ? footnotesRaw.map((fn: unknown) => String(fn)) : undefined,
+      notes: notes.length > 0 ? notes : undefined,
       words,
     };
+    Object.keys(sentObj).forEach((k) => sentObj[k] === undefined && delete sentObj[k]);
+    return sentObj;
   });
 
-  return {
+  const resDoc: Record<string, unknown> = {
     textId: String(doc.textId || doc.slug || ""),
     slug: String(doc.slug || doc.textId || ""),
     language: String(doc.language || "Old English"),
     author: String(doc.author || ""),
-    editor: String(doc.editor || ""),
-    shelfmark: String(doc.shelfmark || ""),
-    dialect: String(doc.dialect || ""),
-    historicalDate: String(doc.historicalDate || ""),
+    editor: doc.editor ? String(doc.editor) : undefined,
+    shelfmark: doc.shelfmark ? String(doc.shelfmark) : undefined,
+    dialect: doc.dialect ? String(doc.dialect) : undefined,
+    historicalDate: doc.historicalDate ? String(doc.historicalDate) : undefined,
     title: String(doc.title || ""),
     source: String(doc.source || ""),
     sourceFile: String(doc.sourceFile || ""),
-    sourceEdition: String(doc.sourceEdition || ""),
+    sourceEdition: doc.sourceEdition ? String(doc.sourceEdition) : undefined,
     status: String(doc.status || "draft"),
     sentences,
   };
+  Object.keys(resDoc).forEach((k) => resDoc[k] === undefined && delete resDoc[k]);
+  return resDoc as unknown as ReturnType<typeof sanitizeDraftForTinaMutation>;
 }
 
 export function isTinaAuthenticated(cms?: unknown): boolean {

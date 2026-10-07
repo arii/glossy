@@ -25,6 +25,9 @@ import type {
   InflectionFeatures,
   NoteItem,
   NoteType,
+  ReviewMetadata,
+  PassageBlock,
+  LinguisticAnalysis,
 } from "../lib/types";
 import {
   BookOpen,
@@ -51,6 +54,10 @@ export interface EditorToken {
   morphemes: Morpheme[];
   ipa: string;
   wiktionaryUrl: string;
+  trailingPunctuation?: string;
+  pronunciationSource?: string;
+  historicalNote?: string;
+  review?: ReviewMetadata;
 }
 
 export interface EditorSentence {
@@ -68,6 +75,10 @@ export interface EditorDocument {
   author: string;
   historicalAuthor: string;
   glossedBy: string;
+  editor?: string;
+  shelfmark?: string;
+  dialect?: string;
+  historicalDate?: string;
   date: string;
   source: string;
   sourceFile: string;
@@ -75,6 +86,7 @@ export interface EditorDocument {
   language: "Old English";
   status: "draft" | "review" | "published";
   sentences: EditorSentence[];
+  blocks?: PassageBlock[];
 }
 
 function stripLatexFootnotes(text: string): string {
@@ -104,11 +116,11 @@ export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number
     w.analysis?.lemma && w.analysis.lemma !== w.originalWord ? w.analysis.lemma : lex.lemma;
   const resolvedPos = (w.analysis?.partOfSpeech || lex.pos || "noun") as PartOfSpeech;
   const resolvedExpl =
-    w.analysis?.definition && w.analysis.definition !== w.morphologicalGloss
+    w.analysis?.definition !== undefined && w.analysis.definition !== ""
       ? w.analysis.definition
       : lex.definition || w.morphologicalGloss || "";
-  const resolvedIpa = w.analysis?.phonetic || lex.ipa || "";
-  const resolvedWiktionary = w.analysis?.wiktionaryUrl || lex.wiktionaryUrl;
+  const resolvedIpa = w.analysis?.phonetic || "";
+  const resolvedWiktionary = w.analysis?.wiktionaryUrl || "";
 
   const rawMorphemes = w.analysis?.morphemes || [];
   const normalizedMorphemes: Morpheme[] = rawMorphemes.map((m, mIdx) => ({
@@ -130,13 +142,16 @@ export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number
     morphemes: normalizedMorphemes,
     ipa: resolvedIpa,
     wiktionaryUrl: resolvedWiktionary,
+    trailingPunctuation: w.trailingPunctuation,
+    pronunciationSource: w.analysis?.pronunciationSource,
+    historicalNote: w.analysis?.historicalNote,
+    review: w.review,
   };
 }
 
 export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
   const rawAuthor = doc.author || (doc.source ? doc.source.split(/[·•]/)[0]?.trim() : "Tyler Lemon");
   const glossedByMatch = doc.glossedBy || rawAuthor.replace(/^(Translated and glossed by\s*)+/gi, "").trim();
-  const historicalAuthorMatch = doc.historicalAuthor || "Anonymous";
   const dateMatch =
     doc.date || (doc.source ? doc.source.split(/[·•]/)[1]?.trim() : "September 30, 2026");
 
@@ -144,15 +159,20 @@ export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
     textId: doc.textId || "ohthere",
     slug: doc.slug || "ohthere-wulfstan",
     title: doc.title || "The voyages of Ohthere and Wulfstan",
-    author: glossedByMatch,
-    historicalAuthor: historicalAuthorMatch,
-    glossedBy: glossedByMatch,
+    author: doc.author || glossedByMatch,
+    historicalAuthor: doc.historicalAuthor || "",
+    glossedBy: doc.glossedBy || glossedByMatch,
+    editor: doc.editor,
+    shelfmark: doc.shelfmark,
+    dialect: doc.dialect,
+    historicalDate: doc.historicalDate,
     date: dateMatch,
     source: doc.source || `${glossedByMatch} · ${dateMatch}`,
     sourceFile: doc.sourceFile || "references/Voyages_of_Ohthere_Wulfstan.tex",
     sourceEdition: doc.sourceEdition || "",
     language: "Old English",
     status: doc.status || "published",
+    blocks: doc.blocks || [],
     sentences: (doc.sentences || []).map((sent: ReadingSentence, sIdx: number) => ({
       id: sent.id || `sent-${sIdx + 1}`,
       freeTranslation: sent.translation || "",
@@ -166,25 +186,29 @@ export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
 }
 
 export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
-  const resolvedAuthor = doc.glossedBy || doc.author;
+  const resolvedAuthor = doc.author || doc.glossedBy;
   const result: TextDocument = {
     textId: doc.textId,
     slug: doc.slug,
     language: "Old English",
     author: resolvedAuthor,
     historicalAuthor: doc.historicalAuthor,
-    glossedBy: resolvedAuthor,
+    glossedBy: doc.glossedBy,
+    editor: doc.editor,
+    shelfmark: doc.shelfmark,
+    dialect: doc.dialect,
+    historicalDate: doc.historicalDate,
     date: doc.date,
     title: doc.title,
-    source: `${resolvedAuthor} · ${doc.date}`,
+    source: doc.source || `${resolvedAuthor} · ${doc.date}`,
     sourceFile: doc.sourceFile,
     sourceEdition: doc.sourceEdition,
     status: doc.status,
     sentences: doc.sentences.map((sent) => ({
       id: sent.id,
       translation: sent.freeTranslation,
-      footnotes: sent.footnotes,
-      notes: sent.notes ? [...sent.notes] : undefined,
+      footnotes: sent.footnotes && sent.footnotes.length > 0 ? sent.footnotes : undefined,
+      notes: sent.notes && sent.notes.length > 0 ? [...sent.notes] : undefined,
       words: sent.tokens.map((tok) => {
         const punctuationMatch = tok.sourceForm.match(/[.,;:!?]+$/);
         const originalCleanWord =
@@ -202,30 +226,43 @@ export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
             ? tok.morphemes.map((m) => plainToTexGloss(m.gloss)).filter(Boolean).join("-")
             : tok.literalTexGloss || plainToTexGloss(tok.sourceGloss);
 
-        return {
+        const trailingPunctuation =
+          tok.trailingPunctuation !== undefined
+            ? tok.trailingPunctuation
+            : punctuationMatch
+            ? punctuationMatch[0]
+            : undefined;
+
+        const analysis: LinguisticAnalysis = {
+          lemma: tok.lemma,
+          partOfSpeech: tok.pos,
+          features: { ...tok.inflections },
+          morphemes: tok.morphemes.map((m) => {
+            const res: Morpheme = { form: m.form, gloss: m.gloss };
+            if (m.id) res.id = m.id;
+            if (m.kind) res.kind = m.kind;
+            return res;
+          }),
+          definition: tok.explanation,
+          phonetic: tok.ipa || undefined,
+          pronunciationSource: tok.pronunciationSource || undefined,
+          historicalNote: tok.historicalNote || undefined,
+          wiktionaryUrl: tok.wiktionaryUrl || undefined,
+        };
+
+        const word: InterlinearWord = {
           id: tok.id,
           originalWord: originalCleanWord,
           morphologicalGloss: sourceGlossVal,
-          trailingPunctuation: punctuationMatch ? punctuationMatch[0] : undefined,
+          trailingPunctuation,
           sourceGlossTex: texGlossVal,
-          analysis: {
-            lemma: tok.lemma,
-            partOfSpeech: tok.pos,
-            features: { ...tok.inflections },
-            morphemes: tok.morphemes.map((m) => ({
-              id: m.id,
-              form: m.form,
-              gloss: m.gloss,
-              kind: m.kind,
-            })),
-            definition: tok.explanation,
-            phonetic: tok.ipa,
-            wiktionaryUrl: tok.wiktionaryUrl,
-          },
+          analysis,
+          review: tok.review,
         };
+        return word;
       }),
     })),
-    blocks: [],
+    blocks: doc.blocks || [],
   };
 
   delete (result as Record<string, unknown>).texSource;
@@ -668,8 +705,179 @@ export function GlossEditor({
     const targetSlug = textDoc.slug || initialDocument.slug || "ohthere";
 
     try {
-      const res = writeDraft(targetSlug, textDoc);
-      if (!res.ok) {
+      // 1. Always persist client-side snapshot in browser storage (localStorage)
+      const serialized = safeJsonStringify(documentState);
+      setSavedSnapshot(serialized);
+      try {
+        window.localStorage.setItem(storageKey, serialized);
+        // Also save in TextDocument format for admin sync
+        delete (legacyDoc as Record<string, unknown>).texSource;
+        delete (legacyDoc as Record<string, unknown>)["tex-source"];
+        window.localStorage.setItem(`glossy_draft_${targetSlug}`, safeJsonStringify(legacyDoc));
+
+        // Update pending drafts manifest
+        const pendingRaw = window.localStorage.getItem("glossy_pending_drafts");
+        const pending = pendingRaw ? JSON.parse(pendingRaw) : {};
+        pending[targetSlug] = {
+          slug: targetSlug,
+          title: legacyDoc.title || initialDocument.title,
+          updatedAt: new Date().toISOString(),
+          sentenceCount: legacyDoc.sentences?.length ?? 0,
+          wordCount: legacyDoc.sentences?.reduce((acc, s) => acc + (s.words?.length ?? 0), 0) ?? 0,
+          synced: false,
+        };
+        window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("glossy:drafts-updated"));
+        }
+      } catch {}
+
+      // 2. Build full TextMutation payload
+      const mutationVariables = {
+        relativePath: targetFileName,
+        params: {
+          textId: legacyDoc.textId || targetSlug,
+          slug: targetSlug,
+          language: legacyDoc.language || "Old English",
+          author: legacyDoc.author || "",
+          editor: legacyDoc.editor,
+          shelfmark: legacyDoc.shelfmark,
+          dialect: legacyDoc.dialect,
+          historicalDate: legacyDoc.historicalDate,
+          title: legacyDoc.title || "",
+          source: legacyDoc.source || "",
+          sourceFile: legacyDoc.sourceFile || "",
+          sourceEdition: legacyDoc.sourceEdition || "",
+          status: legacyDoc.status || "draft",
+          sentences: (legacyDoc.sentences || []).map((sent) => ({
+            id: sent.id,
+            translation: sent.translation || "",
+            footnotes: sent.footnotes && sent.footnotes.length > 0 ? sent.footnotes : undefined,
+            notes: (sent.notes && sent.notes.length > 0)
+              ? sent.notes.map((n) => ({
+                  id: n.id,
+                  targetWordIndex: n.targetWordIndex,
+                  marker: n.marker,
+                  type: n.type || "general",
+                  text: n.text || "",
+                }))
+              : undefined,
+            words: (sent.words || []).map((w) => ({
+              id: w.id,
+              originalWord: w.originalWord,
+              morphologicalGloss: w.morphologicalGloss,
+              trailingPunctuation: w.trailingPunctuation,
+              sourceGlossTex: w.sourceGlossTex,
+              analysis: w.analysis
+                ? {
+                    lemma: w.analysis.lemma,
+                    partOfSpeech: w.analysis.partOfSpeech,
+                    definition: w.analysis.definition,
+                    phonetic: w.analysis.phonetic,
+                    pronunciationSource: w.analysis.pronunciationSource,
+                    historicalNote: w.analysis.historicalNote,
+                    wiktionaryUrl: w.analysis.wiktionaryUrl,
+                    features: w.analysis.features && Object.keys(w.analysis.features).length > 0
+                      ? {
+                          case: w.analysis.features.case,
+                          number: w.analysis.features.number,
+                          gender: w.analysis.features.gender,
+                          person:
+                            w.analysis.features.person != null
+                              ? Number(w.analysis.features.person)
+                              : undefined,
+                          tense: w.analysis.features.tense,
+                          mood: w.analysis.features.mood,
+                          degree: w.analysis.features.degree,
+                        }
+                      : undefined,
+                    morphemes: (w.analysis.morphemes || []).map((m) => ({
+                      form: m.form || "",
+                      gloss: m.gloss || "",
+                      kind: m.kind,
+                    })),
+                  }
+                : undefined,
+              review: w.review
+                ? {
+                    status: w.review.status || "source-checked",
+                    notes: w.review.notes,
+                    source: w.review.source
+                      ? {
+                          file: w.review.source.file,
+                          locator: w.review.source.locator,
+                        }
+                      : undefined,
+                  }
+                : undefined,
+            })),
+          })),
+        },
+      };
+
+      const updateMutationQuery = `mutation UpdateText($relativePath: String!, $params: TextMutation!) {
+        updateText(relativePath: $relativePath, params: $params) {
+          id
+          title
+          _sys { relativePath }
+        }
+      }`;
+
+      // 3. Attempt Tina GraphQL update (local datalayer or authenticated TinaCloud)
+      let graphQlSuccess = false;
+      const isLocalhost =
+        typeof window !== "undefined" &&
+        (window.location.hostname === "localhost" ||
+          window.location.hostname === "127.0.0.1");
+
+      if (isLocalhost) {
+        try {
+          const tinaUrl =
+            process.env.NEXT_PUBLIC_TINA_LOCAL_URL ?? "http://localhost:4001/graphql";
+          const res = await fetch(tinaUrl, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: safeJsonStringify({
+              query: updateMutationQuery,
+              variables: mutationVariables,
+            }),
+          });
+          const resJson = await res.json();
+          if (resJson?.data?.updateText || resJson?.data?.updateDocument) {
+            graphQlSuccess = true;
+          }
+        } catch {}
+      }
+
+      // If local didn't succeed, check for active TinaCloud session in browser
+      if (!graphQlSuccess && typeof window !== "undefined") {
+        try {
+          const authToken = window.localStorage.getItem("tinacms-auth");
+          if (authToken) {
+            const cloudUrl =
+              "https://content.tinajs.io/3.0/content/7cf6793a-dfc2-4a6b-ae23-c2665e22f286/github/main";
+            const res = await fetch(cloudUrl, {
+              method: "POST",
+              headers: {
+                "content-type": "application/json",
+                authorization: `Bearer ${authToken}`,
+              },
+              body: safeJsonStringify({
+                query: updateMutationQuery,
+                variables: mutationVariables,
+              }),
+            });
+            const resJson = await res.json();
+            if (resJson?.data?.updateText || resJson?.data?.updateDocument) {
+              graphQlSuccess = true;
+            }
+          }
+        } catch {}
+      }
+
+      const commitRes = await commitPendingDraft(targetSlug);
+
+      if (commitRes.ok) {
         setSaveStatus({
           kind: "error",
           message: res.message || "Failed to save local draft.",

@@ -1,1040 +1,661 @@
 {
-  "blocks": [],
-  "textId": "caedmon-hymn",
-  "slug": "caedmon-hymn",
-  "language": "Old English",
   "author": "Cædmon (Bede's Historia Ecclesiastica)",
-  "editor": "Tyler Lemon",
-  "shelfmark": "CUL MS Kk. 5. 16, fol. 128v (Moore Bede)",
+  "blocks": [],
   "dialect": "Northumbrian (Early Old English)",
+  "editor": "Tyler Lemon",
+  "glossedBy": "Cædmon (Bede's Historia Ecclesiastica)",
   "historicalDate": "c. 658–680 AD (MS c. 737 AD)",
-  "title": "Cædmon's Hymn",
-  "source": "Cambridge, University Library, MS Kk. 5. 16 (Moore Bede)",
-  "sourceFile": "references/Caedmon_Hymn.tex",
-  "sourceEdition": "Dobbie (1942), ASPR VI",
-  "status": "published",
+  "language": "Old English",
   "sentences": [
     {
       "id": "caedmon-hymn-s1",
       "translation": "Now we must praise the Guardian of the heavenly kingdom, the Maker's might and His mind's thought, the work of the Father of Glory, as He, the eternal Lord, established the beginning of each wonder.",
-      "footnotes": [],
       "words": [
         {
-          "id": "token-1-1",
-          "originalWord": "Nū",
-          "morphologicalGloss": "nū",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "nū",
           "analysis": {
-            "lemma": "nū",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "Nū",
-                "gloss": "nū",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (nū)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "nū",
+            "morphemes": [{ "form": "Nū", "gloss": "nū" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/nu#Old_English"
-          }
+          },
+          "id": "token-1-1",
+          "morphologicalGloss": "nū",
+          "originalWord": "Nū",
+          "sourceGlossTex": "nū",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-1-2",
-          "originalWord": "sculon",
-          "morphologicalGloss": "sculan",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "sculan",
           "analysis": {
-            "lemma": "sculan",
-            "partOfSpeech": "verb",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "sculon",
-                "gloss": "sculan",
-                "kind": "stem"
-              }
-            ],
             "definition": "verb (sculan)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/sculan#Old_English"
-          }
-        },
-        {
-          "id": "token-1-3",
-          "originalWord": "herigean",
-          "morphologicalGloss": "herigean",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "herigean",
-          "analysis": {
-            "lemma": "herigean",
-            "partOfSpeech": "noun",
             "features": {},
-            "morphemes": [
-              {
-                "form": "herigean",
-                "gloss": "herigean",
-                "kind": "stem"
-              }
-            ],
-            "definition": "noun (herigean)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/herigean#Old_English"
-          }
-        },
-        {
-          "id": "token-1-4",
-          "originalWord": "heofonrīces",
-          "morphologicalGloss": "heofonrīces",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "heofonrīces",
-          "analysis": {
-            "lemma": "heofonrīces",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "heofonrīces",
-                "gloss": "heofonrīces",
-                "kind": "stem"
-              }
-            ],
-            "definition": "noun (heofonrīces)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/heofonrices#Old_English"
-          }
-        },
-        {
-          "id": "token-1-5",
-          "originalWord": "Weard",
-          "morphologicalGloss": "weard",
-          "trailingPunctuation": ",",
-          "sourceGlossTex": "weard",
-          "analysis": {
-            "lemma": "weard",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "Weard,",
-                "gloss": "weard",
-                "kind": "stem"
-              }
-            ],
-            "definition": "noun (weard)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/weard#Old_English"
-          }
-        },
-        {
-          "id": "token-1-6",
-          "originalWord": "Meotodes",
-          "morphologicalGloss": "meotodes",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "meotodes",
-          "analysis": {
-            "lemma": "meotodes",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "Meotodes",
-                "gloss": "meotodes",
-                "kind": "stem"
-              }
-            ],
-            "definition": "noun (meotodes)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/meotodes#Old_English"
-          }
-        },
-        {
-          "id": "token-1-7",
-          "originalWord": "meahte",
-          "morphologicalGloss": "magan",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "magan",
-          "analysis": {
-            "lemma": "magan",
+            "lemma": "sculan",
+            "morphemes": [{ "form": "sculon", "gloss": "sculan" }],
             "partOfSpeech": "verb",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/sculan#Old_English"
+          },
+          "id": "token-1-2",
+          "morphologicalGloss": "sculan",
+          "originalWord": "sculon",
+          "sourceGlossTex": "sculan",
+          "trailingPunctuation": ""
+        },
+        {
+          "analysis": {
+            "definition": "noun (herigean)",
             "features": {},
-            "morphemes": [
-              {
-                "form": "meahte",
-                "gloss": "magan",
-                "kind": "stem"
-              }
-            ],
+            "lemma": "herigean",
+            "morphemes": [{ "form": "herigean", "gloss": "herigean" }],
+            "partOfSpeech": "noun",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/herigean#Old_English"
+          },
+          "id": "token-1-3",
+          "morphologicalGloss": "herigean",
+          "originalWord": "herigean",
+          "sourceGlossTex": "herigean",
+          "trailingPunctuation": ""
+        },
+        {
+          "analysis": {
+            "definition": "noun (heofonrīces)",
+            "features": {},
+            "lemma": "heofonrīces",
+            "morphemes": [{ "form": "heofonrīces", "gloss": "heofonrīces" }],
+            "partOfSpeech": "noun",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/heofonrices#Old_English"
+          },
+          "id": "token-1-4",
+          "morphologicalGloss": "heofonrīces",
+          "originalWord": "heofonrīces",
+          "sourceGlossTex": "heofonrīces",
+          "trailingPunctuation": ""
+        },
+        {
+          "analysis": {
+            "definition": "noun (weard)",
+            "features": {},
+            "lemma": "weard",
+            "morphemes": [{ "form": "Weard,", "gloss": "weard" }],
+            "partOfSpeech": "noun",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/weard#Old_English"
+          },
+          "id": "token-1-5",
+          "morphologicalGloss": "weard",
+          "originalWord": "Weard",
+          "sourceGlossTex": "weard",
+          "trailingPunctuation": ","
+        },
+        {
+          "analysis": {
+            "definition": "noun (meotodes)",
+            "features": {},
+            "lemma": "meotodes",
+            "morphemes": [{ "form": "Meotodes", "gloss": "meotodes" }],
+            "partOfSpeech": "noun",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/meotodes#Old_English"
+          },
+          "id": "token-1-6",
+          "morphologicalGloss": "meotodes",
+          "originalWord": "Meotodes",
+          "sourceGlossTex": "meotodes",
+          "trailingPunctuation": ""
+        },
+        {
+          "analysis": {
             "definition": "verb (magan)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "magan",
+            "morphemes": [{ "form": "meahte", "gloss": "magan" }],
+            "partOfSpeech": "verb",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/magan#Old_English"
-          }
+          },
+          "id": "token-1-7",
+          "morphologicalGloss": "magan",
+          "originalWord": "meahte",
+          "sourceGlossTex": "magan",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-1-8",
-          "originalWord": "ond",
-          "morphologicalGloss": "and",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "and",
           "analysis": {
-            "lemma": "and",
-            "partOfSpeech": "conjunction",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "ond",
-                "gloss": "and",
-                "kind": "stem"
-              }
-            ],
             "definition": "conjunction (and)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "and",
+            "morphemes": [{ "form": "ond", "gloss": "and" }],
+            "partOfSpeech": "conjunction",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/and#Old_English"
-          }
+          },
+          "id": "token-1-8",
+          "morphologicalGloss": "and",
+          "originalWord": "ond",
+          "sourceGlossTex": "and",
+          "trailingPunctuation": ""
         },
         {
+          "analysis": {
+            "definition": "pronoun (hē)",
+            "features": {},
+            "lemma": "hē",
+            "morphemes": [{ "form": "his", "gloss": "hē" }],
+            "partOfSpeech": "pronoun",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
+          },
           "id": "token-1-9",
+          "morphologicalGloss": "hē",
           "originalWord": "his",
-          "morphologicalGloss": "hē",
-          "trailingPunctuation": "",
           "sourceGlossTex": "hē",
-          "analysis": {
-            "lemma": "hē",
-            "partOfSpeech": "pronoun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "his",
-                "gloss": "hē",
-                "kind": "stem"
-              }
-            ],
-            "definition": "pronoun (hē)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
-          }
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-1-10",
-          "originalWord": "mōdġeþanc",
-          "morphologicalGloss": "mōdġeþanc",
-          "trailingPunctuation": ",",
-          "sourceGlossTex": "mōdġeþanc",
           "analysis": {
-            "lemma": "mōdġeþanc",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "mōdġeþanc,",
-                "gloss": "mōdġeþanc",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (mōdġeþanc)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "mōdġeþanc",
+            "morphemes": [{ "form": "mōdġeþanc,", "gloss": "mōdġeþanc" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/modge%C3%BEanc#Old_English"
-          }
+          },
+          "id": "token-1-10",
+          "morphologicalGloss": "mōdġeþanc",
+          "originalWord": "mōdġeþanc",
+          "sourceGlossTex": "mōdġeþanc",
+          "trailingPunctuation": ","
         },
         {
-          "id": "token-1-11",
-          "originalWord": "weorc",
-          "morphologicalGloss": "weorc",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "weorc",
           "analysis": {
-            "lemma": "weorc",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "weorc",
-                "gloss": "weorc",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (weorc)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "weorc",
+            "morphemes": [{ "form": "weorc", "gloss": "weorc" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/weorc#Old_English"
-          }
+          },
+          "id": "token-1-11",
+          "morphologicalGloss": "weorc",
+          "originalWord": "weorc",
+          "sourceGlossTex": "weorc",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-1-12",
-          "originalWord": "Wuldorfæder",
-          "morphologicalGloss": "wuldorfæder",
-          "trailingPunctuation": ",",
-          "sourceGlossTex": "wuldorfæder",
           "analysis": {
-            "lemma": "wuldorfæder",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "Wuldorfæder,",
-                "gloss": "wuldorfæder",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (wuldorfæder)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "wuldorfæder",
+            "morphemes": [{ "form": "Wuldorfæder,", "gloss": "wuldorfæder" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/wuldorf%C3%A6der#Old_English"
-          }
+          },
+          "id": "token-1-12",
+          "morphologicalGloss": "wuldorfæder",
+          "originalWord": "Wuldorfæder",
+          "sourceGlossTex": "wuldorfæder",
+          "trailingPunctuation": ","
         },
         {
-          "id": "token-1-13",
-          "originalWord": "swā",
-          "morphologicalGloss": "swā",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "swā",
           "analysis": {
-            "lemma": "swā",
-            "partOfSpeech": "adverb",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "swā",
-                "gloss": "swā",
-                "kind": "stem"
-              }
-            ],
             "definition": "adverb (swā)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "swā",
+            "morphemes": [{ "form": "swā", "gloss": "swā" }],
+            "partOfSpeech": "adverb",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/swa#Old_English"
-          }
+          },
+          "id": "token-1-13",
+          "morphologicalGloss": "swā",
+          "originalWord": "swā",
+          "sourceGlossTex": "swā",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-1-14",
-          "originalWord": "hē",
-          "morphologicalGloss": "hē",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "hē",
           "analysis": {
-            "lemma": "hē",
-            "partOfSpeech": "pronoun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "hē",
-                "gloss": "hē",
-                "kind": "stem"
-              }
-            ],
             "definition": "pronoun (hē)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "hē",
+            "morphemes": [{ "form": "hē", "gloss": "hē" }],
+            "partOfSpeech": "pronoun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
-          }
+          },
+          "id": "token-1-14",
+          "morphologicalGloss": "hē",
+          "originalWord": "hē",
+          "sourceGlossTex": "hē",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-1-15",
-          "originalWord": "wundra",
-          "morphologicalGloss": "wundra",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "wundra",
           "analysis": {
-            "lemma": "wundra",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "wundra",
-                "gloss": "wundra",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (wundra)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "wundra",
+            "morphemes": [{ "form": "wundra", "gloss": "wundra" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/wundra#Old_English"
-          }
+          },
+          "id": "token-1-15",
+          "morphologicalGloss": "wundra",
+          "originalWord": "wundra",
+          "sourceGlossTex": "wundra",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-1-16",
-          "originalWord": "ġehwæs",
-          "morphologicalGloss": "ġehwæs",
-          "trailingPunctuation": ",",
-          "sourceGlossTex": "ġehwæs",
           "analysis": {
-            "lemma": "ġehwæs",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "ġehwæs,",
-                "gloss": "ġehwæs",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (ġehwæs)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "ġehwæs",
+            "morphemes": [{ "form": "ġehwæs,", "gloss": "ġehwæs" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/gehw%C3%A6s#Old_English"
-          }
+          },
+          "id": "token-1-16",
+          "morphologicalGloss": "ġehwæs",
+          "originalWord": "ġehwæs",
+          "sourceGlossTex": "ġehwæs",
+          "trailingPunctuation": ","
         },
         {
-          "id": "token-1-17",
-          "originalWord": "ēce",
-          "morphologicalGloss": "ēce",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "ēce",
           "analysis": {
-            "lemma": "ēce",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "ēce",
-                "gloss": "ēce",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (ēce)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "ēce",
+            "morphemes": [{ "form": "ēce", "gloss": "ēce" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/ece#Old_English"
-          }
+          },
+          "id": "token-1-17",
+          "morphologicalGloss": "ēce",
+          "originalWord": "ēce",
+          "sourceGlossTex": "ēce",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-1-18",
-          "originalWord": "Drihten",
-          "morphologicalGloss": "drihten",
-          "trailingPunctuation": ",",
-          "sourceGlossTex": "drihten",
           "analysis": {
-            "lemma": "drihten",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "Drihten,",
-                "gloss": "drihten",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (drihten)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "drihten",
+            "morphemes": [{ "form": "Drihten,", "gloss": "drihten" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/drihten#Old_English"
-          }
+          },
+          "id": "token-1-18",
+          "morphologicalGloss": "drihten",
+          "originalWord": "Drihten",
+          "sourceGlossTex": "drihten",
+          "trailingPunctuation": ","
         },
         {
-          "id": "token-1-19",
-          "originalWord": "ōr",
-          "morphologicalGloss": "ōr",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "ōr",
           "analysis": {
-            "lemma": "ōr",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "ōr",
-                "gloss": "ōr",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (ōr)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "ōr",
+            "morphemes": [{ "form": "ōr", "gloss": "ōr" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/or#Old_English"
-          }
+          },
+          "id": "token-1-19",
+          "morphologicalGloss": "ōr",
+          "originalWord": "ōr",
+          "sourceGlossTex": "ōr",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-1-20",
-          "originalWord": "onstealde",
-          "morphologicalGloss": "onstealde",
-          "trailingPunctuation": ".",
-          "sourceGlossTex": "onstealde",
           "analysis": {
-            "lemma": "onstealde",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "onstealde.",
-                "gloss": "onstealde",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (onstealde)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "onstealde",
+            "morphemes": [{ "form": "onstealde.", "gloss": "onstealde" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/onstealde#Old_English"
-          }
+          },
+          "id": "token-1-20",
+          "morphologicalGloss": "onstealde",
+          "originalWord": "onstealde",
+          "sourceGlossTex": "onstealde",
+          "trailingPunctuation": "."
         }
       ]
     },
     {
       "id": "caedmon-hymn-s2",
       "translation": "He first created heaven as a roof for the children of earth, holy Creator; then the Guardian of mankind, the eternal Lord, Almighty Ruler, afterwards adorned the middle-earth, the world for men.",
-      "footnotes": [],
       "words": [
         {
-          "id": "token-2-1",
-          "originalWord": "Hē",
-          "morphologicalGloss": "hē",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "hē",
           "analysis": {
-            "lemma": "hē",
-            "partOfSpeech": "pronoun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "Hē",
-                "gloss": "hē",
-                "kind": "stem"
-              }
-            ],
             "definition": "pronoun (hē)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "hē",
+            "morphemes": [{ "form": "Hē", "gloss": "hē" }],
+            "partOfSpeech": "pronoun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
-          }
+          },
+          "id": "token-2-1",
+          "morphologicalGloss": "hē",
+          "originalWord": "Hē",
+          "sourceGlossTex": "hē",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-2-2",
-          "originalWord": "ǣrest",
-          "morphologicalGloss": "ǣrest",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "ǣrest",
           "analysis": {
-            "lemma": "ǣrest",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "ǣrest",
-                "gloss": "ǣrest",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (ǣrest)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "ǣrest",
+            "morphemes": [{ "form": "ǣrest", "gloss": "ǣrest" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%A6rest#Old_English"
-          }
+          },
+          "id": "token-2-2",
+          "morphologicalGloss": "ǣrest",
+          "originalWord": "ǣrest",
+          "sourceGlossTex": "ǣrest",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-2-3",
-          "originalWord": "sceōp",
-          "morphologicalGloss": "sceōp",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "sceōp",
           "analysis": {
-            "lemma": "sceōp",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "sceōp",
-                "gloss": "sceōp",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (sceōp)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "sceōp",
+            "morphemes": [{ "form": "sceōp", "gloss": "sceōp" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/sceop#Old_English"
-          }
+          },
+          "id": "token-2-3",
+          "morphologicalGloss": "sceōp",
+          "originalWord": "sceōp",
+          "sourceGlossTex": "sceōp",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-2-4",
-          "originalWord": "eorðan",
-          "morphologicalGloss": "eorðan",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "eorðan",
           "analysis": {
-            "lemma": "eorðan",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "eorðan",
-                "gloss": "eorðan",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (eorðan)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "eorðan",
+            "morphemes": [{ "form": "eorðan", "gloss": "eorðan" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/eor%C3%B0an#Old_English"
-          }
+          },
+          "id": "token-2-4",
+          "morphologicalGloss": "eorðan",
+          "originalWord": "eorðan",
+          "sourceGlossTex": "eorðan",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-2-5",
-          "originalWord": "bearnum",
-          "morphologicalGloss": "bearnum",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "bearnum",
           "analysis": {
-            "lemma": "bearnum",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "bearnum",
-                "gloss": "bearnum",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (bearnum)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "bearnum",
+            "morphemes": [{ "form": "bearnum", "gloss": "bearnum" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/bearnum#Old_English"
-          }
+          },
+          "id": "token-2-5",
+          "morphologicalGloss": "bearnum",
+          "originalWord": "bearnum",
+          "sourceGlossTex": "bearnum",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-2-6",
-          "originalWord": "heofon",
-          "morphologicalGloss": "heofon",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "heofon",
           "analysis": {
-            "lemma": "heofon",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "heofon",
-                "gloss": "heofon",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (heofon)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "heofon",
+            "morphemes": [{ "form": "heofon", "gloss": "heofon" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/heofon#Old_English"
-          }
+          },
+          "id": "token-2-6",
+          "morphologicalGloss": "heofon",
+          "originalWord": "heofon",
+          "sourceGlossTex": "heofon",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-2-7",
-          "originalWord": "tō",
-          "morphologicalGloss": "tō",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "tō",
           "analysis": {
-            "lemma": "tō",
-            "partOfSpeech": "preposition",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "tō",
-                "gloss": "tō",
-                "kind": "stem"
-              }
-            ],
             "definition": "preposition (tō)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "tō",
+            "morphemes": [{ "form": "tō", "gloss": "tō" }],
+            "partOfSpeech": "preposition",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/to#Old_English"
-          }
+          },
+          "id": "token-2-7",
+          "morphologicalGloss": "tō",
+          "originalWord": "tō",
+          "sourceGlossTex": "tō",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-2-8",
-          "originalWord": "hrōfe",
-          "morphologicalGloss": "hrōfe",
-          "trailingPunctuation": ",",
-          "sourceGlossTex": "hrōfe",
           "analysis": {
-            "lemma": "hrōfe",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "hrōfe,",
-                "gloss": "hrōfe",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (hrōfe)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "hrōfe",
+            "morphemes": [{ "form": "hrōfe,", "gloss": "hrōfe" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/hrofe#Old_English"
-          }
+          },
+          "id": "token-2-8",
+          "morphologicalGloss": "hrōfe",
+          "originalWord": "hrōfe",
+          "sourceGlossTex": "hrōfe",
+          "trailingPunctuation": ","
         },
         {
-          "id": "token-2-9",
-          "originalWord": "hālig",
-          "morphologicalGloss": "hālig",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "hālig",
           "analysis": {
-            "lemma": "hālig",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "hālig",
-                "gloss": "hālig",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (hālig)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "hālig",
+            "morphemes": [{ "form": "hālig", "gloss": "hālig" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/halig#Old_English"
-          }
+          },
+          "id": "token-2-9",
+          "morphologicalGloss": "hālig",
+          "originalWord": "hālig",
+          "sourceGlossTex": "hālig",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-2-10",
-          "originalWord": "Scyppend",
-          "morphologicalGloss": "scyppend",
-          "trailingPunctuation": ";",
-          "sourceGlossTex": "scyppend",
           "analysis": {
-            "lemma": "scyppend",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "Scyppend;",
-                "gloss": "scyppend",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (scyppend)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "scyppend",
+            "morphemes": [{ "form": "Scyppend;", "gloss": "scyppend" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/scyppend#Old_English"
-          }
+          },
+          "id": "token-2-10",
+          "morphologicalGloss": "scyppend",
+          "originalWord": "Scyppend",
+          "sourceGlossTex": "scyppend",
+          "trailingPunctuation": ";"
         },
         {
-          "id": "token-2-11",
-          "originalWord": "þā",
-          "morphologicalGloss": "sē",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "sē",
           "analysis": {
-            "lemma": "sē",
-            "partOfSpeech": "determiner",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "þā",
-                "gloss": "sē",
-                "kind": "stem"
-              }
-            ],
             "definition": "determiner (sē)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "sē",
+            "morphemes": [{ "form": "þā", "gloss": "sē" }],
+            "partOfSpeech": "determiner",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/se#Old_English"
-          }
+          },
+          "id": "token-2-11",
+          "morphologicalGloss": "sē",
+          "originalWord": "þā",
+          "sourceGlossTex": "sē",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-2-12",
-          "originalWord": "middanġeard",
-          "morphologicalGloss": "middanġeard",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "middanġeard",
           "analysis": {
-            "lemma": "middanġeard",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "middanġeard",
-                "gloss": "middanġeard",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (middanġeard)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "middanġeard",
+            "morphemes": [{ "form": "middanġeard", "gloss": "middanġeard" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/middangeard#Old_English"
-          }
+          },
+          "id": "token-2-12",
+          "morphologicalGloss": "middanġeard",
+          "originalWord": "middanġeard",
+          "sourceGlossTex": "middanġeard",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-2-13",
-          "originalWord": "moncynnes",
-          "morphologicalGloss": "moncynnes",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "moncynnes",
           "analysis": {
-            "lemma": "moncynnes",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "moncynnes",
-                "gloss": "moncynnes",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (moncynnes)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "moncynnes",
+            "morphemes": [{ "form": "moncynnes", "gloss": "moncynnes" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/moncynnes#Old_English"
-          }
+          },
+          "id": "token-2-13",
+          "morphologicalGloss": "moncynnes",
+          "originalWord": "moncynnes",
+          "sourceGlossTex": "moncynnes",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-2-14",
-          "originalWord": "Weard",
-          "morphologicalGloss": "weard",
-          "trailingPunctuation": ",",
-          "sourceGlossTex": "weard",
           "analysis": {
-            "lemma": "weard",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "Weard,",
-                "gloss": "weard",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (weard)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "weard",
+            "morphemes": [{ "form": "Weard,", "gloss": "weard" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/weard#Old_English"
-          }
+          },
+          "id": "token-2-14",
+          "morphologicalGloss": "weard",
+          "originalWord": "Weard",
+          "sourceGlossTex": "weard",
+          "trailingPunctuation": ","
         },
         {
-          "id": "token-2-15",
-          "originalWord": "ēce",
-          "morphologicalGloss": "ēce",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "ēce",
           "analysis": {
-            "lemma": "ēce",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "ēce",
-                "gloss": "ēce",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (ēce)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "ēce",
+            "morphemes": [{ "form": "ēce", "gloss": "ēce" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/ece#Old_English"
-          }
+          },
+          "id": "token-2-15",
+          "morphologicalGloss": "ēce",
+          "originalWord": "ēce",
+          "sourceGlossTex": "ēce",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-2-16",
-          "originalWord": "Drihten",
-          "morphologicalGloss": "drihten",
-          "trailingPunctuation": ",",
-          "sourceGlossTex": "drihten",
           "analysis": {
-            "lemma": "drihten",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "Drihten,",
-                "gloss": "drihten",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (drihten)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "drihten",
+            "morphemes": [{ "form": "Drihten,", "gloss": "drihten" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/drihten#Old_English"
-          }
+          },
+          "id": "token-2-16",
+          "morphologicalGloss": "drihten",
+          "originalWord": "Drihten",
+          "sourceGlossTex": "drihten",
+          "trailingPunctuation": ","
         },
         {
-          "id": "token-2-17",
-          "originalWord": "æfter",
-          "morphologicalGloss": "æfter",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "æfter",
           "analysis": {
-            "lemma": "æfter",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "æfter",
-                "gloss": "æfter",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (æfter)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "æfter",
+            "morphemes": [{ "form": "æfter", "gloss": "æfter" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%A6fter#Old_English"
-          }
+          },
+          "id": "token-2-17",
+          "morphologicalGloss": "æfter",
+          "originalWord": "æfter",
+          "sourceGlossTex": "æfter",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-2-18",
-          "originalWord": "tēode",
-          "morphologicalGloss": "tēode",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "tēode",
           "analysis": {
-            "lemma": "tēode",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "tēode",
-                "gloss": "tēode",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (tēode)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "tēode",
+            "morphemes": [{ "form": "tēode", "gloss": "tēode" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/teode#Old_English"
-          }
+          },
+          "id": "token-2-18",
+          "morphologicalGloss": "tēode",
+          "originalWord": "tēode",
+          "sourceGlossTex": "tēode",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-2-19",
-          "originalWord": "fīrum",
-          "morphologicalGloss": "fīrum",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "fīrum",
           "analysis": {
-            "lemma": "fīrum",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "fīrum",
-                "gloss": "fīrum",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (fīrum)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "fīrum",
+            "morphemes": [{ "form": "fīrum", "gloss": "fīrum" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/firum#Old_English"
-          }
+          },
+          "id": "token-2-19",
+          "morphologicalGloss": "fīrum",
+          "originalWord": "fīrum",
+          "sourceGlossTex": "fīrum",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-2-20",
-          "originalWord": "foldan",
-          "morphologicalGloss": "foldan",
-          "trailingPunctuation": ",",
-          "sourceGlossTex": "foldan",
           "analysis": {
-            "lemma": "foldan",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "foldan,",
-                "gloss": "foldan",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (foldan)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "foldan",
+            "morphemes": [{ "form": "foldan,", "gloss": "foldan" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/foldan#Old_English"
-          }
+          },
+          "id": "token-2-20",
+          "morphologicalGloss": "foldan",
+          "originalWord": "foldan",
+          "sourceGlossTex": "foldan",
+          "trailingPunctuation": ","
         },
         {
-          "id": "token-2-21",
-          "originalWord": "Fēa",
-          "morphologicalGloss": "fēa",
-          "trailingPunctuation": "",
-          "sourceGlossTex": "fēa",
           "analysis": {
-            "lemma": "fēa",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "Fēa",
-                "gloss": "fēa",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (fēa)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "fēa",
+            "morphemes": [{ "form": "Fēa", "gloss": "fēa" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/fea#Old_English"
-          }
+          },
+          "id": "token-2-21",
+          "morphologicalGloss": "fēa",
+          "originalWord": "Fēa",
+          "sourceGlossTex": "fēa",
+          "trailingPunctuation": ""
         },
         {
-          "id": "token-2-22",
-          "originalWord": "ælmihtig",
-          "morphologicalGloss": "ælmihtig",
-          "trailingPunctuation": ".",
-          "sourceGlossTex": "ælmihtig",
           "analysis": {
-            "lemma": "ælmihtig",
-            "partOfSpeech": "noun",
-            "features": {},
-            "morphemes": [
-              {
-                "form": "ælmihtig.",
-                "gloss": "ælmihtig",
-                "kind": "stem"
-              }
-            ],
             "definition": "noun (ælmihtig)",
-            "phonetic": "",
-            "pronunciationSource": "",
-            "historicalNote": "",
+            "features": {},
+            "lemma": "ælmihtig",
+            "morphemes": [{ "form": "ælmihtig.", "gloss": "ælmihtig" }],
+            "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%A6lmihtig#Old_English"
-          }
+          },
+          "id": "token-2-22",
+          "morphologicalGloss": "ælmihtig",
+          "originalWord": "ælmihtig",
+          "sourceGlossTex": "ælmihtig",
+          "trailingPunctuation": "."
         }
       ]
     }
-  ]
+  ],
+  "shelfmark": "CUL MS Kk. 5. 16, fol. 128v (Moore Bede)",
+  "slug": "caedmon-hymn",
+  "source": "Cambridge, University Library, MS Kk. 5. 16 (Moore Bede)",
+  "sourceEdition": "Dobbie (1942), ASPR VI",
+  "sourceFile": "references/Caedmon_Hymn.tex",
+  "status": "published",
+  "textId": "caedmon-hymn",
+  "title": "Cædmon's Hymn"
 }
