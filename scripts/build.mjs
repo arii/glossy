@@ -1,6 +1,8 @@
-import { spawnSync } from "child_process";
+import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
-import net from "net";
+import net from "node:net";
+
+const isWindows = process.platform === "win32";
 
 function printStep(step) {
   console.log(`\n🚀 [BUILD STEP] ${step}...`);
@@ -29,11 +31,12 @@ function isPortBusy(port) {
 }
 
 function runCommand(cmd, args) {
-  const localBin = `./node_modules/.bin/${cmd}`;
-  const bin = existsSync(localBin) ? localBin : cmd;
-  const res = spawnSync(bin, args, { stdio: "inherit" });
+  const res = spawnSync("npx", [cmd, ...args], {
+    stdio: "inherit",
+    shell: isWindows,
+  });
   if (res.status !== 0) {
-    console.error(`\n🚨 [BUILD FAILURE] Command failed: ${bin} ${args.join(" ")}`);
+    console.error(`\n🚨 [BUILD FAILURE] Command failed: npx ${cmd} ${args.join(" ")}`);
     process.exit(res.status ?? 1);
   }
 }
@@ -51,21 +54,20 @@ async function main() {
     existsSync("tina/__generated__/client.ts") && existsSync("tina/__generated__/types.ts");
   const busy =
     (await isPortBusy(9000)) ||
-    (await isPortBusy(9123)) ||
     (await isPortBusy(4001));
 
   if (busy && hasGeneratedFiles) {
-    console.log("ℹ️ Tina dev server port (9000/9123/4001) is currently busy; reusing existing compiled schema.");
+    console.log("ℹ️ Tina dev server port (9000/4001) is currently busy; reusing existing compiled schema.");
   } else {
-    const tinaBin = existsSync("./node_modules/.bin/tinacms") ? "./node_modules/.bin/tinacms" : "tinacms";
-    const res = spawnSync(tinaBin, ["build", "--skip-cloud-checks", "--datalayer-port", "9123"], {
+    const res = spawnSync("npx", ["tinacms", "build", "--skip-cloud-checks", "--datalayer-port", "9123"], {
       stdio: "inherit",
+      shell: isWindows,
     });
     if (res.status !== 0) {
       if (hasGeneratedFiles) {
         console.warn("⚠️ tinacms build encountered port/env conflict; reusing pre-generated Tina client and types.");
       } else {
-        console.error(`\n🚨 [BUILD FAILURE] Command failed: ${tinaBin} build`);
+        console.error("\n🚨 [BUILD FAILURE] Command failed: tinacms build");
         process.exit(res.status ?? 1);
       }
     }

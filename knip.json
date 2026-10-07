@@ -7,8 +7,7 @@
     "scripts/**/*.{js,mjs,ts}",
     "tina/config.ts"
   ],
-  "ignore": ["scripts/archive/**"],
-  "ignoreDependencies": ["eslint-config-next", "gray-matter"],
+  "ignoreDependencies": ["eslint-config-next"],
   "project": [
     "app/**/*.{ts,tsx}",
     "components/**/*.{ts,tsx}",
