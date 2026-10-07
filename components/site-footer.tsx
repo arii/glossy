@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import attributionData from "../content/pages/attribution.json";
+import { formatRelativeTime } from "../lib/utils";
 
 export interface SiteFooterProps {
   platformCreator?: string;
@@ -34,6 +36,18 @@ export function SiteFooter(props: SiteFooterProps) {
   const defaultEditorUrl = props.defaultEditorUrl ?? attributionData.defaultEditorUrl;
 
   const feedbackUrl = buildFeedbackUrl();
+
+  const [lastUpdated, setLastUpdated] = useState<string>("");
+
+  useEffect(() => {
+    if (process.env.NEXT_PUBLIC_BUILD_TIME) {
+      setLastUpdated(formatRelativeTime(process.env.NEXT_PUBLIC_BUILD_TIME));
+    }
+  }, []);
+
+  const commitSha = process.env.NEXT_PUBLIC_COMMIT_SHA ?? "dev";
+  const appVersion = process.env.NEXT_PUBLIC_APP_VERSION ?? "0.1.0";
+  const displayCommit = commitSha.slice(0, 7);
 
   return (
     <footer className="site-footer">
@@ -70,6 +84,19 @@ export function SiteFooter(props: SiteFooterProps) {
             ) : (
               defaultEditor
             )}
+          </div>
+          <div className="site-footer-version">
+            v{appVersion} (
+            <a
+              href={`https://github.com/arii/glossy/commit/${commitSha}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="site-footer-author-link"
+            >
+              {displayCommit}
+            </a>
+            )
+            {lastUpdated ? ` · Last updated ${lastUpdated}` : ""}
           </div>
         </div>
 
