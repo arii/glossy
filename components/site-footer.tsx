@@ -11,10 +11,10 @@ export interface SiteFooterProps {
 }
 
 export function SiteFooter(props: SiteFooterProps) {
-  const platformCreator = props.platformCreator || attributionData.platformCreator;
-  const platformCreatorUrl = props.platformCreatorUrl || attributionData.platformCreatorUrl;
-  const defaultEditor = props.defaultEditor || attributionData.defaultEditor;
-  const defaultEditorUrl = props.defaultEditorUrl || attributionData.defaultEditorUrl;
+  const platformCreator = props.platformCreator ?? attributionData.platformCreator;
+  const platformCreatorUrl = props.platformCreatorUrl ?? attributionData.platformCreatorUrl;
+  const defaultEditor = props.defaultEditor ?? attributionData.defaultEditor;
+  const defaultEditorUrl = props.defaultEditorUrl ?? attributionData.defaultEditorUrl;
 
   const feedbackUrl = "https://github.com/arii/glossy/issues/new?template=feedback.yml&title=Feedback%20%2F%20Report";
 

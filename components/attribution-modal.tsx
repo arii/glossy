@@ -71,38 +71,35 @@ export function AttributionCard({
   hideHeader = false,
   asCard = true,
 }: AttributionCardProps) {
-  const activeConfig = content || config || initialAttributionData;
+  const activeConfig = content ?? config ?? initialAttributionData;
   const [copiedFormat, setCopiedFormat] = useState<CitationFormat | null>(null);
   const [activeTab, setActiveTab] = useState<CitationFormat>("bibtex");
 
   const builtIn = getBuiltInMetadata(slug);
 
-  const activePlatformCreator = activeConfig.platformCreator || initialAttributionData.platformCreator || "Ariel Anders";
-  const activePlatformCreatorUrl = activeConfig.platformCreatorUrl || initialAttributionData.platformCreatorUrl || "https://boomtick.blog/services";
+  const activePlatformCreator = activeConfig.platformCreator ?? initialAttributionData.platformCreator;
+  const activePlatformCreatorUrl = activeConfig.platformCreatorUrl ?? initialAttributionData.platformCreatorUrl;
 
-  const activeEditor = editor || builtIn?.editor || activeConfig.defaultEditor || initialAttributionData.defaultEditor || "Tyler Lemon";
-  const activeDefaultEditorUrl = activeConfig.defaultEditorUrl || initialAttributionData.defaultEditorUrl || "https://sites.google.com/view/tyler-lemon";
+  const activeEditor = editor ?? builtIn?.editor ?? activeConfig.defaultEditor ?? initialAttributionData.defaultEditor;
+  const activeDefaultEditorUrl = activeConfig.defaultEditorUrl ?? initialAttributionData.defaultEditorUrl;
 
-  const activeAuthor = author || builtIn?.author || "Anonymous";
-  const activeShelfmark = shelfmark || builtIn?.shelfmark || builtIn?.witness || source || builtIn?.source || "BL Cotton MS Tiberius B i, fol. 11r–15v";
-  const activeDialect = dialect || builtIn?.dialect || "Early West Saxon";
-  const activeHistoricalDate = historicalDate || builtIn?.historicalDate || builtIn?.origDate || "c. 890–900 AD";
-  const activeSourceEdition = sourceEdition || builtIn?.sourceEdition || "Old English Orosius (ed. Bately 1980 / Sweet)";
+  const activeAuthor = author ?? builtIn?.author ?? "Anonymous";
+  const activeShelfmark = shelfmark ?? builtIn?.shelfmark ?? builtIn?.witness ?? source ?? builtIn?.source ?? "BL Cotton MS Tiberius B i, fol. 11r–15v";
+  const activeDialect = dialect ?? builtIn?.dialect ?? "Early West Saxon";
+  const activeHistoricalDate = historicalDate ?? builtIn?.historicalDate ?? builtIn?.origDate ?? "c. 890–900 AD";
+  const activeSourceEdition = sourceEdition ?? builtIn?.sourceEdition ?? "Old English Orosius (ed. Bately 1980 / Sweet)";
 
-  const activeEditionDate = activeConfig.editionDate || initialAttributionData.editionDate || "2026";
-  const activeBooktitle = activeConfig.booktitle || initialAttributionData.booktitle || "Glossy: Digital Scholarly Editions of Old English Interlinear Texts";
+  const activeEditionDate = activeConfig.editionDate ?? initialAttributionData.editionDate;
+  const activeBooktitle = activeConfig.booktitle ?? initialAttributionData.booktitle;
   const activeLinguisticPackage =
-    activeConfig.attributionLinguisticPackage ||
-    initialAttributionData.attributionLinguisticPackage ||
-    "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing";
+    activeConfig.attributionLinguisticPackage ??
+    initialAttributionData.attributionLinguisticPackage;
   const activeStandardsTitle =
-    activeConfig.attributionStandardsTitle ||
-    initialAttributionData.attributionStandardsTitle ||
-    "Collaborative Development & Standards";
+    activeConfig.attributionStandardsTitle ??
+    initialAttributionData.attributionStandardsTitle;
   const activeStandardsStatement =
-    activeConfig.attributionStandardsStatement ||
-    initialAttributionData.attributionStandardsStatement ||
-    "Interlinear formatting conforms to international Leipzig Glossing Rules with LaTeX gb4e alignment, canonical lemmatization referenced to Bosworth-Toller and Wiktionary, and visual gloss layout inspired by Peter S. Baker's Old English Aerobics (oldenglishaerobics.net).";
+    activeConfig.attributionStandardsStatement ??
+    initialAttributionData.attributionStandardsStatement;
 
   const bibtexKey = `Glossy${activeEditionDate}${slug.replace(/[^a-zA-Z0-9]/g, "")}`;
 
@@ -132,20 +129,20 @@ export function AttributionCard({
   };
 
   const bibtexTemplate =
-    activeConfig.bibtexCitationTemplate ||
-    initialAttributionData.bibtexCitationTemplate ||
+    activeConfig.bibtexCitationTemplate ??
+    initialAttributionData.bibtexCitationTemplate ??
     "";
   const unifiedTemplate =
-    activeConfig.unifiedLsaCitationTemplate ||
-    initialAttributionData.unifiedLsaCitationTemplate ||
+    activeConfig.unifiedLsaCitationTemplate ??
+    initialAttributionData.unifiedLsaCitationTemplate ??
     "";
   const apaTemplate =
-    activeConfig.apaCitationTemplate ||
-    initialAttributionData.apaCitationTemplate ||
+    activeConfig.apaCitationTemplate ??
+    initialAttributionData.apaCitationTemplate ??
     "";
   const chicagoTemplate =
-    activeConfig.chicagoCitationTemplate ||
-    initialAttributionData.chicagoCitationTemplate ||
+    activeConfig.chicagoCitationTemplate ??
+    initialAttributionData.chicagoCitationTemplate ??
     "";
 
   const citations: Record<CitationFormat, string> = {
