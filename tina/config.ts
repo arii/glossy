@@ -3,7 +3,16 @@ import { createRoot } from "react-dom/client";
 import { defineConfig, type TinaCMS } from "tinacms";
 import { DraftSyncPrompt } from "../components/draft-sync-prompt";
 
-import { TINA_BRANCH as branch, TINA_CLIENT_ID as clientId, TINA_TOKEN as token } from "../lib/tina-config";
+const branch =
+  process.env.TINA_BRANCH ??
+  process.env.NEXT_PUBLIC_TINA_BRANCH ??
+  process.env.CF_PAGES_BRANCH ??
+  process.env.HEAD ??
+  "main";
+const clientId =
+  process.env.NEXT_PUBLIC_TINA_CLIENT_ID ||
+  "7cf6793a-dfc2-4a6b-ae23-c2665e22f286";
+const token = process.env.TINA_TOKEN || "";
 
 export default defineConfig({
   branch,

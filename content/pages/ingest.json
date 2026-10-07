@@ -1,7 +1,7 @@
 {
-  "description": "Paste raw Old English sentences, select a classic preset (such as Beowulf or Cædmon's Hymn), or paste LaTeX gb4e code. The ingestion engine will automatically tokenize, lemmatize, and initialize your interlinear glosses.",
+  "pageId": "ingest",
+  "title": "Gloss a New Old English Text",
   "eyebrow": "Corpus Ingestion",
   "heading": "Gloss a New Old English Text",
-  "pageId": "ingest",
-  "title": "Gloss a New Old English Text"
+  "description": "Paste raw Old English sentences, select a classic preset (such as Beowulf or Cædmon's Hymn), or paste LaTeX gb4e code. The ingestion engine will automatically tokenize, lemmatize, and initialize your interlinear glosses."
 }

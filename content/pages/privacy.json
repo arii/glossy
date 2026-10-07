@@ -1,50 +1,50 @@
 {
-  "description": "Effective Date: March 2025 · Last Updated: October 2026",
+  "pageId": "privacy",
+  "title": "Privacy Policy | Glossy · Old English Interlinear Glosses",
   "eyebrow": "Privacy & Data Transparency",
   "heading": "Privacy Policy",
-  "pageId": "privacy",
+  "description": "Effective Date: March 2025 · Last Updated: October 2026",
+  "privacySummaryTitle": "Summary: We do not track you.",
+  "privacySummaryText": "Glossy is an offline-first scholarly application. We do not use tracking cookies, analytics trackers, or user telemetry. Your custom texts and edits remain entirely within your own browser.",
   "privacySections": [
     {
+      "num": "1",
+      "title": "Information We Do Not Collect",
+      "content": "Unlike commercial web platforms, Glossy operates without tracking infrastructure. Specifically:",
       "bullets": [
         "No tracking cookies: We do not set marketing, cross-site, or advertising cookies.",
         "No third-party analytics: We do not use Google Analytics, Mixpanel, Hotjar, or similar behavioral tracking scripts.",
         "No user telemetry: We do not record your keystrokes, reading speeds, or session replay data.",
         "No personal profiles: You do not need to register an account or provide personal information to read, gloss, or export texts."
-      ],
-      "content": "Unlike commercial web platforms, Glossy operates without tracking infrastructure. Specifically:",
-      "num": "1",
-      "title": "Information We Do Not Collect"
+      ]
     },
     {
+      "num": "2",
+      "title": "Browser Storage (localStorage)",
+      "content": "To ensure that your work is not lost when refreshing the page or working offline, Glossy stores draft documents and editing snapshots in your web browser's localStorage under keys prefixed with:",
       "bullets": [
         "glossy:draft:v1:[slug] (and compatibility key glossy_draft_[slug]): Holds local draft envelopes and working text documents in canonical schema format.",
         "glossy_pending_drafts: Holds the local index manifest of uncommitted drafts.",
         "glossy_active_text_slug: Holds your last active reader selection."
-      ],
-      "content": "To ensure that your work is not lost when refreshing the page or working offline, Glossy stores draft documents and editing snapshots in your web browser's localStorage under keys prefixed with:",
-      "num": "2",
-      "title": "Browser Storage (localStorage)"
+      ]
     },
     {
+      "num": "3",
+      "title": "Static Hosting & Edge Delivery",
+      "content": "Glossy is delivered via Cloudflare Pages as a static application (Next.js static export). Server access logs are standard HTTP request logs processed by Cloudflare at the edge for basic DDoS protection and CDN caching.",
       "bullets": [
         "Standard request logs include IP address, request time, user-agent, and requested asset path.",
         "Edge access logs are ephemeral and are not linked to personal user identities."
-      ],
-      "content": "Glossy is delivered via Cloudflare Pages as a static application (Next.js static export). Server access logs are standard HTTP request logs processed by Cloudflare at the edge for basic DDoS protection and CDN caching.",
-      "num": "3",
-      "title": "Static Hosting & Edge Delivery"
+      ]
     },
     {
+      "num": "4",
+      "title": "Open Source Code & Data Portability",
+      "content": "You maintain complete ownership and control over any text you ingest or gloss in Glossy. You can export your full gloss data at any time via LaTeX gb4e, JSON, or CSV, or wipe all browser-stored drafts by clearing your browser's site data.",
       "bullets": [
         "One-click LaTeX gb4e export produces self-contained academic TeX files.",
         "Local drafts can be deleted individually from the home corpus directory."
-      ],
-      "content": "You maintain complete ownership and control over any text you ingest or gloss in Glossy. You can export your full gloss data at any time via LaTeX gb4e, JSON, or CSV, or wipe all browser-stored drafts by clearing your browser's site data.",
-      "num": "4",
-      "title": "Open Source Code & Data Portability"
+      ]
     }
-  ],
-  "privacySummaryText": "Glossy is an offline-first scholarly application. We do not use tracking cookies, analytics trackers, or user telemetry. Your custom texts and edits remain entirely within your own browser.",
-  "privacySummaryTitle": "Summary: We do not track you.",
-  "title": "Privacy Policy | Glossy · Old English Interlinear Glosses"
+  ]
 }

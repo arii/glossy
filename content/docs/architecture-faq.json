@@ -1,464 +1,254 @@
 {
+  "title": "Documentation & Reference Guides",
+  "eyebrow": "Linguistic Standards & System Architecture",
+  "description": "Comprehensive reference guide split into linguistic editorial standards (Leipzig glossing, canonical OE headwords, Wiktionary/IPA) and system engineering architecture (local-first draft persistence, TinaCMS Git synchronization, automated QA test suites).",
+  "canonicalRuleTitle": "Quick Canonical Rule",
+  "canonicalRuleDescription": "All Old English adjectives default to Masculine Nominative Singular Strong citation form. Numerals 2 & 3 default to twēgen and þrīe.",
+  "architectureSpecTitle": "Data Pipeline & Verification",
+  "architectureSpecDescription": "Edits autosave locally to versioned draft envelopes (glossy:draft:v1:<slug>), deliberate saves register in the pending manifest, and authenticated TinaCMS sessions commit drafts to the Git repository.",
+  "l1Intro": "An interlinear gloss is a standard linguistic format that presents original historical text with word-by-word and morpheme-by-morpheme grammatical breakdowns aligned directly underneath:",
+  "l1TierHeaderTitle": "Three-Tier Interlinear Structure",
+  "l1TierHeaderBadge": "Leipzig Glossing Rules",
+  "l1TierTokens": "Ōhthere | sǣ-d-e | his hlāford-e",
+  "l1TierGlosses": "Ohthere | say-PST-IND.3SG | his.GEN lord-DAT.SG",
+  "l1TierTranslation": "“Ohthere said to his lord, King Alfred...”",
+  "l2Paragraph1": "In Old English, every single adjective inflects into over 15 distinct surface endings depending on gender (masculine, feminine, neuter), grammatical case (nominative, accusative, genitive, dative, instrumental), number (singular, plural), and declension (strong vs weak).",
+  "l2Paragraph2": "For instance, the word for all occurs in the text as eall, ealne, ealles, ealra, eallum, and ealle. Standard dictionaries (Bosworth-Toller, Sweet, Clark Hall, Wiktionary) universally choose the Masculine Nominative Singular Strong form (eall) as the single authoritative headword.",
+  "l2CalloutTitle": "Ja/Jō-stem Adjectives Retaining Base \"-e\"",
+  "l2CalloutBody": "Certain adjectives historically belong to the ja/jō-stem class and legitimately end in -e in their masculine nominative singular strong citation form (e.g. wēste \"desert, waste\", blīðe \"happy\", clǣne \"clean\", dȳre \"precious\"). The engine preserves these base forms without stripping their root vowel.",
+  "l3Intro": "Lemmatizing Old English numbers requires a clear rule: for numbers that don't have a singular form (e.g. 2, 3) or numbers above 1, we strictly cite the Masculine Nominative form:",
+  "l4WiktionaryTitle": "Wiktionary Entry Naming Conventions",
+  "l4WiktionarySubtitle": "Standard URL and anchor formatting according to official policy",
+  "l4WiktionaryIntro": "Glossy generates external reference links according to official Wiktionary:About Old English policies:",
+  "l4IpaTitle": "IPA Phonetic Transcription Standard",
+  "l4IpaSubtitle": "Pronunciation keys aligned with West Saxon phonology",
+  "l4IpaIntro": "Phonetic transcriptions follow the International Phonetic Alphabet standards established for West Saxon Old English:",
   "a1Intro": "Glossy allows scholars and learners to add any Old English text to the digital corpus at /edit/new. When new sentences are pasted (or loaded via classic presets like Beowulf: Prologue, Cædmon's Hymn, or The Wanderer):",
   "a2Intro": "Glossy provides a reliable local-first persistence and publishing workflow to ensure seamless editing and Git-backed content management:",
   "a3Intro": "Glossy maintains automated verification scripts to ensure 100% data integrity between raw LaTeX manuscripts, structured JSON content, and dictionary headwords:",
-  "abbreviations": [
-    {
-      "abbr": "1",
-      "category": "Person & Number",
-      "desc": "Speaker (ic, mē, mīn, wē, ūs)",
-      "name": "1st person"
-    },
-    {
-      "abbr": "2",
-      "category": "Person & Number",
-      "desc": "Addressee (þū, þē, þīn, gē, ēow)",
-      "name": "2nd person"
-    },
-    {
-      "abbr": "3",
-      "category": "Person & Number",
-      "desc": "Third person (hē, hēo, hit, hīe, him, his)",
-      "name": "3rd person"
-    },
-    {
-      "abbr": "ACC",
-      "category": "Case",
-      "desc": "Direct object of transitive verb or preposition",
-      "name": "accusative case"
-    },
-    {
-      "abbr": "ADJ",
-      "category": "Part of Speech",
-      "desc": "Descriptive modifier",
-      "name": "adjective"
-    },
-    {
-      "abbr": "ADV",
-      "category": "Part of Speech",
-      "desc": "Modifying verb, adjective, or clause direction",
-      "name": "adverb"
-    },
-    {
-      "abbr": "AGT",
-      "category": "Affixes & Morphemes",
-      "desc": "Agentive noun suffix (-ere, -a, e.g. hwælhuntan, fiscerum)",
-      "name": "agent"
-    },
-    {
-      "abbr": "CMP",
-      "category": "Gender & Mood",
-      "desc": "Comparative degree (-ra, -re, -or, e.g. lengra, swīftre)",
-      "name": "comparative"
-    },
-    {
-      "abbr": "COMP",
-      "category": "Part of Speech",
-      "desc": "Subordinating clause marker (þæt, that)",
-      "name": "complementizer"
-    },
-    {
-      "abbr": "DAT",
-      "category": "Case",
-      "desc": "Indirect object (to/for) or prepositional object",
-      "name": "dative case"
-    },
-    {
-      "abbr": "DEF",
-      "category": "Part of Speech",
-      "desc": "Definite article (sē, sēo, þæt, þā, þǣm)",
-      "name": "definite"
-    },
-    {
-      "abbr": "DEM",
-      "category": "Part of Speech",
-      "desc": "Demonstrative pronoun/determiner (þes, þis, þās)",
-      "name": "demonstrative"
-    },
-    {
-      "abbr": "DET",
-      "category": "Part of Speech",
-      "desc": "Quantifier or demonstrative modifying a noun",
-      "name": "determiner"
-    },
-    {
-      "abbr": "DIST",
-      "category": "Part of Speech",
-      "desc": "Distal demonstrative (that / those over there)",
-      "name": "distal"
-    },
-    {
-      "abbr": "F",
-      "category": "Gender & Mood",
-      "desc": "Grammatical feminine gender",
-      "name": "feminine gender"
-    },
-    {
-      "abbr": "GEN",
-      "category": "Case",
-      "desc": "Possession, origin, or partitive relation (of)",
-      "name": "genitive case"
-    },
-    {
-      "abbr": "HAB",
-      "category": "Gender & Mood",
-      "desc": "Habitual or timeless aspect (bēoð, bið)",
-      "name": "habitual"
-    },
-    {
-      "abbr": "IMP",
-      "category": "Gender & Mood",
-      "desc": "Direct command or exhortation",
-      "name": "imperative mood"
-    },
-    {
-      "abbr": "IND",
-      "category": "Gender & Mood",
-      "desc": "Stating factual reality",
-      "name": "indicative mood"
-    },
-    {
-      "abbr": "INDF",
-      "category": "Part of Speech",
-      "desc": "Indefinite article/pronoun (ān, sum, ǣniġ)",
-      "name": "indefinite"
-    },
-    {
-      "abbr": "INF",
-      "category": "Part of Speech",
-      "desc": "Uninflected verb citation base (-an, -ian)",
-      "name": "infinitive"
-    },
-    {
-      "abbr": "INS",
-      "category": "Case",
-      "desc": "Means or instrument by which an action is done (þȳ, þon)",
-      "name": "instrumental case"
-    },
-    {
-      "abbr": "M",
-      "category": "Gender & Mood",
-      "desc": "Grammatical masculine gender",
-      "name": "masculine gender"
-    },
-    {
-      "abbr": "N",
-      "category": "Gender & Mood",
-      "desc": "Grammatical neuter gender",
-      "name": "neuter gender"
-    },
-    {
-      "abbr": "NEG",
-      "category": "Affixes & Morphemes",
-      "desc": "Negative prefix or particle (ne, n-ān, næfde)",
-      "name": "negative"
-    },
-    {
-      "abbr": "NMLZ",
-      "category": "Affixes & Morphemes",
-      "desc": "Suffix creating a noun (-oð, -aþ, e.g. huntoðe, fiscaþe)",
-      "name": "nominalizer"
-    },
-    {
-      "abbr": "NOM",
-      "category": "Case",
-      "desc": "Grammatical subject of the clause",
-      "name": "nominative case"
-    },
-    {
-      "abbr": "PART",
-      "category": "Part of Speech",
-      "desc": "Past or present participle (-ende, -en, -ed, -od)",
-      "name": "participle"
-    },
-    {
-      "abbr": "PASS",
-      "category": "Gender & Mood",
-      "desc": "Passive verbal construction",
-      "name": "passive voice"
-    },
-    {
-      "abbr": "PFX",
-      "category": "Affixes & Morphemes",
-      "desc": "Derivational or verbal prefix (ġe-, ā-, of-, be-)",
-      "name": "prefix"
-    },
-    {
-      "abbr": "PL",
-      "category": "Person & Number",
-      "desc": "More than one entity",
-      "name": "plural number"
-    },
-    {
-      "abbr": "POSS",
-      "category": "Part of Speech",
-      "desc": "Possessive pronoun or determiner",
-      "name": "possessive"
-    },
-    {
-      "abbr": "PROX",
-      "category": "Part of Speech",
-      "desc": "Proximate demonstrative (this / these here)",
-      "name": "proximate"
-    },
-    {
-      "abbr": "PRS",
-      "category": "Tense & Aspect",
-      "desc": "Action taking place in the present",
-      "name": "present tense"
-    },
-    {
-      "abbr": "PST",
-      "category": "Tense & Aspect",
-      "desc": "Action completed in past time (preterite)",
-      "name": "past tense"
-    },
-    {
-      "abbr": "REL",
-      "category": "Part of Speech",
-      "desc": "Relative clause marker (þe, sē þe)",
-      "name": "relativizer"
-    },
-    {
-      "abbr": "SG",
-      "category": "Person & Number",
-      "desc": "Exactly one entity",
-      "name": "singular number"
-    },
-    {
-      "abbr": "SJV",
-      "category": "Gender & Mood",
-      "desc": "Hypothetical, counterfactual, or indirect clause",
-      "name": "subjunctive mood"
-    },
-    {
-      "abbr": "STR",
-      "category": "Declension",
-      "desc": "Strong adjectival inflection (alone without article)",
-      "name": "strong declension (indef.)"
-    },
-    {
-      "abbr": "SUP",
-      "category": "Gender & Mood",
-      "desc": "Superlative degree (-ost, -est, -mest, e.g. norþmest)",
-      "name": "superlative"
-    },
-    {
-      "abbr": "THM",
-      "category": "Affixes & Morphemes",
-      "desc": "Formative thematic vowel in Class 2 weak verbs (-i-, -o-)",
-      "name": "theme vowel"
-    },
-    {
-      "abbr": "WK",
-      "category": "Declension",
-      "desc": "Weak adjectival or nominal inflection (after article)",
-      "name": "weak declension (def.)"
-    }
-  ],
-  "architectureSpecDescription": "Edits autosave locally to versioned draft envelopes (glossy:draft:v1:<slug>), deliberate saves register in the pending manifest, and authenticated TinaCMS sessions commit drafts to the Git repository.",
-  "architectureSpecTitle": "Data Pipeline & Verification",
-  "canonicalRuleDescription": "All Old English adjectives default to Masculine Nominative Singular Strong citation form. Numerals 2 & 3 default to twēgen and þrīe.",
-  "canonicalRuleTitle": "Quick Canonical Rule",
-  "description": "Comprehensive reference guide split into linguistic editorial standards (Leipzig glossing, canonical OE headwords, Wiktionary/IPA) and system engineering architecture (local-first draft persistence, TinaCMS Git synchronization, automated QA test suites).",
-  "eyebrow": "Linguistic Standards & System Architecture",
-  "ingestionSteps": [
-    {
-      "description": "Punctuation is cleanly isolated and bound morphemes (hyphenated compound terms like ġeār-dag-um) are systematically segmented into glossable lexical units.",
-      "num": "1",
-      "title": "Automatic Tokenization & Compound Splitting"
-    },
-    {
-      "description": "Every token is evaluated through the Old English linguistic engine, assigning canonical masculine nominative singular strong adjective lemmas, infinitive verb lemmas, nominative noun lemmas, and direct Wiktionary etymological links.",
-      "num": "2",
-      "title": "Contextual Lemmatization Engine"
-    }
-  ],
-  "ipaSpecifications": [
-    {
-      "description": "Transcriptions use phonemic slashes /.../ for citation headwords.",
-      "title": "Phonemic Slashes"
-    },
-    {
-      "description": "Vowel length is transcribed with the standard IPA triangular length mark ː (U+02D0), not an ASCII colon.",
-      "title": "Triangular Length Colon"
-    },
-    {
-      "description": "Polysyllabic stress is indicated with the IPA vertical stroke ˈ (U+02C8) preceding the stressed syllable (e.g. /ˈbuː.ɑn/).",
-      "title": "Primary Stress"
-    },
-    {
-      "description": "Pronunciations reflect the canonical lemma headword rather than contextual inflected forms.",
-      "title": "Uninflected Citation"
-    }
-  ],
-  "l1Intro": "An interlinear gloss is a standard linguistic format that presents original historical text with word-by-word and morpheme-by-morpheme grammatical breakdowns aligned directly underneath:",
-  "l1TierGlosses": "Ohthere | say-PST-IND.3SG | his.GEN lord-DAT.SG",
-  "l1TierHeaderBadge": "Leipzig Glossing Rules",
-  "l1TierHeaderTitle": "Three-Tier Interlinear Structure",
-  "l1TierTokens": "Ōhthere | sǣ-d-e | his hlāford-e",
-  "l1TierTranslation": "“Ohthere said to his lord, King Alfred...”",
-  "l2CalloutBody": "Certain adjectives historically belong to the ja/jō-stem class and legitimately end in -e in their masculine nominative singular strong citation form (e.g. wēste \"desert, waste\", blīðe \"happy\", clǣne \"clean\", dȳre \"precious\"). The engine preserves these base forms without stripping their root vowel.",
-  "l2CalloutTitle": "Ja/Jō-stem Adjectives Retaining Base \"-e\"",
-  "l2Paragraph1": "In Old English, every single adjective inflects into over 15 distinct surface endings depending on gender (masculine, feminine, neuter), grammatical case (nominative, accusative, genitive, dative, instrumental), number (singular, plural), and declension (strong vs weak).",
-  "l2Paragraph2": "For instance, the word for all occurs in the text as eall, ealne, ealles, ealra, eallum, and ealle. Standard dictionaries (Bosworth-Toller, Sweet, Clark Hall, Wiktionary) universally choose the Masculine Nominative Singular Strong form (eall) as the single authoritative headword.",
-  "l3Intro": "Lemmatizing Old English numbers requires a clear rule: for numbers that don't have a singular form (e.g. 2, 3) or numbers above 1, we strictly cite the Masculine Nominative form:",
-  "l4IpaIntro": "Phonetic transcriptions follow the International Phonetic Alphabet standards established for West Saxon Old English:",
-  "l4IpaSubtitle": "Pronunciation keys aligned with West Saxon phonology",
-  "l4IpaTitle": "IPA Phonetic Transcription Standard",
-  "l4WiktionaryIntro": "Glossy generates external reference links according to official Wiktionary:About Old English policies:",
-  "l4WiktionarySubtitle": "Standard URL and anchor formatting according to official policy",
-  "l4WiktionaryTitle": "Wiktionary Entry Naming Conventions",
-  "numeralCards": [
-    {
-      "badge": "2 & 3",
-      "description": "Numbers 2 and 3 declension paradigms cite the masculine nominative (twēgen resolving twā/tū/twǣm, and þrīe resolving þrēo/þrim).",
-      "title": "Nominal Plurals (twēgen & þrīe)"
-    },
-    {
-      "badge": "1, 4–19",
-      "description": "Numbers with masculine nominative citation: ān (1), fēower (4), fīf (5), siex (6), seofon (7), eahta (8), nigon (9), tīen (10).",
-      "title": "Cardinals (ān, fēower, fīf)"
-    },
-    {
-      "badge": "20–100",
-      "description": "Decades ending in -tig (e.g. twēntig 20, syxtig 60) and hundreds (hund, hundtēontiġ) are treated as neuter noun quantifiers.",
-      "title": "Decades & Hundreds (twēntig, syxtig)"
-    },
-    {
-      "badge": "Verification",
-      "description": "All numerals in the corpus are audited for canonical headword citation and Wiktionary URL targets.",
-      "isFullWidth": true,
-      "title": "Corpus Numeral Audit"
-    }
-  ],
   "sections": [
     {
+      "id": "section-l1",
       "domain": "linguistics",
       "domainNum": "L1",
-      "eyebrow": "Beginner's Primer",
-      "id": "section-l1",
       "num": "1",
+      "eyebrow": "Beginner's Primer",
       "title": "How Interlinear Glossing Works"
     },
     {
+      "id": "section-l2",
       "domain": "linguistics",
       "domainNum": "L2",
-      "eyebrow": "Linguistic Standards",
-      "id": "section-l2",
       "num": "2",
+      "eyebrow": "Linguistic Standards",
       "title": "Why Adjectives Use Masculine Nominative Singular Strong Form"
     },
     {
+      "id": "section-l3",
       "domain": "linguistics",
       "domainNum": "L3",
-      "eyebrow": "Morphological Edge Cases",
-      "id": "section-l3",
       "num": "3",
+      "eyebrow": "Morphological Edge Cases",
       "title": "The Numeral Lemmatization Standard (Masculine Nominative)"
     },
     {
+      "id": "section-l4",
       "domain": "linguistics",
       "domainNum": "L4",
-      "eyebrow": "Lexicographic Standards",
-      "id": "section-l4",
       "num": "4",
+      "eyebrow": "Lexicographic Standards",
       "title": "Official Wiktionary & IPA Formatting Standards"
     },
     {
+      "id": "section-a1",
       "domain": "architecture",
       "domainNum": "A1",
-      "eyebrow": "Corpus Expansion",
-      "id": "section-a1",
       "num": "1",
+      "eyebrow": "Corpus Expansion",
       "title": "Ingesting & Glossing New Texts (Beowulf, Cædmon, Custom OE)"
     },
     {
+      "id": "section-a2",
       "domain": "architecture",
       "domainNum": "A2",
-      "eyebrow": "Architecture & Storage",
-      "id": "section-a2",
       "num": "2",
+      "eyebrow": "Architecture & Storage",
       "title": "Local Drafts, Manifest Tracking, & TinaCMS Publishing"
     },
     {
+      "id": "section-a3",
       "domain": "architecture",
       "domainNum": "A3",
-      "eyebrow": "Quality Assurance",
-      "id": "section-a3",
       "num": "3",
+      "eyebrow": "Quality Assurance",
       "title": "Automated Quality Verification Suite"
     }
   ],
-  "storageTiers": [
-    {
-      "description": "Every edit is automatically saved with a 300ms debounce to localStorage as a versioned draft envelope (glossy:draft:v1:<slug>), protecting working edits against accidental reloads.",
-      "tier": "Tier 1",
-      "timing": "300ms autosave",
-      "title": "Browser Local Draft"
-    },
-    {
-      "description": "Clicking Save draft records the document in the glossy_pending_drafts manifest with an updated content hash and timestamp.",
-      "tier": "Tier 2",
-      "timing": "Save Action",
-      "title": "Pending Draft Manifest"
-    },
-    {
-      "description": "Signing in through Tina Admin allows committing pending drafts directly to the Git-backed repository.",
-      "tier": "Tier 3",
-      "timing": "Authenticated Sign-In",
-      "title": "TinaCMS Git Commit"
-    }
+  "abbreviations": [
+    { "abbr": "1", "name": "1st person", "desc": "Speaker (ic, mē, mīn, wē, ūs)", "category": "Person & Number" },
+    { "abbr": "2", "name": "2nd person", "desc": "Addressee (þū, þē, þīn, gē, ēow)", "category": "Person & Number" },
+    { "abbr": "3", "name": "3rd person", "desc": "Third person (hē, hēo, hit, hīe, him, his)", "category": "Person & Number" },
+    { "abbr": "ACC", "name": "accusative case", "desc": "Direct object of transitive verb or preposition", "category": "Case" },
+    { "abbr": "ADJ", "name": "adjective", "desc": "Descriptive modifier", "category": "Part of Speech" },
+    { "abbr": "ADV", "name": "adverb", "desc": "Modifying verb, adjective, or clause direction", "category": "Part of Speech" },
+    { "abbr": "AGT", "name": "agent", "desc": "Agentive noun suffix (-ere, -a, e.g. hwælhuntan, fiscerum)", "category": "Affixes & Morphemes" },
+    { "abbr": "CMP", "name": "comparative", "desc": "Comparative degree (-ra, -re, -or, e.g. lengra, swīftre)", "category": "Gender & Mood" },
+    { "abbr": "COMP", "name": "complementizer", "desc": "Subordinating clause marker (þæt, that)", "category": "Part of Speech" },
+    { "abbr": "DAT", "name": "dative case", "desc": "Indirect object (to/for) or prepositional object", "category": "Case" },
+    { "abbr": "DEF", "name": "definite", "desc": "Definite article (sē, sēo, þæt, þā, þǣm)", "category": "Part of Speech" },
+    { "abbr": "DEM", "name": "demonstrative", "desc": "Demonstrative pronoun/determiner (þes, þis, þās)", "category": "Part of Speech" },
+    { "abbr": "DET", "name": "determiner", "desc": "Quantifier or demonstrative modifying a noun", "category": "Part of Speech" },
+    { "abbr": "DIST", "name": "distal", "desc": "Distal demonstrative (that / those over there)", "category": "Part of Speech" },
+    { "abbr": "F", "name": "feminine gender", "desc": "Grammatical feminine gender", "category": "Gender & Mood" },
+    { "abbr": "GEN", "name": "genitive case", "desc": "Possession, origin, or partitive relation (of)", "category": "Case" },
+    { "abbr": "HAB", "name": "habitual", "desc": "Habitual or timeless aspect (bēoð, bið)", "category": "Gender & Mood" },
+    { "abbr": "IMP", "name": "imperative mood", "desc": "Direct command or exhortation", "category": "Gender & Mood" },
+    { "abbr": "IND", "name": "indicative mood", "desc": "Stating factual reality", "category": "Gender & Mood" },
+    { "abbr": "INDF", "name": "indefinite", "desc": "Indefinite article/pronoun (ān, sum, ǣniġ)", "category": "Part of Speech" },
+    { "abbr": "INF", "name": "infinitive", "desc": "Uninflected verb citation base (-an, -ian)", "category": "Part of Speech" },
+    { "abbr": "INS", "name": "instrumental case", "desc": "Means or instrument by which an action is done (þȳ, þon)", "category": "Case" },
+    { "abbr": "M", "name": "masculine gender", "desc": "Grammatical masculine gender", "category": "Gender & Mood" },
+    { "abbr": "N", "name": "neuter gender", "desc": "Grammatical neuter gender", "category": "Gender & Mood" },
+    { "abbr": "NEG", "name": "negative", "desc": "Negative prefix or particle (ne, n-ān, næfde)", "category": "Affixes & Morphemes" },
+    { "abbr": "NMLZ", "name": "nominalizer", "desc": "Suffix creating a noun (-oð, -aþ, e.g. huntoðe, fiscaþe)", "category": "Affixes & Morphemes" },
+    { "abbr": "NOM", "name": "nominative case", "desc": "Grammatical subject of the clause", "category": "Case" },
+    { "abbr": "PART", "name": "participle", "desc": "Past or present participle (-ende, -en, -ed, -od)", "category": "Part of Speech" },
+    { "abbr": "PASS", "name": "passive voice", "desc": "Passive verbal construction", "category": "Gender & Mood" },
+    { "abbr": "PFX", "name": "prefix", "desc": "Derivational or verbal prefix (ġe-, ā-, of-, be-)", "category": "Affixes & Morphemes" },
+    { "abbr": "PL", "name": "plural number", "desc": "More than one entity", "category": "Person & Number" },
+    { "abbr": "POSS", "name": "possessive", "desc": "Possessive pronoun or determiner", "category": "Part of Speech" },
+    { "abbr": "PROX", "name": "proximate", "desc": "Proximate demonstrative (this / these here)", "category": "Part of Speech" },
+    { "abbr": "PRS", "name": "present tense", "desc": "Action taking place in the present", "category": "Tense & Aspect" },
+    { "abbr": "PST", "name": "past tense", "desc": "Action completed in past time (preterite)", "category": "Tense & Aspect" },
+    { "abbr": "REL", "name": "relativizer", "desc": "Relative clause marker (þe, sē þe)", "category": "Part of Speech" },
+    { "abbr": "SG", "name": "singular number", "desc": "Exactly one entity", "category": "Person & Number" },
+    { "abbr": "SJV", "name": "subjunctive mood", "desc": "Hypothetical, counterfactual, or indirect clause", "category": "Gender & Mood" },
+    { "abbr": "STR", "name": "strong declension (indef.)", "desc": "Strong adjectival inflection (alone without article)", "category": "Declension" },
+    { "abbr": "SUP", "name": "superlative", "desc": "Superlative degree (-ost, -est, -mest, e.g. norþmest)", "category": "Gender & Mood" },
+    { "abbr": "THM", "name": "theme vowel", "desc": "Formative thematic vowel in Class 2 weak verbs (-i-, -o-)", "category": "Affixes & Morphemes" },
+    { "abbr": "WK", "name": "weak declension (def.)", "desc": "Weak adjectival or nominal inflection (after article)", "category": "Declension" }
   ],
-  "title": "Documentation & Reference Guides",
   "verificationTools": [
     {
-      "command": "npm run validate:lemmas",
       "name": "Lemma Accuracy Audit",
+      "command": "npm run validate:lemmas",
       "target": "Audits tokens in the corpus verifying canonical lemma compliance and Wiktionary targets."
     },
     {
-      "command": "npm run validate:source",
       "name": "Source Alignment Validator",
+      "command": "npm run validate:source",
       "target": "Validates token and gloss alignment across source-backed texts."
     },
     {
-      "command": "npm run test:drafts",
       "name": "Draft Persistence Unit Tests",
+      "command": "npm run test:drafts",
       "target": "Validates draft envelope storage, slug sanitization, and collision prevention."
     },
     {
-      "command": "npm run sync:dictionary",
       "name": "Dictionary Sync",
+      "command": "npm run sync:dictionary",
       "target": "Generates clean, normalized dictionary files in content/dictionary/."
     },
     {
-      "command": "npm run compile:content",
       "name": "Content Pre-compiler",
+      "command": "npm run compile:content",
       "target": "Pre-compiles master TeX source into structured JSON."
     },
     {
-      "command": "npm run typecheck",
       "name": "TypeScript Typecheck",
+      "command": "npm run typecheck",
       "target": "Strict type safety validation across the entire application codebase."
+    }
+  ],
+  "numeralCards": [
+    {
+      "badge": "2 & 3",
+      "title": "Nominal Plurals (twēgen & þrīe)",
+      "description": "Numbers 2 and 3 declension paradigms cite the masculine nominative (twēgen resolving twā/tū/twǣm, and þrīe resolving þrēo/þrim)."
+    },
+    {
+      "badge": "1, 4–19",
+      "title": "Cardinals (ān, fēower, fīf)",
+      "description": "Numbers with masculine nominative citation: ān (1), fēower (4), fīf (5), siex (6), seofon (7), eahta (8), nigon (9), tīen (10)."
+    },
+    {
+      "badge": "20–100",
+      "title": "Decades & Hundreds (twēntig, syxtig)",
+      "description": "Decades ending in -tig (e.g. twēntig 20, syxtig 60) and hundreds (hund, hundtēontiġ) are treated as neuter noun quantifiers."
+    },
+    {
+      "badge": "Verification",
+      "title": "Corpus Numeral Audit",
+      "description": "All numerals in the corpus are audited for canonical headword citation and Wiktionary URL targets.",
+      "isFullWidth": true
+    }
+  ],
+  "ingestionSteps": [
+    {
+      "num": "1",
+      "title": "Automatic Tokenization & Compound Splitting",
+      "description": "Punctuation is cleanly isolated and bound morphemes (hyphenated compound terms like ġeār-dag-um) are systematically segmented into glossable lexical units."
+    },
+    {
+      "num": "2",
+      "title": "Contextual Lemmatization Engine",
+      "description": "Every token is evaluated through the Old English linguistic engine, assigning canonical masculine nominative singular strong adjective lemmas, infinitive verb lemmas, nominative noun lemmas, and direct Wiktionary etymological links."
     }
   ],
   "wiktionaryGuidelines": [
     {
-      "description": "Vowel macrons (ā, ē, ī, ō, ū, ȳ) and palatal dots (ċ, ġ) are modern editorial additions and are omitted from page titles (e.g. secgan, hlaford).",
-      "title": "Diacritics Stripped in Page Titles"
+      "title": "Diacritics Stripped in Page Titles",
+      "description": "Vowel macrons (ā, ē, ī, ō, ū, ȳ) and palatal dots (ċ, ġ) are modern editorial additions and are omitted from page titles (e.g. secgan, hlaford)."
     },
     {
-      "description": "Ash (æ), thorn (þ), and eth (ð) are standard Latin letters in Wiktionary titles (e.g. cweþan#Old_English).",
-      "title": "Historical Letters Retained"
+      "title": "Historical Letters Retained",
+      "description": "Ash (æ), thorn (þ), and eth (ð) are standard Latin letters in Wiktionary titles (e.g. cweþan#Old_English)."
     },
     {
-      "description": "Proper nouns and tribal names are capitalized (Ohthere, Ælfred); common vocabulary is always lowercase.",
-      "title": "Proper Noun Capitalization"
+      "title": "Proper Noun Capitalization",
+      "description": "Proper nouns and tribal names are capitalized (Ohthere, Ælfred); common vocabulary is always lowercase."
     },
     {
-      "description": "Headword links specifically target the #Old_English section anchor to jump past other languages directly to Old English.",
-      "title": "Anchor Standard"
+      "title": "Anchor Standard",
+      "description": "Headword links specifically target the #Old_English section anchor to jump past other languages directly to Old English."
+    }
+  ],
+  "ipaSpecifications": [
+    {
+      "title": "Phonemic Slashes",
+      "description": "Transcriptions use phonemic slashes /.../ for citation headwords."
+    },
+    {
+      "title": "Triangular Length Colon",
+      "description": "Vowel length is transcribed with the standard IPA triangular length mark ː (U+02D0), not an ASCII colon."
+    },
+    {
+      "title": "Primary Stress",
+      "description": "Polysyllabic stress is indicated with the IPA vertical stroke ˈ (U+02C8) preceding the stressed syllable (e.g. /ˈbuː.ɑn/)."
+    },
+    {
+      "title": "Uninflected Citation",
+      "description": "Pronunciations reflect the canonical lemma headword rather than contextual inflected forms."
+    }
+  ],
+  "storageTiers": [
+    {
+      "tier": "Tier 1",
+      "timing": "300ms autosave",
+      "title": "Browser Local Draft",
+      "description": "Every edit is automatically saved with a 300ms debounce to localStorage as a versioned draft envelope (glossy:draft:v1:<slug>), protecting working edits against accidental reloads."
+    },
+    {
+      "tier": "Tier 2",
+      "timing": "Save Action",
+      "title": "Pending Draft Manifest",
+      "description": "Clicking Save draft records the document in the glossy_pending_drafts manifest with an updated content hash and timestamp."
+    },
+    {
+      "tier": "Tier 3",
+      "timing": "Authenticated Sign-In",
+      "title": "TinaCMS Git Commit",
+      "description": "Signing in through Tina Admin allows committing pending drafts directly to the Git-backed repository."
     }
   ]
 }

@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import { BUILT_IN_CORPUS, isBuiltInSlug, isProtectedSlug, getBuiltInMetadata } from "../lib/corpus-registry.ts";
-import { isWorkspaceSlug, getWorkspaceTexts, DRAFT_STORAGE_PREFIX, PENDING_MANIFEST_KEY, markPending, writeDraft, listPending } from "../lib/local-drafts.ts";
+import { isWorkspaceSlug, getWorkspaceTexts, DRAFT_STORAGE_PREFIX, PENDING_MANIFEST_KEY, markPending } from "../lib/local-drafts.ts";
 import { sanitizeDraftForTinaMutation, isTinaAuthenticated, commitPendingDraft } from "../lib/tina-sync.ts";
 
-console.log("Running Unified TinaCMS Commit Pipeline & Sync Status Unit Tests...");
+console.log("Running Drafts & Registry Unit Tests...");
 
 // Test 1: Built-in corpus checks
 assert.ok(Array.isArray(BUILT_IN_CORPUS), "BUILT_IN_CORPUS must be an array");
@@ -18,23 +18,43 @@ assert.equal(isProtectedSlug("ohthere"), true, "ohthere must be protected");
 assert.equal(isProtectedSlug("ohthere-wulfstan"), true, "ohthere-wulfstan must be protected");
 assert.equal(isProtectedSlug("beowulf-prologue"), false, "beowulf-prologue must NOT be protected");
 assert.equal(isProtectedSlug("caedmon-hymn"), false, "caedmon-hymn must NOT be protected");
+assert.equal(isProtectedSlug("the-wanderer"), false, "the-wanderer must NOT be protected");
 
 // Test 3: Metadata retrieval
 const ohthereMeta = getBuiltInMetadata("ohthere");
 assert.ok(ohthereMeta, "ohthere metadata must exist");
 assert.equal(ohthereMeta.protected, true, "ohthere should be protected");
+assert.ok(ohthereMeta.title.length > 0, "ohthere title must not be empty");
 
-// Test 4: Workspace slug checks
+// Test 4: Workspace slug checks (SSR mode without window)
 assert.equal(isWorkspaceSlug("ohthere"), true, "ohthere must be in workspace");
 assert.equal(isWorkspaceSlug("ohthere-wulfstan"), true, "ohthere-wulfstan alias must be in workspace");
 assert.equal(isWorkspaceSlug("beowulf-prologue"), false, "uningested preset beowulf-prologue must NOT be in workspace");
+assert.equal(isWorkspaceSlug("caedmon-hymn"), false, "uningested preset caedmon-hymn must NOT be in workspace");
+assert.equal(isWorkspaceSlug("the-wanderer"), false, "uningested preset the-wanderer must NOT be in workspace");
+assert.equal(isWorkspaceSlug(""), false, "empty slug must not be in workspace");
 
-// Test 5: getWorkspaceTexts
+// Test 5: getWorkspaceTexts (SSR / Clean Workspace)
 const defaultTexts = getWorkspaceTexts();
 assert.equal(defaultTexts.length, 1, "Default workspace must contain only 1 text (Ohthere)");
 assert.equal(defaultTexts[0].slug, "ohthere");
 
-// Test 6: sanitizeDraftForTinaMutation unit tests
+const ohthereTexts = getWorkspaceTexts({ currentSlug: "ohthere" });
+assert.equal(ohthereTexts.length, 1, "Opening ohthere should not duplicate ohthere");
+
+const aliasTexts = getWorkspaceTexts({ currentSlug: "ohthere-wulfstan" });
+assert.equal(aliasTexts.length, 1, "ohthere-wulfstan alias should not create a duplicate entry");
+
+// Test 6: Direct preset preview navigation
+const beowulfTexts = getWorkspaceTexts({ currentSlug: "beowulf-prologue" });
+assert.equal(beowulfTexts.length, 2, "Previewing beowulf should include ohthere and beowulf only");
+assert.deepEqual(
+  beowulfTexts.map((t) => t.slug),
+  ["ohthere", "beowulf-prologue"],
+  "Workspace should NOT include caedmon-hymn or the-wanderer when previewing beowulf",
+);
+
+// Test 7: sanitizeDraftForTinaMutation unit tests
 const editorDoc = {
   textId: "test-text",
   slug: "test-text",
@@ -71,7 +91,7 @@ assert.equal(firstSent.translation, "This is a test sentence.", "translation mus
 const firstWord = firstSent.words[0];
 assert.equal(firstWord.originalWord, "Hwæt!", "originalWord must be mapped from sourceForm");
 
-// Test 7: Simulated Browser Environment with Typed Outcomes & Edit-after-Commit
+// Test 8: Simulated Browser Environment with Local Drafts & Tina Sync
 const mockStore = new Map();
 global.window = {
   location: { hostname: "example.com" },
@@ -85,50 +105,14 @@ global.window = {
       return mockStore.size;
     },
   },
-  dispatchEvent: () => {},
 };
 
-// 7a. Test unauthenticated outcome (needs-login)
-const unauthRes = await commitPendingDraft("non-existent-draft");
-assert.equal(unauthRes.ok, false, "Unstored draft commit must return ok: false");
-assert.equal(unauthRes.outcome, "rejected", "Unstored draft must return outcome: rejected");
+// Test isTinaAuthenticated helper
+assert.equal(isTinaAuthenticated(), false, "Without token or localhost, isTinaAuthenticated must be false");
+mockStore.set("tinacms-auth", "fake-token-123");
+assert.equal(isTinaAuthenticated(), true, "With tinacms-auth in localStorage, isTinaAuthenticated must be true");
 
-// Ingest Cædmon's Hymn as a local draft
-const caedmonDoc = {
-  textId: "caedmon-hymn",
-  slug: "caedmon-hymn",
-  title: "Cædmon's Hymn (Local Draft)",
-  language: "Old English",
-  author: "Cædmon",
-  sentences: [],
-};
-
-writeDraft("caedmon-hymn", caedmonDoc);
-const pending1 = listPending()["caedmon-hymn"];
-assert.equal(pending1.synced, false, "Fresh draft must have synced: false");
-
-// Without cms client or token, commitPendingDraft on remote host returns needs-login
-const noAuthRes = await commitPendingDraft("caedmon-hymn");
-assert.equal(noAuthRes.outcome, "needs-login", "Unauthenticated commit attempt must yield needs-login outcome");
-
-// 7b. Test GraphQL rejection outcome (rejected)
-const mockErrorCms = {
-  api: {
-    tina: {
-      request: async () => ({
-        errors: [{ message: "Schema validation failure: invalid sentence ID" }],
-      }),
-    },
-  },
-};
-
-const rejectRes = await commitPendingDraft("caedmon-hymn", { cms: mockErrorCms });
-assert.equal(rejectRes.ok, false, "Rejected GraphQL response must return ok: false");
-assert.equal(rejectRes.outcome, "rejected", "Rejected GraphQL response must return outcome: rejected");
-assert.equal(rejectRes.error, "Schema validation failure: invalid sentence ID");
-
-// 7c. Test Successful Commit outcome (committed)
-const mockSuccessCms = {
+const mockCms = {
   api: {
     tina: {
       request: async (query, { variables }) => {
@@ -139,27 +123,44 @@ const mockSuccessCms = {
     },
   },
 };
+assert.equal(isTinaAuthenticated(mockCms), true, "With cms object containing api.tina, isTinaAuthenticated must be true");
 
-const commitRes = await commitPendingDraft("caedmon-hymn", { cms: mockSuccessCms });
-assert.equal(commitRes.ok, true, "Successful commit must return ok: true");
-assert.equal(commitRes.outcome, "committed", "Successful commit must return outcome: committed");
-
-const pending2 = listPending()["caedmon-hymn"];
-assert.equal(pending2.synced, true, "After successful commit, manifest entry must have synced: true");
-
-// 7d. Test Edit-After-Commit scenario
-// Re-editing the document changes its content hash, which must reset synced: false in manifest
-const updatedCaedmonDoc = {
-  ...caedmonDoc,
-  title: "Cædmon's Hymn (Revised Edition)",
+// Ingest Cædmon's Hymn into simulated drafts
+const caedmonDoc = {
+  textId: "caedmon-hymn",
+  slug: "caedmon-hymn",
+  title: "Cædmon's Hymn (Local Draft)",
+  author: "Cædmon",
+  sentences: [],
 };
-writeDraft("caedmon-hymn", updatedCaedmonDoc);
 
-const pending3 = listPending()["caedmon-hymn"];
-assert.equal(pending3.synced, false, "Editing a committed document must reset synced to false");
+mockStore.set(
+  `${DRAFT_STORAGE_PREFIX}caedmon-hymn`,
+  JSON.stringify({
+    version: 1,
+    doc: caedmonDoc,
+    baseHash: "test_hash",
+    updatedAt: new Date().toISOString(),
+  }),
+);
+
+markPending("caedmon-hymn", caedmonDoc);
+
+const pendingRawBefore = mockStore.get(PENDING_MANIFEST_KEY);
+assert.ok(pendingRawBefore, "Pending manifest must exist");
+const pendingBefore = JSON.parse(pendingRawBefore);
+assert.equal(pendingBefore["caedmon-hymn"].synced, false, "Newly created draft must have synced: false");
+
+// Commit draft via mock CMS
+const commitRes = await commitPendingDraft("caedmon-hymn", { cms: mockCms });
+assert.equal(commitRes.ok, true, "commitPendingDraft should succeed with mock CMS");
+
+const pendingRawAfter = mockStore.get(PENDING_MANIFEST_KEY);
+const pendingAfter = JSON.parse(pendingRawAfter);
+assert.equal(pendingAfter["caedmon-hymn"].synced, true, "After commit, pending draft synced flag must be true");
 
 // Clean up
-mockStore.clear();
+mockStore.delete(`${DRAFT_STORAGE_PREFIX}caedmon-hymn`);
 delete global.window;
 
-console.log("✓ All unified commit pipeline and sync status unit tests passed successfully!");
+console.log("✓ All draft and corpus registry tests passed successfully!");

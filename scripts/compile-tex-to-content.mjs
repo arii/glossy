@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { parseGb4eToTextDocument } from "../lib/gb4e.ts";
-import { formatJson } from "./format-json.mjs";
+import { exportToGb4eLatex } from "../data/latex-export.ts";
 
 const texPath = join(process.cwd(), "references", "Voyages_of_Ohthere_Wulfstan.tex");
 if (!existsSync(texPath)) {
@@ -18,23 +18,13 @@ const texContent = readFileSync(texPath, "utf8");
 const document = parseGb4eToTextDocument(texContent, {
   textId: "ohthere",
   slug: "ohthere-wulfstan",
-  title: "The voyages of Ohthere and Wulfstan",
-  author: "Alfred the Great's Circle / Anonymous",
-  editor: "Tyler Lemon",
-  shelfmark: "BL Cotton MS Tiberius B i, fol. 11r–15v",
-  dialect: "Early West Saxon",
-  historicalDate: "c. 890–900 AD",
-  source: "London, British Library, Cotton MS Tiberius B i, fol. 11r–15v",
   sourceFile: "references/Voyages_of_Ohthere_Wulfstan.tex",
-  sourceEdition: "Old English Orosius (ed. Bately 1980 / Sweet)",
-  date: "September 30, 2026",
-  language: "Old English",
+  sourceEdition: "Full 75-example corpus from the accompanying gb4e LaTeX manuscript",
   status: "published",
 });
 
 const targetJsonPath = join(contentDir, "ohthere.json");
-const formatted = await formatJson(JSON.stringify(document), targetJsonPath);
-writeFileSync(targetJsonPath, formatted, "utf8");
+writeFileSync(targetJsonPath, JSON.stringify(document, null, 2) + "\n", "utf8");
 
 console.log(
   `Successfully compiled full TeX document to ${targetJsonPath} (${document.sentences?.length || 0} sentences).`,

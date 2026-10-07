@@ -1,22 +1,16 @@
 import type { TextDocument } from "./types";
-import { readDraft, listPending, markDraftAsSynced, computeDocumentHash } from "./local-drafts";
-import { TINA_LOCAL_GRAPHQL_URL, getTinaCloudUrl } from "./tina-config";
-
-export type CommitOutcome = "committed" | "needs-login" | "unreachable" | "rejected";
+import { readDraft, listPending, markDraftAsSynced } from "./local-drafts";
 
 export interface CommitResult {
-  outcome: CommitOutcome;
   ok: boolean;
   slug: string;
   error?: string;
-  errors?: string[];
 }
 
 export interface BatchCommitResult {
   committedSlugs: string[];
   failedSlugs: string[];
   errors: Record<string, string>;
-  outcomes: Record<string, CommitOutcome>;
 }
 
 export function sanitizeDraftForTinaMutation(
@@ -37,7 +31,7 @@ export function sanitizeDraftForTinaMutation(
         id: String(w.id || ""),
         originalWord: String(w.originalWord || w.sourceForm || ""),
         morphologicalGloss: String(w.morphologicalGloss || w.sourceGloss || ""),
-        trailingPunctuation: w.trailingPunctuation ? String(w.trailingPunctuation) : undefined,
+        trailingPunctuation: String(w.trailingPunctuation || ""),
         sourceGlossTex: String(w.sourceGlossTex || w.literalTexGloss || ""),
       };
 
@@ -50,14 +44,14 @@ export function sanitizeDraftForTinaMutation(
           lemma: String(a.lemma || w.lemma || ""),
           partOfSpeech: String(a.partOfSpeech || w.pos || ""),
           definition: String(a.definition || w.explanation || ""),
-          phonetic: (a.phonetic || w.ipa) ? String(a.phonetic || w.ipa) : undefined,
-          pronunciationSource: a.pronunciationSource ? String(a.pronunciationSource) : undefined,
-          historicalNote: a.historicalNote ? String(a.historicalNote) : undefined,
-          wiktionaryUrl: (a.wiktionaryUrl || w.wiktionaryUrl) ? String(a.wiktionaryUrl || w.wiktionaryUrl) : undefined,
+          phonetic: String(a.phonetic || w.ipa || ""),
+          pronunciationSource: String(a.pronunciationSource || ""),
+          historicalNote: String(a.historicalNote || ""),
+          wiktionaryUrl: String(a.wiktionaryUrl || w.wiktionaryUrl || ""),
         };
 
         const featuresRaw = (a.features || w.inflections || {}) as Record<string, unknown>;
-        if (featuresRaw && typeof featuresRaw === "object" && Object.keys(featuresRaw).length > 0) {
+        if (featuresRaw && typeof featuresRaw === "object") {
           const featuresObj: Record<string, unknown> = {};
           if (featuresRaw.case) featuresObj.case = String(featuresRaw.case);
           if (featuresRaw.number) featuresObj.number = String(featuresRaw.number);
@@ -77,17 +71,12 @@ export function sanitizeDraftForTinaMutation(
           : Array.isArray(w.morphemes)
           ? w.morphemes
           : [];
-        analysisObj.morphemes = morphemesRaw.map((m: Record<string, unknown>) => {
-          const res: Record<string, unknown> = {
-            form: String(m.form || ""),
-            gloss: String(m.gloss || ""),
-          };
-          if (m.id) res.id = String(m.id);
-          if (m.kind) res.kind = String(m.kind);
-          return res;
-        });
+        analysisObj.morphemes = morphemesRaw.map((m: Record<string, unknown>) => ({
+          form: String(m.form || ""),
+          gloss: String(m.gloss || ""),
+          kind: String(m.kind || "stem"),
+        }));
 
-        Object.keys(analysisObj).forEach((k) => analysisObj[k] === undefined && delete analysisObj[k]);
         wordObj.analysis = analysisObj;
       }
 
@@ -106,7 +95,6 @@ export function sanitizeDraftForTinaMutation(
         };
       }
 
-      Object.keys(wordObj).forEach((k) => wordObj[k] === undefined && delete wordObj[k]);
       return wordObj;
     });
 
@@ -120,35 +108,31 @@ export function sanitizeDraftForTinaMutation(
       text: String(n.text || ""),
     }));
 
-    const sentObj: Record<string, unknown> = {
+    return {
       id: String(s.id || ""),
       translation: String(s.translation || s.freeTranslation || ""),
-      footnotes: footnotesRaw.length > 0 ? footnotesRaw.map((fn: unknown) => String(fn)) : undefined,
-      notes: notes.length > 0 ? notes : undefined,
+      footnotes: footnotesRaw.map((fn: unknown) => String(fn)),
+      notes,
       words,
     };
-    Object.keys(sentObj).forEach((k) => sentObj[k] === undefined && delete sentObj[k]);
-    return sentObj;
   });
 
-  const resDoc: Record<string, unknown> = {
+  return {
     textId: String(doc.textId || doc.slug || ""),
     slug: String(doc.slug || doc.textId || ""),
     language: String(doc.language || "Old English"),
     author: String(doc.author || ""),
-    editor: doc.editor ? String(doc.editor) : undefined,
-    shelfmark: doc.shelfmark ? String(doc.shelfmark) : undefined,
-    dialect: doc.dialect ? String(doc.dialect) : undefined,
-    historicalDate: doc.historicalDate ? String(doc.historicalDate) : undefined,
+    editor: String(doc.editor || ""),
+    shelfmark: String(doc.shelfmark || ""),
+    dialect: String(doc.dialect || ""),
+    historicalDate: String(doc.historicalDate || ""),
     title: String(doc.title || ""),
     source: String(doc.source || ""),
     sourceFile: String(doc.sourceFile || ""),
-    sourceEdition: doc.sourceEdition ? String(doc.sourceEdition) : undefined,
+    sourceEdition: String(doc.sourceEdition || ""),
     status: String(doc.status || "draft"),
     sentences,
   };
-  Object.keys(resDoc).forEach((k) => resDoc[k] === undefined && delete resDoc[k]);
-  return resDoc as unknown as ReturnType<typeof sanitizeDraftForTinaMutation>;
 }
 
 export function isTinaAuthenticated(cms?: unknown): boolean {
@@ -172,7 +156,7 @@ export function isTinaAuthenticated(cms?: unknown): boolean {
   return Boolean(token);
 }
 
-export const UPDATE_TEXT_MUTATION = `
+const UPDATE_TEXT_MUTATION = `
   mutation UpdateText($relativePath: String!, $params: TextMutation!) {
     updateText(relativePath: $relativePath, params: $params) {
       id
@@ -187,21 +171,14 @@ export async function commitPendingDraft(
   options?: { cms?: unknown },
 ): Promise<CommitResult> {
   if (typeof window === "undefined") {
-    return {
-      outcome: "unreachable",
-      ok: false,
-      slug,
-      error: "Window object unavailable.",
-    };
+    return { ok: false, slug, error: "Window object unavailable." };
   }
 
   let draftDoc: Record<string, unknown> | null = null;
-  let textDoc: TextDocument | null = null;
 
   // 1. Try reading via local-drafts module
   const storedDraft = readDraft(slug);
   if (storedDraft?.doc) {
-    textDoc = storedDraft.doc;
     draftDoc = storedDraft.doc as unknown as Record<string, unknown>;
   } else {
     // 2. Direct localStorage fallback
@@ -223,16 +200,10 @@ export async function commitPendingDraft(
   }
 
   if (!draftDoc) {
-    return {
-      outcome: "rejected",
-      ok: false,
-      slug,
-      error: `No local draft document found for slug: ${slug}`,
-    };
+    return { ok: false, slug, error: `No local draft document found for slug: ${slug}` };
   }
 
   const sanitizedParams = sanitizeDraftForTinaMutation(draftDoc);
-  const contentHash = textDoc ? computeDocumentHash(textDoc) : computeDocumentHash(sanitizedParams as unknown as TextDocument);
   const fileName = (draftDoc.fileName || draftDoc.textId || slug) as string;
   const relativePath = `${fileName.endsWith(".json") ? fileName : `${fileName}.json`}`;
 
@@ -244,38 +215,23 @@ export async function commitPendingDraft(
           request: (
             query: string,
             options?: { variables: Record<string, unknown> },
-          ) => Promise<{ data?: unknown; errors?: Array<{ message: string }> }>;
+          ) => Promise<unknown>;
         };
       };
     })?.api?.tina;
 
     if (tinaApi?.request) {
       try {
-        const res = await tinaApi.request(UPDATE_TEXT_MUTATION, {
+        await tinaApi.request(UPDATE_TEXT_MUTATION, {
           variables: { relativePath, params: sanitizedParams },
         });
-
-        if (res?.errors && res.errors.length > 0) {
-          const errMsgs = res.errors.map((e) => e.message);
-          return {
-            outcome: "rejected",
-            ok: false,
-            slug,
-            error: errMsgs[0] || "GraphQL mutation rejected",
-            errors: errMsgs,
-          };
-        }
-
-        markDraftAsSynced(slug, contentHash);
-        return { outcome: "committed", ok: true, slug };
+        markDraftAsSynced(slug);
+        return { ok: true, slug };
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Tina API client request failed";
-        const isAuthErr = msg.toLowerCase().includes("auth") || msg.toLowerCase().includes("unauthorized");
         return {
-          outcome: isAuthErr ? "needs-login" : "rejected",
           ok: false,
           slug,
-          error: msg,
+          error: err instanceof Error ? err.message : "Tina API client request failed",
         };
       }
     }
@@ -284,7 +240,9 @@ export async function commitPendingDraft(
   // Attempt 2: Localhost GraphQL endpoint
   if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
     try {
-      const res = await fetch(TINA_LOCAL_GRAPHQL_URL, {
+      const localUrl =
+        process.env.NEXT_PUBLIC_TINA_LOCAL_URL || "http://localhost:4001/graphql";
+      const res = await fetch(localUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -292,34 +250,16 @@ export async function commitPendingDraft(
           variables: { relativePath, params: sanitizedParams },
         }),
       });
-
-      if (res.status === 401 || res.status === 403) {
-        return {
-          outcome: "needs-login",
-          ok: false,
-          slug,
-          error: "TinaCMS authentication required.",
-        };
-      }
-
       const json = await res.json();
       if (json.errors && json.errors.length > 0) {
-        const errMsgs = json.errors.map((e: { message: string }) => e.message);
-        return {
-          outcome: "rejected",
-          ok: false,
-          slug,
-          error: errMsgs[0] || "GraphQL mutation rejected",
-          errors: errMsgs,
-        };
+        throw new Error(json.errors[0]?.message || "GraphQL mutation error");
       }
-
       if (json.data?.updateText || json.data?.updateDocument) {
-        markDraftAsSynced(slug, contentHash);
-        return { outcome: "committed", ok: true, slug };
+        markDraftAsSynced(slug);
+        return { ok: true, slug };
       }
     } catch (err) {
-      // Fallthrough to TinaCloud if localhost connection failed
+      // Fallthrough to TinaCloud if localhost request fails
       console.warn("[tina-sync] Localhost GraphQL request failed:", err);
     }
   }
@@ -328,7 +268,14 @@ export async function commitPendingDraft(
   const authToken = window.localStorage.getItem("tinacms-auth");
   if (authToken) {
     try {
-      const cloudUrl = getTinaCloudUrl();
+      const clientId =
+        process.env.NEXT_PUBLIC_TINA_CLIENT_ID || "7cf6793a-dfc2-4a6b-ae23-c2665e22f286";
+      const branch =
+        process.env.NEXT_PUBLIC_TINA_BRANCH ||
+        process.env.TINA_BRANCH ||
+        "main";
+      const cloudUrl = `https://content.tinajs.io/3.0/content/${clientId}/github/${branch}`;
+
       const res = await fetch(cloudUrl, {
         method: "POST",
         headers: {
@@ -341,43 +288,24 @@ export async function commitPendingDraft(
         }),
       });
 
-      if (res.status === 401 || res.status === 403) {
-        return {
-          outcome: "needs-login",
-          ok: false,
-          slug,
-          error: "TinaCloud authentication token invalid or expired. Please log in again.",
-        };
-      }
-
       const json = await res.json();
       if (json.errors && json.errors.length > 0) {
-        const errMsgs = json.errors.map((e: { message: string }) => e.message);
-        return {
-          outcome: "rejected",
-          ok: false,
-          slug,
-          error: errMsgs[0] || "TinaCloud GraphQL error",
-          errors: errMsgs,
-        };
+        throw new Error(json.errors[0]?.message || "TinaCloud GraphQL error");
       }
-
       if (json.data?.updateText || json.data?.updateDocument) {
-        markDraftAsSynced(slug, contentHash);
-        return { outcome: "committed", ok: true, slug };
+        markDraftAsSynced(slug);
+        return { ok: true, slug };
       }
     } catch (err) {
       return {
-        outcome: "unreachable",
         ok: false,
         slug,
-        error: err instanceof Error ? err.message : "TinaCloud commit network failure",
+        error: err instanceof Error ? err.message : "TinaCloud commit failed",
       };
     }
   }
 
   return {
-    outcome: "needs-login",
     ok: false,
     slug,
     error: "TinaCMS authentication required. Please sign in to Tina Admin to commit.",
@@ -393,11 +321,9 @@ export async function commitAllPendingDrafts(
   const committedSlugs: string[] = [];
   const failedSlugs: string[] = [];
   const errors: Record<string, string> = {};
-  const outcomes: Record<string, CommitOutcome> = {};
 
   for (const slug of unsyncedSlugs) {
     const res = await commitPendingDraft(slug, options);
-    outcomes[slug] = res.outcome;
     if (res.ok) {
       committedSlugs.push(slug);
     } else {
@@ -408,5 +334,5 @@ export async function commitAllPendingDrafts(
     }
   }
 
-  return { committedSlugs, failedSlugs, errors, outcomes };
+  return { committedSlugs, failedSlugs, errors };
 }

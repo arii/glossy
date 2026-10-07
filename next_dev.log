@@ -1,0 +1,38 @@
+
+> glossy@0.1.0 dev
+> node scripts/dev.js
+
+Starting TinaCMS dev server with Next.js (port 4001 + 3000)...
+(node:329118) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///app/scripts/dev.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /app/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🦙 TinaCMS Dev Server is initializing...
+[2K[1GIndexing local files ⠋[2K[1GIndexing local files ⠙[2K[1GIndexing local files ⠹[2K[1GIndexing local files ⠸
+│
+○  ✅ 🦙 TinaCMS Dev Server is active: ─────────────────────────────────────╮
+│                                                                          │
+│  🦙 TinaCMS URLs                                                         │
+│     CMS:                <your-dev-server-url>/admin/index.html           │
+│     API playground:     <your-dev-server-url>/admin/index.html#/graphql  │
+│     API url:            http://localhost:4001/graphql                    │
+│                                                                          │
+│  🤖 Auto-generated files                                                 │
+│     GraphQL Client:     tina/__generated__/client.ts                     │
+│     Typescript Types:   tina/__generated__/types.ts                      │
+│                                                                          │
+│                                                                          │
+├──────────────────────────────────────────────────────────────────────────╯
+Running web application with command: next dev -p 3000 -H 0.0.0.0
+   ▲ Next.js 15.5.27
+   - Local:        http://localhost:3000
+   - Network:      http://0.0.0.0:3000
+
+ ✓ Starting...
+ ✓ Ready in 3.3s
+ ○ Compiling /edit/[slug] ...
+ ✓ Compiled /edit/[slug] in 8.1s (738 modules)
+ GET /edit/ohthere 200 in 11523ms
+ GET /edit/ohthere 200 in 1086ms
+ GET /edit/ohthere 200 in 1617ms
+ ✓ Compiled in 822ms (724 modules)

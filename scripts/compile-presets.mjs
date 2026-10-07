@@ -2,7 +2,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { tokenizeAndLemmatizeSentence } from "../lib/lemmatizer.ts";
 import { exportToGb4eLatex } from "../data/latex-export.ts";
-import { formatJson } from "./format-json.mjs";
 
 const PRESETS = [
   {
@@ -10,13 +9,7 @@ const PRESETS = [
     title: "Cædmon's Hymn",
     slug: "caedmon-hymn",
     author: "Cædmon (Bede's Historia Ecclesiastica)",
-    glossedBy: "Cædmon (Bede's Historia Ecclesiastica)",
-    editor: "Tyler Lemon",
-    shelfmark: "CUL MS Kk. 5. 16, fol. 128v (Moore Bede)",
-    dialect: "Northumbrian (Early Old English)",
-    historicalDate: "c. 658–680 AD (MS c. 737 AD)",
     source: "Cambridge, University Library, MS Kk. 5. 16 (Moore Bede)",
-    sourceEdition: "Dobbie (1942), ASPR VI",
     sourceFile: "references/Caedmon_Hymn.tex",
     period: "Northumbrian Religious Hymn (ca. 7th c.)",
     lines: [
@@ -35,12 +28,7 @@ const PRESETS = [
     title: "The Wanderer (Opening)",
     slug: "the-wanderer",
     author: "Anonymous (Exeter Book)",
-    editor: "Tyler Lemon",
-    shelfmark: "Exeter Cathedral Library MS 3501, fol. 76v–79r (Exeter Book)",
-    dialect: "Late West Saxon",
-    historicalDate: "c. 10th Century AD (MS c. 970 AD)",
     source: "Exeter, Cathedral Library, MS 3501, ff. 76v–79r",
-    sourceEdition: "Krapp & Dobbie (1936), ASPR III",
     sourceFile: "references/The_Wanderer.tex",
     period: "Elegiac Verse (10th c.)",
     lines: [
@@ -87,13 +75,7 @@ for (const preset of PRESETS) {
     slug: preset.slug,
     title: preset.title,
     author: preset.author,
-    glossedBy: preset.glossedBy,
-    editor: preset.editor,
-    shelfmark: preset.shelfmark,
-    dialect: preset.dialect,
-    historicalDate: preset.historicalDate,
     source: preset.source,
-    sourceEdition: preset.sourceEdition,
     sourceFile: preset.sourceFile,
     language: "Old English",
     status: "published",
@@ -104,9 +86,11 @@ for (const preset of PRESETS) {
   const tex = exportToGb4eLatex(doc);
 
   fs.writeFileSync(path.join(process.cwd(), preset.sourceFile), tex, "utf8");
-  const jsonPath = path.join(process.cwd(), "content", "texts", `${preset.slug}.json`);
-  const formatted = await formatJson(JSON.stringify(doc), jsonPath);
-  fs.writeFileSync(jsonPath, formatted, "utf8");
+  fs.writeFileSync(
+    path.join(process.cwd(), "content", "texts", `${preset.slug}.json`),
+    JSON.stringify(doc, null, 2) + "\n",
+    "utf8"
+  );
 
   console.log(`Compiled preset "${preset.title}" -> ${preset.sourceFile} and content/texts/${preset.slug}.json`);
 }
