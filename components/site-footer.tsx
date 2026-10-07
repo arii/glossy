@@ -1,8 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import attributionData from "../content/pages/attribution.json";
 
-export function SiteFooter() {
+export interface SiteFooterProps {
+  platformCreator?: string;
+  platformCreatorUrl?: string;
+  defaultEditor?: string;
+  defaultEditorUrl?: string;
+}
+
+export function SiteFooter(props: SiteFooterProps) {
+  const platformCreator = props.platformCreator ?? attributionData.platformCreator;
+  const platformCreatorUrl = props.platformCreatorUrl ?? attributionData.platformCreatorUrl;
+  const defaultEditor = props.defaultEditor ?? attributionData.defaultEditor;
+  const defaultEditorUrl = props.defaultEditorUrl ?? attributionData.defaultEditorUrl;
+
   const feedbackUrl = "https://github.com/arii/glossy/issues/new?template=feedback.yml&title=Feedback%20%2F%20Report";
 
   return (
@@ -15,23 +28,31 @@ export function SiteFooter() {
           </div>
           <div className="site-footer-credits">
             Developed by{" "}
-            <a
-              href="https://boomtick.blog/services"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="site-footer-author-link"
-            >
-              Ariel Anders
-            </a>{" "}
+            {platformCreatorUrl ? (
+              <a
+                href={platformCreatorUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="site-footer-author-link"
+              >
+                {platformCreator}
+              </a>
+            ) : (
+              platformCreator
+            )}{" "}
             with{" "}
-            <a
-              href="https://sites.google.com/view/tyler-lemon"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="site-footer-author-link"
-            >
-              Tyler Lemon
-            </a>
+            {defaultEditorUrl ? (
+              <a
+                href={defaultEditorUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="site-footer-author-link"
+              >
+                {defaultEditor}
+              </a>
+            ) : (
+              defaultEditor
+            )}
           </div>
         </div>
 
