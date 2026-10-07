@@ -14,7 +14,6 @@ export default defineConfig([
     "node_modules/**",
     "next-env.d.ts",
     "public/admin/**",
-    "scripts/archive/**",
     "tina/__generated__/**",
   ]),
 ]);

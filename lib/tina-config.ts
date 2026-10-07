@@ -1,3 +1,5 @@
+import { CONFIG } from "./config";
+
 export const TINA_CLIENT_ID =
   process.env.NEXT_PUBLIC_TINA_CLIENT_ID ||
   "7cf6793a-dfc2-4a6b-ae23-c2665e22f286";
@@ -10,7 +12,7 @@ export const TINA_BRANCH =
   "main";
 
 export const TINA_LOCAL_GRAPHQL_URL =
-  process.env.NEXT_PUBLIC_TINA_LOCAL_URL || "http://localhost:4001/graphql";
+  process.env.NEXT_PUBLIC_TINA_LOCAL_URL || `http://localhost:${CONFIG.TINA_PORT}/graphql`;
 
 export const TINA_TOKEN = process.env.TINA_TOKEN || "";
 

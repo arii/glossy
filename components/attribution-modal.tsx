@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Copy, Check, X, BookOpen, ShieldCheck, Scroll, Calendar, User } from "lucide-react";
 import { tinaField } from "tinacms/dist/react";
 import { getBuiltInMetadata } from "../lib/corpus-registry";
+import { CONFIG } from "../lib/config";
 import initialAttributionData from "../content/pages/attribution.json";
 
 export type CitationFormat = "bibtex" | "unified" | "apa" | "chicago";
@@ -123,7 +124,7 @@ export function AttributionCard({
     platformCreator: activePlatformCreator,
     defaultEditor: activeEditor,
     editorNote: `linguistic glossing and annotation by ${activeEditor}; critical edition: ${activeSourceEdition}`,
-    url: `https://glossed.pages.dev/read/${slug}`,
+    url: `${CONFIG.SITE_URL}/read/${slug}`,
     source: `${activeShelfmark} (${activeSourceEdition})`,
     shelfmark: activeShelfmark,
     sourceEdition: activeSourceEdition,
@@ -565,4 +566,3 @@ export function AttributionModal({
     </div>
   );
 }
-
