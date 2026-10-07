@@ -101,7 +101,7 @@ export function AttributionCard({
   const activeStandardsStatement =
     activeConfig.attributionStandardsStatement ||
     initialAttributionData.attributionStandardsStatement ||
-    `Developed through the collaborative partnership of ${activePlatformCreator} (software architecture, digital platform, and automated verification suite) and ${activeEditor} (linguistic subject matter expertise, Old English glossing, and grammatical accuracy). Interlinear formatting conforms to the international Leipzig Glossing Rules with LaTeX gb4e alignment, canonical lemmatization referenced to Bosworth-Toller and Wiktionary, and visual gloss layout inspired by Peter S. Baker's Old English Aerobics (oldenglishaerobics.net).`;
+    "Interlinear formatting conforms to international Leipzig Glossing Rules with LaTeX gb4e alignment, canonical lemmatization referenced to Bosworth-Toller and Wiktionary, and visual gloss layout inspired by Peter S. Baker's Old English Aerobics (oldenglishaerobics.net).";
 
   const bibtexKey = `Glossy${activeEditionDate}${slug.replace(/[^a-zA-Z0-9]/g, "")}`;
 
@@ -419,7 +419,7 @@ export function AttributionCard({
                   boxShadow: activeTab === tab ? "0 1px 2px rgba(0,0,0,0.05)" : "none",
                 }}
               >
-                {tab}
+                {tab === "unified" ? "UNIFIED (LSA)" : tab}
               </button>
             ))}
           </div>

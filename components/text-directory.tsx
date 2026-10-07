@@ -8,8 +8,6 @@ import {
   Edit3,
   Info,
   MoreVertical,
-  Search,
-  Lock,
 } from "lucide-react";
 import { AttributionModal, type AttributionConfig } from "./attribution-modal";
 import {
@@ -48,7 +46,6 @@ export function TextDirectory({
   const [choices, setChoices] = useState<TextChoice[]>(initialChoices);
   const [activeModalChoice, setActiveModalChoice] = useState<TextChoice | null>(null);
   const [openMenuSlug, setOpenMenuSlug] = useState<string | null>(null);
-  const [filterQuery, setFilterQuery] = useState<string>("");
 
   const reloadCorpus = useCallback(() => {
     if (typeof window === "undefined") return;
@@ -140,18 +137,6 @@ export function TextDirectory({
     }
   };
 
-  const filteredChoices = choices.filter((c) => {
-    if (!filterQuery.trim()) return true;
-    const q = filterQuery.toLowerCase();
-    return (
-      c.title.toLowerCase().includes(q) ||
-      (c.author && c.author.toLowerCase().includes(q)) ||
-      (c.source && c.source.toLowerCase().includes(q)) ||
-      (c.witness && c.witness.toLowerCase().includes(q)) ||
-      c.slug.toLowerCase().includes(q)
-    );
-  });
-
   return (
     <div id="corpus-directory" className="corpus-directory-container" style={{ marginTop: "3.5rem" }}>
       {/* Section Header */}
@@ -159,48 +144,6 @@ export function TextDirectory({
         <h2 className="font-serif text-xl md:text-2xl font-medium text-stone-900 tracking-tight mb-4">
           Old English Corpus &amp; Editions
         </h2>
-
-        {/* Search & Actions Bar */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: "0.75rem",
-          }}
-        >
-          <div style={{ position: "relative", minWidth: "16rem", flex: 1, maxWidth: "24rem" }}>
-            <Search
-              style={{
-                position: "absolute",
-                left: "0.75rem",
-                top: "50%",
-                transform: "translateY(-50%)",
-                width: "0.95rem",
-                height: "0.95rem",
-                color: "var(--muted-ink)",
-              }}
-            />
-            <input
-              type="text"
-              placeholder="Search corpus texts..."
-              value={filterQuery}
-              onChange={(e) => setFilterQuery(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "0.5rem 0.75rem 0.5rem 2.1rem",
-                borderRadius: "0.35rem",
-                border: "1px solid var(--rule)",
-                background: "var(--surface)",
-                fontSize: "0.875rem",
-                color: "var(--ink)",
-                outline: "none",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
-              }}
-            />
-          </div>
-        </div>
       </div>
 
       {/* Grid of Texts */}
@@ -211,9 +154,8 @@ export function TextDirectory({
           gap: "1.25rem",
         }}
       >
-        {filteredChoices.map((choice) => {
+        {choices.map((choice) => {
           const isMenuOpen = openMenuSlug === choice.slug;
-          const isItemProtected = isProtectedSlug(choice.slug) && !choice.isLocalOnly;
           const meta = getBuiltInMetadata(choice.slug);
           const displayAuthor = choice.author || meta?.author || "Anonymous";
           const displayWitness = choice.witness || meta?.witness || choice.source || "";
@@ -224,7 +166,7 @@ export function TextDirectory({
               className="workspace-choice-card"
             >
               <div>
-                {/* Top row: Title and Badges */}
+                {/* Top row: Title */}
                 <div
                   style={{
                     display: "flex",
@@ -246,68 +188,6 @@ export function TextDirectory({
                   >
                     {choice.title}
                   </h3>
-
-                  {/* Badges on Top Right */}
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-end",
-                      gap: "0.25rem",
-                      flexShrink: 0,
-                    }}
-                  >
-                    {isItemProtected && (
-                      <span
-                        style={{
-                          fontSize: "0.65rem",
-                          fontWeight: 600,
-                          border: "1px solid #86efac",
-                          background: "#f0fdf4",
-                          color: "#15803d",
-                          padding: "0.15rem 0.45rem",
-                          borderRadius: "0.25rem",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "0.25rem",
-                        }}
-                      >
-                        <Lock style={{ width: "0.65rem", height: "0.65rem" }} /> Protected
-                      </span>
-                    )}
-                    {choice.hasLocalDraft && (
-                      <span
-                        style={{
-                          fontSize: "0.65rem",
-                          fontWeight: 600,
-                          border: "1px solid #c7d2fe",
-                          background: "#e0e7ff",
-                          color: "#3730a3",
-                          padding: "0.15rem 0.45rem",
-                          borderRadius: "0.25rem",
-                          display: "inline-flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        Edited (Draft)
-                      </span>
-                    )}
-                    {choice.isLocalOnly && !choice.hasLocalDraft && (
-                      <span
-                        style={{
-                          fontSize: "0.65rem",
-                          fontWeight: 600,
-                          border: "1px solid #fed7aa",
-                          background: "#fff7ed",
-                          color: "#9a3412",
-                          padding: "0.15rem 0.45rem",
-                          borderRadius: "0.25rem",
-                        }}
-                      >
-                        Local Draft
-                      </span>
-                    )}
-                  </div>
                 </div>
 
                 {/* Author line in bold */}
@@ -403,28 +283,6 @@ export function TextDirectory({
                     <Edit3 style={{ width: "0.85rem", height: "0.85rem" }} /> Edit
                   </Link>
 
-                  <button
-                    type="button"
-                    onClick={() => setActiveModalChoice(choice)}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "0.25rem",
-                      minHeight: "40px",
-                      padding: "0.4rem 0.6rem",
-                      borderRadius: "0.25rem",
-                      background: "#ffffff",
-                      border: "1px solid var(--rule)",
-                      color: "var(--ink)",
-                      fontSize: "0.82rem",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    <Info style={{ width: "0.85rem", height: "0.85rem" }} /> Cite
-                  </button>
                 </div>
 
                 {/* 3-dot context menu */}
