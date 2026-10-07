@@ -724,8 +724,8 @@ export function GlossEditor({
 
   const handleExportJson = () => {
     if (!documentState) return;
-    const legacyDoc = editorDocToTextDocument(documentState);
-    const jsonStr = safeJsonStringify(legacyDoc, null, 2);
+    const docToExport = editorDocToTextDocument(documentState);
+    const jsonStr = safeJsonStringify(docToExport, null, 2);
     const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const anchor = window.document.createElement("a");
@@ -737,8 +737,8 @@ export function GlossEditor({
 
   const handleExportLatex = () => {
     if (!documentState) return;
-    const legacyDoc = editorDocToTextDocument(documentState);
-    const tex = exportToGb4eLatex(legacyDoc);
+    const docToExport = editorDocToTextDocument(documentState);
+    const tex = exportToGb4eLatex(docToExport);
 
     const blob = new Blob([tex], { type: "application/x-tex;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -1004,7 +1004,11 @@ export function GlossEditor({
                 <div className="workspace-action-grid">
                   <button
                     type="button"
-                    onClick={discardChanges}
+                    onClick={() => {
+                      if (window.confirm("Are you sure you want to discard your edits? This cannot be undone.")) {
+                        discardChanges();
+                      }
+                    }}
                     className="workspace-link"
                   >
                     Discard edits
@@ -1196,6 +1200,7 @@ export function GlossEditor({
               <input
                 type="text"
                 placeholder="Filter by word or transla..."
+                aria-label="Filter documents"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="editor-search-input"

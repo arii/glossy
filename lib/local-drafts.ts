@@ -6,7 +6,6 @@ import {
   BUILT_IN_CORPUS,
   getBuiltInMetadata,
 } from "./corpus-registry";
-import { CONFIG } from "./config";
 
 export const DRAFT_STORAGE_PREFIX = "glossy:v1:draft:";
 export const PENDING_MANIFEST_KEY = "glossy:v1:pending_drafts";
@@ -88,8 +87,6 @@ export function readDraft(slug: string): StoredDraft | null {
   try {
     const parsed = JSON.parse(v1Raw) as StoredDraft;
     if (parsed && parsed.doc && parsed.version === 1) {
-      delete (parsed.doc as Record<string, unknown>).texSource;
-      delete (parsed.doc as Record<string, unknown>)["tex-source"];
       return parsed;
     }
   } catch {}
@@ -104,8 +101,6 @@ export function writeDraft(slug: string, doc: TextDocument): StorageResult<Store
   }
 
   try {
-    delete (doc as Record<string, unknown>).texSource;
-    delete (doc as Record<string, unknown>)["tex-source"];
     const hash = computeDocumentHash(doc);
     const envelope: StoredDraft = {
       version: 1,
@@ -339,7 +334,7 @@ export function createLocalDocument(input: {
     slug: generatedSlug,
     title,
     author: input.author?.trim() || "Anonymous",
-    editor: input.editor?.trim() || CONFIG.DEFAULT_EDITOR,
+    editor: input.editor?.trim() || "Tyler Lemon",
     shelfmark: input.shelfmark?.trim(),
     dialect: input.dialect?.trim(),
     historicalDate: input.historicalDate?.trim(),

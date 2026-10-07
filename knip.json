@@ -8,6 +8,7 @@
     "tests/**/*.{ts,tsx}",
     "tina/config.ts"
   ],
+  "ignore": ["scripts/archive/**"],
   "ignoreDependencies": ["eslint-config-next", "gray-matter"],
   "project": [
     "app/**/*.{ts,tsx}",
