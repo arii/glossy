@@ -57,7 +57,7 @@ async function main() {
     (await isPortBusy(TINA_PORT));
 
   if (busy && hasGeneratedFiles) {
-    console.log(`ℹ️ Tina dev server port (9000/9123/${TINA_PORT}) is currently busy; reusing existing compiled schema.`);
+    console.log("ℹ️ Tina dev server port (9000/4001) is currently busy; reusing existing compiled schema.");
   } else {
     const tinaBin = existsSync("./node_modules/.bin/tinacms") ? "./node_modules/.bin/tinacms" : "tinacms";
     const res = spawnSync(tinaBin, ["build", "--skip-cloud-checks", "--datalayer-port", "9123"], {
