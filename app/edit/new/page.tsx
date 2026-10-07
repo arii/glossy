@@ -10,7 +10,7 @@ import { tokenizeAndLemmatizeSentence } from "../../../lib/lemmatizer";
 import { parseGb4e } from "../../../lib/gb4e";
 import { createLocalDocument } from "../../../lib/local-drafts";
 import { isBuiltInSlug } from "../../../lib/corpus-registry";
-import type { ReadingSentence, TextDocument } from "../../../lib/types";
+import type { ReadingSentence } from "../../../lib/types";
 import { TextDocumentSchema } from "../../../lib/schemas/corpus";
 import { safeJsonParse } from "../../../lib/safe-json";
 import ingestPageData from "../../../content/pages/ingest.json";

@@ -31,7 +31,7 @@
     "validate:lemmas": "tsx scripts/validate-lemmas.mjs",
     "validate:source": "tsx scripts/validate-source.mjs",
     "validate:deploy": "node -e 'const fs=require(\"fs\"); const c=fs.readFileSync(\"wrangler.toml\",\"utf8\"); if(!c.includes(\"pages_build_output_dir\")) throw new Error(\"wrangler.toml must specify pages_build_output_dir\"); console.log(\"wrangler.toml Pages configuration verified.\");'",
-    "audit": "npm run audit:deadcode && npm run lint && npm run typecheck && npm run test:schemas && npm run validate:source && npm run validate:lemmas && npm run test:smoke && npm run validate:deploy"
+    "audit": "node scripts/audit.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.27.0",
