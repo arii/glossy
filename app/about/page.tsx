@@ -146,7 +146,7 @@ export default function AboutPage() {
               {page.maintainersTitle || "Maintainers & Open Source"}
             </h2>
             <p data-tina-field={tinaField(page, "maintainerAriel")} style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1rem" }}>
-              {page.maintainerAriel || "Glossy was created and engineered by Ariel Anders (Ariel Anders Consulting), who architected the platform, the interactive Leipzig interlinear engine, the offline-first local workspace, and the automated verification suite."}
+              {page.maintainerAriel || "Glossy was engineered by Ariel Anders, who architected the platform, the interactive Leipzig interlinear engine, the offline-first local workspace, and the automated verification suite."}
             </p>
             <p data-tina-field={tinaField(page, "maintainerTyler")} style={{ lineHeight: 1.7, color: "var(--ink)", margin: "0 0 1rem" }}>
               {page.maintainerTyler || "Tyler Lemon served as the linguistic subject matter expert, meticulously glossing all texts in the canonical corpus, standardizing Old English lemmatization (including masculine nominative standards and strong adjective conventions), and ensuring philological fidelity to historical manuscript witnesses."}

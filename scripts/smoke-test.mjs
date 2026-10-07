@@ -147,7 +147,6 @@ try {
     "About the Project",
     "Glossy · Digital Interlinear Philology",
     "Ariel Anders",
-    "Ariel Anders Consulting",
     "Tyler Lemon",
     "https://sites.google.com/view/tyler-lemon",
     "MIT License",
