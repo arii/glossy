@@ -347,7 +347,7 @@ export default function Home() {
                       <a
                         href={activeToken.wiktionary}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         style={{
                           fontSize: "0.72rem",
                           color: "#60a5fa",

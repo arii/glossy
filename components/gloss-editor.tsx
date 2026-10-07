@@ -1620,7 +1620,7 @@ export function GlossEditor({
                       <a
                         href={activeToken.wiktionaryUrl}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="reference-link"
                         style={{ fontSize: "0.85rem", color: "var(--accent)", fontWeight: 700 }}
                       >
