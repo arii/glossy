@@ -1,36 +1,36 @@
 {
-  "pageId": "about",
-  "title": "About | Glossy · Old English Interlinear Glosses",
-  "eyebrow": "About the Project",
-  "heading": "Glossy · Digital Interlinear Philology",
-  "description": "An open-access digital humanities platform dedicated to historical linguistic annotation, standardized Leipzig interlinear glossing, and accessible manuscript reading.",
-  "missionTitle": "The Mission",
-  "missionText": "Reading and analyzing historical languages like Old English requires balancing multiple layers of linguistic information: original orthography, morphological segmentation, grammatical case and verbal agreement, canonical dictionary headwords, and overarching narrative sense.",
-  "missionText2": "Glossy brings these layers together in an intuitive, browser-based environment. Whether you are an undergraduate encountering Anglo-Saxon verse for the first time, a researcher compiling linguistic examples for publication, or a digital editor transcribing a manuscript witness, Glossy provides the precision tools needed for rigorous interlinear work.",
-  "capabilitiesTitle": "Key Capabilities",
-  "capabilities": [
-    {
-      "title": "Leipzig Alignment",
-      "description": "Rigorous three-tier interlinear formatting (orthography, morphemic gloss, and translation) conforming to the international Leipzig Glossing Rules."
-    },
-    {
-      "title": "Live Editor Studio",
-      "description": "Client-side token editor with lemma normalization, quick tag pickers, local browser draft storage, and custom text ingestion."
-    },
-    {
-      "title": "LaTeX gb4e Export",
-      "description": "One-click export of compilable TeX source code utilizing standard linguistics packages for camera-ready academic papers."
-    }
-  ],
-  "maintainersTitle": "Maintainers & Open Source",
-  "maintainerAriel": "Glossy was created and engineered by Ariel Anders (Ariel Anders Consulting), who architected the platform, the interactive Leipzig interlinear engine, the offline-first local workspace, and the automated verification suite.",
-  "maintainerTyler": "Tyler Lemon served as the linguistic subject matter expert, meticulously glossing all texts in the canonical corpus, standardizing Old English lemmatization (including masculine nominative standards and strong adjective conventions), and ensuring philological fidelity to historical manuscript witnesses.",
-  "maintainerLicense": "The project is entirely open source under the MIT License. Contributions, bug reports, and morphological corrections are welcomed via GitHub.",
-  "architectureTitle": "Technical Architecture",
   "architectureItems": [
     "Framework: Next.js with React 19 and TypeScript, configured for static HTML export (output: 'export').",
     "Hosting: Cloudflare Pages edge static delivery.",
     "Content Management: TinaCMS Git-backed draft commit integration.",
     "Privacy: Zero tracking cookies, zero analytics scripts, and client-side offline storage."
-  ]
+  ],
+  "architectureTitle": "Technical Architecture",
+  "capabilities": [
+    {
+      "description": "Rigorous three-tier interlinear formatting (orthography, morphemic gloss, and translation) conforming to the international Leipzig Glossing Rules.",
+      "title": "Leipzig Alignment"
+    },
+    {
+      "description": "Client-side token editor with lemma normalization, quick tag pickers, local browser draft storage, and custom text ingestion.",
+      "title": "Live Editor Studio"
+    },
+    {
+      "description": "One-click export of compilable TeX source code utilizing standard linguistics packages for camera-ready academic papers.",
+      "title": "LaTeX gb4e Export"
+    }
+  ],
+  "capabilitiesTitle": "Key Capabilities",
+  "description": "An open-access digital humanities platform dedicated to historical linguistic annotation, standardized Leipzig interlinear glossing, and accessible manuscript reading.",
+  "eyebrow": "About the Project",
+  "heading": "Glossy · Digital Interlinear Philology",
+  "maintainerAriel": "Glossy was created and engineered by Ariel Anders (Ariel Anders Consulting), who architected the platform, the interactive Leipzig interlinear engine, the offline-first local workspace, and the automated verification suite.",
+  "maintainerLicense": "The project is entirely open source under the MIT License. Contributions, bug reports, and morphological corrections are welcomed via GitHub.",
+  "maintainerTyler": "Tyler Lemon served as the linguistic subject matter expert, meticulously glossing all texts in the canonical corpus, standardizing Old English lemmatization (including masculine nominative standards and strong adjective conventions), and ensuring philological fidelity to historical manuscript witnesses.",
+  "maintainersTitle": "Maintainers & Open Source",
+  "missionText": "Reading and analyzing historical languages like Old English requires balancing multiple layers of linguistic information: original orthography, morphological segmentation, grammatical case and verbal agreement, canonical dictionary headwords, and overarching narrative sense.",
+  "missionText2": "Glossy brings these layers together in an intuitive, browser-based environment. Whether you are an undergraduate encountering Anglo-Saxon verse for the first time, a researcher compiling linguistic examples for publication, or a digital editor transcribing a manuscript witness, Glossy provides the precision tools needed for rigorous interlinear work.",
+  "missionTitle": "The Mission",
+  "pageId": "about",
+  "title": "About | Glossy · Old English Interlinear Glosses"
 }
