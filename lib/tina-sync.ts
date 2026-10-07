@@ -69,6 +69,8 @@ export function sanitizeDraftForTinaMutation(
           if (featuresRaw.tense) featuresObj.tense = String(featuresRaw.tense);
           if (featuresRaw.mood) featuresObj.mood = String(featuresRaw.mood);
           if (featuresRaw.degree) featuresObj.degree = String(featuresRaw.degree);
+          if (featuresRaw.declension) featuresObj.declension = String(featuresRaw.declension);
+          if (featuresRaw.voice) featuresObj.voice = String(featuresRaw.voice);
           analysisObj.features = featuresObj;
         }
 
@@ -136,6 +138,8 @@ export function sanitizeDraftForTinaMutation(
     slug: String(doc.slug || doc.textId || ""),
     language: String(doc.language || "Old English"),
     author: String(doc.author || ""),
+    historicalAuthor: doc.historicalAuthor ? String(doc.historicalAuthor) : undefined,
+    glossedBy: doc.glossedBy ? String(doc.glossedBy) : undefined,
     editor: doc.editor ? String(doc.editor) : undefined,
     shelfmark: doc.shelfmark ? String(doc.shelfmark) : undefined,
     dialect: doc.dialect ? String(doc.dialect) : undefined,

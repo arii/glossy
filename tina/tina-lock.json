@@ -1993,6 +1993,24 @@
               "kind": "NamedType",
               "name": { "kind": "Name", "value": "String" }
             }
+          },
+          {
+            "arguments": [],
+            "kind": "FieldDefinition",
+            "name": { "kind": "Name", "value": "declension" },
+            "type": {
+              "kind": "NamedType",
+              "name": { "kind": "Name", "value": "String" }
+            }
+          },
+          {
+            "arguments": [],
+            "kind": "FieldDefinition",
+            "name": { "kind": "Name", "value": "voice" },
+            "type": {
+              "kind": "NamedType",
+              "name": { "kind": "Name", "value": "String" }
+            }
           }
         ],
         "interfaces": [],
@@ -2005,6 +2023,15 @@
       {
         "directives": [],
         "fields": [
+          {
+            "arguments": [],
+            "kind": "FieldDefinition",
+            "name": { "kind": "Name", "value": "id" },
+            "type": {
+              "kind": "NamedType",
+              "name": { "kind": "Name", "value": "String" }
+            }
+          },
           {
             "arguments": [],
             "kind": "FieldDefinition",
@@ -2395,6 +2422,24 @@
           {
             "arguments": [],
             "kind": "FieldDefinition",
+            "name": { "kind": "Name", "value": "historicalAuthor" },
+            "type": {
+              "kind": "NamedType",
+              "name": { "kind": "Name", "value": "String" }
+            }
+          },
+          {
+            "arguments": [],
+            "kind": "FieldDefinition",
+            "name": { "kind": "Name", "value": "glossedBy" },
+            "type": {
+              "kind": "NamedType",
+              "name": { "kind": "Name", "value": "String" }
+            }
+          },
+          {
+            "arguments": [],
+            "kind": "FieldDefinition",
             "name": { "kind": "Name", "value": "editor" },
             "type": {
               "kind": "NamedType",
@@ -2709,6 +2754,22 @@
               "kind": "NamedType",
               "name": { "kind": "Name", "value": "StringFilter" }
             }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "declension" },
+            "type": {
+              "kind": "NamedType",
+              "name": { "kind": "Name", "value": "StringFilter" }
+            }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "voice" },
+            "type": {
+              "kind": "NamedType",
+              "name": { "kind": "Name", "value": "StringFilter" }
+            }
           }
         ],
         "kind": "InputObjectTypeDefinition",
@@ -2719,6 +2780,14 @@
       },
       {
         "fields": [
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "id" },
+            "type": {
+              "kind": "NamedType",
+              "name": { "kind": "Name", "value": "StringFilter" }
+            }
+          },
           {
             "kind": "InputValueDefinition",
             "name": { "kind": "Name", "value": "form" },
@@ -3035,6 +3104,22 @@
           {
             "kind": "InputValueDefinition",
             "name": { "kind": "Name", "value": "author" },
+            "type": {
+              "kind": "NamedType",
+              "name": { "kind": "Name", "value": "StringFilter" }
+            }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "historicalAuthor" },
+            "type": {
+              "kind": "NamedType",
+              "name": { "kind": "Name", "value": "StringFilter" }
+            }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "glossedBy" },
             "type": {
               "kind": "NamedType",
               "name": { "kind": "Name", "value": "StringFilter" }
@@ -7556,6 +7641,22 @@
               "kind": "NamedType",
               "name": { "kind": "Name", "value": "String" }
             }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "declension" },
+            "type": {
+              "kind": "NamedType",
+              "name": { "kind": "Name", "value": "String" }
+            }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "voice" },
+            "type": {
+              "kind": "NamedType",
+              "name": { "kind": "Name", "value": "String" }
+            }
           }
         ],
         "kind": "InputObjectTypeDefinition",
@@ -7566,6 +7667,14 @@
       },
       {
         "fields": [
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "id" },
+            "type": {
+              "kind": "NamedType",
+              "name": { "kind": "Name", "value": "String" }
+            }
+          },
           {
             "kind": "InputValueDefinition",
             "name": { "kind": "Name", "value": "form" },
@@ -7903,6 +8012,22 @@
           {
             "kind": "InputValueDefinition",
             "name": { "kind": "Name", "value": "author" },
+            "type": {
+              "kind": "NamedType",
+              "name": { "kind": "Name", "value": "String" }
+            }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "historicalAuthor" },
+            "type": {
+              "kind": "NamedType",
+              "name": { "kind": "Name", "value": "String" }
+            }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "glossedBy" },
             "type": {
               "kind": "NamedType",
               "name": { "kind": "Name", "value": "String" }
@@ -9410,6 +9535,22 @@
             "uid": false
           },
           {
+            "label": "Historical Author",
+            "name": "historicalAuthor",
+            "namespace": ["text", "historicalAuthor"],
+            "searchable": true,
+            "type": "string",
+            "uid": false
+          },
+          {
+            "label": "Glossed By",
+            "name": "glossedBy",
+            "namespace": ["text", "glossedBy"],
+            "searchable": true,
+            "type": "string",
+            "uid": false
+          },
+          {
             "label": "Editor / Glossing Attribution",
             "name": "editor",
             "namespace": ["text", "editor"],
@@ -9787,6 +9928,38 @@
                             "searchable": true,
                             "type": "string",
                             "uid": false
+                          },
+                          {
+                            "label": "Declension",
+                            "name": "declension",
+                            "namespace": [
+                              "text",
+                              "sentences",
+                              "words",
+                              "analysis",
+                              "features",
+                              "declension"
+                            ],
+                            "options": ["strong", "weak"],
+                            "searchable": true,
+                            "type": "string",
+                            "uid": false
+                          },
+                          {
+                            "label": "Voice",
+                            "name": "voice",
+                            "namespace": [
+                              "text",
+                              "sentences",
+                              "words",
+                              "analysis",
+                              "features",
+                              "voice"
+                            ],
+                            "options": ["active", "passive"],
+                            "searchable": true,
+                            "type": "string",
+                            "uid": false
                           }
                         ],
                         "label": "Inflection",
@@ -9804,6 +9977,21 @@
                       },
                       {
                         "fields": [
+                          {
+                            "label": "Morpheme ID",
+                            "name": "id",
+                            "namespace": [
+                              "text",
+                              "sentences",
+                              "words",
+                              "analysis",
+                              "morphemes",
+                              "id"
+                            ],
+                            "searchable": true,
+                            "type": "string",
+                            "uid": false
+                          },
                           {
                             "label": "Form",
                             "name": "form",
