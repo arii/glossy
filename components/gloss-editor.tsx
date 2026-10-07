@@ -40,7 +40,7 @@ import {
   X,
 } from "lucide-react";
 import { DraftSyncPrompt } from "./draft-sync-prompt";
-import { commitPendingDraft, isTinaAuthenticated } from "../lib/tina-sync";
+import { isTinaAuthenticated } from "../lib/tina-sync";
 
 export interface EditorToken {
   id: string;
@@ -73,8 +73,8 @@ export interface EditorDocument {
   slug: string;
   title: string;
   author: string;
-  historicalAuthor: string;
-  glossedBy: string;
+  historicalAuthor?: string;
+  glossedBy?: string;
   editor?: string;
   shelfmark?: string;
   dialect?: string;
@@ -112,8 +112,7 @@ function stripLatexFootnotes(text: string): string {
 export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number): EditorToken {
   const inflections = w.analysis?.features || {};
   const lex = resolveOldEnglishLexicon(w.originalWord, w.morphologicalGloss || w.originalWord);
-  const resolvedLemma =
-    w.analysis?.lemma && w.analysis.lemma !== w.originalWord ? w.analysis.lemma : lex.lemma;
+  const resolvedLemma = w.analysis?.lemma || lex.lemma;
   const resolvedPos = (w.analysis?.partOfSpeech || lex.pos || "noun") as PartOfSpeech;
   const resolvedExpl =
     w.analysis?.definition !== undefined && w.analysis.definition !== ""
@@ -123,12 +122,15 @@ export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number
   const resolvedWiktionary = w.analysis?.wiktionaryUrl || "";
 
   const rawMorphemes = w.analysis?.morphemes || [];
-  const normalizedMorphemes: Morpheme[] = rawMorphemes.map((m, mIdx) => ({
-    id: m.id || `${w.id || "word"}-morpheme-${mIdx + 1}`,
-    form: m.form || (m as unknown as { morpheme?: string }).morpheme || "",
-    gloss: m.gloss || "",
-    kind: m.kind,
-  }));
+  const normalizedMorphemes: Morpheme[] = rawMorphemes.map((m) => {
+    const res: Morpheme = {
+      form: m.form || (m as unknown as { morpheme?: string }).morpheme || "",
+      gloss: m.gloss || "",
+    };
+    if (m.id) res.id = m.id;
+    if (m.kind) res.kind = m.kind;
+    return res;
+  });
 
   return {
     id: w.id || `sent-${sIdx + 1}-token-${tIdx + 1}`,
@@ -160,16 +162,16 @@ export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
     slug: doc.slug || "ohthere-wulfstan",
     title: doc.title || "The voyages of Ohthere and Wulfstan",
     author: doc.author || glossedByMatch,
-    historicalAuthor: doc.historicalAuthor || "",
-    glossedBy: doc.glossedBy || glossedByMatch,
+    historicalAuthor: doc.historicalAuthor || undefined,
+    glossedBy: doc.glossedBy || undefined,
     editor: doc.editor,
     shelfmark: doc.shelfmark,
     dialect: doc.dialect,
     historicalDate: doc.historicalDate,
-    date: dateMatch,
+    date: doc.date || dateMatch,
     source: doc.source || `${glossedByMatch} · ${dateMatch}`,
     sourceFile: doc.sourceFile || "references/Voyages_of_Ohthere_Wulfstan.tex",
-    sourceEdition: doc.sourceEdition || "",
+    sourceEdition: doc.sourceEdition || undefined,
     language: "Old English",
     status: doc.status || "published",
     blocks: doc.blocks || [],
@@ -192,17 +194,17 @@ export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
     slug: doc.slug,
     language: "Old English",
     author: resolvedAuthor,
-    historicalAuthor: doc.historicalAuthor,
-    glossedBy: doc.glossedBy,
-    editor: doc.editor,
-    shelfmark: doc.shelfmark,
-    dialect: doc.dialect,
-    historicalDate: doc.historicalDate,
+    historicalAuthor: doc.historicalAuthor || undefined,
+    glossedBy: doc.glossedBy || undefined,
+    editor: doc.editor || undefined,
+    shelfmark: doc.shelfmark || undefined,
+    dialect: doc.dialect || undefined,
+    historicalDate: doc.historicalDate || undefined,
     date: doc.date,
     title: doc.title,
-    source: doc.source || `${resolvedAuthor} · ${doc.date}`,
+    source: doc.source || (resolvedAuthor ? `${resolvedAuthor} · ${doc.date}` : doc.date),
     sourceFile: doc.sourceFile,
-    sourceEdition: doc.sourceEdition,
+    sourceEdition: doc.sourceEdition || undefined,
     status: doc.status,
     sentences: doc.sentences.map((sent) => ({
       id: sent.id,
@@ -705,179 +707,8 @@ export function GlossEditor({
     const targetSlug = textDoc.slug || initialDocument.slug || "ohthere";
 
     try {
-      // 1. Always persist client-side snapshot in browser storage (localStorage)
-      const serialized = safeJsonStringify(documentState);
-      setSavedSnapshot(serialized);
-      try {
-        window.localStorage.setItem(storageKey, serialized);
-        // Also save in TextDocument format for admin sync
-        delete (legacyDoc as Record<string, unknown>).texSource;
-        delete (legacyDoc as Record<string, unknown>)["tex-source"];
-        window.localStorage.setItem(`glossy_draft_${targetSlug}`, safeJsonStringify(legacyDoc));
-
-        // Update pending drafts manifest
-        const pendingRaw = window.localStorage.getItem("glossy_pending_drafts");
-        const pending = pendingRaw ? JSON.parse(pendingRaw) : {};
-        pending[targetSlug] = {
-          slug: targetSlug,
-          title: legacyDoc.title || initialDocument.title,
-          updatedAt: new Date().toISOString(),
-          sentenceCount: legacyDoc.sentences?.length ?? 0,
-          wordCount: legacyDoc.sentences?.reduce((acc, s) => acc + (s.words?.length ?? 0), 0) ?? 0,
-          synced: false,
-        };
-        window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
-        if (typeof window !== "undefined") {
-          window.dispatchEvent(new Event("glossy:drafts-updated"));
-        }
-      } catch {}
-
-      // 2. Build full TextMutation payload
-      const mutationVariables = {
-        relativePath: targetFileName,
-        params: {
-          textId: legacyDoc.textId || targetSlug,
-          slug: targetSlug,
-          language: legacyDoc.language || "Old English",
-          author: legacyDoc.author || "",
-          editor: legacyDoc.editor,
-          shelfmark: legacyDoc.shelfmark,
-          dialect: legacyDoc.dialect,
-          historicalDate: legacyDoc.historicalDate,
-          title: legacyDoc.title || "",
-          source: legacyDoc.source || "",
-          sourceFile: legacyDoc.sourceFile || "",
-          sourceEdition: legacyDoc.sourceEdition || "",
-          status: legacyDoc.status || "draft",
-          sentences: (legacyDoc.sentences || []).map((sent) => ({
-            id: sent.id,
-            translation: sent.translation || "",
-            footnotes: sent.footnotes && sent.footnotes.length > 0 ? sent.footnotes : undefined,
-            notes: (sent.notes && sent.notes.length > 0)
-              ? sent.notes.map((n) => ({
-                  id: n.id,
-                  targetWordIndex: n.targetWordIndex,
-                  marker: n.marker,
-                  type: n.type || "general",
-                  text: n.text || "",
-                }))
-              : undefined,
-            words: (sent.words || []).map((w) => ({
-              id: w.id,
-              originalWord: w.originalWord,
-              morphologicalGloss: w.morphologicalGloss,
-              trailingPunctuation: w.trailingPunctuation,
-              sourceGlossTex: w.sourceGlossTex,
-              analysis: w.analysis
-                ? {
-                    lemma: w.analysis.lemma,
-                    partOfSpeech: w.analysis.partOfSpeech,
-                    definition: w.analysis.definition,
-                    phonetic: w.analysis.phonetic,
-                    pronunciationSource: w.analysis.pronunciationSource,
-                    historicalNote: w.analysis.historicalNote,
-                    wiktionaryUrl: w.analysis.wiktionaryUrl,
-                    features: w.analysis.features && Object.keys(w.analysis.features).length > 0
-                      ? {
-                          case: w.analysis.features.case,
-                          number: w.analysis.features.number,
-                          gender: w.analysis.features.gender,
-                          person:
-                            w.analysis.features.person != null
-                              ? Number(w.analysis.features.person)
-                              : undefined,
-                          tense: w.analysis.features.tense,
-                          mood: w.analysis.features.mood,
-                          degree: w.analysis.features.degree,
-                        }
-                      : undefined,
-                    morphemes: (w.analysis.morphemes || []).map((m) => ({
-                      form: m.form || "",
-                      gloss: m.gloss || "",
-                      kind: m.kind,
-                    })),
-                  }
-                : undefined,
-              review: w.review
-                ? {
-                    status: w.review.status || "source-checked",
-                    notes: w.review.notes,
-                    source: w.review.source
-                      ? {
-                          file: w.review.source.file,
-                          locator: w.review.source.locator,
-                        }
-                      : undefined,
-                  }
-                : undefined,
-            })),
-          })),
-        },
-      };
-
-      const updateMutationQuery = `mutation UpdateText($relativePath: String!, $params: TextMutation!) {
-        updateText(relativePath: $relativePath, params: $params) {
-          id
-          title
-          _sys { relativePath }
-        }
-      }`;
-
-      // 3. Attempt Tina GraphQL update (local datalayer or authenticated TinaCloud)
-      let graphQlSuccess = false;
-      const isLocalhost =
-        typeof window !== "undefined" &&
-        (window.location.hostname === "localhost" ||
-          window.location.hostname === "127.0.0.1");
-
-      if (isLocalhost) {
-        try {
-          const tinaUrl =
-            process.env.NEXT_PUBLIC_TINA_LOCAL_URL ?? "http://localhost:4001/graphql";
-          const res = await fetch(tinaUrl, {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: safeJsonStringify({
-              query: updateMutationQuery,
-              variables: mutationVariables,
-            }),
-          });
-          const resJson = await res.json();
-          if (resJson?.data?.updateText || resJson?.data?.updateDocument) {
-            graphQlSuccess = true;
-          }
-        } catch {}
-      }
-
-      // If local didn't succeed, check for active TinaCloud session in browser
-      if (!graphQlSuccess && typeof window !== "undefined") {
-        try {
-          const authToken = window.localStorage.getItem("tinacms-auth");
-          if (authToken) {
-            const cloudUrl =
-              "https://content.tinajs.io/3.0/content/7cf6793a-dfc2-4a6b-ae23-c2665e22f286/github/main";
-            const res = await fetch(cloudUrl, {
-              method: "POST",
-              headers: {
-                "content-type": "application/json",
-                authorization: `Bearer ${authToken}`,
-              },
-              body: safeJsonStringify({
-                query: updateMutationQuery,
-                variables: mutationVariables,
-              }),
-            });
-            const resJson = await res.json();
-            if (resJson?.data?.updateText || resJson?.data?.updateDocument) {
-              graphQlSuccess = true;
-            }
-          }
-        } catch {}
-      }
-
-      const commitRes = await commitPendingDraft(targetSlug);
-
-      if (commitRes.ok) {
+      const res = writeDraft(targetSlug, textDoc);
+      if (!res.ok) {
         setSaveStatus({
           kind: "error",
           message: res.message || "Failed to save local draft.",
