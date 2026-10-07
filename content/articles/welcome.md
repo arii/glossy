@@ -1,8 +1,7 @@
 ---
-title: Welcome to the Glossy Philology Blog
+title: Welcome to the Glossy Philology Journal
 author: Ariel Anders
 date: '2025-03-01T00:00:00.000Z'
-coverImage: /uploads/sample-cover.jpg
 summary: An introduction to digital interlinear annotation, manuscript studies, and open-access philological resources on Glossy.
 ---
 
@@ -10,14 +9,12 @@ Welcome to the **Glossy Philology & Digital Humanities Journal**.
 
 This collection is dedicated to scholarly essays, tutorial guides, and research updates on historical linguistics, Old English manuscripts, and interlinear glossing methodology.
 
-## Rich-Text Features & Capabilities
+## Digital Interlinear Annotation & Manuscript Studies
 
-With **TinaCMS**, content editors and philologists can author essays completely visually using the WYSIWYG editor without touching raw Markdown or code.
+Glossy provides open-access tools and digital critical editions to support rigorous study of Old English texts and interlinear manuscripts.
 
-* **Formatting**: Support for **bold**, *italic*, inline `code`, blockquotes, and headers.
-* **Media Uploads**: Directly upload image files to the `/public/uploads` repository folder via the media manager.
-* **Leipzig Standards**: Document and discuss Leipzig 3-tier glossing alignment and morphological tagging rules.
+* **Methodology & Standards**: Demonstrating three-tier Leipzig interlinear glossing and morpheme-level alignment for historical Germanic languages.
+* **Manuscript Context**: Contextualizing Old English prose and poetry within their witness manuscripts, shelfmarks, and scribal variations.
+* **Open Humanities Resources**: Publishing scholarly essays and digital corpora for educators, researchers, and independent learners.
 
-> "Philology is the art of reading slowly — of observing words with care and precision."
-
-Stay tuned for upcoming articles on Old English dialectology, Cotton MS Tiberius B. i manuscript history, and digital corpus collation.
+> "Philology is that venerable art which demands of its votary one thing above all: to read slowly, deeply, looking cautiously before and aloft..." — Friedrich Nietzsche (*Daybreak*, Preface §5)

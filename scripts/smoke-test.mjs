@@ -126,8 +126,8 @@ try {
   ]);
   await check("/read/ohthere", ["The voyages of Ohthere and Wulfstan"]);
   await check("/docs", ["Documentation &amp; Reference Guides", "Leipzig"]);
-  await check("/articles", ["Articles &amp; Blog", "Philological Essays &amp; Platform Updates"]);
-  await check("/articles/welcome", ["Welcome to the Glossy Philology Blog", "WYSIWYG editor without touching raw Markdown or code"]);
+  await check("/articles", ["Philology &amp; Digital Humanities Journal", "Philological Essays &amp; Platform Updates"]);
+  await check("/articles/welcome", ["Welcome to the Glossy Philology Journal", "Digital Interlinear Annotation &amp; Manuscript Studies"]);
   await check("/edit/new", ["Gloss a New Old English Text"]);
   await check("/admin", ["Tina"]);
   if (serveOut) {
