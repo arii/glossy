@@ -10,13 +10,30 @@ export interface SiteFooterProps {
   defaultEditorUrl?: string;
 }
 
+export function buildFeedbackUrl(
+  envCommitSha = process.env.NEXT_PUBLIC_COMMIT_SHA,
+  envAppVersion = process.env.NEXT_PUBLIC_APP_VERSION,
+): string {
+  const commitSha = envCommitSha ?? "dev";
+  const shortSha = commitSha.length >= 7 ? commitSha.substring(0, 7) : commitSha;
+  const appVersion = envAppVersion ?? "0.1.0";
+
+  const feedbackParams = new URLSearchParams({
+    template: "feedback.yml",
+    title: `Feedback / Report [${shortSha}]`,
+    environment: `Build: v${appVersion} (${shortSha}) - commit: ${commitSha}`,
+  });
+
+  return `https://github.com/arii/glossy/issues/new?${feedbackParams.toString()}`;
+}
+
 export function SiteFooter(props: SiteFooterProps) {
   const platformCreator = props.platformCreator ?? attributionData.platformCreator;
   const platformCreatorUrl = props.platformCreatorUrl ?? attributionData.platformCreatorUrl;
   const defaultEditor = props.defaultEditor ?? attributionData.defaultEditor;
   const defaultEditorUrl = props.defaultEditorUrl ?? attributionData.defaultEditorUrl;
 
-  const feedbackUrl = "https://github.com/arii/glossy/issues/new?template=feedback.yml&title=Feedback%20%2F%20Report";
+  const feedbackUrl = buildFeedbackUrl();
 
   return (
     <footer className="site-footer">
