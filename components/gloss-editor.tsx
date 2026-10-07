@@ -724,10 +724,8 @@ export function GlossEditor({
 
   const handleExportJson = () => {
     if (!documentState) return;
-    const legacyDoc = editorDocToTextDocument(documentState);
-    delete (legacyDoc as Record<string, unknown>).texSource;
-    delete (legacyDoc as Record<string, unknown>)["tex-source"];
-    const jsonStr = safeJsonStringify(legacyDoc, null, 2);
+    const docToExport = editorDocToTextDocument(documentState);
+    const jsonStr = safeJsonStringify(docToExport, null, 2);
     const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const anchor = window.document.createElement("a");
@@ -739,8 +737,8 @@ export function GlossEditor({
 
   const handleExportLatex = () => {
     if (!documentState) return;
-    const legacyDoc = editorDocToTextDocument(documentState);
-    const tex = exportToGb4eLatex(legacyDoc);
+    const docToExport = editorDocToTextDocument(documentState);
+    const tex = exportToGb4eLatex(docToExport);
 
     const blob = new Blob([tex], { type: "application/x-tex;charset=utf-8" });
     const url = URL.createObjectURL(blob);
