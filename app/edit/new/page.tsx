@@ -9,6 +9,7 @@ import { SiteFooter } from "../../../components/site-footer";
 import { tokenizeAndLemmatizeSentence } from "../../../lib/lemmatizer";
 import { parseGb4e } from "../../../lib/gb4e";
 import { createLocalDocument } from "../../../lib/local-drafts";
+import { isBuiltInSlug } from "../../../lib/corpus-registry";
 import type { ReadingSentence, TextDocument } from "../../../lib/types";
 import { safeJsonParse } from "../../../lib/safe-json";
 import ingestPageData from "../../../content/pages/ingest.json";
@@ -461,7 +462,12 @@ export default function NewTextPage() {
         text: `Created local draft "${title}". Redirecting to editor...`,
       });
 
-      router.push(`/edit/${slug}`);
+      const finalSlug = slug.trim();
+      if (isBuiltInSlug(finalSlug)) {
+        router.push(`/edit/${finalSlug}`);
+      } else {
+        router.push(`/edit?slug=${finalSlug}`);
+      }
     } catch (err) {
       setStatusMessage({
         kind: "error",

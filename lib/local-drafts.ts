@@ -1,4 +1,4 @@
-import type { TextDocument, PartOfSpeech, NoteItem } from "./types";
+import type { TextDocument } from "./types";
 import { safeJsonStringify } from "./safe-json";
 import {
   isBuiltInSlug,
@@ -8,8 +8,10 @@ import {
 } from "./corpus-registry";
 
 export const DRAFT_STORAGE_PREFIX = "glossy:v1:draft:";
-export const PENDING_MANIFEST_KEY = "glossy_pending_drafts";
-export const HIDDEN_SLUGS_KEY = "glossy_deleted_slugs";
+export const PENDING_MANIFEST_KEY = "glossy:v1:pending_drafts";
+export const HIDDEN_SLUGS_KEY = "glossy:v1:deleted_slugs";
+export const ACTIVE_SLUG_KEY = "glossy:v1:active_slug";
+export const TINA_AUTH_STORAGE_KEY = "tinacms-auth";
 
 export interface StoredDraft {
   version: 1;
@@ -78,101 +80,18 @@ export function readDraft(slug: string): StoredDraft | null {
   const storage = getStorage();
   if (!storage || !slug) return null;
 
-  // 1. Try modern versioned draft key
   const v1Key = `${DRAFT_STORAGE_PREFIX}${slug}`;
   const v1Raw = storage.getItem(v1Key);
-  if (v1Raw) {
-    try {
-      const parsed = JSON.parse(v1Raw) as StoredDraft;
-      if (parsed && parsed.doc && parsed.version === 1) {
-        delete (parsed.doc as Record<string, unknown>).texSource;
-        delete (parsed.doc as Record<string, unknown>)["tex-source"];
-        return parsed;
-      }
-    } catch {}
-  }
+  if (!v1Raw) return null;
 
-  // 2. Fallback to legacy unversioned keys and auto-migrate
-  const legacyKeys = [`glossy_draft_${slug}`, `glossy_doc_${slug}`];
-  for (const lk of legacyKeys) {
-    const raw = storage.getItem(lk);
-    if (!raw) continue;
-    try {
-      const parsedLegacy = JSON.parse(raw) as Record<string, unknown>;
-      if (!parsedLegacy) continue;
-
-      let convertedDoc: TextDocument | null = null;
-      if (Array.isArray(parsedLegacy.sentences)) {
-        // Detect if sentences contain 'tokens' (editor shape) or 'words' (text shape)
-        const hasTokens = parsedLegacy.sentences.some(
-          (s: unknown) => s && typeof s === "object" && "tokens" in (s as Record<string, unknown>),
-        );
-
-        if (hasTokens) {
-          convertedDoc = {
-            textId: (parsedLegacy.textId as string) || slug,
-            slug: (parsedLegacy.slug as string) || slug,
-            title: (parsedLegacy.title as string) || slug,
-            author: (parsedLegacy.author as string) || "Anonymous",
-            date: (parsedLegacy.date as string) || "c. 9th–10th Century",
-            source: (parsedLegacy.source as string) || "Local Working Draft",
-            sourceFile: (parsedLegacy.sourceFile as string) || "manuscript.json",
-            language: "Old English",
-            status: (parsedLegacy.status as "draft" | "published" | "review") || "draft",
-            blocks: (parsedLegacy.blocks as TextDocument["blocks"]) || [],
-            sentences: (parsedLegacy.sentences as Array<Record<string, unknown>>).map(
-              (sent, sIdx: number) => ({
-                id: (sent.id as string) || `sent-${sIdx + 1}`,
-                translation: (sent.freeTranslation as string) || (sent.translation as string) || "",
-                footnotes: sent.footnotes as string[] | undefined,
-                notes: sent.notes as NoteItem[] | undefined,
-                words: (
-                  ((sent.tokens || sent.words || []) as Array<Record<string, unknown>>)
-                ).map((tok, tIdx: number) => ({
-                  id: (tok.id as string) || `w-${sIdx + 1}-${tIdx + 1}`,
-                  originalWord: (tok.sourceForm as string) || (tok.originalWord as string) || "",
-                  morphologicalGloss:
-                    (tok.sourceGloss as string) || (tok.morphologicalGloss as string) || "",
-                  sourceGlossTex: (tok.literalTexGloss as string) || "",
-                  analysis: {
-                    lemma: (tok.lemma as string) || "",
-                    partOfSpeech: ((tok.pos || tok.partOfSpeech || "noun") as PartOfSpeech),
-                    definition: (tok.explanation as string) || (tok.definition as string) || "",
-                    phonetic: (tok.ipa as string) || (tok.phonetic as string) || "",
-                    wiktionaryUrl: tok.wiktionaryUrl as string | undefined,
-                    morphemes: (
-                      (tok.morphemes as Array<{ original?: string; form?: string; morpheme?: string; gloss: string }>) || []
-                    ).map((m, mIdx) => ({
-                      id: `${(tok.id as string) || "w"}-m-${mIdx}`,
-                      form: m.form || m.original || m.morpheme || "",
-                      gloss: m.gloss || "",
-                    })),
-                    features: (tok.inflections as Record<string, string>) || {},
-                  },
-                })),
-              }),
-            ),
-          };
-        } else {
-          convertedDoc = parsedLegacy as unknown as TextDocument;
-        }
-      }
-
-      if (convertedDoc && convertedDoc.title) {
-        delete (convertedDoc as Record<string, unknown>).texSource;
-        delete (convertedDoc as Record<string, unknown>)["tex-source"];
-        const envelope: StoredDraft = {
-          version: 1,
-          doc: convertedDoc,
-          baseHash: computeDocumentHash(convertedDoc),
-          updatedAt: new Date().toISOString(),
-        };
-        // Migrate to versioned storage
-        writeDraft(slug, convertedDoc);
-        return envelope;
-      }
-    } catch {}
-  }
+  try {
+    const parsed = JSON.parse(v1Raw) as StoredDraft;
+    if (parsed && parsed.doc && parsed.version === 1) {
+      delete (parsed.doc as Record<string, unknown>).texSource;
+      delete (parsed.doc as Record<string, unknown>)["tex-source"];
+      return parsed;
+    }
+  } catch {}
 
   return null;
 }
@@ -200,6 +119,10 @@ export function writeDraft(slug: string, doc: TextDocument): StorageResult<Store
     // Also update pending manifest
     markPending(slug, doc, hash);
 
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("glossy:drafts-updated"));
+    }
+
     return { ok: true, data: envelope };
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Storage error";
@@ -226,8 +149,6 @@ export function deleteLocalDraft(slug: string): boolean {
 
     for (const s of slugsToDelete) {
       storage.removeItem(`${DRAFT_STORAGE_PREFIX}${s}`);
-      storage.removeItem(`glossy_draft_${s}`);
-      storage.removeItem(`glossy_doc_${s}`);
     }
 
     // Remove from pending manifest
@@ -236,6 +157,10 @@ export function deleteLocalDraft(slug: string): boolean {
       delete manifest[s];
     }
     storage.setItem(PENDING_MANIFEST_KEY, JSON.stringify(manifest));
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("glossy:drafts-updated"));
+    }
     return true;
   } catch {
     return false;
@@ -250,19 +175,13 @@ export function listLocalDrafts(): StoredDraft[] {
   const visitedSlugs = new Set<string>();
 
   try {
-    for (let i = 0; i < storage.length; i++) {
-      const key = storage.key(i);
-      if (!key) continue;
+    const keys = Array.from({ length: storage.length }, (_, i) => storage.key(i)).filter(
+      (k): k is string => Boolean(k),
+    );
 
+    for (const key of keys) {
       if (key.startsWith(DRAFT_STORAGE_PREFIX)) {
         const slug = key.slice(DRAFT_STORAGE_PREFIX.length);
-        if (!visitedSlugs.has(slug)) {
-          visitedSlugs.add(slug);
-          const draft = readDraft(slug);
-          if (draft) results.push(draft);
-        }
-      } else if (key.startsWith("glossy_draft_")) {
-        const slug = key.slice("glossy_draft_".length);
         if (!visitedSlugs.has(slug)) {
           visitedSlugs.add(slug);
           const draft = readDraft(slug);
@@ -502,3 +421,38 @@ export function getWorkspaceTexts(options?: {
   return items;
 }
 
+export function getActiveSlug(): string | null {
+  const storage = getStorage();
+  if (!storage) return null;
+  try {
+    return storage.getItem(ACTIVE_SLUG_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function setActiveSlug(slug: string): void {
+  const storage = getStorage();
+  if (!storage || !slug) return;
+  try {
+    storage.setItem(ACTIVE_SLUG_KEY, slug);
+  } catch {}
+}
+
+export function clearActiveSlug(): void {
+  const storage = getStorage();
+  if (!storage) return;
+  try {
+    storage.removeItem(ACTIVE_SLUG_KEY);
+  } catch {}
+}
+
+export function getTinaAuthToken(): string | null {
+  const storage = getStorage();
+  if (!storage) return null;
+  try {
+    return storage.getItem(TINA_AUTH_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}

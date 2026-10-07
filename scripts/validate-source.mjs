@@ -23,67 +23,37 @@ for (const fileName of contentFiles) {
   assertUnique(textIds, document.textId, `text ID "${document.textId}"`);
   assertUnique(slugs, document.slug, `text slug "${document.slug}"`);
 
-  const legacyGlossRecords = Array.isArray(document.glossRecords) ? document.glossRecords : [];
-  const sentenceWords = Array.isArray(document.sentences)
-    ? document.sentences.flatMap((sentence) =>
-        (Array.isArray(sentence.words) ? sentence.words : []).map((word) => ({
-          id: word.id,
-          surface: `${word.originalWord ?? ""}${word.trailingPunctuation ?? ""}`,
-          sourceGloss: word.morphologicalGloss ?? word.originalWord,
-          sourceGlossTex: word.sourceGlossTex ?? word.morphologicalGloss ?? word.originalWord,
-          review: word.review,
-        })),
-      )
-    : [];
-  const glossRecords = legacyGlossRecords.length > 0 ? legacyGlossRecords : sentenceWords;
-
-  if (legacyGlossRecords.length === 0 && sentenceWords.length === 0) {
-    throw new Error(`${context} must have blocks/glossRecords or sentence words.`);
+  if (!Array.isArray(document.sentences) || document.sentences.length === 0) {
+    throw new Error(`${context} must contain a non-empty sentences array.`);
   }
+
+  const glossRecords = document.sentences.flatMap((sentence, sIdx) => {
+    requireString(sentence.id, `${context} sentence ${sIdx} is missing an ID`);
+    if (!Array.isArray(sentence.words)) {
+      throw new Error(`${context} sentence "${sentence.id}" must have a words array.`);
+    }
+    return sentence.words.map((word) => ({
+      id: word.id,
+      surface: `${word.originalWord ?? ""}${word.trailingPunctuation ?? ""}`,
+      sourceGloss: word.morphologicalGloss ?? word.originalWord,
+      sourceGlossTex: word.sourceGlossTex ?? word.morphologicalGloss ?? word.originalWord,
+      review: word.review,
+    }));
+  });
 
   const glossesById = new Map();
   const glossIds = new Set();
   for (const record of glossRecords) {
-    requireString(record.id, `A gloss record in ${contentPath} has no ID`);
-    requireString(record.surface ?? record.originalWord, `Gloss "${record.id}" has no source surface`);
-    requireString(record.sourceGlossTex ?? record.morphologicalGloss ?? record.originalWord, `Gloss "${record.id}" has no literal source gloss`);
-    assertUnique(glossIds, record.id, `gloss ID "${record.id}" in ${contentPath}`);
+    requireString(record.id, `A word record in ${contentPath} has no ID`);
+    requireString(record.surface, `Word "${record.id}" has no source surface`);
+    requireString(record.sourceGlossTex, `Word "${record.id}" has no literal source gloss`);
+    assertUnique(glossIds, record.id, `word ID "${record.id}" in ${contentPath}`);
     glossesById.set(record.id, record);
 
     if (record.review?.source?.file && record.review.source.file !== document.sourceFile) {
       throw new Error(
-        `Gloss "${record.id}" source file does not match text "${document.slug}" sourceFile.`,
+        `Word "${record.id}" source file does not match text "${document.slug}" sourceFile.`,
       );
-    }
-  }
-
-  const blocks = Array.isArray(document.blocks) ? document.blocks : [];
-  const blockIds = new Set();
-  for (const block of blocks) {
-    requireString(block.id, `A reading block in ${contentPath} has no ID`);
-    assertUnique(blockIds, block.id, `block ID "${block.id}" in ${contentPath}`);
-    if (!Array.isArray(block.segments)) {
-      throw new Error(`Block "${block.id}" in ${contentPath} must have a segments array.`);
-    }
-
-    for (const segment of block.segments) {
-      if (segment.type === "text") {
-        continue;
-      }
-      if (segment.type !== "gloss") {
-        throw new Error(`Block "${block.id}" in ${contentPath} has an invalid segment type.`);
-      }
-      const record = glossesById.get(segment.glossId);
-      if (!record) {
-        throw new Error(
-          `Block "${block.id}" in ${contentPath} references missing gloss "${segment.glossId}".`,
-        );
-      }
-      if (normalizeSurface(segment.value) !== normalizeSurface(record.surface ?? record.originalWord)) {
-        throw new Error(
-          `Block "${block.id}" surface "${segment.value}" does not match gloss "${record.id}" surface "${record.surface ?? record.originalWord}" beyond capitalization or Unicode normalization.`,
-        );
-      }
     }
   }
 

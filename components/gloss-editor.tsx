@@ -13,6 +13,7 @@ import {
   computeDocumentHash,
   deleteLocalDraft,
   getWorkspaceTexts,
+  readDraft,
   writeDraft,
   type WorkspaceTextItem,
 } from "../lib/local-drafts";
@@ -336,7 +337,7 @@ export function GlossEditor({
     safeJsonStringify(textDocumentToEditorDoc(initialDocument)),
   );
 
-  const storageKey = `glossy_draft_${initialDocument.slug || initialDocument.textId || "ohthere"}`;
+  const currentSlug = initialDocument.slug || initialDocument.textId || "ohthere";
 
   // Compute baseline hash from the normalized version of initialDocument
   const baselineHash = useMemo(() => {
@@ -356,19 +357,7 @@ export function GlossEditor({
       setDocumentState(fallback);
       const dataStr = safeJsonStringify(fallback);
       setSavedSnapshot(dataStr);
-      try {
-        const slug = initialDocument.slug || initialDocument.textId || "ohthere";
-        window.localStorage.removeItem(storageKey);
-        window.localStorage.removeItem(`glossy_draft_${slug}`);
-        window.localStorage.removeItem(`glossy:v1:draft:${slug}`);
-        // Also remove from pending manifest
-        const pendingRaw = window.localStorage.getItem("glossy_pending_drafts");
-        if (pendingRaw) {
-          const pending = JSON.parse(pendingRaw);
-          delete pending[slug];
-          window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
-        }
-      } catch {}
+      deleteLocalDraft(currentSlug);
       if (fallback.sentences.length > 0) {
         setActiveSentenceId(fallback.sentences[0].id);
         setActiveTokenId(fallback.sentences[0].tokens[0]?.id || "");
@@ -382,22 +371,18 @@ export function GlossEditor({
     } finally {
       setIsLoading(false);
     }
-  }, [initialDocument, storageKey]);
+  }, [initialDocument, currentSlug]);
 
   // Initial mount load sequence with stale-cache invalidation
   useEffect(() => {
-    try {
-      window.localStorage.removeItem("glossy_document_ohthere_full");
-      window.localStorage.removeItem("glossy_document_ohthere_full_v2");
-    } catch {}
-
     const expectedSentenceCount = initialDocument.sentences?.length ?? 0;
-    const cached = window.localStorage.getItem(storageKey);
-    if (cached) {
+    const stored = readDraft(currentSlug);
+
+    if (stored?.doc) {
       try {
-        const parsed = JSON.parse(cached) as EditorDocument;
+        const parsed = textDocumentToEditorDoc(stored.doc);
         if (!parsed.sentences || parsed.sentences.length !== expectedSentenceCount) {
-          window.localStorage.removeItem(storageKey);
+          deleteLocalDraft(currentSlug);
           const fresh = textDocumentToEditorDoc(initialDocument);
           setDocumentState(fresh);
           setSavedSnapshot(safeJsonStringify(fresh));
@@ -449,7 +434,7 @@ export function GlossEditor({
         setActiveTokenId(initial.sentences[0].tokens[0]?.id || "");
       }
     }
-  }, [initialDocument, loadFromMasterTex, storageKey]);
+  }, [initialDocument, loadFromMasterTex, currentSlug]);
 
   // Autosave to localStorage debounced at 300ms
   useEffect(() => {
@@ -460,21 +445,7 @@ export function GlossEditor({
     const currentHash = computeDocumentHash(currentDoc);
 
     if (currentHash === baselineHash) {
-      try {
-        const slug = documentState.slug || "ohthere";
-        window.localStorage.removeItem(storageKey);
-        window.localStorage.removeItem(`glossy_draft_${slug}`);
-        window.localStorage.removeItem(`glossy:v1:draft:${slug}`);
-        // Also remove from pending manifest if present
-        const pendingRaw = window.localStorage.getItem("glossy_pending_drafts");
-        if (pendingRaw) {
-          const pending = JSON.parse(pendingRaw);
-          if (pending[slug]) {
-            delete pending[slug];
-            window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
-          }
-        }
-      } catch {}
+      deleteLocalDraft(currentSlug);
       setAutosaveStatus("idle");
       return;
     }
@@ -487,18 +458,22 @@ export function GlossEditor({
 
     setAutosaveStatus("saving");
     const timer = window.setTimeout(() => {
-      try {
-        window.localStorage.setItem(storageKey, currentStr);
-        // Also save text document format for sync consistency
-        window.localStorage.setItem(`glossy_draft_${documentState.slug}`, safeJsonStringify(currentDoc));
-      } catch (e) {
-        console.warn("LocalStorage quota exceeded, skipping local cache:", e);
+      const res = writeDraft(documentState.slug || currentSlug, currentDoc);
+      if (!res.ok) {
+        if (res.reason === "quota") {
+          setSaveStatus({
+            kind: "error",
+            message: res.message,
+          });
+        }
+        setAutosaveStatus("idle");
+      } else {
+        setAutosaveStatus("saved");
       }
-      setAutosaveStatus("saved");
     }, 300);
 
     return () => window.clearTimeout(timer);
-  }, [documentState, isLoading, storageKey, savedSnapshot, baselineHash]);
+  }, [documentState, isLoading, currentSlug, savedSnapshot, baselineHash]);
 
   // Find active sentence and active token
   const activeSentence = documentState?.sentences.find((s) => s.id === activeSentenceId);
@@ -675,11 +650,7 @@ export function GlossEditor({
       setDocumentState(fallback);
       setSavedSnapshot(safeJsonStringify(fallback));
 
-      const slug = initialDocument.slug || initialDocument.textId || "ohthere";
-      deleteLocalDraft(slug);
-      try {
-        window.localStorage.removeItem(storageKey);
-      } catch {}
+      deleteLocalDraft(currentSlug);
 
       if (fallback.sentences.length > 0) {
         setActiveSentenceId(fallback.sentences[0].id);
@@ -704,9 +675,7 @@ export function GlossEditor({
     setIsSaving(true);
     setSaveStatus({ kind: "idle", message: "" });
     const textDoc = editorDocToTextDocument(documentState);
-    const legacyDoc = textDoc;
-    const targetSlug = textDoc.slug || initialDocument.slug || "ohthere";
-    const targetFileName = `${targetSlug}.json`;
+    const targetSlug = textDoc.slug || currentSlug;
 
     try {
       const res = writeDraft(targetSlug, textDoc);
@@ -718,9 +687,6 @@ export function GlossEditor({
       } else {
         const serialized = safeJsonStringify(documentState);
         setSavedSnapshot(serialized);
-        try {
-          window.localStorage.setItem(storageKey, serialized);
-        } catch {}
         setShowSyncPrompt(true);
         setSaveStatus({
           kind: "success",
@@ -779,13 +745,9 @@ export function GlossEditor({
     if (isProtectedText) return;
     setIsDeleting(true);
     try {
-      const slug = initialDocument.slug || initialDocument.textId || "";
-      if (slug) {
-        deleteLocalDraft(slug);
+      if (currentSlug) {
+        deleteLocalDraft(currentSlug);
       }
-      try {
-        window.localStorage.removeItem(storageKey);
-      } catch {}
 
       router.push("/");
     } catch (err) {

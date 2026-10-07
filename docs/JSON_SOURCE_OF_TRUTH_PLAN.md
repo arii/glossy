@@ -91,7 +91,7 @@ export interface LinguisticAnalysis {
     - User pastes `\ex{\gll ... \\ ... \\ \glt ...}` blocks.
     - Parser (`lib/gb4e.ts`) extracts tokens, morphemes, glosses, and translations, outputting canonical `TextDocument` JSON.
 - [x] **Step 3.2 — Direct Route to Editor**:
-  - Once validated, the newly created JSON document is stored into `localStorage` (`glossy:v1:draft:<slug>`) and registered in `glossy_pending_drafts`.
+  - Once validated, the newly created JSON document is stored into `localStorage` (`glossy:v1:draft:<slug>`) and registered in `glossy:v1:pending_drafts`.
 
 ### Phase 4: Change Tracking & Visual Diffing Architecture
 - [x] **Step 4.1 — Baseline vs. Draft Hashing**:

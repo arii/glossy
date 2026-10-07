@@ -4,7 +4,12 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { installSafeJsonGlobal } from "../lib/safe-json";
-import { isWorkspaceSlug } from "../lib/local-drafts";
+import {
+  isWorkspaceSlug,
+  getActiveSlug,
+  setActiveSlug as saveActiveSlug,
+  clearActiveSlug,
+} from "../lib/local-drafts";
 
 type SiteNavProps = {
   current?: "home" | "read" | "edit" | "docs" | "new" | "articles";
@@ -12,7 +17,6 @@ type SiteNavProps = {
 };
 
 const DEFAULT_SLUG = "ohthere";
-const SLUG_STORAGE_KEY = "glossy_active_slug";
 
 export function SiteNav({ current, slug }: SiteNavProps) {
   const pathname = usePathname();
@@ -50,9 +54,9 @@ export function SiteNav({ current, slug }: SiteNavProps) {
     if (current === "home") {
       setActiveSlug(DEFAULT_SLUG);
       try {
-        const cachedSlug = window.localStorage.getItem(SLUG_STORAGE_KEY);
+        const cachedSlug = getActiveSlug();
         if (cachedSlug && !isWorkspaceSlug(cachedSlug)) {
-          window.localStorage.removeItem(SLUG_STORAGE_KEY);
+          clearActiveSlug();
         }
       } catch {}
       return;
@@ -62,16 +66,16 @@ export function SiteNav({ current, slug }: SiteNavProps) {
       setActiveSlug(slug);
       if (isWorkspaceSlug(slug)) {
         try {
-          window.localStorage.setItem(SLUG_STORAGE_KEY, slug);
+          saveActiveSlug(slug);
         } catch {}
       }
     } else {
       try {
-        const cachedSlug = window.localStorage.getItem(SLUG_STORAGE_KEY);
+        const cachedSlug = getActiveSlug();
         if (cachedSlug && cachedSlug.trim() && isWorkspaceSlug(cachedSlug)) {
           setActiveSlug(cachedSlug);
         } else if (cachedSlug) {
-          window.localStorage.removeItem(SLUG_STORAGE_KEY);
+          clearActiveSlug();
           setActiveSlug(DEFAULT_SLUG);
         }
       } catch {}

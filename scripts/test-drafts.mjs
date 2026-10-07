@@ -1,9 +1,23 @@
 import assert from "node:assert/strict";
 import { BUILT_IN_CORPUS, isBuiltInSlug, isProtectedSlug, getBuiltInMetadata } from "../lib/corpus-registry.ts";
-import { isWorkspaceSlug, getWorkspaceTexts, writeDraft, listPending } from "../lib/local-drafts.ts";
+import {
+  isWorkspaceSlug,
+  getWorkspaceTexts,
+  DRAFT_STORAGE_PREFIX,
+  writeDraft,
+  readDraft,
+  listPending,
+  listLocalDrafts,
+  createLocalDocument,
+  deleteLocalDraft,
+  getActiveSlug,
+  setActiveSlug,
+  clearActiveSlug,
+  getTinaAuthToken,
+} from "../lib/local-drafts.ts";
 import { sanitizeDraftForTinaMutation, commitPendingDraft } from "../lib/tina-sync.ts";
 
-console.log("Running Unified TinaCMS Commit Pipeline & Sync Status Unit Tests...");
+console.log("Running Unified TinaCMS Commit Pipeline & Modern Storage Unit Tests...");
 
 // Test 1: Built-in corpus checks
 assert.ok(Array.isArray(BUILT_IN_CORPUS), "BUILT_IN_CORPUS must be an array");
@@ -73,6 +87,7 @@ assert.equal(firstWord.originalWord, "Hwæt!", "originalWord must be mapped from
 
 // Test 7: Simulated Browser Environment with Typed Outcomes & Edit-after-Commit
 const mockStore = new Map();
+const dispatchedEvents = [];
 global.window = {
   location: { hostname: "example.com" },
   localStorage: {
@@ -85,10 +100,13 @@ global.window = {
       return mockStore.size;
     },
   },
-  dispatchEvent: () => {},
+  dispatchEvent: (event) => {
+    dispatchedEvents.push(event.type);
+    return true;
+  },
 };
 
-// 7a. Test unauthenticated outcome (needs-login)
+// 7a. Test unauthenticated outcome (fail-fast on missing draft)
 const unauthRes = await commitPendingDraft("non-existent-draft");
 assert.equal(unauthRes.ok, false, "Unstored draft commit must return ok: false");
 assert.equal(unauthRes.outcome, "rejected", "Unstored draft must return outcome: rejected");
@@ -103,7 +121,9 @@ const caedmonDoc = {
   sentences: [],
 };
 
+dispatchedEvents.length = 0;
 writeDraft("caedmon-hymn", caedmonDoc);
+assert.ok(dispatchedEvents.includes("glossy:drafts-updated"), "Must dispatch glossy:drafts-updated on writeDraft");
 const pending1 = listPending()["caedmon-hymn"];
 assert.equal(pending1.synced, false, "Fresh draft must have synced: false");
 
@@ -148,7 +168,6 @@ const pending2 = listPending()["caedmon-hymn"];
 assert.equal(pending2.synced, true, "After successful commit, manifest entry must have synced: true");
 
 // 7d. Test Edit-After-Commit scenario
-// Re-editing the document changes its content hash, which must reset synced: false in manifest
 const updatedCaedmonDoc = {
   ...caedmonDoc,
   title: "Cædmon's Hymn (Revised Edition)",
@@ -158,8 +177,108 @@ writeDraft("caedmon-hymn", updatedCaedmonDoc);
 const pending3 = listPending()["caedmon-hymn"];
 assert.equal(pending3.synced, false, "Editing a committed document must reset synced to false");
 
+// Test 8: Document Creation, Directory Card Persistence & Event Dispatch
+dispatchedEvents.length = 0;
+const beowulfRes = createLocalDocument({
+  title: "Beowulf: Prologue (Lines 1–11)",
+  slug: "beowulf-prologue",
+  author: "Anonymous (Nowell Codex)",
+  sentences: [
+    {
+      id: "sent-1",
+      translation: "Listen!",
+      words: [{ id: "w-1", originalWord: "Hwæt!" }],
+    },
+  ],
+  overwrite: true,
+});
+assert.equal(beowulfRes.ok, true, "createLocalDocument for beowulf-prologue must succeed");
+assert.ok(dispatchedEvents.includes("glossy:drafts-updated"), "Must dispatch glossy:drafts-updated on creation");
+
+// Create a custom text
+dispatchedEvents.length = 0;
+const customRes = createLocalDocument({
+  title: "Battle of Brunanburh",
+  slug: "battle-of-brunanburh",
+  author: "Old English Poet",
+  sentences: [
+    {
+      id: "sent-1",
+      translation: "Here King Athelstan, leader of earls...",
+      words: [{ id: "w-1", originalWord: "Hēr" }, { id: "w-2", originalWord: "Æþelstān" }],
+    },
+  ],
+});
+assert.equal(customRes.ok, true, "createLocalDocument for custom text must succeed");
+assert.equal(isWorkspaceSlug("battle-of-brunanburh"), true, "Custom text must be in workspace");
+
+// Verify listLocalDrafts returns drafts
+const allDrafts = listLocalDrafts();
+const draftSlugs = allDrafts.map((d) => d.doc.slug);
+assert.ok(draftSlugs.includes("beowulf-prologue"), "listLocalDrafts must include beowulf-prologue");
+assert.ok(draftSlugs.includes("battle-of-brunanburh"), "listLocalDrafts must include battle-of-brunanburh");
+
+// Verify getWorkspaceTexts includes both drafts
+const workspaceTexts = getWorkspaceTexts();
+const wsSlugs = workspaceTexts.map((t) => t.slug);
+assert.ok(wsSlugs.includes("beowulf-prologue"), "workspace texts must include beowulf-prologue");
+assert.ok(wsSlugs.includes("battle-of-brunanburh"), "workspace texts must include battle-of-brunanburh");
+
+// Test deleteLocalDraft dispatches event and removes text
+dispatchedEvents.length = 0;
+const deleteRes = deleteLocalDraft("battle-of-brunanburh");
+assert.equal(deleteRes, true, "deleteLocalDraft must return true");
+assert.ok(dispatchedEvents.includes("glossy:drafts-updated"), "deleteLocalDraft must dispatch glossy:drafts-updated");
+assert.equal(isWorkspaceSlug("battle-of-brunanburh"), false, "Deleted draft must not be in workspace");
+
+// Test 9: Quota Exceeded Behavior
+const originalSetItem = window.localStorage.setItem;
+window.localStorage.setItem = () => {
+  const err = new Error("QuotaExceededError: DOM Exception 22");
+  throw err;
+};
+
+const quotaRes = writeDraft("quota-test", {
+  textId: "quota-test",
+  slug: "quota-test",
+  title: "Quota Test",
+  author: "Author",
+  date: "c. 9th c.",
+  source: "Source",
+  sourceFile: "source.json",
+  language: "Old English",
+  status: "draft",
+  blocks: [],
+  sentences: [],
+});
+assert.equal(quotaRes.ok, false, "Quota exceeded writeDraft must return ok: false");
+assert.equal(quotaRes.reason, "quota", "Quota exceeded writeDraft reason must be quota");
+assert.ok(quotaRes.message.includes("quota exceeded"), "Quota exceeded message must inform user");
+
+// Restore mock setItem
+window.localStorage.setItem = originalSetItem;
+
+// Test 10: Corrupted JSON Parsing Recovery
+mockStore.set(`${DRAFT_STORAGE_PREFIX}corrupt-text`, "INVALID_NON_JSON{{{");
+const corruptDraft = readDraft("corrupt-text");
+assert.equal(corruptDraft, null, "Corrupted JSON in draft key must safely return null without throwing");
+
+// Test 11: Active Slug Helper Operations
+mockStore.clear();
+assert.equal(getActiveSlug(), null, "Initial active slug should be null");
+setActiveSlug("beowulf");
+assert.equal(getActiveSlug(), "beowulf", "getActiveSlug must return set active slug");
+clearActiveSlug();
+assert.equal(getActiveSlug(), null, "clearActiveSlug must remove active slug");
+
+// Test 12: Tina Auth Token Helper Operations
+mockStore.clear();
+assert.equal(getTinaAuthToken(), null, "Initial tina auth token should be null");
+mockStore.set("tinacms-auth", "mock-jwt-token-12345");
+assert.equal(getTinaAuthToken(), "mock-jwt-token-12345", "getTinaAuthToken must retrieve stored token");
+
 // Clean up
 mockStore.clear();
 delete global.window;
 
-console.log("✓ All unified commit pipeline and sync status unit tests passed successfully!");
+console.log("✓ All unified commit pipeline, modern storage, quota & reactive event unit tests passed successfully!");

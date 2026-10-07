@@ -236,7 +236,7 @@ export function ReadingPage({
     });
 
     const stringNotes = (sent.footnotes || []).map((fnText, fnIdx) => ({
-      id: `fn-legacy-${sent.id}-${fnIdx + 1}`,
+      id: `fn-${sent.id}-${fnIdx + 1}`,
       sentenceId: sent.id,
       sentenceLabel: `Sentence ${sNum}`,
       wordForm: "",
