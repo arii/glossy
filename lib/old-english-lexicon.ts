@@ -215,7 +215,7 @@ const OLD_ENGLISH_LEXICON: Record<string, LexiconEntry> = {
     lemma: "Ōhthere",
     pos: "noun",
     wiktionaryUrl: "https://en.wiktionary.org/wiki/Ohthere#Old_English",
-    definition: "Ohthere (Norse voyager)",
+    definition: "Ohthere (Norwegian traveler / chieftain)",
   },
   "wulfstān": {
     lemma: "Wulfstān",

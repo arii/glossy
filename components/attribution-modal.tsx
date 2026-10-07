@@ -122,9 +122,11 @@ export function AttributionCard({
     year: activeEditionDate,
     platformCreator: activePlatformCreator,
     defaultEditor: activeEditor,
-    editorNote: `linguistic glossing and annotation by ${activeEditor}; source edition: ${activeSourceEdition}`,
+    editorNote: `linguistic glossing and annotation by ${activeEditor}; critical edition: ${activeSourceEdition}`,
     url: `https://glossed.pages.dev/read/${slug}`,
-    source: activeShelfmark,
+    source: `${activeShelfmark} (${activeSourceEdition})`,
+    shelfmark: activeShelfmark,
+    sourceEdition: activeSourceEdition,
     linguisticPackage: activeLinguisticPackage,
   };
 
