@@ -69,18 +69,29 @@ export function TextDirectory({
           localSlugsWithEdits.add(slug);
           if (doc.textId) localSlugsWithEdits.add(doc.textId);
         } else {
+          const meta = getBuiltInMetadata(slug);
+          const sCount =
+            (doc.sentences && doc.sentences.length > 0 ? doc.sentences.length : undefined) ??
+            meta?.defaultSentenceCount;
+          const tCount =
+            (doc.sentences && doc.sentences.length > 0
+              ? doc.sentences.reduce((acc, s) => acc + (s.words?.length || 0), 0)
+              : undefined) ?? meta?.defaultTokenCount;
+
           customChoices.push({
             slug,
-            title: doc.title || slug,
+            title: doc.title || meta?.title || slug,
             kind: "text",
-            author: doc.author || "Custom Ingested Text",
-            editor: doc.editor,
-            shelfmark: doc.shelfmark,
-            dialect: doc.dialect,
-            historicalDate: doc.historicalDate,
-            sourceEdition: doc.sourceEdition,
-            source: doc.source || "Local Browser Workspace",
-            witness: doc.shelfmark || doc.source || "Local Browser Draft",
+            author: doc.author || meta?.author || "Custom Ingested Text",
+            editor: doc.editor || meta?.editor,
+            shelfmark: doc.shelfmark || meta?.shelfmark || meta?.witness,
+            dialect: doc.dialect || meta?.dialect,
+            historicalDate: doc.historicalDate || meta?.historicalDate || meta?.origDate,
+            sourceEdition: doc.sourceEdition || meta?.sourceEdition,
+            source: doc.source || meta?.source || "Local Browser Workspace",
+            witness: doc.shelfmark || doc.source || meta?.shelfmark || meta?.witness || "Local Browser Draft",
+            sentenceCount: sCount,
+            tokenCount: tCount,
             status: "draft",
             isProtected: false,
             isLocalOnly: true,
@@ -112,6 +123,17 @@ export function TextDirectory({
 
   useEffect(() => {
     reloadCorpus();
+
+    const handleUpdate = () => {
+      reloadCorpus();
+    };
+
+    window.addEventListener("glossy:drafts-updated", handleUpdate);
+    window.addEventListener("storage", handleUpdate);
+    return () => {
+      window.removeEventListener("glossy:drafts-updated", handleUpdate);
+      window.removeEventListener("storage", handleUpdate);
+    };
   }, [reloadCorpus]);
 
   // Close context menu on outside click
@@ -327,13 +349,32 @@ export function TextDirectory({
                 {displayWitness && (
                   <p
                     style={{
-                      margin: "0 0 1rem",
+                      margin: "0 0 0.65rem",
                       fontSize: "0.78rem",
                       color: "var(--muted-ink)",
                       lineHeight: 1.35,
                     }}
                   >
                     {displayWitness}
+                  </p>
+                )}
+
+                {/* Sentence and Token Counts if available */}
+                {(choice.sentenceCount !== undefined || choice.tokenCount !== undefined) && (
+                  <p
+                    style={{
+                      margin: "0 0 1rem",
+                      fontSize: "0.74rem",
+                      color: "var(--muted-ink)",
+                    }}
+                  >
+                    {choice.sentenceCount !== undefined
+                      ? `${choice.sentenceCount} sentence${choice.sentenceCount === 1 ? "" : "s"}`
+                      : ""}
+                    {choice.sentenceCount !== undefined && choice.tokenCount !== undefined
+                      ? " · "
+                      : ""}
+                    {choice.tokenCount !== undefined ? `${choice.tokenCount} tokens` : ""}
                   </p>
                 )}
               </div>
@@ -361,7 +402,7 @@ export function TextDirectory({
                   }}
                 >
                   <Link
-                    href={`/read/${choice.slug}`}
+                    href={choice.isLocalOnly ? `/read?slug=${choice.slug}` : `/read/${choice.slug}`}
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
@@ -382,7 +423,7 @@ export function TextDirectory({
                   </Link>
 
                   <Link
-                    href={`/edit/${choice.slug}`}
+                    href={choice.isLocalOnly ? `/edit?slug=${choice.slug}` : `/edit/${choice.slug}`}
                     style={{
                       display: "inline-flex",
                       alignItems: "center",

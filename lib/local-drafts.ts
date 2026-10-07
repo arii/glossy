@@ -5,6 +5,7 @@ import {
   isProtectedSlug,
   BUILT_IN_CORPUS,
   getBuiltInMetadata,
+  ALL_PRESETS_METADATA,
 } from "./corpus-registry";
 
 export const DRAFT_STORAGE_PREFIX = "glossy:v1:draft:";
@@ -236,6 +237,9 @@ export function deleteLocalDraft(slug: string): boolean {
       delete manifest[s];
     }
     storage.setItem(PENDING_MANIFEST_KEY, JSON.stringify(manifest));
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("glossy:drafts-updated"));
+    }
     return true;
   } catch {
     return false;
@@ -250,10 +254,13 @@ export function listLocalDrafts(): StoredDraft[] {
   const visitedSlugs = new Set<string>();
 
   try {
+    const keys: string[] = [];
     for (let i = 0; i < storage.length; i++) {
       const key = storage.key(i);
-      if (!key) continue;
+      if (key) keys.push(key);
+    }
 
+    for (const key of keys) {
       if (key.startsWith(DRAFT_STORAGE_PREFIX)) {
         const slug = key.slice(DRAFT_STORAGE_PREFIX.length);
         if (!visitedSlugs.has(slug)) {
@@ -414,18 +421,19 @@ export function createLocalDocument(input: {
     };
   }
 
+  const presetMeta = ALL_PRESETS_METADATA[generatedSlug];
   const doc: TextDocument = {
     textId: generatedSlug,
     slug: generatedSlug,
-    title,
-    author: input.author?.trim() || "Anonymous",
-    editor: input.editor?.trim() || "Tyler Lemon",
-    shelfmark: input.shelfmark?.trim(),
-    dialect: input.dialect?.trim(),
-    historicalDate: input.historicalDate?.trim(),
-    sourceEdition: input.sourceEdition?.trim(),
-    date: input.historicalDate?.trim() || "c. 9th–11th Century",
-    source: input.shelfmark?.trim() || input.source?.trim() || "User Uploaded / Local Draft",
+    title: title || presetMeta?.title || generatedSlug,
+    author: input.author?.trim() || presetMeta?.author || "Anonymous",
+    editor: input.editor?.trim() || presetMeta?.editor || "Tyler Lemon",
+    shelfmark: input.shelfmark?.trim() || presetMeta?.shelfmark || presetMeta?.witness,
+    dialect: input.dialect?.trim() || presetMeta?.dialect,
+    historicalDate: input.historicalDate?.trim() || presetMeta?.historicalDate || presetMeta?.origDate,
+    sourceEdition: input.sourceEdition?.trim() || presetMeta?.sourceEdition,
+    date: input.historicalDate?.trim() || presetMeta?.historicalDate || presetMeta?.origDate || "c. 9th–11th Century",
+    source: input.shelfmark?.trim() || input.source?.trim() || presetMeta?.source || presetMeta?.witness || "User Uploaded / Local Draft",
     sourceFile: `${generatedSlug}.json`,
     language: "Old English",
     status: "draft",

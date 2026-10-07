@@ -13,6 +13,7 @@ import {
   computeDocumentHash,
   deleteLocalDraft,
   getWorkspaceTexts,
+  readDraft,
   writeDraft,
   type WorkspaceTextItem,
 } from "../lib/local-drafts";
@@ -391,12 +392,23 @@ export function GlossEditor({
       window.localStorage.removeItem("glossy_document_ohthere_full_v2");
     } catch {}
 
+    const docSlug = initialDocument.slug || initialDocument.textId || "ohthere";
     const expectedSentenceCount = initialDocument.sentences?.length ?? 0;
-    const cached = window.localStorage.getItem(storageKey);
+    let cached = window.localStorage.getItem(storageKey);
+    if (!cached) {
+      const draft = readDraft(docSlug);
+      if (draft && draft.doc && Array.isArray(draft.doc.sentences) && draft.doc.sentences.length > 0) {
+        const editorDoc = textDocumentToEditorDoc(draft.doc);
+        cached = safeJsonStringify(editorDoc);
+      }
+    }
     if (cached) {
       try {
         const parsed = JSON.parse(cached) as EditorDocument;
-        if (!parsed.sentences || parsed.sentences.length !== expectedSentenceCount) {
+        if (
+          !parsed.sentences ||
+          (expectedSentenceCount > 0 && parsed.sentences.length !== expectedSentenceCount)
+        ) {
           window.localStorage.removeItem(storageKey);
           const fresh = textDocumentToEditorDoc(initialDocument);
           setDocumentState(fresh);

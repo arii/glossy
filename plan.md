@@ -104,4 +104,52 @@ PR 48 introduced Prettier key sorting (`prettier-plugin-sort-json`) and formatte
     └── npm run test:smoke    (100% passed on http://localhost:3000)
     └── npm run validate:source & validate:lemmas (1837 aligned glosses, 1716 lemmas verified)
     └── npm run audit         (Deadcode Knip + Lint + Typecheck + Source + Lemmas + Smoke + Deploy: 100% Green)
+    └── npm run build         (24/24 static pages, production export successful)
 ```
+
+---
+
+## 5. Issue #64: Persistence of Newly Created Texts & Preset Cards
+
+**Issue**: [#64](https://github.com/arii/glossy/issues/64)  
+**Branch**: `fix/persist-new-texts-and-corpus-cards`  
+**Problem**: Creating a new document via `/edit/new` (selecting preset Beowulf or entering custom Old English content) failed to introduce cards in the homepage directory and threw 500/404 errors during navigation.
+
+### Root Causes
+1. **Static Export Routing Collision**: Under `output: 'export'`, dynamic route segments (`/edit/[slug]`, `/read/[slug]`) threw server errors in Next.js when navigating to unprerendered custom slugs.
+2. **Missing Real-Time Draft Synchronization**: `TextDirectory` only loaded drafts on initial mount and lacked listeners for `glossy:drafts-updated` and `storage` events.
+3. **Incomplete Event Dispatching**: `deleteLocalDraft` did not dispatch the `glossy:drafts-updated` event.
+4. **Draft Format Disconnect in `GlossEditor`**: On mount, `GlossEditor` only inspected legacy `glossy_draft_<slug>` keys rather than checking `readDraft(slug)` (`glossy:v1:draft:<slug>`).
+5. **Missing Metadata on Ingested Cards**: Custom drafts in `TextDirectory` omitted `sentenceCount` and `tokenCount`.
+6. **Unrouted Root Endpoints**: `/edit` and `/read` only redirected to `ohthere`, lacking query param handling (`/edit?slug=...`, `/read?slug=...`).
+
+### Changes Implemented
+1. **`lib/local-drafts.ts`**:
+   - `deleteLocalDraft`: Dispatches `glossy:drafts-updated` event.
+   - `listLocalDrafts`: Collects `storage` keys into a snapshot array before iteration to prevent key shift bugs.
+   - `createLocalDocument`: Enriches preset metadata using `ALL_PRESETS_METADATA`.
+2. **`components/text-directory.tsx`**:
+   - Computes `sentenceCount` and `tokenCount` for custom draft cards.
+   - Subscribes to `glossy:drafts-updated` and `storage` events in `useEffect`.
+   - Links local-only texts to `/read?slug=...` and `/edit?slug=...` to guarantee 100% reliable static routing.
+3. **`components/gloss-editor.tsx`**:
+   - Falls back to `readDraft(slug)` on mount if legacy `storageKey` is absent.
+   - Preserves sentences for newly ingested drafts.
+4. **`app/edit/page.tsx` & `app/read/page.tsx`**:
+   - Implemented client-side Suspense components reading `?slug=...`.
+   - Renders `GlossEditor` or `ReadingPage` directly for local drafts without server-side dynamic route requirements.
+5. **`app/edit/[slug]/page.tsx` & `app/read/[slug]/page.tsx`**:
+   - Added `export const dynamicParams = false;` to cleanly return 404 instead of throwing 500 in dev.
+6. **`app/edit/new/page.tsx`**:
+   - Directs built-in presets to `/edit/<slug>` and custom texts to `/edit?slug=<slug>`.
+7. **`scripts/test-drafts.mjs`**:
+   - Added Unit Test 8 covering document creation, listing, workspace texts inclusion, deletion, and event dispatching.
+
+### Verification
+- `npm run format:check`: 100% Passed.
+- `npm run typecheck`: 0 TypeScript errors.
+- `npm run lint`: 0 ESLint errors and warnings.
+- `npm run test:drafts`: 100% Passed.
+- `npm run test:smoke`: 100% Passed.
+- `npm run audit`: 100% Green.
+- `npm run build`: 100% Passed (24/24 static pages, export successful).

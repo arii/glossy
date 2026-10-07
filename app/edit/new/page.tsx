@@ -12,6 +12,7 @@ import { createLocalDocument } from "../../../lib/local-drafts";
 import type { ReadingSentence, TextDocument } from "../../../lib/types";
 import { safeJsonParse } from "../../../lib/safe-json";
 import ingestPageData from "../../../content/pages/ingest.json";
+import { isBuiltInSlug } from "../../../lib/corpus-registry";
 import { useTina, tinaField } from "tinacms/dist/react";
 import {
   FileText,
@@ -461,7 +462,12 @@ export default function NewTextPage() {
         text: `Created local draft "${title}". Redirecting to editor...`,
       });
 
-      router.push(`/edit/${slug}`);
+      const finalSlug = slug.trim();
+      if (isBuiltInSlug(finalSlug)) {
+        router.push(`/edit/${finalSlug}`);
+      } else {
+        router.push(`/edit?slug=${finalSlug}`);
+      }
     } catch (err) {
       setStatusMessage({
         kind: "error",
