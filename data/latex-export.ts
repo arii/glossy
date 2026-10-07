@@ -5,11 +5,12 @@ export function exportToGb4eLatex(document: TextDocument, customSentences?: Read
   const paragraphs = groupSentencesByParagraph(sentences);
 
   const title = document.title || "Untitled Document";
-  const rawAuthor = document.glossedBy || document.author || document.source || "";
-  const cleanAuthor = rawAuthor.replace(/^(Translated and glossed by\s*)+/gi, "").trim();
-  const author = cleanAuthor
-    ? (cleanAuthor.toLowerCase().includes("translated and glossed by") ? cleanAuthor : `Translated and glossed by ${cleanAuthor}`)
-    : "";
+  const rawAuthor = document.author || document.source || "";
+  const author = document.glossedBy
+    ? (document.glossedBy.toLowerCase().includes("translated and glossed by")
+        ? document.glossedBy
+        : `Translated and glossed by ${document.glossedBy}`)
+    : rawAuthor;
   const date = document.date || "September 30, 2026";
 
   let tex = `%!TEX TS-program = xelatex

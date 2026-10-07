@@ -310,10 +310,12 @@ body {
 .reading-surface {
   width: 100%;
   margin: 0 auto;
-  background: transparent;
-  border: none;
-  padding: 0;
-  box-shadow: none;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 0.5rem;
+  padding: 2.5rem;
+  box-shadow: 0 0.25rem 1.5rem rgba(64, 47, 29, 0.04);
+  box-sizing: border-box;
 }
 
 .page-header,
@@ -523,7 +525,12 @@ h2 {
 }
 
 .passage {
-  padding-top: 2.5rem;
+  padding: 2rem 2.25rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 1.5rem rgba(64, 47, 29, 0.04);
+  box-sizing: border-box;
 }
 
 .passage-block + .passage-block {
@@ -1174,7 +1181,7 @@ h2 {
   transition: color 160ms ease, background-color 160ms ease;
 }
 
-@media (max-width: 42rem) {
+@media (max-width: 48rem) {
   .page-shell,
   .workspace-shell,
   .docs-shell,
@@ -1183,7 +1190,11 @@ h2 {
   }
 
   .reading-surface {
-    padding: 1.5rem 1.1rem 2rem;
+    padding: 1.25rem 1rem 2rem;
+  }
+
+  .passage {
+    padding: 1.25rem 1rem;
   }
 
   .reading-layout {
@@ -2291,6 +2302,12 @@ h2 {
 @media (min-width: 640px) {
   .ingest-form-grid {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 768px) {
+  .ingest-form-grid-3 {
+    grid-template-columns: 1fr 1fr 1fr;
   }
 }
 
