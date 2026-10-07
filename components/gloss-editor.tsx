@@ -705,6 +705,9 @@ export function GlossEditor({
     const targetSlug = textDoc.slug || initialDocument.slug || "ohthere";
 
     try {
+      const legacyDoc = textDoc;
+      const targetFileName = `${targetSlug}.json`;
+
       // 1. Always persist client-side snapshot in browser storage (localStorage)
       const serialized = safeJsonStringify(documentState);
       setSavedSnapshot(serialized);
@@ -723,7 +726,7 @@ export function GlossEditor({
           title: legacyDoc.title || initialDocument.title,
           updatedAt: new Date().toISOString(),
           sentenceCount: legacyDoc.sentences?.length ?? 0,
-          wordCount: legacyDoc.sentences?.reduce((acc, s) => acc + (s.words?.length ?? 0), 0) ?? 0,
+          wordCount: legacyDoc.sentences?.reduce((acc: number, s: ReadingSentence) => acc + (s.words?.length ?? 0), 0) ?? 0,
           synced: false,
         };
         window.localStorage.setItem("glossy_pending_drafts", JSON.stringify(pending));
@@ -749,12 +752,12 @@ export function GlossEditor({
           sourceFile: legacyDoc.sourceFile || "",
           sourceEdition: legacyDoc.sourceEdition || "",
           status: legacyDoc.status || "draft",
-          sentences: (legacyDoc.sentences || []).map((sent) => ({
+          sentences: (legacyDoc.sentences || []).map((sent: ReadingSentence) => ({
             id: sent.id,
             translation: sent.translation || "",
             footnotes: sent.footnotes && sent.footnotes.length > 0 ? sent.footnotes : undefined,
             notes: (sent.notes && sent.notes.length > 0)
-              ? sent.notes.map((n) => ({
+              ? sent.notes.map((n: NoteItem) => ({
                   id: n.id,
                   targetWordIndex: n.targetWordIndex,
                   marker: n.marker,
@@ -762,7 +765,7 @@ export function GlossEditor({
                   text: n.text || "",
                 }))
               : undefined,
-            words: (sent.words || []).map((w) => ({
+            words: (sent.words || []).map((w: InterlinearWord) => ({
               id: w.id,
               originalWord: w.originalWord,
               morphologicalGloss: w.morphologicalGloss,
@@ -791,7 +794,7 @@ export function GlossEditor({
                           degree: w.analysis.features.degree,
                         }
                       : undefined,
-                    morphemes: (w.analysis.morphemes || []).map((m) => ({
+                    morphemes: (w.analysis.morphemes || []).map((m: Morpheme) => ({
                       form: m.form || "",
                       gloss: m.gloss || "",
                       kind: m.kind,
@@ -877,10 +880,10 @@ export function GlossEditor({
 
       const commitRes = await commitPendingDraft(targetSlug);
 
-      if (commitRes.ok) {
+      if (!commitRes.ok) {
         setSaveStatus({
           kind: "error",
-          message: res.message || "Failed to save local draft.",
+          message: commitRes.error || "Failed to save local draft.",
         });
       } else {
         const serialized = safeJsonStringify(documentState);
