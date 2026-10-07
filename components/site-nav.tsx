@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { useState, useEffect, useCallback, useTransition } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { installSafeJsonGlobal } from "../lib/safe-json";
 import {
   isWorkspaceSlug,
@@ -20,11 +19,20 @@ const DEFAULT_SLUG = "ohthere";
 
 export function SiteNav({ current, slug }: SiteNavProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSlug, setActiveSlug] = useState<string>(() => {
     if (current === "home") return DEFAULT_SLUG;
     return slug || DEFAULT_SLUG;
   });
+
+  const [isPending, startTransition] = useTransition();
+
+  const navigate = useCallback((url: string) => {
+    startTransition(() => {
+      router.push(url);
+    });
+  }, [router]);
 
   // Automatically close mobile navigation drawer on route change
   useEffect(() => {
@@ -92,14 +100,19 @@ export function SiteNav({ current, slug }: SiteNavProps) {
     <header className="global-site-header">
       <div className="global-site-header-inner">
         <div className="site-brand">
-          <Link
+          <a
             href="/"
             className="site-brand-link"
             aria-current={current === "home" ? "page" : undefined}
-            onClick={closeMobileMenu}
+            onClick={(e) => {
+              if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+              e.preventDefault();
+              closeMobileMenu();
+              navigate("/");
+            }}
           >
             Glossy
-          </Link>
+          </a>
         </div>
 
         <button
@@ -117,51 +130,81 @@ export function SiteNav({ current, slug }: SiteNavProps) {
 
         <nav
           id="site-navigation-drawer"
-          className={`site-nav ${isMobileMenuOpen ? "is-open" : ""}`}
+          className={`site-nav ${isMobileMenuOpen ? "is-open" : ""} ${isPending ? "is-pending" : ""}`}
           aria-label="Site"
         >
-          <Link
+          <a
             href="/"
             aria-current={current === "home" ? "page" : undefined}
-            onClick={closeMobileMenu}
+            onClick={(e) => {
+              if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+              e.preventDefault();
+              closeMobileMenu();
+              navigate("/");
+            }}
           >
             Corpus
-          </Link>
-          <Link
+          </a>
+          <a
             href={`/read/${targetSlug}`}
             aria-current={current === "read" ? "page" : undefined}
-            onClick={closeMobileMenu}
+            onClick={(e) => {
+              if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+              e.preventDefault();
+              closeMobileMenu();
+              navigate(`/read/${targetSlug}`);
+            }}
           >
             Reader
-          </Link>
-          <Link
+          </a>
+          <a
             href={`/edit/${targetSlug}`}
             aria-current={current === "edit" ? "page" : undefined}
-            onClick={closeMobileMenu}
+            onClick={(e) => {
+              if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+              e.preventDefault();
+              closeMobileMenu();
+              navigate(`/edit/${targetSlug}`);
+            }}
           >
             Editor
-          </Link>
-          <Link
+          </a>
+          <a
             href="/edit/new"
             aria-current={current === "new" ? "page" : undefined}
             style={{ fontWeight: 600 }}
-            onClick={closeMobileMenu}
+            onClick={(e) => {
+              if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+              e.preventDefault();
+              closeMobileMenu();
+              navigate("/edit/new");
+            }}
           >
             + New Text
-          </Link>
-          <Link
+          </a>
+          <a
             href="/articles"
             aria-current={current === "articles" ? "page" : undefined}
+            onClick={(e) => {
+              if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+              e.preventDefault();
+              navigate("/articles");
+            }}
           >
             Articles
-          </Link>
-          <Link
+          </a>
+          <a
             href="/docs"
             aria-current={current === "docs" ? "page" : undefined}
-            onClick={closeMobileMenu}
+            onClick={(e) => {
+              if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+              e.preventDefault();
+              closeMobileMenu();
+              navigate("/docs");
+            }}
           >
             Documentation
-          </Link>
+          </a>
         </nav>
       </div>
     </header>
