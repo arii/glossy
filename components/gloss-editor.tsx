@@ -24,6 +24,9 @@ import type {
   InflectionFeatures,
   NoteItem,
   NoteType,
+  ReviewMetadata,
+  PassageBlock,
+  LinguisticAnalysis,
 } from "../lib/types";
 import {
   BookOpen,
@@ -50,6 +53,10 @@ export interface EditorToken {
   morphemes: Morpheme[];
   ipa: string;
   wiktionaryUrl: string;
+  trailingPunctuation?: string;
+  pronunciationSource?: string;
+  historicalNote?: string;
+  review?: ReviewMetadata;
 }
 
 export interface EditorSentence {
@@ -67,6 +74,10 @@ export interface EditorDocument {
   author: string;
   historicalAuthor: string;
   glossedBy: string;
+  editor?: string;
+  shelfmark?: string;
+  dialect?: string;
+  historicalDate?: string;
   date: string;
   source: string;
   sourceFile: string;
@@ -74,6 +85,7 @@ export interface EditorDocument {
   language: "Old English";
   status: "draft" | "review" | "published";
   sentences: EditorSentence[];
+  blocks?: PassageBlock[];
 }
 
 function stripLatexFootnotes(text: string): string {
@@ -103,11 +115,11 @@ export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number
     w.analysis?.lemma && w.analysis.lemma !== w.originalWord ? w.analysis.lemma : lex.lemma;
   const resolvedPos = (w.analysis?.partOfSpeech || lex.pos || "noun") as PartOfSpeech;
   const resolvedExpl =
-    w.analysis?.definition && w.analysis.definition !== w.morphologicalGloss
+    w.analysis?.definition !== undefined && w.analysis.definition !== ""
       ? w.analysis.definition
       : lex.definition || w.morphologicalGloss || "";
-  const resolvedIpa = w.analysis?.phonetic || lex.ipa || "";
-  const resolvedWiktionary = w.analysis?.wiktionaryUrl || lex.wiktionaryUrl;
+  const resolvedIpa = w.analysis?.phonetic || "";
+  const resolvedWiktionary = w.analysis?.wiktionaryUrl || "";
 
   const rawMorphemes = w.analysis?.morphemes || [];
   const normalizedMorphemes: Morpheme[] = rawMorphemes.map((m, mIdx) => ({
@@ -129,13 +141,16 @@ export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number
     morphemes: normalizedMorphemes,
     ipa: resolvedIpa,
     wiktionaryUrl: resolvedWiktionary,
+    trailingPunctuation: w.trailingPunctuation,
+    pronunciationSource: w.analysis?.pronunciationSource,
+    historicalNote: w.analysis?.historicalNote,
+    review: w.review,
   };
 }
 
 export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
   const rawAuthor = doc.author || (doc.source ? doc.source.split(/[·•]/)[0]?.trim() : "Tyler Lemon");
   const glossedByMatch = doc.glossedBy || rawAuthor.replace(/^(Translated and glossed by\s*)+/gi, "").trim();
-  const historicalAuthorMatch = doc.historicalAuthor || "Anonymous";
   const dateMatch =
     doc.date || (doc.source ? doc.source.split(/[·•]/)[1]?.trim() : "September 30, 2026");
 
@@ -143,15 +158,20 @@ export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
     textId: doc.textId || "ohthere",
     slug: doc.slug || "ohthere-wulfstan",
     title: doc.title || "The voyages of Ohthere and Wulfstan",
-    author: glossedByMatch,
-    historicalAuthor: historicalAuthorMatch,
-    glossedBy: glossedByMatch,
+    author: doc.author || glossedByMatch,
+    historicalAuthor: doc.historicalAuthor || "",
+    glossedBy: doc.glossedBy || glossedByMatch,
+    editor: doc.editor,
+    shelfmark: doc.shelfmark,
+    dialect: doc.dialect,
+    historicalDate: doc.historicalDate,
     date: dateMatch,
     source: doc.source || `${glossedByMatch} · ${dateMatch}`,
     sourceFile: doc.sourceFile || "references/Voyages_of_Ohthere_Wulfstan.tex",
     sourceEdition: doc.sourceEdition || "",
     language: "Old English",
     status: doc.status || "published",
+    blocks: doc.blocks || [],
     sentences: (doc.sentences || []).map((sent: ReadingSentence, sIdx: number) => ({
       id: sent.id || `sent-${sIdx + 1}`,
       freeTranslation: sent.translation || "",
@@ -165,25 +185,29 @@ export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
 }
 
 export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
-  const resolvedAuthor = doc.glossedBy || doc.author;
+  const resolvedAuthor = doc.author || doc.glossedBy;
   const result: TextDocument = {
     textId: doc.textId,
     slug: doc.slug,
     language: "Old English",
     author: resolvedAuthor,
     historicalAuthor: doc.historicalAuthor,
-    glossedBy: resolvedAuthor,
+    glossedBy: doc.glossedBy,
+    editor: doc.editor,
+    shelfmark: doc.shelfmark,
+    dialect: doc.dialect,
+    historicalDate: doc.historicalDate,
     date: doc.date,
     title: doc.title,
-    source: `${resolvedAuthor} · ${doc.date}`,
+    source: doc.source || `${resolvedAuthor} · ${doc.date}`,
     sourceFile: doc.sourceFile,
     sourceEdition: doc.sourceEdition,
     status: doc.status,
     sentences: doc.sentences.map((sent) => ({
       id: sent.id,
       translation: sent.freeTranslation,
-      footnotes: sent.footnotes,
-      notes: sent.notes ? [...sent.notes] : undefined,
+      footnotes: sent.footnotes && sent.footnotes.length > 0 ? sent.footnotes : undefined,
+      notes: sent.notes && sent.notes.length > 0 ? [...sent.notes] : undefined,
       words: sent.tokens.map((tok) => {
         const punctuationMatch = tok.sourceForm.match(/[.,;:!?]+$/);
         const originalCleanWord =
@@ -201,30 +225,43 @@ export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
             ? tok.morphemes.map((m) => plainToTexGloss(m.gloss)).filter(Boolean).join("-")
             : tok.literalTexGloss || plainToTexGloss(tok.sourceGloss);
 
-        return {
+        const trailingPunctuation =
+          tok.trailingPunctuation !== undefined
+            ? tok.trailingPunctuation
+            : punctuationMatch
+            ? punctuationMatch[0]
+            : undefined;
+
+        const analysis: LinguisticAnalysis = {
+          lemma: tok.lemma,
+          partOfSpeech: tok.pos,
+          features: { ...tok.inflections },
+          morphemes: tok.morphemes.map((m) => {
+            const res: Morpheme = { form: m.form, gloss: m.gloss };
+            if (m.id) res.id = m.id;
+            if (m.kind) res.kind = m.kind;
+            return res;
+          }),
+          definition: tok.explanation,
+          phonetic: tok.ipa || undefined,
+          pronunciationSource: tok.pronunciationSource || undefined,
+          historicalNote: tok.historicalNote || undefined,
+          wiktionaryUrl: tok.wiktionaryUrl || undefined,
+        };
+
+        const word: InterlinearWord = {
           id: tok.id,
           originalWord: originalCleanWord,
           morphologicalGloss: sourceGlossVal,
-          trailingPunctuation: punctuationMatch ? punctuationMatch[0] : undefined,
+          trailingPunctuation,
           sourceGlossTex: texGlossVal,
-          analysis: {
-            lemma: tok.lemma,
-            partOfSpeech: tok.pos,
-            features: { ...tok.inflections },
-            morphemes: tok.morphemes.map((m) => ({
-              id: m.id,
-              form: m.form,
-              gloss: m.gloss,
-              kind: m.kind,
-            })),
-            definition: tok.explanation,
-            phonetic: tok.ipa,
-            wiktionaryUrl: tok.wiktionaryUrl,
-          },
+          analysis,
+          review: tok.review,
         };
+        return word;
       }),
     })),
-    blocks: [],
+    blocks: doc.blocks || [],
   };
 
   delete (result as Record<string, unknown>).texSource;
@@ -703,6 +740,10 @@ export function GlossEditor({
           slug: targetSlug,
           language: legacyDoc.language || "Old English",
           author: legacyDoc.author || "",
+          editor: legacyDoc.editor,
+          shelfmark: legacyDoc.shelfmark,
+          dialect: legacyDoc.dialect,
+          historicalDate: legacyDoc.historicalDate,
           title: legacyDoc.title || "",
           source: legacyDoc.source || "",
           sourceFile: legacyDoc.sourceFile || "",
@@ -711,30 +752,32 @@ export function GlossEditor({
           sentences: (legacyDoc.sentences || []).map((sent) => ({
             id: sent.id,
             translation: sent.translation || "",
-            footnotes: sent.footnotes || [],
-            notes: (sent.notes || []).map((n) => ({
-              id: n.id,
-              targetWordIndex: n.targetWordIndex,
-              marker: n.marker || "",
-              type: n.type || "general",
-              text: n.text || "",
-            })),
+            footnotes: sent.footnotes && sent.footnotes.length > 0 ? sent.footnotes : undefined,
+            notes: (sent.notes && sent.notes.length > 0)
+              ? sent.notes.map((n) => ({
+                  id: n.id,
+                  targetWordIndex: n.targetWordIndex,
+                  marker: n.marker,
+                  type: n.type || "general",
+                  text: n.text || "",
+                }))
+              : undefined,
             words: (sent.words || []).map((w) => ({
               id: w.id,
               originalWord: w.originalWord,
-              morphologicalGloss: w.morphologicalGloss || "",
-              trailingPunctuation: w.trailingPunctuation || "",
-              sourceGlossTex: w.sourceGlossTex || "",
+              morphologicalGloss: w.morphologicalGloss,
+              trailingPunctuation: w.trailingPunctuation,
+              sourceGlossTex: w.sourceGlossTex,
               analysis: w.analysis
                 ? {
-                    lemma: w.analysis.lemma || "",
-                    partOfSpeech: w.analysis.partOfSpeech || "",
-                    definition: w.analysis.definition || "",
-                    phonetic: w.analysis.phonetic || "",
-                    pronunciationSource: w.analysis.pronunciationSource || "",
-                    historicalNote: w.analysis.historicalNote || "",
-                    wiktionaryUrl: w.analysis.wiktionaryUrl || "",
-                    features: w.analysis.features
+                    lemma: w.analysis.lemma,
+                    partOfSpeech: w.analysis.partOfSpeech,
+                    definition: w.analysis.definition,
+                    phonetic: w.analysis.phonetic,
+                    pronunciationSource: w.analysis.pronunciationSource,
+                    historicalNote: w.analysis.historicalNote,
+                    wiktionaryUrl: w.analysis.wiktionaryUrl,
+                    features: w.analysis.features && Object.keys(w.analysis.features).length > 0
                       ? {
                           case: w.analysis.features.case,
                           number: w.analysis.features.number,
@@ -751,18 +794,18 @@ export function GlossEditor({
                     morphemes: (w.analysis.morphemes || []).map((m) => ({
                       form: m.form || "",
                       gloss: m.gloss || "",
-                      kind: m.kind || "stem",
+                      kind: m.kind,
                     })),
                   }
                 : undefined,
               review: w.review
                 ? {
                     status: w.review.status || "source-checked",
-                    notes: w.review.notes || "",
+                    notes: w.review.notes,
                     source: w.review.source
                       ? {
-                          file: w.review.source.file || "",
-                          locator: w.review.source.locator || "",
+                          file: w.review.source.file,
+                          locator: w.review.source.locator,
                         }
                       : undefined,
                   }

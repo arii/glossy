@@ -1100,7 +1100,7 @@ export default function NewTextPage() {
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+            <div className="ingest-form-grid ingest-form-grid-3" style={{ marginBottom: "1rem" }}>
               <div>
                 <label
                   htmlFor="text-shelfmark"
@@ -1116,6 +1116,8 @@ export default function NewTextPage() {
                   placeholder="e.g. BL Cotton MS Tiberius B i, fol. 11r–15v"
                   style={{
                     width: "100%",
+                    maxWidth: "100%",
+                    boxSizing: "border-box",
                     padding: "0.55rem 0.75rem",
                     borderRadius: "6px",
                     border: "1px solid var(--color-border, #cbd5e1)",
@@ -1140,6 +1142,8 @@ export default function NewTextPage() {
                   placeholder="e.g. Early West Saxon, Northumbrian"
                   style={{
                     width: "100%",
+                    maxWidth: "100%",
+                    boxSizing: "border-box",
                     padding: "0.55rem 0.75rem",
                     borderRadius: "6px",
                     border: "1px solid var(--color-border, #cbd5e1)",
@@ -1164,6 +1168,8 @@ export default function NewTextPage() {
                   placeholder="e.g. c. 890–900 AD"
                   style={{
                     width: "100%",
+                    maxWidth: "100%",
+                    boxSizing: "border-box",
                     padding: "0.55rem 0.75rem",
                     borderRadius: "6px",
                     border: "1px solid var(--color-border, #cbd5e1)",
@@ -1190,6 +1196,8 @@ export default function NewTextPage() {
                 placeholder="e.g. Old English Orosius (ed. Bately 1980 / Sweet), Klaeber's Beowulf"
                 style={{
                   width: "100%",
+                  maxWidth: "100%",
+                  boxSizing: "border-box",
                   padding: "0.55rem 0.75rem",
                   borderRadius: "6px",
                   border: "1px solid var(--color-border, #cbd5e1)",

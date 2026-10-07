@@ -15,12 +15,7 @@
             "definition": "noun (oft)",
             "features": {},
             "lemma": "oft",
-            "morphemes": [
-              {
-                "form": "Oft",
-                "gloss": "oft"
-              }
-            ],
+            "morphemes": [{ "form": "Oft", "gloss": "oft" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/oft#Old_English"
           },
@@ -35,12 +30,7 @@
             "definition": "pronoun (hē)",
             "features": {},
             "lemma": "hē",
-            "morphemes": [
-              {
-                "form": "him",
-                "gloss": "hē"
-              }
-            ],
+            "morphemes": [{ "form": "him", "gloss": "hē" }],
             "partOfSpeech": "pronoun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
           },
@@ -55,12 +45,7 @@
             "definition": "noun (ānhaga)",
             "features": {},
             "lemma": "ānhaga",
-            "morphemes": [
-              {
-                "form": "ānhaga",
-                "gloss": "ānhaga"
-              }
-            ],
+            "morphemes": [{ "form": "ānhaga", "gloss": "ānhaga" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/anhaga#Old_English"
           },
@@ -75,12 +60,7 @@
             "definition": "noun (āre)",
             "features": {},
             "lemma": "āre",
-            "morphemes": [
-              {
-                "form": "āre",
-                "gloss": "āre"
-              }
-            ],
+            "morphemes": [{ "form": "āre", "gloss": "āre" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/are#Old_English"
           },
@@ -95,12 +75,7 @@
             "definition": "noun (ġebīdeð)",
             "features": {},
             "lemma": "ġebīdeð",
-            "morphemes": [
-              {
-                "form": "ġebīdeð,",
-                "gloss": "ġebīdeð"
-              }
-            ],
+            "morphemes": [{ "form": "ġebīdeð,", "gloss": "ġebīdeð" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/gebide%C3%B0#Old_English"
           },
@@ -115,12 +90,7 @@
             "definition": "noun (metudes)",
             "features": {},
             "lemma": "metudes",
-            "morphemes": [
-              {
-                "form": "metudes",
-                "gloss": "metudes"
-              }
-            ],
+            "morphemes": [{ "form": "metudes", "gloss": "metudes" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/metudes#Old_English"
           },
@@ -135,12 +105,7 @@
             "definition": "noun (miltse)",
             "features": {},
             "lemma": "miltse",
-            "morphemes": [
-              {
-                "form": "miltse,",
-                "gloss": "miltse"
-              }
-            ],
+            "morphemes": [{ "form": "miltse,", "gloss": "miltse" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/miltse#Old_English"
           },
@@ -155,12 +120,7 @@
             "definition": "conjunction (þēah)",
             "features": {},
             "lemma": "þēah",
-            "morphemes": [
-              {
-                "form": "þēah",
-                "gloss": "þēah"
-              }
-            ],
+            "morphemes": [{ "form": "þēah", "gloss": "þēah" }],
             "partOfSpeech": "conjunction",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%BEeah#Old_English"
           },
@@ -175,12 +135,7 @@
             "definition": "determiner (sē)",
             "features": {},
             "lemma": "sē",
-            "morphemes": [
-              {
-                "form": "þe",
-                "gloss": "sē"
-              }
-            ],
+            "morphemes": [{ "form": "þe", "gloss": "sē" }],
             "partOfSpeech": "determiner",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/se#Old_English"
           },
@@ -195,12 +150,7 @@
             "definition": "pronoun (hē)",
             "features": {},
             "lemma": "hē",
-            "morphemes": [
-              {
-                "form": "hē",
-                "gloss": "hē"
-              }
-            ],
+            "morphemes": [{ "form": "hē", "gloss": "hē" }],
             "partOfSpeech": "pronoun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
           },
@@ -215,12 +165,7 @@
             "definition": "noun (mōdċeariġ)",
             "features": {},
             "lemma": "mōdċeariġ",
-            "morphemes": [
-              {
-                "form": "mōdċeariġ",
-                "gloss": "mōdċeariġ"
-              }
-            ],
+            "morphemes": [{ "form": "mōdċeariġ", "gloss": "mōdċeariġ" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/modcearig#Old_English"
           },
@@ -235,12 +180,7 @@
             "definition": "noun (geond)",
             "features": {},
             "lemma": "geond",
-            "morphemes": [
-              {
-                "form": "geond",
-                "gloss": "geond"
-              }
-            ],
+            "morphemes": [{ "form": "geond", "gloss": "geond" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/geond#Old_English"
           },
@@ -255,12 +195,7 @@
             "definition": "noun (lagulāde)",
             "features": {},
             "lemma": "lagulāde",
-            "morphemes": [
-              {
-                "form": "lagulāde",
-                "gloss": "lagulāde"
-              }
-            ],
+            "morphemes": [{ "form": "lagulāde", "gloss": "lagulāde" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/lagulade#Old_English"
           },
@@ -275,12 +210,7 @@
             "definition": "noun (longe)",
             "features": {},
             "lemma": "longe",
-            "morphemes": [
-              {
-                "form": "longe",
-                "gloss": "longe"
-              }
-            ],
+            "morphemes": [{ "form": "longe", "gloss": "longe" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/longe#Old_English"
           },
@@ -295,12 +225,7 @@
             "definition": "verb (sculan)",
             "features": {},
             "lemma": "sculan",
-            "morphemes": [
-              {
-                "form": "sceolde",
-                "gloss": "sculan"
-              }
-            ],
+            "morphemes": [{ "form": "sceolde", "gloss": "sculan" }],
             "partOfSpeech": "verb",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/sculan#Old_English"
           },
@@ -315,12 +240,7 @@
             "definition": "noun (hrēran)",
             "features": {},
             "lemma": "hrēran",
-            "morphemes": [
-              {
-                "form": "hrēran",
-                "gloss": "hrēran"
-              }
-            ],
+            "morphemes": [{ "form": "hrēran", "gloss": "hrēran" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/hreran#Old_English"
           },
@@ -335,12 +255,7 @@
             "definition": "preposition (mid)",
             "features": {},
             "lemma": "mid",
-            "morphemes": [
-              {
-                "form": "mid",
-                "gloss": "mid"
-              }
-            ],
+            "morphemes": [{ "form": "mid", "gloss": "mid" }],
             "partOfSpeech": "preposition",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/mid#Old_English"
           },
@@ -355,12 +270,7 @@
             "definition": "noun (hondum)",
             "features": {},
             "lemma": "hondum",
-            "morphemes": [
-              {
-                "form": "hondum",
-                "gloss": "hondum"
-              }
-            ],
+            "morphemes": [{ "form": "hondum", "gloss": "hondum" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/hondum#Old_English"
           },
@@ -375,12 +285,7 @@
             "definition": "noun (hrīmcealde)",
             "features": {},
             "lemma": "hrīmcealde",
-            "morphemes": [
-              {
-                "form": "hrīmcealde",
-                "gloss": "hrīmcealde"
-              }
-            ],
+            "morphemes": [{ "form": "hrīmcealde", "gloss": "hrīmcealde" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/hrimcealde#Old_English"
           },
@@ -395,12 +300,7 @@
             "definition": "noun (sǣ)",
             "features": {},
             "lemma": "sǣ",
-            "morphemes": [
-              {
-                "form": "sǣ,",
-                "gloss": "sǣ"
-              }
-            ],
+            "morphemes": [{ "form": "sǣ,", "gloss": "sǣ" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/s%C3%A6#Old_English"
           },
@@ -415,12 +315,7 @@
             "definition": "noun (wadan)",
             "features": {},
             "lemma": "wadan",
-            "morphemes": [
-              {
-                "form": "wadan",
-                "gloss": "wadan"
-              }
-            ],
+            "morphemes": [{ "form": "wadan", "gloss": "wadan" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/wadan#Old_English"
           },
@@ -435,12 +330,7 @@
             "definition": "noun (wræclāstas)",
             "features": {},
             "lemma": "wræclāstas",
-            "morphemes": [
-              {
-                "form": "wræclāstas.",
-                "gloss": "wræclāstas"
-              }
-            ],
+            "morphemes": [{ "form": "wræclāstas.", "gloss": "wræclāstas" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/wr%C3%A6clastas#Old_English"
           },
@@ -461,12 +351,7 @@
             "definition": "noun (wyrd)",
             "features": {},
             "lemma": "wyrd",
-            "morphemes": [
-              {
-                "form": "Wyrd",
-                "gloss": "wyrd"
-              }
-            ],
+            "morphemes": [{ "form": "Wyrd", "gloss": "wyrd" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/wyrd#Old_English"
           },
@@ -481,12 +366,7 @@
             "definition": "verb (bēon)",
             "features": {},
             "lemma": "bēon",
-            "morphemes": [
-              {
-                "form": "bið",
-                "gloss": "bēon"
-              }
-            ],
+            "morphemes": [{ "form": "bið", "gloss": "bēon" }],
             "partOfSpeech": "verb",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/beon#Old_English"
           },
@@ -501,12 +381,7 @@
             "definition": "noun (ful)",
             "features": {},
             "lemma": "ful",
-            "morphemes": [
-              {
-                "form": "ful",
-                "gloss": "ful"
-              }
-            ],
+            "morphemes": [{ "form": "ful", "gloss": "ful" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/ful#Old_English"
           },
@@ -521,12 +396,7 @@
             "definition": "noun (ārǣd)",
             "features": {},
             "lemma": "ārǣd",
-            "morphemes": [
-              {
-                "form": "ārǣd!",
-                "gloss": "ārǣd"
-              }
-            ],
+            "morphemes": [{ "form": "ārǣd!", "gloss": "ārǣd" }],
             "partOfSpeech": "noun",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/ar%C3%A6d#Old_English"
           },

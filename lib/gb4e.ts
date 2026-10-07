@@ -210,24 +210,29 @@ export function parseGb4eToTextDocument(
   defaults: Partial<TextDocument> = {},
 ): TextDocument {
   const parsed = parseGb4e(source);
-  const title = parsed.title || defaults.title || "The voyages of Ohthere and Wulfstan";
-  const author = parsed.author || defaults.author || "Tyler Lemon";
-  const date = parsed.date || defaults.date || "September 30, 2026";
+  const title = defaults.title || parsed.title || "The voyages of Ohthere and Wulfstan";
+  const author = defaults.author || parsed.author || "Tyler Lemon";
+  const date = defaults.date || parsed.date || "September 30, 2026";
   const slug = defaults.slug || "ohthere-wulfstan";
   const textId = defaults.textId || "ohthere";
 
   return {
     textId,
     slug,
-    language: "Old English",
+    language: defaults.language || "Old English",
     author,
+    editor: defaults.editor,
+    shelfmark: defaults.shelfmark,
+    dialect: defaults.dialect,
+    historicalDate: defaults.historicalDate,
     date,
     title,
-    source: `${author} · ${date}`,
+    source: defaults.source || `${author} · ${date}`,
     sourceFile: defaults.sourceFile || "references/Voyages_of_Ohthere_Wulfstan.tex",
+    sourceEdition: defaults.sourceEdition,
     status: defaults.status || "published",
     sentences: parsed.sentences,
-    blocks: [],
+    blocks: defaults.blocks || [],
   };
 }
 

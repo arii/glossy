@@ -14,10 +14,7 @@
         {
           "analysis": {
             "definition": "Ohthere.NOM",
-            "features": {
-              "case": "nominative",
-              "gender": "neuter"
-            },
+            "features": { "case": "nominative", "gender": "neuter" },
             "lemma": "Ōhthere",
             "morphemes": [
               {
@@ -118,10 +115,7 @@
         {
           "analysis": {
             "definition": "lord-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "hlāford",
             "morphemes": [
               {
@@ -154,10 +148,7 @@
         {
           "analysis": {
             "definition": "Alfred-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "Ælfrēd",
             "morphemes": [
               {
@@ -189,10 +180,7 @@
         {
           "analysis": {
             "definition": "king-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "cyning",
             "morphemes": [
               {
@@ -361,9 +349,7 @@
         {
           "analysis": {
             "definition": "north-most.ADV",
-            "features": {
-              "gender": "masculine"
-            },
+            "features": { "gender": "masculine" },
             "lemma": "norþmest",
             "morphemes": [
               {
@@ -667,10 +653,7 @@
         {
           "analysis": {
             "definition": "land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -744,9 +727,7 @@
         {
           "analysis": {
             "definition": "against",
-            "features": {
-              "case": "instrumental"
-            },
+            "features": { "case": "instrumental" },
             "lemma": "wiþ",
             "morphemes": [
               {
@@ -804,10 +785,7 @@
         {
           "analysis": {
             "definition": "west-sea.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "westsǣ",
             "morphemes": [
               {
@@ -1067,9 +1045,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -1438,10 +1414,7 @@
         {
           "analysis": {
             "definition": "place-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "stōw",
             "morphemes": [
               {
@@ -1686,10 +1659,7 @@
         {
           "analysis": {
             "definition": "winter-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "winter",
             "morphemes": [
               {
@@ -1775,10 +1745,7 @@
         {
           "analysis": {
             "definition": "summer-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "sumor",
             "morphemes": [
               {
@@ -1936,10 +1903,7 @@
         {
           "analysis": {
             "definition": "sea.DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "sǣ",
             "morphemes": [
               {
@@ -2170,10 +2134,7 @@
         {
           "analysis": {
             "definition": "occasion-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "ċirr",
             "morphemes": [
               {
@@ -2246,9 +2207,7 @@
         {
           "analysis": {
             "definition": "find.out-THM-INF",
-            "features": {
-              "mood": "indicative"
-            },
+            "features": { "mood": "indicative" },
             "lemma": "fandian",
             "morphemes": [
               {
@@ -2593,9 +2552,7 @@
         {
           "analysis": {
             "definition": "by-north-from",
-            "features": {
-              "gender": "feminine"
-            },
+            "features": { "gender": "feminine" },
             "lemma": "benorðan",
             "morphemes": [
               {
@@ -2663,10 +2620,7 @@
         {
           "analysis": {
             "definition": "wasteland-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "wēsten",
             "morphemes": [
               {
@@ -2933,10 +2887,7 @@
         {
           "analysis": {
             "definition": "land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -3076,10 +3027,7 @@
         {
           "analysis": {
             "definition": "way.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "weġ",
             "morphemes": [
               {
@@ -3174,10 +3122,7 @@
         {
           "analysis": {
             "definition": "land.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -3262,10 +3207,7 @@
         {
           "analysis": {
             "definition": "steering-board.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "stēorbord",
             "morphemes": [
               {
@@ -3355,10 +3297,7 @@
         {
           "analysis": {
             "definition": "wide-sea.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "wīdsǣ",
             "morphemes": [
               {
@@ -3448,10 +3387,7 @@
         {
           "analysis": {
             "definition": "back-board.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "bæcbord",
             "morphemes": [
               {
@@ -3483,10 +3419,7 @@
         {
           "analysis": {
             "definition": "three.ACC.M",
-            "features": {
-              "case": "accusative",
-              "gender": "masculine"
-            },
+            "features": { "case": "accusative", "gender": "masculine" },
             "lemma": "þrīe",
             "morphemes": [
               {
@@ -3513,10 +3446,7 @@
         {
           "analysis": {
             "definition": "day-ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "dæġ",
             "morphemes": [
               {
@@ -3820,9 +3750,7 @@
         {
           "analysis": {
             "definition": "far-SUP.ADV",
-            "features": {
-              "degree": "superlative"
-            },
+            "features": { "degree": "superlative" },
             "lemma": "feorr",
             "morphemes": [
               {
@@ -4328,9 +4256,7 @@
         {
           "analysis": {
             "definition": "three-DAT",
-            "features": {
-              "case": "dative"
-            },
+            "features": { "case": "dative" },
             "lemma": "þrīe",
             "morphemes": [
               {
@@ -4362,10 +4288,7 @@
         {
           "analysis": {
             "definition": "day-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "dæġ",
             "morphemes": [
               {
@@ -4397,9 +4320,7 @@
         {
           "analysis": {
             "definition": "PFX-sail-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "geseġlian",
             "morphemes": [
               {
@@ -4803,10 +4724,7 @@
         {
           "analysis": {
             "definition": "land.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "lond",
             "morphemes": [
               {
@@ -5251,9 +5169,7 @@
         {
           "analysis": {
             "definition": "north-from",
-            "features": {
-              "gender": "feminine"
-            },
+            "features": { "gender": "feminine" },
             "lemma": "norþan",
             "morphemes": [
               {
@@ -5435,10 +5351,7 @@
         {
           "analysis": {
             "definition": "land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -5652,10 +5565,7 @@
         {
           "analysis": {
             "definition": "day-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "dæġ",
             "morphemes": [
               {
@@ -5687,9 +5597,7 @@
         {
           "analysis": {
             "definition": "PFX-sail-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "geseġlian",
             "morphemes": [
               {
@@ -5861,9 +5769,7 @@
         {
           "analysis": {
             "definition": "wait-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "bīdan",
             "morphemes": [
               {
@@ -6339,10 +6245,7 @@
         {
           "analysis": {
             "definition": "land.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -6670,10 +6573,7 @@
         {
           "analysis": {
             "definition": "land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -6887,10 +6787,7 @@
         {
           "analysis": {
             "definition": "day-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "dæġ",
             "morphemes": [
               {
@@ -6922,9 +6819,7 @@
         {
           "analysis": {
             "definition": "PFX-sail-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "geseġlian",
             "morphemes": [
               {
@@ -7260,10 +7155,7 @@
         {
           "analysis": {
             "definition": "land.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -7509,10 +7401,7 @@
         {
           "analysis": {
             "definition": "river.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "ēa",
             "morphemes": [
               {
@@ -7783,10 +7672,7 @@
         {
           "analysis": {
             "definition": "river.DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "ēa",
             "morphemes": [
               {
@@ -7813,9 +7699,7 @@
         {
           "analysis": {
             "definition": "sail-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "siġlan",
             "morphemes": [
               {
@@ -7874,10 +7758,7 @@
         {
           "analysis": {
             "definition": "un-peace-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "unfriþ",
             "morphemes": [
               {
@@ -8204,10 +8085,7 @@
         {
           "analysis": {
             "definition": "side-ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "healfan",
             "morphemes": [
               {
@@ -8270,10 +8148,7 @@
         {
           "analysis": {
             "definition": "river-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "ēas",
             "morphemes": [
               {
@@ -8518,10 +8393,7 @@
         {
           "analysis": {
             "definition": "land.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -8703,10 +8575,7 @@
         {
           "analysis": {
             "definition": "home.DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "hām",
             "morphemes": [
               {
@@ -8894,10 +8763,7 @@
         {
           "analysis": {
             "definition": "way.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "weġ",
             "morphemes": [
               {
@@ -9050,10 +8916,7 @@
         {
           "analysis": {
             "definition": "steering-board.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "stēorbord",
             "morphemes": [
               {
@@ -9660,10 +9523,7 @@
         {
           "analysis": {
             "definition": "back-board.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "bæcbord",
             "morphemes": [
               {
@@ -9810,9 +9670,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -9913,11 +9771,7 @@
         {
           "analysis": {
             "definition": "3PL.GEN",
-            "features": {
-              "case": "genitive",
-              "number": "plural",
-              "person": 3
-            },
+            "features": { "case": "genitive", "number": "plural", "person": 3 },
             "lemma": "hi",
             "morphemes": [
               {
@@ -9944,10 +9798,7 @@
         {
           "analysis": {
             "definition": "land.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -10134,9 +9985,7 @@
         {
           "analysis": {
             "definition": "come-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "cuman",
             "morphemes": [
               {
@@ -10717,10 +10566,7 @@
         {
           "analysis": {
             "definition": "story-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "spella",
             "morphemes": [
               {
@@ -10973,11 +10819,7 @@
         {
           "analysis": {
             "definition": "3PL.GEN",
-            "features": {
-              "case": "genitive",
-              "number": "plural",
-              "person": 3
-            },
+            "features": { "case": "genitive", "number": "plural", "person": 3 },
             "lemma": "hie",
             "morphemes": [
               {
@@ -11041,10 +10883,7 @@
         {
           "analysis": {
             "definition": "land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -11161,10 +11000,7 @@
         {
           "analysis": {
             "definition": "land-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "land",
             "morphemes": [
               {
@@ -11281,9 +11117,7 @@
         {
           "analysis": {
             "definition": "out-from",
-            "features": {
-              "gender": "feminine"
-            },
+            "features": { "gender": "feminine" },
             "lemma": "ūtan",
             "morphemes": [
               {
@@ -11458,9 +11292,7 @@
         {
           "analysis": {
             "definition": "what.ACC",
-            "features": {
-              "case": "accusative"
-            },
+            "features": { "case": "accusative" },
             "lemma": "hwā",
             "morphemes": [
               {
@@ -11518,10 +11350,7 @@
         {
           "analysis": {
             "definition": "truth-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "sōþ",
             "morphemes": [
               {
@@ -12142,10 +11971,7 @@
         {
           "analysis": {
             "definition": "PFX-language-ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "ġeþēod",
             "morphemes": [
               {
@@ -12189,10 +12015,7 @@
         {
           "analysis": {
             "definition": "strong-SUP.ADV",
-            "features": {
-              "declension": "strong",
-              "degree": "superlative"
-            },
+            "features": { "declension": "strong", "degree": "superlative" },
             "lemma": "swīþost",
             "morphemes": [
               {
@@ -12316,10 +12139,7 @@
         {
           "analysis": {
             "definition": "to-eke-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "tōēacan",
             "morphemes": [
               {
@@ -12387,10 +12207,7 @@
         {
           "analysis": {
             "definition": "land-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -12522,10 +12339,7 @@
         {
           "analysis": {
             "definition": "horse-whale-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "horshwæl",
             "morphemes": [
               {
@@ -12689,9 +12503,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -12760,10 +12572,7 @@
         {
           "analysis": {
             "definition": "bone.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "bān",
             "morphemes": [
               {
@@ -12817,11 +12626,7 @@
         {
           "analysis": {
             "definition": "3PL.GEN",
-            "features": {
-              "case": "genitive",
-              "number": "plural",
-              "person": 3
-            },
+            "features": { "case": "genitive", "number": "plural", "person": 3 },
             "lemma": "hio",
             "morphemes": [
               {
@@ -12848,10 +12653,7 @@
         {
           "analysis": {
             "definition": "tooth-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "tōþ",
             "morphemes": [
               {
@@ -12941,10 +12743,7 @@
         {
           "analysis": {
             "definition": "tooth.ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "tōð",
             "morphemes": [
               {
@@ -13112,10 +12911,7 @@
         {
           "analysis": {
             "definition": "king-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "cyning",
             "morphemes": [
               {
@@ -13202,11 +12998,7 @@
         {
           "analysis": {
             "definition": "3PL.GEN",
-            "features": {
-              "case": "genitive",
-              "number": "plural",
-              "person": 3
-            },
+            "features": { "case": "genitive", "number": "plural", "person": 3 },
             "lemma": "hio",
             "morphemes": [
               {
@@ -13300,9 +13092,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -13393,10 +13183,7 @@
         {
           "analysis": {
             "definition": "ship-rope-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "sċiprāp",
             "morphemes": [
               {
@@ -13896,10 +13683,7 @@
         {
           "analysis": {
             "definition": "ell-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "elna",
             "morphemes": [
               {
@@ -14093,10 +13877,7 @@
         {
           "analysis": {
             "definition": "land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -14307,10 +14088,7 @@
         {
           "analysis": {
             "definition": "be.HAB-IND.PL",
-            "features": {
-              "mood": "indicative",
-              "number": "plural"
-            },
+            "features": { "mood": "indicative", "number": "plural" },
             "lemma": "bēon",
             "morphemes": [
               {
@@ -14396,10 +14174,7 @@
         {
           "analysis": {
             "definition": "four-ty-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "fēowertiġ",
             "morphemes": [
               {
@@ -14436,10 +14211,7 @@
         {
           "analysis": {
             "definition": "ell-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "elna",
             "morphemes": [
               {
@@ -14610,10 +14382,7 @@
         {
           "analysis": {
             "definition": "five-ty-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "fīftiġ",
             "morphemes": [
               {
@@ -14650,10 +14419,7 @@
         {
           "analysis": {
             "definition": "ell-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "elna",
             "morphemes": [
               {
@@ -14729,10 +14495,7 @@
         {
           "analysis": {
             "definition": "DEM.DIST.GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "sē",
             "morphemes": [
               {
@@ -14892,10 +14655,7 @@
         {
           "analysis": {
             "definition": "six-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "syxa",
             "morphemes": [
               {
@@ -15058,9 +14818,7 @@
         {
           "analysis": {
             "definition": "two-DAT",
-            "features": {
-              "case": "dative"
-            },
+            "features": { "case": "dative" },
             "lemma": "twēgen",
             "morphemes": [
               {
@@ -15092,10 +14850,7 @@
         {
           "analysis": {
             "definition": "day-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "dæġ",
             "morphemes": [
               {
@@ -15198,9 +14953,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -15358,10 +15111,7 @@
         {
           "analysis": {
             "definition": "possession-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "ǣht",
             "morphemes": [
               {
@@ -15420,11 +15170,7 @@
         {
           "analysis": {
             "definition": "3PL.GEN",
-            "features": {
-              "case": "genitive",
-              "number": "plural",
-              "person": 3
-            },
+            "features": { "case": "genitive", "number": "plural", "person": 3 },
             "lemma": "heo",
             "morphemes": [
               {
@@ -15514,10 +15260,7 @@
         {
           "analysis": {
             "definition": "be.HAB-IND.PL",
-            "features": {
-              "mood": "indicative",
-              "number": "plural"
-            },
+            "features": { "mood": "indicative", "number": "plural" },
             "lemma": "bēon",
             "morphemes": [
               {
@@ -15640,10 +15383,7 @@
         {
           "analysis": {
             "definition": "wild.beast-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "wildr",
             "morphemes": [
               {
@@ -15901,10 +15641,7 @@
         {
           "analysis": {
             "definition": "king.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "cyningc",
             "morphemes": [
               {
@@ -16010,10 +15747,7 @@
         {
           "analysis": {
             "definition": "animal-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "dēor",
             "morphemes": [
               {
@@ -16123,10 +15857,7 @@
         {
           "analysis": {
             "definition": "hundred.ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "hund",
             "morphemes": [
               {
@@ -16190,10 +15921,7 @@
         {
           "analysis": {
             "definition": "animal.ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "dēor",
             "morphemes": [
               {
@@ -16325,10 +16053,7 @@
         {
           "analysis": {
             "definition": "DEM.DIST.GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "sē",
             "morphemes": [
               {
@@ -16492,10 +16217,7 @@
         {
           "analysis": {
             "definition": "be.HAB-IND.PL",
-            "features": {
-              "mood": "indicative",
-              "number": "plural"
-            },
+            "features": { "mood": "indicative", "number": "plural" },
             "lemma": "bēon",
             "morphemes": [
               {
@@ -16527,9 +16249,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -16625,10 +16345,7 @@
         {
           "analysis": {
             "definition": "Finn-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "finn",
             "morphemes": [
               {
@@ -17082,10 +16799,7 @@
         {
           "analysis": {
             "definition": "man-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "mann",
             "morphemes": [
               {
@@ -17175,10 +16889,7 @@
         {
           "analysis": {
             "definition": "land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -17403,10 +17114,7 @@
         {
           "analysis": {
             "definition": "cow-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "hrȳðe",
             "morphemes": [
               {
@@ -17497,10 +17205,7 @@
         {
           "analysis": {
             "definition": "sheep-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "sċēapa",
             "morphemes": [
               {
@@ -17591,10 +17296,7 @@
         {
           "analysis": {
             "definition": "swine-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "swȳna",
             "morphemes": [
               {
@@ -17928,10 +17630,7 @@
         {
           "analysis": {
             "definition": "horse-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "hors",
             "morphemes": [
               {
@@ -17997,11 +17696,7 @@
         {
           "analysis": {
             "definition": "3PL.GEN",
-            "features": {
-              "case": "genitive",
-              "number": "plural",
-              "person": 3
-            },
+            "features": { "case": "genitive", "number": "plural", "person": 3 },
             "lemma": "hy",
             "morphemes": [
               {
@@ -18091,9 +17786,7 @@
         {
           "analysis": {
             "definition": "large-SUP.ADV",
-            "features": {
-              "degree": "superlative"
-            },
+            "features": { "degree": "superlative" },
             "lemma": "micel",
             "morphemes": [
               {
@@ -18183,10 +17876,7 @@
         {
           "analysis": {
             "definition": "tribute-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "gafol",
             "morphemes": [
               {
@@ -18312,11 +18002,7 @@
         {
           "analysis": {
             "definition": "3PL.DAT",
-            "features": {
-              "case": "dative",
-              "number": "plural",
-              "person": 3
-            },
+            "features": { "case": "dative", "number": "plural", "person": 3 },
             "lemma": "hē",
             "morphemes": [
               {
@@ -18511,10 +18197,7 @@
         {
           "analysis": {
             "definition": "animal-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "dēor",
             "morphemes": [
               {
@@ -18546,10 +18229,7 @@
         {
           "analysis": {
             "definition": "skin-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "fell",
             "morphemes": [
               {
@@ -18635,10 +18315,7 @@
         {
           "analysis": {
             "definition": "fowl-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "fugela",
             "morphemes": [
               {
@@ -18670,10 +18347,7 @@
         {
           "analysis": {
             "definition": "feather-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "feðer",
             "morphemes": [
               {
@@ -18732,10 +18406,7 @@
         {
           "analysis": {
             "definition": "whale-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "hwal",
             "morphemes": [
               {
@@ -18767,10 +18438,7 @@
         {
           "analysis": {
             "definition": "bone-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "bāne",
             "morphemes": [
               {
@@ -18887,10 +18555,7 @@
         {
           "analysis": {
             "definition": "ship-rope-DAT,PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "sċiprāp",
             "morphemes": [
               {
@@ -18954,10 +18619,7 @@
         {
           "analysis": {
             "definition": "be.HAB-IND.PL",
-            "features": {
-              "mood": "indicative",
-              "number": "plural"
-            },
+            "features": { "mood": "indicative", "number": "plural" },
             "lemma": "bēon",
             "morphemes": [
               {
@@ -19016,10 +18678,7 @@
         {
           "analysis": {
             "definition": "whale-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "hwæl",
             "morphemes": [
               {
@@ -19051,10 +18710,7 @@
         {
           "analysis": {
             "definition": "hide-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "hȳde",
             "morphemes": [
               {
@@ -19182,10 +18838,7 @@
         {
           "analysis": {
             "definition": "seal-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "sēol",
             "morphemes": [
               {
@@ -19347,10 +19000,7 @@
         {
           "analysis": {
             "definition": "PFX-birth-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "ġebyrd",
             "morphemes": [
               {
@@ -19500,9 +19150,7 @@
         {
           "analysis": {
             "definition": "pay-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "ġyldan",
             "morphemes": [
               {
@@ -19566,10 +19214,7 @@
         {
           "analysis": {
             "definition": "marten-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "mearð",
             "morphemes": [
               {
@@ -19780,10 +19425,7 @@
         {
           "analysis": {
             "definition": "bear-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "beran",
             "morphemes": [
               {
@@ -19900,10 +19542,7 @@
         {
           "analysis": {
             "definition": "amber-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "amb",
             "morphemes": [
               {
@@ -19935,10 +19574,7 @@
         {
           "analysis": {
             "definition": "feather-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "feð",
             "morphemes": [
               {
@@ -20039,10 +19675,7 @@
         {
           "analysis": {
             "definition": "coat.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "kyrtel",
             "morphemes": [
               {
@@ -20165,10 +19798,7 @@
         {
           "analysis": {
             "definition": "two.ACC.M",
-            "features": {
-              "case": "accusative",
-              "gender": "masculine"
-            },
+            "features": { "case": "accusative", "gender": "masculine" },
             "lemma": "twēgen",
             "morphemes": [
               {
@@ -20195,10 +19825,7 @@
         {
           "analysis": {
             "definition": "ship-rope-ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "sċiprāp",
             "morphemes": [
               {
@@ -20326,10 +19953,7 @@
         {
           "analysis": {
             "definition": "ell-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "elna",
             "morphemes": [
               {
@@ -20484,10 +20108,7 @@
         {
           "analysis": {
             "definition": "whale-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "hwæl",
             "morphemes": [
               {
@@ -20519,10 +20140,7 @@
         {
           "analysis": {
             "definition": "hide-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "hȳde",
             "morphemes": [
               {
@@ -20656,10 +20274,7 @@
         {
           "analysis": {
             "definition": "seal-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "sīol",
             "morphemes": [
               {
@@ -20907,9 +20522,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swȳþe",
             "morphemes": [
               {
@@ -21000,9 +20613,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -21168,9 +20779,7 @@
         {
           "analysis": {
             "definition": "one.INDF",
-            "features": {
-              "mood": "indicative"
-            },
+            "features": { "mood": "indicative" },
             "lemma": "man",
             "morphemes": [
               {
@@ -21251,9 +20860,7 @@
         {
           "analysis": {
             "definition": "graze-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "ettan",
             "morphemes": [
               {
@@ -21312,10 +20919,7 @@
         {
           "analysis": {
             "definition": "plough-INF",
-            "features": {
-              "mood": "infinitive",
-              "number": "plural"
-            },
+            "features": { "mood": "infinitive", "number": "plural" },
             "lemma": "erian",
             "morphemes": [
               {
@@ -21448,9 +21052,7 @@
         {
           "analysis": {
             "definition": "against",
-            "features": {
-              "case": "instrumental"
-            },
+            "features": { "case": "instrumental" },
             "lemma": "wið",
             "morphemes": [
               {
@@ -21508,10 +21110,7 @@
         {
           "analysis": {
             "definition": "sea.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "sǣ",
             "morphemes": [
               {
@@ -21719,10 +21318,7 @@
         {
           "analysis": {
             "definition": "place-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "stōw",
             "morphemes": [
               {
@@ -21754,9 +21350,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -21968,9 +21562,7 @@
         {
           "analysis": {
             "definition": "agaisnt-east-from",
-            "features": {
-              "gender": "feminine"
-            },
+            "features": { "gender": "feminine" },
             "lemma": "wiðēastan",
             "morphemes": [
               {
@@ -22034,9 +21626,7 @@
         {
           "analysis": {
             "definition": "against-up-in",
-            "features": {
-              "case": "instrumental"
-            },
+            "features": { "case": "instrumental" },
             "lemma": "wiðuppon",
             "morphemes": [
               {
@@ -22184,10 +21774,7 @@
         {
           "analysis": {
             "definition": "land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -22278,10 +21865,7 @@
         {
           "analysis": {
             "definition": "moor-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "mōr",
             "morphemes": [
               {
@@ -22711,9 +22295,7 @@
         {
           "analysis": {
             "definition": "north-CMP.ADV",
-            "features": {
-              "degree": "comparative"
-            },
+            "features": { "degree": "comparative" },
             "lemma": "norðor",
             "morphemes": [
               {
@@ -22917,9 +22499,7 @@
         {
           "analysis": {
             "definition": "be.HAB-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "bīan",
             "morphemes": [
               {
@@ -22983,10 +22563,7 @@
         {
           "analysis": {
             "definition": "mile-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "mīla",
             "morphemes": [
               {
@@ -23675,9 +23252,7 @@
         {
           "analysis": {
             "definition": "be.HAB-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "bēon",
             "morphemes": [
               {
@@ -23709,9 +23284,7 @@
         {
           "analysis": {
             "definition": "three-GEN",
-            "features": {
-              "case": "genitive"
-            },
+            "features": { "case": "genitive" },
             "lemma": "þrīe",
             "morphemes": [
               {
@@ -23743,10 +23316,7 @@
         {
           "analysis": {
             "definition": "mile-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "mīla",
             "morphemes": [
               {
@@ -23868,10 +23438,7 @@
         {
           "analysis": {
             "definition": "moor-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "mōre",
             "morphemes": [
               {
@@ -24083,10 +23650,7 @@
         {
           "analysis": {
             "definition": "place-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "stōw",
             "morphemes": [
               {
@@ -24204,9 +23768,7 @@
         {
           "analysis": {
             "definition": "one.INDF",
-            "features": {
-              "mood": "indicative"
-            },
+            "features": { "mood": "indicative" },
             "lemma": "man",
             "morphemes": [
               {
@@ -24292,9 +23854,7 @@
         {
           "analysis": {
             "definition": "two-DAT",
-            "features": {
-              "case": "dative"
-            },
+            "features": { "case": "dative" },
             "lemma": "twēgen",
             "morphemes": [
               {
@@ -24326,10 +23886,7 @@
         {
           "analysis": {
             "definition": "week-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "wuc",
             "morphemes": [
               {
@@ -24361,9 +23918,7 @@
         {
           "analysis": {
             "definition": "over-travel-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "oferfēran",
             "morphemes": [
               {
@@ -24491,10 +24046,7 @@
         {
           "analysis": {
             "definition": "place-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "stōw",
             "morphemes": [
               {
@@ -24612,9 +24164,7 @@
         {
           "analysis": {
             "definition": "one.INDF",
-            "features": {
-              "mood": "indicative"
-            },
+            "features": { "mood": "indicative" },
             "lemma": "man",
             "morphemes": [
               {
@@ -24727,10 +24277,7 @@
         {
           "analysis": {
             "definition": "day-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "dæġ",
             "morphemes": [
               {
@@ -24762,9 +24309,7 @@
         {
           "analysis": {
             "definition": "over-travel-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "oferfēran",
             "morphemes": [
               {
@@ -24940,10 +24485,7 @@
         {
           "analysis": {
             "definition": "land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -25082,10 +24624,7 @@
         {
           "analysis": {
             "definition": "side-ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "healfan",
             "morphemes": [
               {
@@ -25148,10 +24687,7 @@
         {
           "analysis": {
             "definition": "moor-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "mōr",
             "morphemes": [
               {
@@ -25275,10 +24811,7 @@
         {
           "analysis": {
             "definition": "land.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -25443,10 +24976,7 @@
         {
           "analysis": {
             "definition": "land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -25520,10 +25050,7 @@
         {
           "analysis": {
             "definition": "Kven-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "cwēna",
             "morphemes": [
               {
@@ -25701,10 +25228,7 @@
         {
           "analysis": {
             "definition": "time-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "hwīl",
             "morphemes": [
               {
@@ -25888,10 +25412,7 @@
         {
           "analysis": {
             "definition": "moor.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "mōr",
             "morphemes": [
               {
@@ -25919,10 +25440,7 @@
         {
           "analysis": {
             "definition": "time-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "hwīl",
             "morphemes": [
               {
@@ -26171,9 +25689,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -26373,10 +25889,7 @@
         {
           "analysis": {
             "definition": "moor-ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "mōr",
             "morphemes": [
               {
@@ -26539,11 +26052,7 @@
         {
           "analysis": {
             "definition": "3PL.GEN",
-            "features": {
-              "case": "genitive",
-              "number": "plural",
-              "person": 3
-            },
+            "features": { "case": "genitive", "number": "plural", "person": 3 },
             "lemma": "hy",
             "morphemes": [
               {
@@ -26570,10 +26079,7 @@
         {
           "analysis": {
             "definition": "ship-ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "sċypu",
             "morphemes": [
               {
@@ -26632,10 +26138,7 @@
         {
           "analysis": {
             "definition": "land.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -26720,10 +26223,7 @@
         {
           "analysis": {
             "definition": "lake-ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "mer",
             "morphemes": [
               {
@@ -27013,9 +26513,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -27084,10 +26582,7 @@
         {
           "analysis": {
             "definition": "ship-ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "sċypa",
             "morphemes": [
               {
@@ -27141,9 +26636,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -27214,10 +26707,7 @@
         {
           "analysis": {
             "definition": "Othere.NOM",
-            "features": {
-              "case": "nominative",
-              "gender": "neuter"
-            },
+            "features": { "case": "nominative", "gender": "neuter" },
             "lemma": "Ōhthere",
             "morphemes": [
               {
@@ -27412,10 +26902,7 @@
         {
           "analysis": {
             "definition": "Håloga-land.NOM",
-            "features": {
-              "case": "nominative",
-              "gender": "neuter"
-            },
+            "features": { "case": "nominative", "gender": "neuter" },
             "lemma": "Hālgoland",
             "morphemes": [
               {
@@ -27710,9 +27197,7 @@
         {
           "analysis": {
             "definition": "one.INDF",
-            "features": {
-              "mood": "indicative"
-            },
+            "features": { "mood": "indicative" },
             "lemma": "man",
             "morphemes": [
               {
@@ -27808,9 +27293,7 @@
         {
           "analysis": {
             "definition": "by-north-from",
-            "features": {
-              "gender": "feminine"
-            },
+            "features": { "gender": "feminine" },
             "lemma": "benorðan",
             "morphemes": [
               {
@@ -28107,10 +27590,7 @@
         {
           "analysis": {
             "definition": "land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -28173,9 +27653,7 @@
         {
           "analysis": {
             "definition": "one.INDF",
-            "features": {
-              "mood": "indicative"
-            },
+            "features": { "mood": "indicative" },
             "lemma": "man",
             "morphemes": [
               {
@@ -28234,10 +27712,7 @@
         {
           "analysis": {
             "definition": "Skiringssal.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "sċīringesheal",
             "morphemes": [
               {
@@ -28389,9 +27864,7 @@
         {
           "analysis": {
             "definition": "one.INDF",
-            "features": {
-              "mood": "indicative"
-            },
+            "features": { "mood": "indicative" },
             "lemma": "man",
             "morphemes": [
               {
@@ -28487,9 +27960,7 @@
         {
           "analysis": {
             "definition": "PFX-sail-THM-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "geseġlian",
             "morphemes": [
               {
@@ -28594,10 +28065,7 @@
         {
           "analysis": {
             "definition": "month-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "mōnð",
             "morphemes": [
               {
@@ -28656,9 +28124,7 @@
         {
           "analysis": {
             "definition": "one.INDF",
-            "features": {
-              "mood": "indicative"
-            },
+            "features": { "mood": "indicative" },
             "lemma": "man",
             "morphemes": [
               {
@@ -28712,10 +28178,7 @@
         {
           "analysis": {
             "definition": "night.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "niht",
             "morphemes": [
               {
@@ -28853,10 +28316,7 @@
         {
           "analysis": {
             "definition": "day-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "dæġe",
             "morphemes": [
               {
@@ -29100,10 +28560,7 @@
         {
           "analysis": {
             "definition": "time-ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "hwīl",
             "morphemes": [
               {
@@ -29199,9 +28656,7 @@
         {
           "analysis": {
             "definition": "sail-THM-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "seġlian",
             "morphemes": [
               {
@@ -29265,10 +28720,7 @@
         {
           "analysis": {
             "definition": "land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -29392,10 +28844,7 @@
         {
           "analysis": {
             "definition": "steering-board.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "stēorbord",
             "morphemes": [
               {
@@ -29495,9 +28944,7 @@
         {
           "analysis": {
             "definition": "before-SUP.ADV",
-            "features": {
-              "degree": "superlative"
-            },
+            "features": { "degree": "superlative" },
             "lemma": "ǣrest",
             "morphemes": [
               {
@@ -29781,10 +29228,7 @@
         {
           "analysis": {
             "definition": "Irish-GEN.PL-land-DAT.SG",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "īraland",
             "morphemes": [
               {
@@ -29889,10 +29333,7 @@
         {
           "analysis": {
             "definition": "land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -30148,10 +29589,7 @@
         {
           "analysis": {
             "definition": "steering-board.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "stēorbord",
             "morphemes": [
               {
@@ -30333,10 +29771,7 @@
         {
           "analysis": {
             "definition": "Skiringssal-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "sċīrincgesheal",
             "morphemes": [
               {
@@ -30433,10 +29868,7 @@
         {
           "analysis": {
             "definition": "way.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "weġ",
             "morphemes": [
               {
@@ -30521,10 +29953,7 @@
         {
           "analysis": {
             "definition": "back-board.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "bæcbord",
             "morphemes": [
               {
@@ -30599,10 +30028,7 @@
         {
           "analysis": {
             "definition": "against-south-from",
-            "features": {
-              "case": "instrumental",
-              "gender": "feminine"
-            },
+            "features": { "case": "instrumental", "gender": "feminine" },
             "lemma": "wiðsūðan",
             "morphemes": [
               {
@@ -30670,10 +30096,7 @@
         {
           "analysis": {
             "definition": "Skiringssal.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "sċīringesheal",
             "morphemes": [
               {
@@ -30737,9 +30160,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -30946,10 +30367,7 @@
         {
           "analysis": {
             "definition": "land.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "lond",
             "morphemes": [
               {
@@ -31172,9 +30590,7 @@
         {
           "analysis": {
             "definition": "over-see-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "ofersēan",
             "morphemes": [
               {
@@ -31407,10 +30823,7 @@
         {
           "analysis": {
             "definition": "side-ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "healfan",
             "morphemes": [
               {
@@ -31697,10 +31110,7 @@
         {
           "analysis": {
             "definition": "hundred.ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "hund",
             "morphemes": [
               {
@@ -31727,10 +31137,7 @@
         {
           "analysis": {
             "definition": "mile-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "mīla",
             "morphemes": [
               {
@@ -31874,10 +31281,7 @@
         {
           "analysis": {
             "definition": "land.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -31965,10 +31369,7 @@
         {
           "analysis": {
             "definition": "Skiringssal-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "sċīringesheal",
             "morphemes": [
               {
@@ -32223,10 +31624,7 @@
         {
           "analysis": {
             "definition": "day-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "dagan",
             "morphemes": [
               {
@@ -32316,10 +31714,7 @@
         {
           "analysis": {
             "definition": "port-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "port",
             "morphemes": [
               {
@@ -32378,9 +31773,7 @@
         {
           "analysis": {
             "definition": "one.INDF",
-            "features": {
-              "mood": "indicative"
-            },
+            "features": { "mood": "indicative" },
             "lemma": "mann",
             "morphemes": [
               {
@@ -32466,10 +31859,7 @@
         {
           "analysis": {
             "definition": "Heath-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "hǣþ",
             "morphemes": [
               {
@@ -32597,10 +31987,7 @@
         {
           "analysis": {
             "definition": "Wend-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "wined",
             "morphemes": [
               {
@@ -32660,10 +32047,7 @@
         {
           "analysis": {
             "definition": "Saxon-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "seax",
             "morphemes": [
               {
@@ -32723,10 +32107,7 @@
         {
           "analysis": {
             "definition": "Angeln-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "angl",
             "morphemes": [
               {
@@ -32877,10 +32258,7 @@
         {
           "analysis": {
             "definition": "Dane-ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "dene",
             "morphemes": [
               {
@@ -33084,10 +32462,7 @@
         {
           "analysis": {
             "definition": "Skiringssal-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "sċīringesheal",
             "morphemes": [
               {
@@ -33269,10 +32644,7 @@
         {
           "analysis": {
             "definition": "back-board.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "bæcbord",
             "morphemes": [
               {
@@ -33431,10 +32803,7 @@
         {
           "analysis": {
             "definition": "steering-board.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "stēorbord",
             "morphemes": [
               {
@@ -33502,10 +32871,7 @@
         {
           "analysis": {
             "definition": "three.ACC.M",
-            "features": {
-              "case": "accusative",
-              "gender": "masculine"
-            },
+            "features": { "case": "accusative", "gender": "masculine" },
             "lemma": "þrȳ",
             "morphemes": [
               {
@@ -33532,10 +32898,7 @@
         {
           "analysis": {
             "definition": "day-ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "dæġ",
             "morphemes": [
               {
@@ -33623,10 +32986,7 @@
         {
           "analysis": {
             "definition": "two.ACC.M",
-            "features": {
-              "case": "accusative",
-              "gender": "masculine"
-            },
+            "features": { "case": "accusative", "gender": "masculine" },
             "lemma": "twēgen",
             "morphemes": [
               {
@@ -33653,10 +33013,7 @@
         {
           "analysis": {
             "definition": "day-ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "dæġ",
             "morphemes": [
               {
@@ -33774,10 +33131,7 @@
         {
           "analysis": {
             "definition": "Heath-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "hǣþ",
             "morphemes": [
               {
@@ -33968,10 +33322,7 @@
         {
           "analysis": {
             "definition": "steering-board.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "stēorbord",
             "morphemes": [
               {
@@ -34126,10 +33477,7 @@
         {
           "analysis": {
             "definition": "island-land-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "īġlanda",
             "morphemes": [
               {
@@ -34227,10 +33575,7 @@
         {
           "analysis": {
             "definition": "DEM.DIST.DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "sē",
             "morphemes": [
               {
@@ -34257,10 +33602,7 @@
         {
           "analysis": {
             "definition": "land-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "land",
             "morphemes": [
               {
@@ -34488,10 +33830,7 @@
         {
           "analysis": {
             "definition": "land.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -34518,9 +33857,7 @@
         {
           "analysis": {
             "definition": "come-PST",
-            "features": {
-              "tense": "past"
-            },
+            "features": { "tense": "past" },
             "lemma": "cōman",
             "morphemes": [
               {
@@ -34650,10 +33987,7 @@
         {
           "analysis": {
             "definition": "DEM.DIST.ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "sē",
             "morphemes": [
               {
@@ -34680,10 +34014,7 @@
         {
           "analysis": {
             "definition": "two.ACC.M",
-            "features": {
-              "case": "accusative",
-              "gender": "masculine"
-            },
+            "features": { "case": "accusative", "gender": "masculine" },
             "lemma": "twēgen",
             "morphemes": [
               {
@@ -34710,10 +34041,7 @@
         {
           "analysis": {
             "definition": "day-ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "dæġ",
             "morphemes": [
               {
@@ -34803,10 +34131,7 @@
         {
           "analysis": {
             "definition": "back-board.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "bæcbord",
             "morphemes": [
               {
@@ -35243,10 +34568,7 @@
         {
           "analysis": {
             "definition": "Heath-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "hǣð",
             "morphemes": [
               {
@@ -35401,10 +34723,7 @@
         {
           "analysis": {
             "definition": "Truso.DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "truso",
             "morphemes": [
               {
@@ -35485,10 +34804,7 @@
         {
           "analysis": {
             "definition": "day-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "dæġ",
             "morphemes": [
               {
@@ -35547,10 +34863,7 @@
         {
           "analysis": {
             "definition": "night-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "niht",
             "morphemes": [
               {
@@ -35741,10 +35054,7 @@
         {
           "analysis": {
             "definition": "way.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "weġ",
             "morphemes": [
               {
@@ -35771,9 +35081,7 @@
         {
           "analysis": {
             "definition": "run-PART.PRS",
-            "features": {
-              "tense": "present"
-            },
+            "features": { "tense": "present" },
             "lemma": "yrnenan",
             "morphemes": [
               {
@@ -35832,10 +35140,7 @@
         {
           "analysis": {
             "definition": "sail-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "seġl",
             "morphemes": [
               {
@@ -35997,10 +35302,7 @@
         {
           "analysis": {
             "definition": "steering-board.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "stēorbord",
             "morphemes": [
               {
@@ -36087,10 +35389,7 @@
         {
           "analysis": {
             "definition": "back-board.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "bæcbord",
             "morphemes": [
               {
@@ -36249,10 +35548,7 @@
         {
           "analysis": {
             "definition": "Lol-landNOM.SG",
-            "features": {
-              "case": "nominative",
-              "number": "singular"
-            },
+            "features": { "case": "nominative", "number": "singular" },
             "lemma": "lǣland",
             "morphemes": [
               {
@@ -36692,10 +35988,7 @@
         {
           "analysis": {
             "definition": "Burgundian-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "burgenda",
             "morphemes": [
               {
@@ -36790,11 +36083,7 @@
         {
           "analysis": {
             "definition": "1PL.DAT",
-            "features": {
-              "case": "dative",
-              "number": "plural",
-              "person": 1
-            },
+            "features": { "case": "dative", "number": "plural", "person": 1 },
             "lemma": "ūs",
             "morphemes": [
               {
@@ -36848,10 +36137,7 @@
         {
           "analysis": {
             "definition": "back-board.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "bæcbord",
             "morphemes": [
               {
@@ -36978,11 +36264,7 @@
         {
           "analysis": {
             "definition": "3PL.DAT",
-            "features": {
-              "case": "dative",
-              "number": "plural",
-              "person": 3
-            },
+            "features": { "case": "dative", "number": "plural", "person": 3 },
             "lemma": "hē",
             "morphemes": [
               {
@@ -37041,10 +36323,7 @@
         {
           "analysis": {
             "definition": "king.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "cyning",
             "morphemes": [
               {
@@ -37132,10 +36411,7 @@
         {
           "analysis": {
             "definition": "Burgundian-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "burgenda",
             "morphemes": [
               {
@@ -37167,10 +36443,7 @@
         {
           "analysis": {
             "definition": "land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -37238,11 +36511,7 @@
         {
           "analysis": {
             "definition": "1PL.DAT",
-            "features": {
-              "case": "dative",
-              "number": "plural",
-              "person": 1
-            },
+            "features": { "case": "dative", "number": "plural", "person": 1 },
             "lemma": "ūs",
             "morphemes": [
               {
@@ -37435,9 +36704,7 @@
         {
           "analysis": {
             "definition": "before-SUP.ADV",
-            "features": {
-              "degree": "superlative"
-            },
+            "features": { "degree": "superlative" },
             "lemma": "ǣrest",
             "morphemes": [
               {
@@ -37735,10 +37002,7 @@
         {
           "analysis": {
             "definition": "back-board.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "bæcbord",
             "morphemes": [
               {
@@ -37923,10 +37187,7 @@
         {
           "analysis": {
             "definition": "Swede.DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "swēon",
             "morphemes": [
               {
@@ -38055,11 +37316,7 @@
         {
           "analysis": {
             "definition": "1PL.DAT",
-            "features": {
-              "case": "dative",
-              "number": "plural",
-              "person": 1
-            },
+            "features": { "case": "dative", "number": "plural", "person": 1 },
             "lemma": "ūs",
             "morphemes": [
               {
@@ -38123,10 +37380,7 @@
         {
           "analysis": {
             "definition": "way.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "weġ",
             "morphemes": [
               {
@@ -38180,10 +37434,7 @@
         {
           "analysis": {
             "definition": "steering-board.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "stēorbord",
             "morphemes": [
               {
@@ -38394,9 +37645,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -38593,10 +37842,7 @@
         {
           "analysis": {
             "definition": "Wit-land.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "witland",
             "morphemes": [
               {
@@ -38655,10 +37901,7 @@
         {
           "analysis": {
             "definition": "Wend-land.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "weonodland",
             "morphemes": [
               {
@@ -38854,10 +38097,7 @@
         {
           "analysis": {
             "definition": "Est-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "ēst",
             "morphemes": [
               {
@@ -39081,10 +38321,7 @@
         {
           "analysis": {
             "definition": "Wend-land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "weonodland",
             "morphemes": [
               {
@@ -39212,10 +38449,7 @@
         {
           "analysis": {
             "definition": "Est-lake-ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "ēstmer",
             "morphemes": [
               {
@@ -39384,9 +38618,7 @@
         {
           "analysis": {
             "definition": "indeed",
-            "features": {
-              "mood": "indicative"
-            },
+            "features": { "mood": "indicative" },
             "lemma": "hūruan",
             "morphemes": [
               {
@@ -39440,10 +38672,7 @@
         {
           "analysis": {
             "definition": "mile-GEN.PL",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "mīla",
             "morphemes": [
               {
@@ -39609,9 +38838,7 @@
         {
           "analysis": {
             "definition": "east-from",
-            "features": {
-              "gender": "feminine"
-            },
+            "features": { "gender": "feminine" },
             "lemma": "ēastan",
             "morphemes": [
               {
@@ -39670,10 +38897,7 @@
         {
           "analysis": {
             "definition": "Est-lake-ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "ēstmer",
             "morphemes": [
               {
@@ -39768,10 +38992,7 @@
         {
           "analysis": {
             "definition": "lake-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "mere",
             "morphemes": [
               {
@@ -39925,10 +39146,7 @@
         {
           "analysis": {
             "definition": "river.shore-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "stað",
             "morphemes": [
               {
@@ -40105,10 +39323,7 @@
         {
           "analysis": {
             "definition": "Est-lake-ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "ēstmer",
             "morphemes": [
               {
@@ -40177,9 +39392,7 @@
         {
           "analysis": {
             "definition": "east-from",
-            "features": {
-              "gender": "feminine"
-            },
+            "features": { "gender": "feminine" },
             "lemma": "ēastan",
             "morphemes": [
               {
@@ -40238,10 +39451,7 @@
         {
           "analysis": {
             "definition": "Est-land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "ēstland",
             "morphemes": [
               {
@@ -40341,9 +39551,7 @@
         {
           "analysis": {
             "definition": "south-from",
-            "features": {
-              "gender": "feminine"
-            },
+            "features": { "gender": "feminine" },
             "lemma": "sūðan",
             "morphemes": [
               {
@@ -40402,10 +39610,7 @@
         {
           "analysis": {
             "definition": "Wend-land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "winodland",
             "morphemes": [
               {
@@ -40539,10 +39744,7 @@
         {
           "analysis": {
             "definition": "Vistula-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "wīsl",
             "morphemes": [
               {
@@ -40637,10 +39839,7 @@
         {
           "analysis": {
             "definition": "name-ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "nama",
             "morphemes": [
               {
@@ -40795,10 +39994,7 @@
         {
           "analysis": {
             "definition": "lake-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "mere",
             "morphemes": [
               {
@@ -40938,10 +40134,7 @@
         {
           "analysis": {
             "definition": "sea.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "sǣ",
             "morphemes": [
               {
@@ -41059,9 +40252,7 @@
         {
           "analysis": {
             "definition": "one.INDF",
-            "features": {
-              "mood": "indicative"
-            },
+            "features": { "mood": "indicative" },
             "lemma": "man",
             "morphemes": [
               {
@@ -41267,9 +40458,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -41424,9 +40613,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -41808,9 +40995,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -42226,10 +41411,7 @@
         {
           "analysis": {
             "definition": "mare-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "mȳran",
             "morphemes": [
               {
@@ -42261,10 +41443,7 @@
         {
           "analysis": {
             "definition": "milk.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "meolc",
             "morphemes": [
               {
@@ -42527,10 +41706,7 @@
         {
           "analysis": {
             "definition": "mead.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "medo",
             "morphemes": [
               {
@@ -42627,9 +41803,7 @@
         {
           "analysis": {
             "definition": "strong-ADV",
-            "features": {
-              "declension": "strong"
-            },
+            "features": { "declension": "strong" },
             "lemma": "swīðe",
             "morphemes": [
               {
@@ -42729,10 +41903,7 @@
         {
           "analysis": {
             "definition": "by-two-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "betwēonan",
             "morphemes": [
               {
@@ -42769,11 +41940,7 @@
         {
           "analysis": {
             "definition": "3PL.DAT",
-            "features": {
-              "case": "dative",
-              "number": "plural",
-              "person": 3
-            },
+            "features": { "case": "dative", "number": "plural", "person": 3 },
             "lemma": "hē",
             "morphemes": [
               {
@@ -43061,10 +42228,7 @@
         {
           "analysis": {
             "definition": "Est-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "ēst",
             "morphemes": [
               {
@@ -43370,10 +42534,7 @@
         {
           "analysis": {
             "definition": "Est-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "ēst",
             "morphemes": [
               {
@@ -43825,10 +42986,7 @@
         {
           "analysis": {
             "definition": "kinsman-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "māg",
             "morphemes": [
               {
@@ -43887,10 +43045,7 @@
         {
           "analysis": {
             "definition": "friend-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "frēond",
             "morphemes": [
               {
@@ -43922,10 +43077,7 @@
         {
           "analysis": {
             "definition": "month.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "mōnað",
             "morphemes": [
               {
@@ -43980,10 +43132,7 @@
         {
           "analysis": {
             "definition": "time-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "hwīl",
             "morphemes": [
               {
@@ -44015,10 +43164,7 @@
         {
           "analysis": {
             "definition": "two.ACC.M",
-            "features": {
-              "case": "accusative",
-              "gender": "masculine"
-            },
+            "features": { "case": "accusative", "gender": "masculine" },
             "lemma": "twēgen",
             "morphemes": [
               {
@@ -44458,10 +43604,7 @@
         {
           "analysis": {
             "definition": "large.COMP-ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "māran",
             "morphemes": [
               {
@@ -44493,10 +43636,7 @@
         {
           "analysis": {
             "definition": "wealth-ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "spēda",
             "morphemes": [
               {
@@ -44565,10 +43705,7 @@
         {
           "analysis": {
             "definition": "time-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "hwīl",
             "morphemes": [
               {
@@ -44632,10 +43769,7 @@
         {
           "analysis": {
             "definition": "year.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "ġēar",
             "morphemes": [
               {
@@ -44721,10 +43855,7 @@
         {
           "analysis": {
             "definition": "be.HAB-IND.PL",
-            "features": {
-              "mood": "indicative",
-              "number": "plural"
-            },
+            "features": { "mood": "indicative", "number": "plural" },
             "lemma": "bēon",
             "morphemes": [
               {
@@ -44867,9 +43998,7 @@
         {
           "analysis": {
             "definition": "by-up-from",
-            "features": {
-              "gender": "feminine"
-            },
+            "features": { "gender": "feminine" },
             "lemma": "bufan",
             "morphemes": [
               {
@@ -44906,10 +44035,7 @@
         {
           "analysis": {
             "definition": "ground-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "eorðan",
             "morphemes": [
               {
@@ -44968,11 +44094,7 @@
         {
           "analysis": {
             "definition": "3PL.GEN",
-            "features": {
-              "case": "genitive",
-              "number": "plural",
-              "person": 3
-            },
+            "features": { "case": "genitive", "number": "plural", "person": 3 },
             "lemma": "hy",
             "morphemes": [
               {
@@ -44999,10 +44121,7 @@
         {
           "analysis": {
             "definition": "house-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "hūs",
             "morphemes": [
               {
@@ -45136,10 +44255,7 @@
         {
           "analysis": {
             "definition": "time-ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "hwīl",
             "morphemes": [
               {
@@ -45388,9 +44504,7 @@
         {
           "analysis": {
             "definition": "be.HAB-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "bēon",
             "morphemes": [
               {
@@ -45580,10 +44694,7 @@
         {
           "analysis": {
             "definition": "day.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "dæġ",
             "morphemes": [
               {
@@ -45844,10 +44955,7 @@
         {
           "analysis": {
             "definition": "day-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "dæġe",
             "morphemes": [
               {
@@ -46028,10 +45136,7 @@
         {
           "analysis": {
             "definition": "pyre-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "āde",
             "morphemes": [
               {
@@ -46063,9 +45168,7 @@
         {
           "analysis": {
             "definition": "bear-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "beran",
             "morphemes": [
               {
@@ -46266,10 +45369,7 @@
         {
           "analysis": {
             "definition": "property.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "feoh",
             "morphemes": [
               {
@@ -46511,10 +45611,7 @@
         {
           "analysis": {
             "definition": "PFX-drink-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "ġedrynċ",
             "morphemes": [
               {
@@ -46609,10 +45706,7 @@
         {
           "analysis": {
             "definition": "play-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "plegan",
             "morphemes": [
               {
@@ -46753,10 +45847,7 @@
         {
           "analysis": {
             "definition": "time-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "hwȳl",
             "morphemes": [
               {
@@ -46928,10 +46019,7 @@
         {
           "analysis": {
             "definition": "property-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "fēos",
             "morphemes": [
               {
@@ -47232,10 +46320,7 @@
         {
           "analysis": {
             "definition": "mile-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "mīle",
             "morphemes": [
               {
@@ -47426,10 +46511,7 @@
         {
           "analysis": {
             "definition": "town-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "tūne",
             "morphemes": [
               {
@@ -47912,10 +46994,7 @@
         {
           "analysis": {
             "definition": "mile-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "mīle",
             "morphemes": [
               {
@@ -48007,9 +47086,7 @@
         {
           "analysis": {
             "definition": "be.HAB-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "bēon",
             "morphemes": [
               {
@@ -48215,10 +47292,7 @@
         {
           "analysis": {
             "definition": "town-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "tūne",
             "morphemes": [
               {
@@ -48510,9 +47584,7 @@
         {
           "analysis": {
             "definition": "be.HAB-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "bēon",
             "morphemes": [
               {
@@ -48765,10 +47837,7 @@
         {
           "analysis": {
             "definition": "horse.ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "hors",
             "morphemes": [
               {
@@ -48889,10 +47958,7 @@
         {
           "analysis": {
             "definition": "land-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "land",
             "morphemes": [
               {
@@ -49011,10 +48077,7 @@
         {
           "analysis": {
             "definition": "mile-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "mīl",
             "morphemes": [
               {
@@ -49127,10 +48190,7 @@
         {
           "analysis": {
             "definition": "mile-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "mīl",
             "morphemes": [
               {
@@ -49220,10 +48280,7 @@
         {
           "analysis": {
             "definition": "property.DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "fēo",
             "morphemes": [
               {
@@ -49452,10 +48509,7 @@
         {
           "analysis": {
             "definition": "property.DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "fēo",
             "morphemes": [
               {
@@ -49714,10 +48768,7 @@
         {
           "analysis": {
             "definition": "horse.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "hors",
             "morphemes": [
               {
@@ -49882,10 +48933,7 @@
         {
           "analysis": {
             "definition": "deal-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "dǣle",
             "morphemes": [
               {
@@ -50534,10 +49582,7 @@
         {
           "analysis": {
             "definition": "deal.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "dǣl",
             "morphemes": [
               {
@@ -50664,10 +49709,7 @@
         {
           "analysis": {
             "definition": "town-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "tūne",
             "morphemes": [
               {
@@ -50730,10 +49772,7 @@
         {
           "analysis": {
             "definition": "property.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "feoh",
             "morphemes": [
               {
@@ -50964,10 +50003,7 @@
         {
           "analysis": {
             "definition": "way-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "weġ",
             "morphemes": [
               {
@@ -51057,10 +50093,7 @@
         {
           "analysis": {
             "definition": "property.DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "fēo",
             "morphemes": [
               {
@@ -51147,9 +50180,7 @@
         {
           "analysis": {
             "definition": "be.allowed-PRS",
-            "features": {
-              "tense": "present"
-            },
+            "features": { "tense": "present" },
             "lemma": "mōtan",
             "morphemes": [
               {
@@ -51181,9 +50212,7 @@
         {
           "analysis": {
             "definition": "have-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "habban",
             "morphemes": [
               {
@@ -51359,10 +50388,7 @@
         {
           "analysis": {
             "definition": "be.HAB-IND.PL",
-            "features": {
-              "mood": "indicative",
-              "number": "plural"
-            },
+            "features": { "mood": "indicative", "number": "plural" },
             "lemma": "bēon",
             "morphemes": [
               {
@@ -51697,10 +50723,7 @@
         {
           "analysis": {
             "definition": "be.HAB-IND.PL",
-            "features": {
-              "mood": "indicative",
-              "number": "plural"
-            },
+            "features": { "mood": "indicative", "number": "plural" },
             "lemma": "bēon",
             "morphemes": [
               {
@@ -51897,9 +50920,7 @@
         {
           "analysis": {
             "definition": "one.INDF",
-            "features": {
-              "mood": "indicative"
-            },
+            "features": { "mood": "indicative" },
             "lemma": "man",
             "morphemes": [
               {
@@ -52113,10 +51134,7 @@
         {
           "analysis": {
             "definition": "weapon-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "wǣpn",
             "morphemes": [
               {
@@ -52175,10 +51193,7 @@
         {
           "analysis": {
             "definition": "clothing-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "hræġl",
             "morphemes": [
               {
@@ -52244,10 +51259,7 @@
         {
           "analysis": {
             "definition": "strong-SUP.ADV",
-            "features": {
-              "declension": "strong",
-              "degree": "superlative"
-            },
+            "features": { "declension": "strong", "degree": "superlative" },
             "lemma": "swīðost",
             "morphemes": [
               {
@@ -52347,10 +51359,7 @@
         {
           "analysis": {
             "definition": "wealth-ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "spēda",
             "morphemes": [
               {
@@ -52550,10 +51559,7 @@
         {
           "analysis": {
             "definition": "lying-DAT.SG",
-            "features": {
-              "case": "dative",
-              "number": "singular"
-            },
+            "features": { "case": "dative", "number": "singular" },
             "lemma": "leġer",
             "morphemes": [
               {
@@ -52653,10 +51659,7 @@
         {
           "analysis": {
             "definition": "man-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "mann",
             "morphemes": [
               {
@@ -52896,10 +51899,7 @@
         {
           "analysis": {
             "definition": "way-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "weg",
             "morphemes": [
               {
@@ -53158,10 +52158,7 @@
         {
           "analysis": {
             "definition": "take-IND.PL",
-            "features": {
-              "mood": "indicative",
-              "number": "plural"
-            },
+            "features": { "mood": "indicative", "number": "plural" },
             "lemma": "niman",
             "morphemes": [
               {
@@ -53317,10 +52314,7 @@
         {
           "analysis": {
             "definition": "Est-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "ēst",
             "morphemes": [
               {
@@ -53578,9 +52572,7 @@
         {
           "analysis": {
             "definition": "be.HAB-INF",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "bēon",
             "morphemes": [
               {
@@ -53736,9 +52728,7 @@
         {
           "analysis": {
             "definition": "one.INDF",
-            "features": {
-              "mood": "indicative"
-            },
+            "features": { "mood": "indicative" },
             "lemma": "man",
             "morphemes": [
               {
@@ -53796,10 +52786,7 @@
         {
           "analysis": {
             "definition": "bone.ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "bān",
             "morphemes": [
               {
@@ -54048,10 +53035,7 @@
         {
           "analysis": {
             "definition": "PFX-atone.for-INF",
-            "features": {
-              "gender": "feminine",
-              "mood": "infinitive"
-            },
+            "features": { "gender": "feminine", "mood": "infinitive" },
             "lemma": "ġebētan",
             "morphemes": [
               {
@@ -54208,10 +53192,7 @@
         {
           "analysis": {
             "definition": "Est-DAT.PL",
-            "features": {
-              "case": "dative",
-              "number": "plural"
-            },
+            "features": { "case": "dative", "number": "plural" },
             "lemma": "ēst",
             "morphemes": [
               {
@@ -54400,10 +53381,7 @@
         {
           "analysis": {
             "definition": "cold-ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "ċyle",
             "morphemes": [
               {
@@ -54435,10 +53413,7 @@
         {
           "analysis": {
             "definition": "PFX-make-INF",
-            "features": {
-              "gender": "masculine",
-              "mood": "infinitive"
-            },
+            "features": { "gender": "masculine", "mood": "infinitive" },
             "lemma": "ġewyrċan",
             "morphemes": [
               {
@@ -54977,10 +53952,7 @@
         {
           "analysis": {
             "definition": "cold-ACC.SG",
-            "features": {
-              "case": "accusative",
-              "number": "singular"
-            },
+            "features": { "case": "accusative", "number": "singular" },
             "lemma": "ċyle",
             "morphemes": [
               {
@@ -55143,9 +54115,7 @@
         {
           "analysis": {
             "definition": "one.INDF",
-            "features": {
-              "mood": "indicative"
-            },
+            "features": { "mood": "indicative" },
             "lemma": "man",
             "morphemes": [
               {
@@ -55213,10 +54183,7 @@
         {
           "analysis": {
             "definition": "two.ACC.M",
-            "features": {
-              "case": "accusative",
-              "gender": "masculine"
-            },
+            "features": { "case": "accusative", "gender": "masculine" },
             "lemma": "twēgen",
             "morphemes": [
               {
@@ -55243,10 +54210,7 @@
         {
           "analysis": {
             "definition": "vessel-ACC.PL",
-            "features": {
-              "case": "accusative",
-              "number": "plural"
-            },
+            "features": { "case": "accusative", "number": "plural" },
             "lemma": "fætels",
             "morphemes": [
               {
@@ -55310,10 +54274,7 @@
         {
           "analysis": {
             "definition": "ale-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "ealu",
             "morphemes": [
               {
@@ -55372,10 +54333,7 @@
         {
           "analysis": {
             "definition": "water-GEN.SG",
-            "features": {
-              "case": "genitive",
-              "number": "singular"
-            },
+            "features": { "case": "genitive", "number": "singular" },
             "lemma": "wæter",
             "morphemes": [
               {

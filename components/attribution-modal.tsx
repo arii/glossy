@@ -49,6 +49,8 @@ export interface AttributionCardProps {
   content?: AttributionConfig;
   onDone?: () => void;
   showCloseButton?: boolean;
+  hideHeader?: boolean;
+  asCard?: boolean;
 }
 
 export function AttributionCard({
@@ -65,6 +67,8 @@ export function AttributionCard({
   content,
   onDone,
   showCloseButton = false,
+  hideHeader = false,
+  asCard = true,
 }: AttributionCardProps) {
   const activeConfig = content || config || initialAttributionData;
   const [copiedFormat, setCopiedFormat] = useState<CitationFormat | null>(null);
@@ -160,54 +164,108 @@ export function AttributionCard({
 
   return (
     <div
-      className="bg-white rounded-lg border border-stone-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ring-1 ring-stone-900/5 max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8"
+      style={
+        asCard
+          ? {
+              background: "var(--surface)",
+              borderRadius: "0.5rem",
+              border: "1px solid var(--rule)",
+              boxShadow: "0 0.5rem 2rem rgba(64, 47, 29, 0.08)",
+              maxWidth: "44rem",
+              width: "100%",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              padding: "1.75rem 2rem",
+              boxSizing: "border-box",
+            }
+          : {
+              width: "100%",
+              boxSizing: "border-box",
+            }
+      }
       onClick={(e) => e.stopPropagation()}
     >
       {/* Header */}
-      <div className="flex justify-between items-start pb-4 border-b border-stone-200/80 mb-5">
-        <div>
-          <div className="flex items-center gap-2">
-            <Scroll className="w-5 h-5 text-amber-900" />
-            <h2
-              id="attribution-title"
-              data-tina-field={tinaField(activeConfig, "heading")}
-              className="font-serif text-xl md:text-2xl font-medium text-stone-900 tracking-tight m-0"
+      {!hideHeader && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            paddingBottom: "1rem",
+            borderBottom: "1px solid var(--rule)",
+            marginBottom: "1.25rem",
+          }}
+        >
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <Scroll style={{ width: "1.25rem", height: "1.25rem", color: "var(--accent)" }} />
+              <h2
+                id="attribution-title"
+                data-tina-field={tinaField(activeConfig, "heading")}
+                style={{
+                  fontFamily: "'Charis SIL', Georgia, serif",
+                  fontSize: "1.35rem",
+                  fontWeight: 600,
+                  color: "var(--ink)",
+                  letterSpacing: "-0.01em",
+                  margin: 0,
+                }}
+              >
+                {activeConfig.heading || "Scholarly Attribution & Citation"}
+              </h2>
+            </div>
+            <p
+              data-tina-field={tinaField(activeConfig, "description")}
+              style={{
+                fontFamily: "Arial, sans-serif",
+                fontSize: "0.82rem",
+                color: "var(--muted-ink)",
+                lineHeight: 1.5,
+                marginTop: "0.35rem",
+                marginBottom: 0,
+              }}
             >
-              {activeConfig.heading || "Scholarly Attribution & Citation"}
-            </h2>
+              {activeConfig.description ? (
+                <span>{activeConfig.description} (<em>{title}</em>)</span>
+              ) : (
+                <span>Provenance, manuscript shelfmarks, and academic citation formats for <em>{title}</em></span>
+              )}
+            </p>
           </div>
-          <p
-            data-tina-field={tinaField(activeConfig, "description")}
-            className="font-sans text-xs text-stone-500 leading-relaxed mt-1 mb-0"
-          >
-            {activeConfig.description ? (
-              <span>{activeConfig.description} (<em>{title}</em>)</span>
-            ) : (
-              <span>Provenance, manuscript shelfmarks, and academic citation formats for <em>{title}</em></span>
-            )}
-          </p>
+          {showCloseButton && onDone && (
+            <button
+              type="button"
+              onClick={onDone}
+              aria-label="Close attribution dialog"
+              style={{
+                background: "transparent",
+                border: "none",
+                color: "var(--muted-ink)",
+                cursor: "pointer",
+                padding: "0.25rem",
+                borderRadius: "0.25rem",
+              }}
+            >
+              <X style={{ width: "1.25rem", height: "1.25rem" }} />
+            </button>
+          )}
         </div>
-        {showCloseButton && onDone && (
-          <button
-            type="button"
-            onClick={onDone}
-            aria-label="Close attribution dialog"
-            style={{
-              background: "transparent",
-              border: "none",
-              color: "var(--muted-ink)",
-              cursor: "pointer",
-              padding: "0.25rem",
-              borderRadius: "0.25rem",
-            }}
-          >
-            <X style={{ width: "1.25rem", height: "1.25rem" }} />
-          </button>
-        )}
-      </div>
+      )}
 
       {/* Provenance Metadata Grid (Tiles) */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.5rem", background: "#fbf7ee", padding: "1rem", borderRadius: "0.4rem", border: "1px solid #dfcfb8" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(14rem, 1fr))",
+          gap: "1rem",
+          marginBottom: "1.5rem",
+          background: "#fbf7ee",
+          padding: "1rem",
+          borderRadius: "0.4rem",
+          border: "1px solid #dfcfb8",
+        }}
+      >
         {/* Tile 1: Digital Platform Creator */}
         <div>
           <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--accent)", fontWeight: 700 }}>
@@ -305,21 +363,59 @@ export function AttributionCard({
 
       {/* Tabbed Citation Formats */}
       <div>
-        <div className="flex justify-between items-center mb-3">
-          <span className="font-mono text-xs font-semibold tracking-wider uppercase text-stone-700">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "0.5rem",
+            marginBottom: "0.75rem",
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "monospace",
+              fontSize: "0.75rem",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "var(--ink)",
+            }}
+          >
             Cite This Edition
           </span>
-          <div className="inline-flex items-center gap-1 p-1 bg-stone-100 rounded-lg border border-stone-200/80">
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.25rem",
+              padding: "0.25rem",
+              background: "#f0ebe1",
+              borderRadius: "0.375rem",
+              border: "1px solid var(--rule)",
+            }}
+          >
             {(["bibtex", "unified", "apa", "chicago"] as const).map((tab) => (
               <button
                 key={tab}
                 type="button"
                 onClick={() => setActiveTab(tab)}
-                className={`px-2.5 py-1 rounded text-[11px] font-mono uppercase tracking-wider font-semibold transition-colors cursor-pointer ${
-                  activeTab === tab
-                    ? "bg-white text-stone-900 shadow-sm border border-stone-200/80"
-                    : "text-stone-600 hover:text-stone-900"
-                }`}
+                style={{
+                  padding: "0.25rem 0.65rem",
+                  borderRadius: "0.25rem",
+                  fontSize: "0.72rem",
+                  fontFamily: "monospace",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "background 0.15s ease, color 0.15s ease",
+                  border: activeTab === tab ? "1px solid var(--rule)" : "1px solid transparent",
+                  background: activeTab === tab ? "var(--surface)" : "transparent",
+                  color: activeTab === tab ? "var(--ink)" : "var(--muted-ink)",
+                  boxShadow: activeTab === tab ? "0 1px 2px rgba(0,0,0,0.05)" : "none",
+                }}
               >
                 {tab}
               </button>

@@ -336,10 +336,7 @@
         {
           "analysis": {
             "definition": "the, those",
-            "features": {
-              "case": "nominative",
-              "number": "plural"
-            },
+            "features": { "case": "nominative", "number": "plural" },
             "lemma": "sē",
             "morphemes": [
               {
@@ -913,9 +910,7 @@
         {
           "analysis": {
             "definition": "first, for the first time",
-            "features": {
-              "degree": "superlative"
-            },
+            "features": { "degree": "superlative" },
             "lemma": "ǣrest",
             "morphemes": [
               {
@@ -1467,10 +1462,7 @@
         {
           "analysis": {
             "definition": "of those, of the",
-            "features": {
-              "case": "genitive",
-              "number": "plural"
-            },
+            "features": { "case": "genitive", "number": "plural" },
             "lemma": "sē",
             "morphemes": [
               {
@@ -1622,9 +1614,7 @@
         {
           "analysis": {
             "definition": "to hear, obey, serve",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "hȳran",
             "morphemes": [
               {
@@ -1741,9 +1731,7 @@
         {
           "analysis": {
             "definition": "to pay, yield, render",
-            "features": {
-              "mood": "infinitive"
-            },
+            "features": { "mood": "infinitive" },
             "lemma": "gieldan",
             "morphemes": [
               {

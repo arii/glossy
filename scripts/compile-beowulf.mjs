@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export.ts";
+import { formatJson } from "./format-json.mjs";
 
 // Scholarly morpheme-by-morpheme segmentation and Leipzig glosses for Beowulf Prologue (Lines 1–11)
 const beowulfData = [
@@ -912,7 +913,12 @@ const doc = {
   slug: "beowulf-prologue",
   title: "Beowulf: Prologue (Lines 1–11)",
   author: "Anonymous (Nowell Codex)",
+  editor: "Tyler Lemon",
+  shelfmark: "BL Cotton MS Vitellius A. xv, fol. 129r–198v (Nowell Codex)",
+  dialect: "Late West Saxon (with Anglian features)",
+  historicalDate: "c. 700–1000 AD (MS c. 1000–1010 AD)",
   source: "London, British Library, Cotton MS Vitellius A. xv, ff. 129r–198v",
+  sourceEdition: "Klaeber's Beowulf (4th ed. Fulk, Bjork, Niles 2008)",
   sourceFile: "references/Beowulf_Prologue.tex",
   language: "Old English",
   status: "published",
@@ -923,7 +929,10 @@ const doc = {
 const texSource = exportToGb4eLatex(doc);
 
 fs.writeFileSync(path.join(process.cwd(), "references", "Beowulf_Prologue.tex"), texSource, "utf8");
-fs.writeFileSync(path.join(process.cwd(), "content", "texts", "beowulf-prologue.json"), JSON.stringify(doc, null, 2) + "\n", "utf8");
+
+const targetJsonPath = path.join(process.cwd(), "content", "texts", "beowulf-prologue.json");
+const formatted = await formatJson(JSON.stringify(doc), targetJsonPath);
+fs.writeFileSync(targetJsonPath, formatted, "utf8");
 
 console.log(`Successfully compiled 11-line Beowulf Prologue (${beowulfData.length} sentences, ${beowulfData.reduce((acc, s) => acc + s.words.length, 0)} tokens with full Leipzig glosses & morpheme breakdowns)!`);
 
