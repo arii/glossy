@@ -3,7 +3,6 @@
 import { SiteNav } from "../../components/site-nav";
 import { PageHero } from "../../components/page-hero";
 import { SiteFooter } from "../../components/site-footer";
-import { ShieldCheck } from "lucide-react";
 import privacyData from "../../content/pages/privacy.json";
 import { useTina, tinaField } from "tinacms/dist/react";
 
@@ -14,8 +13,6 @@ const PRIVACY_PAGE_QUERY = `
       eyebrow
       heading
       description
-      privacySummaryTitle
-      privacySummaryText
       privacySections {
         num
         title
@@ -68,31 +65,8 @@ export default function PrivacyPage() {
             descriptionDataTinaField={tinaField(page, "description")}
           />
 
-          {/* Section: Core Philosophy */}
+          {/* Policy Sections */}
           <section style={{ marginBottom: "2rem" }}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: "1rem",
-                padding: "1rem 1.25rem",
-                background: "rgba(123, 63, 42, 0.05)",
-                border: "1px solid rgba(123, 63, 42, 0.15)",
-                borderRadius: "0.4rem",
-                marginBottom: "1.5rem",
-              }}
-            >
-              <ShieldCheck style={{ width: "1.5rem", height: "1.5rem", color: "var(--accent)", flexShrink: 0, marginTop: "0.15rem" }} />
-              <div>
-                <strong data-tina-field={tinaField(page, "privacySummaryTitle")} style={{ display: "block", color: "var(--ink)", fontSize: "0.95rem", marginBottom: "0.25rem" }}>
-                  {page.privacySummaryTitle || "Summary: We do not track you."}
-                </strong>
-                <p data-tina-field={tinaField(page, "privacySummaryText")} style={{ margin: 0, fontSize: "0.85rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
-                  {page.privacySummaryText || "Glossy is an offline-first scholarly application. We do not use tracking cookies, analytics trackers, or user telemetry. Your custom texts and edits remain entirely within your own browser."}
-                </p>
-              </div>
-            </div>
-
             {sections.map((sec, idx) => (
               <div key={idx} style={{ marginBottom: "2rem" }} data-tina-field={tinaField(sec)}>
                 <h2

@@ -148,10 +148,9 @@ try {
     "Glossy · Digital Interlinear Philology",
     "Ariel Anders",
     "Tyler Lemon",
-    "https://sites.google.com/view/tyler-lemon",
     "MIT License",
   ]);
-  await check("/privacy", ["Privacy Policy", "We do not track you"]);
+  await check("/privacy", ["Privacy Policy", "Information We Do Not Collect"]);
   await check("/attribution", [
     "Scholarly Attribution &amp; Citation",
     "Digital Platform Creator",

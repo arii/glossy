@@ -6,31 +6,29 @@
   "privacySections": [
     {
       "bullets": [
-        "No tracking cookies: We do not set marketing, cross-site, or advertising cookies.",
-        "No third-party analytics: We do not use Google Analytics, Mixpanel, Hotjar, or similar behavioral tracking scripts.",
-        "No user telemetry: We do not record your keystrokes, reading speeds, or session replay data.",
-        "No personal profiles: You do not need to register an account or provide personal information to read, gloss, or export texts."
+        "No tracking cookies or analytics: We do not set marketing cookies or run behavioral tracking scripts (such as Google Analytics). Standard ephemeral HTTP request logs are recorded by Cloudflare at the edge solely for network security and CDN caching (see §3).",
+        "No user profiling or telemetry: We do not record keystrokes, reading activity, or session replays.",
+        "No account required: You do not need to register or log in to read, gloss, or export texts. An optional administrative login is available only for project maintainers committing changes to the canonical repository."
       ],
-      "content": "Unlike commercial web platforms, Glossy operates without tracking infrastructure. Specifically:",
       "num": "1",
       "title": "Information We Do Not Collect"
     },
     {
       "bullets": [
-        "glossy:draft:v1:[slug] (and compatibility key glossy_draft_[slug]): Holds local draft envelopes and working text documents in canonical schema format.",
-        "glossy_pending_drafts: Holds the local index manifest of uncommitted drafts.",
-        "glossy_active_text_slug: Holds your last active reader selection."
+        "Local Draft Envelopes: Working document drafts and editing snapshots stored in canonical schema format.",
+        "Uncommitted Draft Index: Local manifest index tracking uncommitted draft changes.",
+        "Active Document Selection: Remembers your last active text selection in the reader."
       ],
-      "content": "To ensure that your work is not lost when refreshing the page or working offline, Glossy stores draft documents and editing snapshots in your web browser's localStorage under keys prefixed with:",
+      "content": "To ensure your work is preserved across page reloads and available offline, Glossy stores draft documents and user preferences locally in your web browser:",
       "num": "2",
       "title": "Browser Storage (localStorage)"
     },
     {
       "bullets": [
-        "Standard request logs include IP address, request time, user-agent, and requested asset path.",
-        "Edge access logs are ephemeral and are not linked to personal user identities."
+        "Standard HTTP request logs include ephemeral IP address, request time, user-agent, and requested resource path.",
+        "Edge access logs are ephemeral and are not linked to individual user profiles or reading activity."
       ],
-      "content": "Glossy is delivered via Cloudflare Pages as a static application (Next.js static export). Server access logs are standard HTTP request logs processed by Cloudflare at the edge for basic DDoS protection and CDN caching.",
+      "content": "Glossy is hosted via Cloudflare Pages as a static application (Next.js static export). Server request logs are standard HTTP request logs processed by Cloudflare at the edge for DDoS protection, security, and CDN caching.",
       "num": "3",
       "title": "Static Hosting & Edge Delivery"
     },
@@ -44,7 +42,5 @@
       "title": "Open Source Code & Data Portability"
     }
   ],
-  "privacySummaryText": "Glossy is an offline-first scholarly application. We do not use tracking cookies, analytics trackers, or user telemetry. Your custom texts and edits remain entirely within your own browser.",
-  "privacySummaryTitle": "Summary: We do not track you.",
   "title": "Privacy Policy | Glossy · Old English Interlinear Glosses"
 }
