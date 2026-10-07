@@ -8,6 +8,7 @@ export function escapeTypst(str: string): string {
     .replace(/\[/g, "\\[")
     .replace(/\]/g, "\\]")
     .replace(/\$/g, "\\$")
+    .replace(/\$/g, "\\$")
     .replace(/_/g, "\\_")
     .replace(/\*/g, "\\*")
     .replace(/@/g, "\\@");
@@ -48,14 +49,19 @@ export function generateTypstSource(doc: TextDocument): string {
 
   lines.push("#v(1.5em)");
 
-  const sentences =
+  interface SentenceLike {
+    id?: string;
+    words?: InterlinearWord[];
+    tokens?: Array<{ id?: string; text?: string; gloss?: string; originalWord?: string; morphologicalGloss?: string }>;
+    translation?: string;
+  }
+
+  const sentences: SentenceLike[] =
     doc.sentences && doc.sentences.length > 0
-      ? doc.sentences
+      ? (doc.sentences as SentenceLike[])
       : (doc.blocks || []).map((block, idx) => ({
           id: block.id || `sent-${idx + 1}`,
           translation: block.translation,
-          notes: block.notes,
-          footnotes: block.footnotes,
           words: block.segments
             .filter((s) => s.type === "gloss")
             .map(
@@ -69,7 +75,13 @@ export function generateTypstSource(doc: TextDocument): string {
 
   for (const [sIdx, sentence] of sentences.entries()) {
     const sNum = sIdx + 1;
-    const words = sentence.words || [];
+    const words: InterlinearWord[] =
+      sentence.words ||
+      (sentence.tokens || []).map((t) => ({
+        id: t.id || "",
+        originalWord: t.originalWord || t.text || "",
+        morphologicalGloss: t.morphologicalGloss || t.gloss || "",
+      }));
 
     if (words.length > 0) {
       const numCols = words.length;
