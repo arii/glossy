@@ -11,6 +11,7 @@ import { parseGb4e } from "../../../lib/gb4e";
 import { createLocalDocument } from "../../../lib/local-drafts";
 import { isBuiltInSlug } from "../../../lib/corpus-registry";
 import type { ReadingSentence, TextDocument } from "../../../lib/types";
+import { TextDocumentSchema } from "../../../lib/schemas/corpus";
 import { safeJsonParse } from "../../../lib/safe-json";
 import ingestPageData from "../../../content/pages/ingest.json";
 import { useTina, tinaField } from "tinacms/dist/react";
@@ -230,25 +231,29 @@ export default function NewTextPage() {
         setUploadedFileName(file.name);
 
         if (file.name.endsWith(".json")) {
-          const parsed = safeJsonParse<TextDocument>(content);
-          if (parsed && (parsed.title || parsed.slug) && Array.isArray(parsed.sentences) && parsed.sentences.length > 0) {
+          const rawParsed = safeJsonParse<Record<string, unknown>>(content);
+          if (!rawParsed) {
+            throw new Error("Invalid JSON syntax.");
+          }
+          const parsed = TextDocumentSchema.parse(rawParsed);
+          if (parsed.title && Array.isArray(parsed.sentences) && parsed.sentences.length > 0) {
             const docSlug =
               parsed.slug ||
-              parsed.textId ||
               file.name.replace(/\.[^/.]+$/, "").toLowerCase().replace(/[^a-z0-9]+/g, "-");
             setTitle(parsed.title || file.name.replace(/\.[^/.]+$/, ""));
             setSlug(docSlug);
-            setAuthor(parsed.author ?? "Anonymous");
-            setEditor(parsed.editor ?? "Tyler Lemon");
-            setShelfmark(parsed.shelfmark ?? parsed.source ?? "");
-            setDialect(parsed.dialect ?? "");
-            setHistoricalDate(parsed.historicalDate ?? parsed.date ?? "");
-            setSourceEdition(parsed.sourceEdition ?? "");
-            setSource(parsed.source ?? "Uploaded JSON Document");
-            setUploadedSentences(parsed.sentences);
+            const pObj = parsed as Record<string, unknown>;
+            setAuthor(parsed.author);
+            setEditor(parsed.editor);
+            setShelfmark(typeof pObj.shelfmark === "string" ? pObj.shelfmark : typeof pObj.source === "string" ? pObj.source : "");
+            setDialect(typeof pObj.dialect === "string" ? pObj.dialect : "");
+            setHistoricalDate(typeof pObj.historicalDate === "string" ? pObj.historicalDate : parsed.date);
+            setSourceEdition(typeof pObj.sourceEdition === "string" ? pObj.sourceEdition : parsed.edition);
+            setSource(typeof pObj.source === "string" ? pObj.source : "Uploaded JSON Document");
+            setUploadedSentences(parsed.sentences as unknown as ReadingSentence[]);
             setRawText(
               parsed.sentences
-                .map((s) => s.words.map((w) => w.originalWord + (w.trailingPunctuation || "")).join(" "))
+                .map((s) => s.tokens.map((w) => w.originalWord + (w.trailingPunctuation || "")).join(" "))
                 .join("\n")
             );
             setRawTranslations(parsed.sentences.map((s) => s.translation ?? "").join("\n"));
