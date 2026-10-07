@@ -355,7 +355,7 @@ export default function NewTextPage() {
       setTitle(preset.title);
       setSlug(preset.slug);
       setAuthor(preset.author);
-      setEditor(preset.editor ?? "Tyler Lemon");
+      setEditor(preset.editor ?? "");
       setShelfmark(preset.shelfmark ?? preset.source);
       setDialect(preset.dialect ?? "");
       setHistoricalDate(preset.historicalDate ?? "");
@@ -442,8 +442,8 @@ export default function NewTextPage() {
       const result = createLocalDocument({
         title: title.trim(),
         slug: slug.trim(),
-        author: author.trim() || "Anonymous",
-        editor: editor.trim() || "Tyler Lemon",
+        author: author.trim(),
+        editor: editor.trim(),
         shelfmark: shelfmark.trim() || source.trim() || "Local Draft / Custom Source",
         dialect: dialect.trim(),
         historicalDate: historicalDate.trim(),

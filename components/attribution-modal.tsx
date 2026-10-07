@@ -76,39 +76,39 @@ export function AttributionCard({
 
   const builtIn = getBuiltInMetadata(slug);
 
-  const activePlatformCreator = activeConfig.platformCreator ?? initialAttributionData.platformCreator ?? "Ariel Anders";
-  const activePlatformCreatorUrl = activeConfig.platformCreatorUrl ?? initialAttributionData.platformCreatorUrl ?? "https://boomtick.blog/services";
+  const activePlatformCreator = activeConfig.platformCreator ?? initialAttributionData.platformCreator;
+  const activePlatformCreatorUrl = activeConfig.platformCreatorUrl ?? initialAttributionData.platformCreatorUrl;
 
-  const activeEditor = editor ?? builtIn?.editor ?? activeConfig.defaultEditor ?? initialAttributionData.defaultEditor ?? "Tyler Lemon";
-  const activeDefaultEditorUrl = activeConfig.defaultEditorUrl ?? initialAttributionData.defaultEditorUrl ?? "https://sites.google.com/view/tyler-lemon";
+  const activeEditor = editor ?? builtIn?.editor ?? activeConfig.defaultEditor ?? initialAttributionData.defaultEditor;
+  const activeDefaultEditorUrl = activeConfig.defaultEditorUrl ?? initialAttributionData.defaultEditorUrl;
 
-  const activeAuthor = author ?? builtIn?.author ?? "Anonymous";
-  const activeShelfmark = shelfmark ?? builtIn?.shelfmark ?? builtIn?.witness ?? source ?? builtIn?.source ?? "BL Cotton MS Tiberius B i, fol. 11r–15v";
-  const activeDialect = dialect ?? builtIn?.dialect ?? "Early West Saxon";
-  const activeHistoricalDate = historicalDate ?? builtIn?.historicalDate ?? builtIn?.origDate ?? "c. 890–900 AD";
-  const activeSourceEdition = sourceEdition ?? builtIn?.sourceEdition ?? "Old English Orosius (ed. Bately 1980 / Sweet)";
+  const activeAuthor = author ?? builtIn?.author;
+  const activeShelfmark = shelfmark ?? builtIn?.shelfmark ?? builtIn?.witness ?? source ?? builtIn?.source;
+  const activeDialect = dialect ?? builtIn?.dialect;
+  const activeHistoricalDate = historicalDate ?? builtIn?.historicalDate ?? builtIn?.origDate;
+  const activeSourceEdition = sourceEdition ?? builtIn?.sourceEdition;
 
-  const activeEditionDate = activeConfig.editionDate ?? initialAttributionData.editionDate ?? "2026";
-  const activeBooktitle = activeConfig.booktitle ?? initialAttributionData.booktitle ?? "Glossy: Digital Scholarly Editions of Old English Interlinear Texts";
+  const activeEditionDate = activeConfig.editionDate ?? initialAttributionData.editionDate;
+  const activeBooktitle = activeConfig.booktitle ?? initialAttributionData.booktitle;
   const activeLinguisticPackage =
     activeConfig.attributionLinguisticPackage ??
-    initialAttributionData.attributionLinguisticPackage ??
-    "LaTeX gb4e with Leipzig Three-Tier Interlinear Glossing";
+    initialAttributionData.attributionLinguisticPackage;
   const activeStandardsTitle =
     activeConfig.attributionStandardsTitle ??
-    initialAttributionData.attributionStandardsTitle ??
-    "Collaborative Development & Standards";
+    initialAttributionData.attributionStandardsTitle;
   const activeStandardsStatement =
     activeConfig.attributionStandardsStatement ??
-    initialAttributionData.attributionStandardsStatement ??
-    "Interlinear formatting conforms to international Leipzig Glossing Rules with LaTeX gb4e alignment, canonical lemmatization referenced to Bosworth-Toller and Wiktionary, and visual gloss layout inspired by Peter S. Baker's Old English Aerobics (oldenglishaerobics.net).";
+    initialAttributionData.attributionStandardsStatement;
 
   const bibtexKey = `Glossy${activeEditionDate}${slug.replace(/[^a-zA-Z0-9]/g, "")}`;
 
-  const creatorSurname = activePlatformCreator.split(" ").slice(-1)[0];
-  const creatorGiven = activePlatformCreator.split(" ").slice(0, -1).join(" ") || activePlatformCreator;
-  const editorSurname = activeEditor.split(" ").slice(-1)[0];
-  const editorGiven = activeEditor.split(" ").slice(0, -1).join(" ") || activeEditor;
+  const platformCreatorStr = activePlatformCreator ?? "";
+  const editorStr = activeEditor ?? "";
+
+  const creatorSurname = platformCreatorStr.split(" ").slice(-1)[0] ?? "";
+  const creatorGiven = platformCreatorStr.split(" ").slice(0, -1).join(" ") || platformCreatorStr;
+  const editorSurname = editorStr.split(" ").slice(-1)[0] ?? "";
+  const editorGiven = editorStr.split(" ").slice(0, -1).join(" ") || editorStr;
 
   const bibtexAuthor = `${creatorSurname}, ${creatorGiven} and ${editorSurname}, ${editorGiven}`;
   const unifiedAuthor = `${creatorSurname}, ${creatorGiven} & ${activeEditor}`;
@@ -118,16 +118,16 @@ export function AttributionCard({
   const baseVars = {
     bibtexKey,
     title,
-    booktitle: activeBooktitle,
-    year: activeEditionDate,
-    platformCreator: activePlatformCreator,
-    defaultEditor: activeEditor,
-    editorNote: `linguistic glossing and annotation by ${activeEditor}; critical edition: ${activeSourceEdition}`,
+    booktitle: activeBooktitle ?? "",
+    year: activeEditionDate ?? "",
+    platformCreator: activePlatformCreator ?? "",
+    defaultEditor: activeEditor ?? "",
+    editorNote: `linguistic glossing and annotation by ${activeEditor ?? ""}; critical edition: ${activeSourceEdition ?? ""}`,
     url: `https://glossed.pages.dev/read/${slug}`,
-    source: `${activeShelfmark} (${activeSourceEdition})`,
-    shelfmark: activeShelfmark,
-    sourceEdition: activeSourceEdition,
-    linguisticPackage: activeLinguisticPackage,
+    source: `${activeShelfmark ?? ""} (${activeSourceEdition ?? ""})`,
+    shelfmark: activeShelfmark ?? "",
+    sourceEdition: activeSourceEdition ?? "",
+    linguisticPackage: activeLinguisticPackage ?? "",
   };
 
   const bibtexTemplate =

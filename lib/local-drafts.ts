@@ -338,7 +338,7 @@ export function createLocalDocument(input: {
     slug: generatedSlug,
     title,
     author: input.author?.trim() || "Anonymous",
-    editor: input.editor?.trim() || "Tyler Lemon",
+    editor: input.editor?.trim() ?? "",
     shelfmark: input.shelfmark?.trim(),
     dialect: input.dialect?.trim(),
     historicalDate: input.historicalDate?.trim(),

@@ -153,7 +153,7 @@ export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number
 }
 
 export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
-  const rawAuthor = doc.author || (doc.source ? doc.source.split(/[·•]/)[0]?.trim() : "Tyler Lemon");
+  const rawAuthor = doc.author || (doc.source ? doc.source.split(/[·•]/)[0]?.trim() : "");
   const glossedByMatch = doc.glossedBy || rawAuthor.replace(/^(Translated and glossed by\s*)+/gi, "").trim();
   const dateMatch =
     doc.date || (doc.source ? doc.source.split(/[·•]/)[1]?.trim() : "September 30, 2026");
@@ -625,7 +625,7 @@ export function GlossEditor({
     e.preventDefault();
     const updatedTitle = metaTitle.trim() || documentState.title;
     const updatedHistAuthor = metaHistoricalAuthor.trim() || "Anonymous";
-    const updatedGlossedBy = metaGlossedBy.trim() || documentState.author || "Tyler Lemon";
+    const updatedGlossedBy = metaGlossedBy.trim() || documentState.author || "";
     const updatedDate = metaDate.trim() || documentState.date;
     const updatedSourceEdition = metaSourceEdition.trim();
 

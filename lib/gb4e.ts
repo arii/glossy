@@ -210,11 +210,11 @@ export function parseGb4eToTextDocument(
   defaults: Partial<TextDocument> = {},
 ): TextDocument {
   const parsed = parseGb4e(source);
-  const title = defaults.title || parsed.title || "The voyages of Ohthere and Wulfstan";
-  const author = defaults.author || parsed.author || "Tyler Lemon";
-  const date = defaults.date || parsed.date || "September 30, 2026";
-  const slug = defaults.slug || "ohthere-wulfstan";
-  const textId = defaults.textId || "ohthere";
+  const title = defaults.title ?? parsed.title ?? "";
+  const author = defaults.author ?? parsed.author ?? "";
+  const date = defaults.date ?? parsed.date ?? "";
+  const slug = defaults.slug ?? "ohthere-wulfstan";
+  const textId = defaults.textId ?? "ohthere";
 
   return {
     textId,
