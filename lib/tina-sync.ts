@@ -271,6 +271,11 @@ export async function commitPendingDraft(
   // Attempt 2: Localhost GraphQL endpoint
   if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
     try {
+      if (!TINA_LOCAL_GRAPHQL_URL) {
+        throw new Error("TINA_LOCAL_GRAPHQL_URL is undefined or empty");
+      }
+
+      console.log(`[tina-sync] Attempting localhost commit to: ${TINA_LOCAL_GRAPHQL_URL}`);
       const res = await fetch(TINA_LOCAL_GRAPHQL_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -316,6 +321,11 @@ export async function commitPendingDraft(
   if (authToken) {
     try {
       const cloudUrl = getTinaCloudUrl();
+      if (!cloudUrl || cloudUrl.includes("undefined")) {
+        throw new Error("TinaCloud URL is invalid or missing required TINA_CLIENT_ID / TINA_BRANCH config.");
+      }
+
+      console.log(`[tina-sync] Attempting cloud commit to: ${cloudUrl}`);
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
       };
