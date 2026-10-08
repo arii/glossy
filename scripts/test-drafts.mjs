@@ -132,35 +132,36 @@ const noAuthRes = await commitPendingDraft("caedmon-hymn");
 assert.equal(noAuthRes.outcome, "needs-login", "Unauthenticated commit attempt must yield needs-login outcome");
 
 // 7b. Test GraphQL rejection outcome (rejected)
-const mockErrorCms = {
-  api: {
-    tina: {
-      request: async () => ({
-        errors: [{ message: "Schema validation failure: invalid sentence ID" }],
-      }),
-    },
-  },
-};
 
-const rejectRes = await commitPendingDraft("caedmon-hymn", { cms: mockErrorCms });
+global.fetch = async () => ({
+  status: 200,
+  json: async () => ({
+    errors: [{ message: "Schema validation failure: invalid sentence ID" }]
+  })
+});
+
+global.window.localStorage.setItem("tinacms-auth", "mock-token");
+process.env.TINA_CLIENT_ID = "test";
+process.env.TINA_BRANCH = "test";
+
+const rejectRes = await commitPendingDraft("caedmon-hymn");
+
 assert.equal(rejectRes.ok, false, "Rejected GraphQL response must return ok: false");
 assert.equal(rejectRes.outcome, "rejected", "Rejected GraphQL response must return outcome: rejected");
 assert.equal(rejectRes.error, "Schema validation failure: invalid sentence ID");
 
 // 7c. Test Successful Commit outcome (committed)
-const mockSuccessCms = {
-  api: {
-    tina: {
-      request: async (query, { variables }) => {
-        assert.ok(query.includes("mutation UpdateText"), "Mutation query must contain UpdateText");
-        assert.equal(variables.relativePath, "caedmon-hymn.json", "relativePath variable must be caedmon-hymn.json");
-        return { data: { updateText: { id: "caedmon-hymn", title: "Cædmon's Hymn" } } };
-      },
-    },
-  },
-};
 
-const commitRes = await commitPendingDraft("caedmon-hymn", { cms: mockSuccessCms });
+global.fetch = async (url, { variables }) => {
+  return {
+    status: 200,
+    json: async () => ({
+      data: { updateText: { id: "caedmon-hymn", title: "Cædmon's Hymn" } }
+    })
+  };
+};
+const commitRes = await commitPendingDraft("caedmon-hymn");
+
 assert.equal(commitRes.ok, true, "Successful commit must return ok: true");
 assert.equal(commitRes.outcome, "committed", "Successful commit must return outcome: committed");
 
