@@ -5,14 +5,15 @@
     "components/**/*.{ts,tsx}",
     "lib/**/*.{ts,tsx}",
     "scripts/**/*.{js,mjs,ts}",
+    "tests/**/*.{ts,tsx}",
     "tina/config.ts"
   ],
-  "ignore": ["scripts/archive/**"],
   "ignoreDependencies": ["eslint-config-next", "gray-matter"],
   "project": [
     "app/**/*.{ts,tsx}",
     "components/**/*.{ts,tsx}",
     "lib/**/*.{ts,tsx}",
-    "scripts/**/*.{js,mjs,ts}"
+    "scripts/**/*.{js,mjs,ts}",
+    "tests/**/*.{ts,tsx}"
   ]
 }
