@@ -15,28 +15,37 @@ export const TINA_BRANCH = (
   .trim()
   .replace(/[\r\n\t]+/g, "");
 
-export const TINA_LOCAL_GRAPHQL_URL = (
-  process.env.NEXT_PUBLIC_TINA_LOCAL_URL ||
-  (typeof window !== "undefined" ? `${window.location.protocol}//${window.location.hostname}:4001/graphql` : "http://localhost:4001/graphql")
-)
-  .trim()
-  .replace(/[\r\n\t]+/g, "");
-
 export const TINA_TOKEN = (process.env.TINA_TOKEN || "")
   .trim()
   .replace(/[\r\n\t]+/g, "");
 
-export function getTinaCloudUrl(
+/**
+ * Returns the GraphQL URL for TinaCMS commits.
+ * Returns the local GraphQL URL in development, and the cloud URL in production.
+ */
+export function getTinaGraphQLUrl(
   clientId: string = TINA_CLIENT_ID,
   branch: string = TINA_BRANCH,
 ): string {
-  let safeClientId = encodeURIComponent(clientId.trim().replace(/[\r\n\t]+/g, ""));
-  let safeBranch = encodeURIComponent(branch.trim().replace(/[\r\n\t]+/g, ""));
+  // Check if we are running in a local environment
+  const isLocalHost = typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
+  if (isLocalHost) {
+    return (
+      process.env.NEXT_PUBLIC_TINA_LOCAL_URL ||
+      `${window.location.protocol}//${window.location.hostname}:4001/graphql`
+    )
+      .trim()
+      .replace(/[\r\n\t]+/g, "");
+  }
+
+  // Construct Cloud URL
+  const safeClientId = encodeURIComponent(clientId.trim().replace(/[\r\n\t]+/g, ""));
+  const safeBranch = encodeURIComponent(branch.trim().replace(/[\r\n\t]+/g, ""));
 
   if (!safeClientId || safeClientId === "undefined" || !safeBranch || safeBranch === "undefined") {
-    if (typeof window !== "undefined") {
-      return `${window.location.protocol}//${window.location.hostname}:4001/graphql`;
-    }
+    throw new Error("TinaCloud URL is invalid or missing required TINA_CLIENT_ID / TINA_BRANCH config.");
   }
 
   return `https://content.tinajs.io/3.0/content/${safeClientId}/github/${safeBranch}`;

@@ -6,7 +6,7 @@ import {
   computeDocumentHash,
   getTinaAuthToken,
 } from "./local-drafts";
-import { TINA_LOCAL_GRAPHQL_URL, getTinaCloudUrl } from "./tina-config";
+import { getTinaGraphQLUrl } from "./tina-config";
 
 export type CommitOutcome = "committed" | "needs-login" | "unreachable" | "rejected";
 
@@ -268,121 +268,76 @@ export async function commitPendingDraft(
     }
   }
 
-  // Attempt 2: Localhost GraphQL endpoint
-  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-    try {
-      if (!TINA_LOCAL_GRAPHQL_URL) {
-        throw new Error("TINA_LOCAL_GRAPHQL_URL is undefined or empty");
-      }
+  // Attempt 2: Fallback to direct fetch (handles both local dev and cloud URLs dynamically)
+  try {
+    const graphqlUrl = getTinaGraphQLUrl();
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
 
-      console.log(`[tina-sync] Attempting localhost commit to: ${TINA_LOCAL_GRAPHQL_URL}`);
-      const res = await fetch(TINA_LOCAL_GRAPHQL_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          query: UPDATE_TEXT_MUTATION,
-          variables: { relativePath, params: sanitizedParams },
-        }),
-      });
-
-      if (res.status === 401 || res.status === 403) {
-        return {
-          outcome: "needs-login",
-          ok: false,
-          slug,
-          error: "TinaCMS authentication required.",
-        };
-      }
-
-      const json = await res.json();
-      if (json.errors && json.errors.length > 0) {
-        const errMsgs = json.errors.map((e: { message: string }) => e.message);
-        return {
-          outcome: "rejected",
-          ok: false,
-          slug,
-          error: errMsgs[0] || "GraphQL mutation rejected",
-          errors: errMsgs,
-        };
-      }
-
-      if (json.data?.updateText || json.data?.updateDocument) {
-        markDraftAsSynced(slug, contentHash);
-        return { outcome: "committed", ok: true, slug };
-      }
-    } catch (err) {
-      // Fallthrough to TinaCloud if localhost connection failed
-      console.warn("[tina-sync] Localhost GraphQL request failed:", err);
-    }
-  }
-
-  // Attempt 3: TinaCloud with tinacms-auth token via centralized storage helper
-  const authToken = getTinaAuthToken();
-  if (authToken) {
-    try {
-      const cloudUrl = getTinaCloudUrl();
-      if (!cloudUrl || cloudUrl.includes("undefined")) {
-        throw new Error("TinaCloud URL is invalid or missing required TINA_CLIENT_ID / TINA_BRANCH config.");
-      }
-
-      console.log(`[tina-sync] Attempting cloud commit to: ${cloudUrl}`);
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-      };
+    const authToken = getTinaAuthToken();
+    if (authToken) {
       const cleanToken = authToken.replace(/[\r\n\t\x00-\x1f\x7f]+/g, "").trim();
       if (cleanToken) {
         headers["Authorization"] = `Bearer ${cleanToken}`;
       }
+    }
 
-      const res = await fetch(cloudUrl, {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          query: UPDATE_TEXT_MUTATION,
-          variables: { relativePath, params: sanitizedParams },
-        }),
-      });
+    const res = await fetch(graphqlUrl, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        query: UPDATE_TEXT_MUTATION,
+        variables: { relativePath, params: sanitizedParams },
+      }),
+    });
 
-      if (res.status === 401 || res.status === 403) {
-        return {
-          outcome: "needs-login",
-          ok: false,
-          slug,
-          error: "TinaCloud authentication token invalid or expired. Please log in again.",
-        };
-      }
-
-      const json = await res.json();
-      if (json.errors && json.errors.length > 0) {
-        const errMsgs = json.errors.map((e: { message: string }) => e.message);
-        return {
-          outcome: "rejected",
-          ok: false,
-          slug,
-          error: errMsgs[0] || "TinaCloud GraphQL error",
-          errors: errMsgs,
-        };
-      }
-
-      if (json.data?.updateText || json.data?.updateDocument) {
-        markDraftAsSynced(slug, contentHash);
-        return { outcome: "committed", ok: true, slug };
-      }
-    } catch (err) {
+    if (res.status === 401 || res.status === 403) {
       return {
-        outcome: "unreachable",
+        outcome: "needs-login",
         ok: false,
         slug,
-        error: err instanceof Error ? err.message : "TinaCloud commit network failure",
+        error: "TinaCMS authentication required or token expired. Please log in.",
       };
     }
+
+    const json = await res.json();
+    if (json.errors && json.errors.length > 0) {
+      const errMsgs = json.errors.map((e: { message: string }) => e.message);
+      return {
+        outcome: "rejected",
+        ok: false,
+        slug,
+        error: errMsgs[0] || "GraphQL mutation rejected",
+        errors: errMsgs,
+      };
+    }
+
+    if (json.data?.updateText || json.data?.updateDocument) {
+      markDraftAsSynced(slug, contentHash);
+      return { outcome: "committed", ok: true, slug };
+    }
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Network failure";
+
+    // Distinguish auth/config errors from simple unreachability
+    if (msg.includes("invalid") || msg.includes("missing")) {
+      return { outcome: "rejected", ok: false, slug, error: msg };
+    }
+
+    return {
+      outcome: "unreachable",
+      ok: false,
+      slug,
+      error: `Commit network failure: ${msg}`,
+    };
   }
 
   return {
-    outcome: "needs-login",
+    outcome: "rejected",
     ok: false,
     slug,
-    error: "TinaCMS authentication required. Please sign in to Tina Admin to commit.",
+    error: "Unknown error occurred during commit.",
   };
 }
 
