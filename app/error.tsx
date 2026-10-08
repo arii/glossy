@@ -24,7 +24,7 @@ export default function ErrorPage({
 
   return (
     <>
-      <SiteNav slug="ohthere-wulfstan" />
+      <SiteNav slug="ohthere" />
       <main className="site-shell">
         <div className="reading-surface">
           <h1>Something went wrong</h1>

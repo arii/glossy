@@ -262,7 +262,7 @@ export function ReadingPage({
 
   return (
     <>
-      <SiteNav current="read" slug={texts.some((text) => text.slug === selectedSlug) ? selectedSlug : (texts[0]?.slug ?? "ohthere-wulfstan")} />
+      <SiteNav current="read" slug={texts.some((text) => text.slug === selectedSlug) ? selectedSlug : (texts[0]?.slug ?? "ohthere")} />
       <main className="site-shell">
         <PageHero
           eyebrow="Interlinear"

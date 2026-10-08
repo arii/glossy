@@ -158,7 +158,7 @@ export default function DocsPage() {
 
   return (
     <>
-      <SiteNav current="docs" slug="ohthere-wulfstan" />
+      <SiteNav current="docs" slug="ohthere" />
       <main className="site-shell">
         <PageHero
           eyebrow={pageEyebrow}
