@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Copy, Check, X, BookOpen, ShieldCheck, Scroll, Calendar, User } from "lucide-react";
 import { tinaField } from "tinacms/dist/react";
 import { getBuiltInMetadata } from "../lib/corpus-registry";
+import { CONFIG } from "../lib/config";
 import initialAttributionData from "../content/pages/attribution.json";
 
 export type CitationFormat = "bibtex" | "unified" | "apa" | "chicago";
@@ -76,17 +77,17 @@ export function AttributionCard({
 
   const builtIn = getBuiltInMetadata(slug);
 
-  const activePlatformCreator = activeConfig.platformCreator ?? initialAttributionData.platformCreator;
-  const activePlatformCreatorUrl = activeConfig.platformCreatorUrl ?? initialAttributionData.platformCreatorUrl;
+  const activePlatformCreator = activeConfig.platformCreator ?? CONFIG.PLATFORM_CREATOR;
+  const activePlatformCreatorUrl = activeConfig.platformCreatorUrl ?? CONFIG.PLATFORM_CREATOR_URL;
 
-  const activeEditor = editor ?? builtIn?.editor ?? activeConfig.defaultEditor ?? initialAttributionData.defaultEditor;
-  const activeDefaultEditorUrl = activeConfig.defaultEditorUrl ?? initialAttributionData.defaultEditorUrl;
+  const activeEditor = editor ?? builtIn?.editor ?? activeConfig.defaultEditor ?? CONFIG.DEFAULT_EDITOR;
+  const activeDefaultEditorUrl = activeConfig.defaultEditorUrl ?? CONFIG.DEFAULT_EDITOR_URL;
 
-  const activeAuthor = author ?? builtIn?.author;
-  const activeShelfmark = shelfmark ?? builtIn?.shelfmark ?? builtIn?.witness ?? source ?? builtIn?.source;
-  const activeDialect = dialect ?? builtIn?.dialect;
-  const activeHistoricalDate = historicalDate ?? builtIn?.historicalDate ?? builtIn?.origDate;
-  const activeSourceEdition = sourceEdition ?? builtIn?.sourceEdition;
+  const activeAuthor = author ?? builtIn?.author ?? "Anonymous";
+  const activeShelfmark = shelfmark ?? builtIn?.shelfmark ?? builtIn?.witness ?? source ?? builtIn?.source ?? "BL Cotton MS Tiberius B i, fol. 11r–15v";
+  const activeDialect = dialect ?? builtIn?.dialect ?? "Early West Saxon";
+  const activeHistoricalDate = historicalDate ?? builtIn?.historicalDate ?? builtIn?.origDate ?? "c. 890–900 AD";
+  const activeSourceEdition = sourceEdition ?? builtIn?.sourceEdition ?? "Old English Orosius (ed. Bately 1980 / Sweet)";
 
   const activeEditionDate = activeConfig.editionDate ?? initialAttributionData.editionDate;
   const activeBooktitle = activeConfig.booktitle ?? initialAttributionData.booktitle;
@@ -123,7 +124,7 @@ export function AttributionCard({
     platformCreator: activePlatformCreator ?? "",
     defaultEditor: activeEditor ?? "",
     editorNote: `linguistic glossing and annotation by ${activeEditor ?? ""}; critical edition: ${activeSourceEdition ?? ""}`,
-    url: `https://glossed.pages.dev/read/${slug}`,
+    url: `${CONFIG.SITE_URL}/read/${slug}`,
     source: `${activeShelfmark ?? ""} (${activeSourceEdition ?? ""})`,
     shelfmark: activeShelfmark ?? "",
     sourceEdition: activeSourceEdition ?? "",
@@ -131,20 +132,20 @@ export function AttributionCard({
   };
 
   const bibtexTemplate =
-    activeConfig.bibtexCitationTemplate ||
-    initialAttributionData.bibtexCitationTemplate ||
+    activeConfig.bibtexCitationTemplate ??
+    initialAttributionData.bibtexCitationTemplate ??
     "";
   const unifiedTemplate =
-    activeConfig.unifiedLsaCitationTemplate ||
-    initialAttributionData.unifiedLsaCitationTemplate ||
+    activeConfig.unifiedLsaCitationTemplate ??
+    initialAttributionData.unifiedLsaCitationTemplate ??
     "";
   const apaTemplate =
-    activeConfig.apaCitationTemplate ||
-    initialAttributionData.apaCitationTemplate ||
+    activeConfig.apaCitationTemplate ??
+    initialAttributionData.apaCitationTemplate ??
     "";
   const chicagoTemplate =
-    activeConfig.chicagoCitationTemplate ||
-    initialAttributionData.chicagoCitationTemplate ||
+    activeConfig.chicagoCitationTemplate ??
+    initialAttributionData.chicagoCitationTemplate ??
     "";
 
   const citations: Record<CitationFormat, string> = {
@@ -565,4 +566,3 @@ export function AttributionModal({
     </div>
   );
 }
-

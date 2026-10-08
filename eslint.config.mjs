@@ -14,7 +14,11 @@ export default defineConfig([
     "node_modules/**",
     "next-env.d.ts",
     "public/admin/**",
-    "scripts/archive/**",
     "tina/__generated__/**",
   ]),
+  {
+    rules: {
+      "@next/next/no-html-link-for-pages": "off"
+    }
+  }
 ]);
