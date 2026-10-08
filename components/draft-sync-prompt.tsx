@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { listPending, type PendingDraftEntry } from "../lib/local-drafts";
+import { listPending, readDraft, type PendingDraftEntry } from "../lib/local-drafts";
 import { isTinaAuthenticated, commitAllPendingDrafts } from "../lib/tina-sync";
+import { safeJsonStringify } from "../lib/safe-json";
+import { Download } from "lucide-react";
 
 export interface DraftSyncPromptProps {
   cms?: unknown;
@@ -132,6 +134,22 @@ export function DraftSyncPrompt({
 
   const firstSlug = displayDrafts[0]?.slug || currentSlug || "";
 
+  const handleDownloadPRPackage = () => {
+    const slugToDownload = firstSlug;
+    if (!slugToDownload) return;
+    const draft = readDraft(slugToDownload);
+    if (!draft || !draft.doc) return;
+
+    const jsonStr = safeJsonStringify(draft.doc, null, 2);
+    const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = window.document.createElement("a");
+    anchor.href = url;
+    anchor.download = `${slugToDownload}.json`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div
       id="tina-draft-sync-bar"
@@ -227,23 +245,46 @@ export function DraftSyncPrompt({
               : `Commit Draft${draftCount > 1 ? "s" : ""} to Git`}
           </button>
         ) : (
-          <a
-            href="/admin"
-            style={{
-              background: "#7b3f2a",
-              color: "#fff",
-              border: "none",
-              padding: "0.45rem 0.9rem",
-              borderRadius: "0.3rem",
-              fontWeight: 600,
-              textDecoration: "none",
-              fontSize: "0.82rem",
-              display: "inline-flex",
-              alignItems: "center",
-            }}
-          >
-            Sign in to Admin &amp; Commit
-          </a>
+          <div style={{ display: "flex", gap: "0.4rem" }}>
+            <a
+              href="/admin"
+              style={{
+                background: "#7b3f2a",
+                color: "#fff",
+                border: "none",
+                padding: "0.45rem 0.9rem",
+                borderRadius: "0.3rem",
+                fontWeight: 600,
+                textDecoration: "none",
+                fontSize: "0.82rem",
+                display: "inline-flex",
+                alignItems: "center",
+              }}
+            >
+              Sign in to Admin &amp; Commit
+            </a>
+
+            <button
+              type="button"
+              onClick={handleDownloadPRPackage}
+              style={{
+                background: "#292524",
+                color: "#d6d3d1",
+                border: "1px solid #44403c",
+                padding: "0.45rem 0.75rem",
+                borderRadius: "0.3rem",
+                fontWeight: 600,
+                fontSize: "0.82rem",
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.3rem",
+              }}
+              title="Download formatted JSON document for manual Git commit / Pull Request"
+            >
+              <Download style={{ width: "0.8rem", height: "0.8rem" }} /> Export PR JSON
+            </button>
+          </div>
         )}
 
         {firstSlug && typeof window !== "undefined" && !window.location.pathname.startsWith("/edit/") && (
