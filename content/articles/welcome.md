@@ -1,8 +1,8 @@
 ---
 title: Welcome to the Glossy Philology Journal
 author: Ariel Anders
-date: '2025-03-01T00:00:00.000Z'
-summary: An introduction to digital interlinear annotation, manuscript studies, and open-access philological resources on Glossy.
+date: 2026-10-06T23:00:00.000Z
+summary: 'An introduction to digital interlinear annotation, manuscript studies, and open-access philological resources on Glossy.'
 ---
 
 Welcome to the **Glossy Philology & Digital Humanities Journal**.

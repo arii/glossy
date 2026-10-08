@@ -7,7 +7,6 @@ import {
   getTinaAuthToken,
 } from "./local-drafts";
 import { TINA_LOCAL_GRAPHQL_URL, getTinaCloudUrl } from "./tina-config";
-import { CONFIG } from "./config";
 
 export type CommitOutcome = "committed" | "needs-login" | "unreachable" | "rejected";
 
@@ -174,7 +173,7 @@ export function isTinaAuthenticated(cms?: unknown): boolean {
   }
 
   // Check local dev server
-  if (CONFIG.isLocal(window.location.hostname)) {
+  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
     return true;
   }
 
@@ -270,7 +269,7 @@ export async function commitPendingDraft(
   }
 
   // Attempt 2: Localhost GraphQL endpoint
-  if (CONFIG.isLocal(window.location.hostname)) {
+  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
     try {
       const res = await fetch(TINA_LOCAL_GRAPHQL_URL, {
         method: "POST",
@@ -317,12 +316,17 @@ export async function commitPendingDraft(
   if (authToken) {
     try {
       const cloudUrl = getTinaCloudUrl();
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+      const cleanToken = authToken.replace(/[\r\n\t\x00-\x1f\x7f]+/g, "").trim();
+      if (cleanToken) {
+        headers["Authorization"] = `Bearer ${cleanToken}`;
+      }
+
       const res = await fetch(cloudUrl, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
+        headers,
         body: JSON.stringify({
           query: UPDATE_TEXT_MUTATION,
           variables: { relativePath, params: sanitizedParams },

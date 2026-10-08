@@ -1,4 +1,5 @@
 import type { GlossRecord } from "../lib/types";
+import { formatInflectionDescription } from "../lib/passage-utils";
 import { renderLinguisticGloss } from "./annotated-passage";
 
 type GlossPopupProps = {
@@ -81,6 +82,16 @@ export function GlossPopup({ record, onClose }: GlossPopupProps) {
           </p>
         )}
       </div>
+
+      {(() => {
+        const inflection = formatInflectionDescription(analysis, record.sourceGloss);
+        return inflection ? (
+          <div className="gloss-field">
+            <p className="field-label">Inflection</p>
+            <p>{inflection}</p>
+          </div>
+        ) : null;
+      })()}
 
       {cleanDefinition && (
         <div className="gloss-field">
