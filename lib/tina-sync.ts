@@ -172,11 +172,6 @@ export function isTinaAuthenticated(cms?: unknown): boolean {
     }
   }
 
-  // Check local dev server
-  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-    return true;
-  }
-
   // Check stored auth token via centralized storage helper
   const token = getTinaAuthToken();
   return Boolean(token);
@@ -223,52 +218,6 @@ export async function commitPendingDraft(
   const fileName = (draftDoc.fileName || draftDoc.textId || slug) as string;
   const relativePath = `${fileName.endsWith(".json") ? fileName : `${fileName}.json`}`;
 
-  // Attempt 1: Using TinaCMS client API object
-  if (options?.cms && typeof options.cms === "object" && "api" in options.cms) {
-    const tinaApi = (options.cms as {
-      api?: {
-        tina?: {
-          request: (
-            query: string,
-            options?: { variables: Record<string, unknown> },
-          ) => Promise<{ data?: unknown; errors?: Array<{ message: string }> }>;
-        };
-      };
-    })?.api?.tina;
-
-    if (tinaApi?.request) {
-      try {
-        const res = await tinaApi.request(UPDATE_TEXT_MUTATION, {
-          variables: { relativePath, params: sanitizedParams },
-        });
-
-        if (res?.errors && res.errors.length > 0) {
-          const errMsgs = res.errors.map((e) => e.message);
-          return {
-            outcome: "rejected",
-            ok: false,
-            slug,
-            error: errMsgs[0] || "GraphQL mutation rejected",
-            errors: errMsgs,
-          };
-        }
-
-        markDraftAsSynced(slug, contentHash);
-        return { outcome: "committed", ok: true, slug };
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : "Tina API client request failed";
-        const isAuthErr = msg.toLowerCase().includes("auth") || msg.toLowerCase().includes("unauthorized");
-        return {
-          outcome: isAuthErr ? "needs-login" : "rejected",
-          ok: false,
-          slug,
-          error: msg,
-        };
-      }
-    }
-  }
-
-  // Attempt 2: Fallback to direct fetch (handles both explicit environment URL override and cloud URLs dynamically)
   try {
     const graphqlUrl = getTinaGraphQLUrl();
     const headers: Record<string, string> = {
