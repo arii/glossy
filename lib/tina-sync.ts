@@ -268,7 +268,7 @@ export async function commitPendingDraft(
     }
   }
 
-  // Attempt 2: Fallback to direct fetch (handles both local dev and cloud URLs dynamically)
+  // Attempt 2: Fallback to direct fetch (handles both explicit environment URL override and cloud URLs dynamically)
   try {
     const graphqlUrl = getTinaGraphQLUrl();
     const headers: Record<string, string> = {
