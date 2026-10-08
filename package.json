@@ -12,7 +12,7 @@
     "compile:content": "tsx scripts/compile-tex-to-content.mjs",
     "compile:beowulf": "tsx scripts/compile-beowulf.mjs",
     "compile:presets": "tsx scripts/compile-presets.mjs",
-    "build": "node scripts/build.mjs",
+    "build": "node scripts/build.js",
     "build:next": "NODE_ENV=production next build",
     "build:tina": "tinacms build --skip-cloud-checks --datalayer-port 9123",
     "build:tina:local": "tinacms build --local --skip-cloud-checks --datalayer-port 9123",
@@ -32,13 +32,15 @@
     "audit": "npm run audit:deadcode && npm run lint && npm run typecheck && npm run validate:source && npm run validate:lemmas && npm run test:smoke && npm run validate:deploy"
   },
   "dependencies": {
+    "@google/genai": "^2.27.0",
     "@tinacms/cli": "^3.1.0",
     "gray-matter": "^4.0.3",
     "lucide-react": "^1.50.0",
     "next": "15.5.27",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "tinacms": "^3.14.1"
+    "tinacms": "^3.14.1",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.7",

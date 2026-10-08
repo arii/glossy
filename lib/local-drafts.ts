@@ -6,7 +6,6 @@ import {
   BUILT_IN_CORPUS,
   getBuiltInMetadata,
 } from "./corpus-registry";
-import { CONFIG } from "./config";
 
 export const DRAFT_STORAGE_PREFIX = "glossy:v1:draft:";
 export const PENDING_MANIFEST_KEY = "glossy:v1:pending_drafts";
@@ -88,8 +87,6 @@ export function readDraft(slug: string): StoredDraft | null {
   try {
     const parsed = JSON.parse(v1Raw) as StoredDraft;
     if (parsed && parsed.doc && parsed.version === 1) {
-      delete (parsed.doc as Record<string, unknown>).texSource;
-      delete (parsed.doc as Record<string, unknown>)["tex-source"];
       return parsed;
     }
   } catch {}
@@ -104,8 +101,6 @@ export function writeDraft(slug: string, doc: TextDocument): StorageResult<Store
   }
 
   try {
-    delete (doc as Record<string, unknown>).texSource;
-    delete (doc as Record<string, unknown>)["tex-source"];
     const hash = computeDocumentHash(doc);
     const envelope: StoredDraft = {
       version: 1,
@@ -339,7 +334,7 @@ export function createLocalDocument(input: {
     slug: generatedSlug,
     title,
     author: input.author?.trim() || "Anonymous",
-    editor: input.editor?.trim() || CONFIG.DEFAULT_EDITOR,
+    editor: input.editor?.trim() || "Tyler Lemon",
     shelfmark: input.shelfmark?.trim(),
     dialect: input.dialect?.trim(),
     historicalDate: input.historicalDate?.trim(),
@@ -452,7 +447,47 @@ export function getTinaAuthToken(): string | null {
   const storage = getStorage();
   if (!storage) return null;
   try {
-    return storage.getItem(TINA_AUTH_STORAGE_KEY);
+    const raw = storage.getItem(TINA_AUTH_STORAGE_KEY);
+    if (!raw) return null;
+
+    let token = raw.trim();
+
+    // If stored as JSON object (e.g. {"access_token": "...", "id_token": "..."}), extract token
+    if (token.startsWith("{") && token.endsWith("}")) {
+      try {
+        const parsed = JSON.parse(token);
+        if (parsed && typeof parsed === "object") {
+          token = String(
+            parsed.access_token ||
+            parsed.id_token ||
+            parsed.token ||
+            parsed.accessToken ||
+            parsed.idToken ||
+            ""
+          ).trim();
+        }
+      } catch {
+        // Fall back to raw string if parsing fails
+      }
+    }
+
+    // Strip wrapping quotes if any
+    if (
+      (token.startsWith('"') && token.endsWith('"')) ||
+      (token.startsWith("'") && token.endsWith("'"))
+    ) {
+      token = token.slice(1, -1).trim();
+    }
+
+    // Strip leading "Bearer " if already present
+    if (token.toLowerCase().startsWith("bearer ")) {
+      token = token.slice(7).trim();
+    }
+
+    // Strip newlines, carriage returns, tabs, and control characters to prevent header injection / fetch TypeError
+    token = token.replace(/[\r\n\t\x00-\x1f\x7f]+/g, "").trim();
+
+    return token.length > 0 ? token : null;
   } catch {
     return null;
   }
