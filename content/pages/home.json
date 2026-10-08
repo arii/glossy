@@ -1,10 +1,10 @@
 {
-  "description": "Read, edit, and publish morphologically tagged historical texts with standardized Leipzig three-tier alignment, canonical dictionary headwords, and compilable LaTeX gb4e export.",
-  "eyebrow": "Interlinear Texts",
-  "heading": "Read a text or work on its glosses.",
   "pageId": "home",
+  "eyebrow": "Interlinear Text",
+  "heading": "Read a text or work on its glosses.",
+  "description": "Read, edit, and publish morphologically tagged historical texts with standardized Leipzig three-tier alignment, canonical dictionary headwords, and compilable LaTeX gb4e export.",
   "primaryAction": {
-    "href": "/edit/new",
-    "label": "Gloss a New Text"
+    "label": "Gloss a New Text",
+    "href": "/edit/new"
   }
 }
