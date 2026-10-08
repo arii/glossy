@@ -139,19 +139,11 @@ export function deleteLocalDraft(slug: string): boolean {
   if (!storage || !slug) return false;
 
   try {
-    const slugsToDelete = [slug];
-    if (slug === "ohthere") slugsToDelete.push("ohthere-wulfstan");
-    if (slug === "ohthere-wulfstan") slugsToDelete.push("ohthere");
-
-    for (const s of slugsToDelete) {
-      storage.removeItem(`${DRAFT_STORAGE_PREFIX}${s}`);
-    }
+    storage.removeItem(`${DRAFT_STORAGE_PREFIX}${slug}`);
 
     // Remove from pending manifest
     const manifest = listPending();
-    for (const s of slugsToDelete) {
-      delete manifest[s];
-    }
+    delete manifest[slug];
     storage.setItem(PENDING_MANIFEST_KEY, JSON.stringify(manifest));
 
     if (typeof window !== "undefined") {
@@ -178,8 +170,9 @@ export function listLocalDrafts(): StoredDraft[] {
     for (const key of keys) {
       if (key.startsWith(DRAFT_STORAGE_PREFIX)) {
         const slug = key.slice(DRAFT_STORAGE_PREFIX.length);
-        if (!visitedSlugs.has(slug)) {
-          visitedSlugs.add(slug);
+        const lower = slug.toLowerCase();
+        if (!visitedSlugs.has(lower)) {
+          visitedSlugs.add(lower);
           const draft = readDraft(slug);
           if (draft) results.push(draft);
         }
@@ -379,12 +372,12 @@ export function getWorkspaceTexts(options?: {
   const items: WorkspaceTextItem[] = [];
   const seenSlugs = new Set<string>();
 
-  // 1. Built-in corpus texts (currently Ohthere)
+  // 1. Built-in corpus texts
   for (const text of BUILT_IN_CORPUS) {
     const slug = text.slug;
-    if (!hiddenSlugs.has(slug) && !seenSlugs.has(slug)) {
+    if (!hiddenSlugs.has(slug) && !seenSlugs.has(slug.toLowerCase())) {
       items.push({ slug, title: text.title });
-      seenSlugs.add(slug);
+      seenSlugs.add(slug.toLowerCase());
     }
   }
 
@@ -393,17 +386,16 @@ export function getWorkspaceTexts(options?: {
   for (const draft of drafts) {
     const slug = draft.doc.slug || draft.doc.textId;
     if (!slug) continue;
-    if (!hiddenSlugs.has(slug) && !seenSlugs.has(slug)) {
+    if (!hiddenSlugs.has(slug) && !seenSlugs.has(slug.toLowerCase())) {
       items.push({ slug, title: draft.doc.title || slug });
-      seenSlugs.add(slug);
+      seenSlugs.add(slug.toLowerCase());
     }
   }
 
   // 3. Current active document, if opened directly via URL and not yet included
   if (
     currentSlug &&
-    !seenSlugs.has(currentSlug) &&
-    !(currentSlug.toLowerCase() === "ohthere-wulfstan" && seenSlugs.has("ohthere")) &&
+    !seenSlugs.has(currentSlug.toLowerCase()) &&
     (!excludeDeleted || !hiddenSlugs.has(currentSlug))
   ) {
     const match = allLoadedTexts.find(
@@ -411,7 +403,7 @@ export function getWorkspaceTexts(options?: {
     );
     const title = match?.title || getBuiltInMetadata(currentSlug)?.title || currentSlug;
     items.push({ slug: currentSlug, title });
-    seenSlugs.add(currentSlug);
+    seenSlugs.add(currentSlug.toLowerCase());
   }
 
   return items;

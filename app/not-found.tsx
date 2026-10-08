@@ -47,7 +47,7 @@ export default function NotFound() {
 
   return (
     <>
-      <SiteNav slug="ohthere-wulfstan" />
+      <SiteNav slug="ohthere" />
       <main className="site-shell">
         <div className="reading-surface">
           <h1>404 - Not Found</h1>
