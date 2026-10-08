@@ -306,6 +306,33 @@ assert.equal(getTinaAuthToken(), "json-newline-token", "Must parse formatted JSO
 mockStore.set("tinacms-auth", "{}");
 assert.equal(getTinaAuthToken(), null, "Empty JSON object must return null");
 
+// Test 14: Slug Aliasing Deduplication in getWorkspaceTexts
+mockStore.clear();
+// Store a draft saved under 'ohthere-wulfstan'
+writeDraft("ohthere-wulfstan", {
+  textId: "ohthere",
+  slug: "ohthere-wulfstan",
+  title: "The Voyages of Ohthere and Wulfstan",
+  language: "Old English",
+  author: "Alfred the Great's Circle",
+  sentences: [],
+});
+
+// getWorkspaceTexts called with currentSlug 'ohthere-wulfstan' and allLoadedTexts containing 'ohthere-wulfstan'
+const deduplicatedWorkspace = getWorkspaceTexts({
+  currentSlug: "ohthere-wulfstan",
+  allLoadedTexts: [{ slug: "ohthere-wulfstan", title: "The Voyages of Ohthere and Wulfstan" }],
+});
+
+const ohthereMatches = deduplicatedWorkspace.filter(
+  (t) => t.slug === "ohthere" || t.slug === "ohthere-wulfstan",
+);
+assert.equal(
+  ohthereMatches.length,
+  1,
+  "Ohthere text must not be duplicated in workspace texts when alias ohthere-wulfstan is present in drafts or URL",
+);
+
 // Clean up
 mockStore.clear();
 delete global.window;
