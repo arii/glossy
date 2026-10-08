@@ -238,6 +238,11 @@ body {
   color: var(--muted-ink);
 }
 
+.site-footer-version {
+  font-size: 0.78rem;
+  color: var(--muted-ink);
+}
+
 .site-footer-author-link {
   color: var(--accent);
   text-decoration: underline;
