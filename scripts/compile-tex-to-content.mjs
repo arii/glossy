@@ -17,7 +17,7 @@ if (!existsSync(contentDir)) {
 const texContent = readFileSync(texPath, "utf8");
 const document = parseGb4eToTextDocument(texContent, {
   textId: "ohthere",
-  slug: "ohthere-wulfstan",
+  slug: "ohthere",
   title: "The voyages of Ohthere and Wulfstan",
   author: "Alfred the Great's Circle / Anonymous",
   editor: "Tyler Lemon",
