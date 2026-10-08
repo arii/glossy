@@ -21,26 +21,19 @@ export const TINA_TOKEN = (process.env.TINA_TOKEN || "")
 
 /**
  * Returns the GraphQL URL for TinaCMS commits.
- * Returns the local GraphQL URL in development, and the cloud URL in production.
  */
 export function getTinaGraphQLUrl(
   clientId: string = TINA_CLIENT_ID,
   branch: string = TINA_BRANCH,
 ): string {
-  // Check if we are running in a local environment
-  const isLocalHost = typeof window !== "undefined" &&
-    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
-
-  if (isLocalHost) {
-    return (
-      process.env.NEXT_PUBLIC_TINA_LOCAL_URL ||
-      `${window.location.protocol}//${window.location.hostname}:4001/graphql`
-    )
+  // If an explicit URL override is provided (e.g. for local dev), use it directly
+  if (process.env.NEXT_PUBLIC_TINA_GRAPHQL_URL || process.env.NEXT_PUBLIC_TINA_LOCAL_URL) {
+    return (process.env.NEXT_PUBLIC_TINA_GRAPHQL_URL || process.env.NEXT_PUBLIC_TINA_LOCAL_URL || "")
       .trim()
       .replace(/[\r\n\t]+/g, "");
   }
 
-  // Construct Cloud URL
+  // Otherwise, construct the standard Cloud URL
   const safeClientId = encodeURIComponent(clientId.trim().replace(/[\r\n\t]+/g, ""));
   const safeBranch = encodeURIComponent(branch.trim().replace(/[\r\n\t]+/g, ""));
 
