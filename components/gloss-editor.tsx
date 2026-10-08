@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { SiteNav } from "./site-nav";
+import { SentenceRow } from "./sentence-row";
 import { PageHero } from "./page-hero";
 import { SiteFooter } from "./site-footer";
 import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
@@ -37,7 +38,6 @@ import {
   Save,
   Trash2,
   FileText,
-  Plus,
   X,
 } from "lucide-react";
 import { DraftSyncPrompt } from "./draft-sync-prompt";
@@ -89,6 +89,8 @@ export interface EditorDocument {
   sentences: EditorSentence[];
   blocks?: PassageBlock[];
 }
+
+
 
 function stripLatexFootnotes(text: string): string {
   let result = "";
@@ -154,24 +156,24 @@ export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number
 
 export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
   const rawAuthor = doc.author || (doc.source ? doc.source.split(/[·•]/)[0]?.trim() : "");
-  const glossedByMatch = doc.glossedBy || rawAuthor.replace(/^(Translated and glossed by\s*)+/gi, "").trim();
+  const glossedByMatch = doc.glossedBy || doc.editor || rawAuthor.replace(/^(Translated and glossed by\s*)+/gi, "").trim();
   const dateMatch =
-    doc.date || (doc.source ? doc.source.split(/[·•]/)[1]?.trim() : "September 30, 2026");
+    doc.date || (doc.source ? doc.source.split(/[·•]/)[1]?.trim() : "");
 
   return {
-    textId: doc.textId || "ohthere",
-    slug: doc.slug || "ohthere-wulfstan",
-    title: doc.title || "The voyages of Ohthere and Wulfstan",
-    author: doc.author || glossedByMatch,
-    historicalAuthor: doc.historicalAuthor || undefined,
-    glossedBy: doc.glossedBy || undefined,
-    editor: doc.editor,
+    textId: doc.textId || "",
+    slug: doc.slug || "",
+    title: doc.title || "",
+    author: glossedByMatch,
+    historicalAuthor: doc.historicalAuthor || (doc.author?.includes("Alfred") ? doc.author : undefined),
+    glossedBy: glossedByMatch,
+    editor: doc.editor || glossedByMatch,
     shelfmark: doc.shelfmark,
     dialect: doc.dialect,
     historicalDate: doc.historicalDate,
     date: doc.date || dateMatch,
     source: doc.source || `${glossedByMatch} · ${dateMatch}`,
-    sourceFile: doc.sourceFile || "references/Voyages_of_Ohthere_Wulfstan.tex",
+    sourceFile: doc.sourceFile || "",
     sourceEdition: doc.sourceEdition || undefined,
     language: "Old English",
     status: doc.status || "published",
@@ -268,8 +270,6 @@ export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
     blocks: doc.blocks || [],
   };
 
-  delete (result as Record<string, unknown>).texSource;
-  delete (result as Record<string, unknown>)["tex-source"];
 
   return result;
 }
@@ -337,7 +337,7 @@ export function GlossEditor({
     safeJsonStringify(textDocumentToEditorDoc(initialDocument)),
   );
 
-  const currentSlug = initialDocument.slug || initialDocument.textId || "ohthere";
+  const currentSlug = initialDocument.slug || initialDocument.textId || "";
 
   // Compute baseline hash from the normalized version of initialDocument
   const baselineHash = useMemo(() => {
@@ -481,9 +481,6 @@ export function GlossEditor({
     activeSentence?.tokens.find((t) => t.id === activeTokenId) ||
     documentState?.sentences.flatMap((s) => s.tokens).find((t) => t.id === activeTokenId);
 
-  const activeTokenIndexInSent = activeSentence && activeToken
-    ? activeSentence.tokens.findIndex((t) => t.id === activeToken.id)
-    : -1;
 
   const currentIndex = documentState
     ? documentState.sentences.findIndex((s) => s.id === activeSentenceId)
@@ -537,6 +534,14 @@ export function GlossEditor({
     }));
   }, []);
 
+  const scrollToSentenceCard = useCallback((sentenceId: string) => {
+    if (typeof window === "undefined") return;
+    const el = window.document.getElementById(`editor-sentence-${sentenceId}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, []);
+
   const handlePrev = () => {
     if (documentState && currentIndex > 0) {
       const prevSent = documentState.sentences[currentIndex - 1];
@@ -544,6 +549,7 @@ export function GlossEditor({
       if (prevSent.tokens.length > 0) {
         setActiveTokenId(prevSent.tokens[0].id);
       }
+      scrollToSentenceCard(prevSent.id);
     }
   };
 
@@ -554,6 +560,7 @@ export function GlossEditor({
       if (nextSent.tokens.length > 0) {
         setActiveTokenId(nextSent.tokens[0].id);
       }
+      scrollToSentenceCard(nextSent.id);
     }
   };
 
@@ -615,9 +622,9 @@ export function GlossEditor({
   const handleOpenMetadataModal = () => {
     setMetaTitle(documentState.title || "");
     setMetaHistoricalAuthor(documentState.historicalAuthor || "Anonymous");
-    setMetaGlossedBy(documentState.glossedBy || documentState.author || "");
+    setMetaGlossedBy(documentState.glossedBy || documentState.editor || "");
     setMetaDate(documentState.date || "");
-    setMetaSourceEdition(documentState.sourceEdition || "");
+    setMetaSourceEdition(documentState.sourceEdition || documentState.shelfmark || "");
     setIsEditingMetadata(true);
   };
 
@@ -625,7 +632,7 @@ export function GlossEditor({
     e.preventDefault();
     const updatedTitle = metaTitle.trim() || documentState.title;
     const updatedHistAuthor = metaHistoricalAuthor.trim() || "Anonymous";
-    const updatedGlossedBy = metaGlossedBy.trim() || documentState.author || "";
+    const updatedGlossedBy = metaGlossedBy.trim() || "";
     const updatedDate = metaDate.trim() || documentState.date;
     const updatedSourceEdition = metaSourceEdition.trim();
 
@@ -635,8 +642,10 @@ export function GlossEditor({
       author: updatedGlossedBy,
       historicalAuthor: updatedHistAuthor,
       glossedBy: updatedGlossedBy,
+      editor: updatedGlossedBy,
       date: updatedDate,
       sourceEdition: updatedSourceEdition,
+      shelfmark: updatedSourceEdition || prev.shelfmark,
       source: `${updatedGlossedBy} · ${updatedDate}`,
     }));
 
@@ -711,14 +720,12 @@ export function GlossEditor({
   const handleExportJson = () => {
     if (!documentState) return;
     const legacyDoc = editorDocToTextDocument(documentState);
-    delete (legacyDoc as Record<string, unknown>).texSource;
-    delete (legacyDoc as Record<string, unknown>)["tex-source"];
     const jsonStr = safeJsonStringify(legacyDoc, null, 2);
     const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const anchor = window.document.createElement("a");
     anchor.href = url;
-    anchor.download = `${initialDocument.fileName || initialDocument.textId || "ohthere"}.json`;
+    anchor.download = `${initialDocument.fileName || initialDocument.textId || ""}.json`;
     anchor.click();
     URL.revokeObjectURL(url);
   };
@@ -732,7 +739,7 @@ export function GlossEditor({
     const url = URL.createObjectURL(blob);
     const anchor = window.document.createElement("a");
     anchor.href = url;
-    anchor.download = `${initialDocument.fileName || initialDocument.textId || "ohthere"}.tex`;
+    anchor.download = `${initialDocument.fileName || initialDocument.textId || ""}.tex`;
     anchor.click();
     URL.revokeObjectURL(url);
   };
@@ -827,12 +834,27 @@ export function GlossEditor({
   const addMorpheme = () => {
     if (!activeToken) return;
     const currentMorphemes = activeToken.morphemes || [];
-    const newMorpheme: Morpheme = {
-      id: `${activeTokenId}-morpheme-${currentMorphemes.length + 1}`,
-      form: "",
-      gloss: "",
-    };
-    syncMorphemesAndToken([...currentMorphemes, newMorpheme]);
+    if (currentMorphemes.length <= 1) {
+      const cleanWord = activeToken.sourceForm.replace(/[,.;:!?]+$/, "");
+      const newMorpheme1: Morpheme = {
+        id: `${activeTokenId}-morpheme-1`,
+        form: currentMorphemes[0]?.form || cleanWord,
+        gloss: currentMorphemes[0]?.gloss || activeToken.sourceGloss,
+      };
+      const newMorpheme2: Morpheme = {
+        id: `${activeTokenId}-morpheme-2`,
+        form: "",
+        gloss: "",
+      };
+      syncMorphemesAndToken([newMorpheme1, newMorpheme2]);
+    } else {
+      const newMorpheme: Morpheme = {
+        id: `${activeTokenId}-morpheme-${currentMorphemes.length + 1}`,
+        form: "",
+        gloss: "",
+      };
+      syncMorphemesAndToken([...currentMorphemes, newMorpheme]);
+    }
   };
 
   const updateMorphemeVal = (mIdx: number, field: "form" | "gloss", val: string) => {
@@ -850,6 +872,19 @@ export function GlossEditor({
     const currentMorphemes = (activeToken.morphemes || []).filter((_, idx) => idx !== mIdx);
     syncMorphemesAndToken(currentMorphemes);
   };
+
+
+  const updateFreeTranslation = useCallback((sentId: string, val: string) => {
+    setDocumentState((prev) => ({
+      ...prev,
+      sentences: prev.sentences.map((s) => {
+        if (s.id === sentId) {
+          return { ...s, freeTranslation: val };
+        }
+        return s;
+      }),
+    }));
+  }, []);
 
   const filteredSentences =
     documentState?.sentences.filter((sent) => {
@@ -876,6 +911,7 @@ export function GlossEditor({
       </main>
     );
   }
+
 
   // Clean, displayable form for the selected token header
   const cleanHeaderWord = activeToken?.sourceForm
@@ -917,18 +953,16 @@ export function GlossEditor({
           description={
             <div>
               <p className="source-line" style={{ margin: 0 }}>
-                {documentState.historicalAuthor && documentState.historicalAuthor !== "Anonymous" && (
+                {documentState.historicalAuthor && (
                   <span style={{ fontWeight: 600, marginRight: "0.4rem" }}>
-                    [{documentState.historicalAuthor}]
+                    [{documentState.historicalAuthor}{documentState.historicalDate ? `, ${documentState.historicalDate}` : ""}]
                   </span>
                 )}
-                {documentState.author?.toLowerCase().includes("anonymous")
-                  ? `${documentState.author} · ${documentState.date}`
-                  : `Translated and glossed by ${documentState.author?.replace(/^(Translated and glossed by\s*)+/gi, "")} · ${documentState.date}`}
+                Translated and glossed by {documentState.glossedBy || documentState.author || ""} · {documentState.date}
               </p>
-              {documentState.sourceEdition && (
+              {(documentState.sourceEdition || documentState.shelfmark) && (
                 <p style={{ margin: "0.15rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)" }}>
-                  Witness / Shelfmark: {documentState.sourceEdition}
+                  Witness / Shelfmark: {documentState.sourceEdition || documentState.shelfmark}
                 </p>
               )}
             </div>
@@ -1124,6 +1158,7 @@ export function GlossEditor({
                 if (targetSent && targetSent.tokens.length > 0) {
                   setActiveTokenId(targetSent.tokens[0].id);
                 }
+                scrollToSentenceCard(sId);
               }}
             >
               {documentState.sentences.map((sent, index) => (
@@ -1167,123 +1202,27 @@ export function GlossEditor({
                 const isSentActive = sent.id === activeSentenceId;
                 const actualIndex =
                   documentState.sentences.findIndex((s) => s.id === sent.id) + 1;
-
                 return (
-                  <div
+                  <SentenceRow
                     key={sent.id}
-                    onClick={() => setActiveSentenceId(sent.id)}
-                    className={`editor-sentence-card${isSentActive ? " is-active" : ""}`}
-                  >
-                    <div className="editor-sentence-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", marginBottom: "0.5rem" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                        <h3 style={{ margin: 0, fontSize: "1.1rem", fontFamily: "'Charis SIL', 'Noto Serif', Georgia, serif", fontWeight: 700, color: "var(--accent)" }}>
-                          Sentence {actualIndex}
-                        </h3>
-                        {sent.notes && sent.notes.length > 0 && (
-                          <span style={{ fontSize: "0.75rem", background: "#fef3c7", color: "#92400e", border: "1px solid #fcd34d", borderRadius: "1rem", padding: "0.1rem 0.5rem", fontWeight: 600 }}>
-                            {sent.notes.length} {sent.notes.length === 1 ? "note" : "notes"}
-                          </span>
-                        )}
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActiveSentenceId(sent.id);
-                          addNoteToSentence(sent.id);
-                        }}
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "0.3rem",
-                          fontSize: "0.78rem",
-                          fontWeight: 600,
-                          color: "#7b3f2a",
-                          background: "#fbf7ee",
-                          border: "1px solid #dfcfb8",
-                          borderRadius: "0.3rem",
-                          padding: "0.25rem 0.55rem",
-                          cursor: "pointer",
-                        }}
-                        title="Add Note / Footnote to sentence"
-                      >
-                        <Plus style={{ width: "0.8rem", height: "0.8rem" }} />
-                        <span>Add Note / Footnote</span>
-                      </button>
-                    </div>
-
-                    {/* Word Chips */}
-                    <div className="editor-tokens-list">
-                      {sent.tokens.map((tok, tokIdx) => {
-                        const isTokActive = tok.id === activeTokenId;
-                        const tokNotes = (sent.notes || []).filter(
-                          (n) => n.targetWordIndex === tokIdx || n.targetWordIndex === tokIdx + 1,
-                        );
-
-                        return (
-                          <button
-                            key={tok.id}
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setActiveSentenceId(sent.id);
-                              setActiveTokenId(tok.id);
-                            }}
-                            className={`editor-word-chip${isTokActive ? " is-selected" : ""}`}
-                            style={{ position: "relative" }}
-                          >
-                            <span className="chip-form">
-                              {tok.sourceForm}
-                              {tokNotes.length > 0 && (
-                                <sup style={{ fontSize: "0.68rem", fontWeight: 800, color: "#b45309", marginLeft: "2px" }}>
-                                  {tokNotes.map((n) => n.marker || "*").join(",")}
-                                </sup>
-                              )}
-                            </span>
-                            <span className="chip-gloss">
-                              {tok.sourceGloss || tok.sourceForm}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {/* Free Translation */}
-                    <div className="editor-translation-block">
-                      <label>FREE TRANSLATION</label>
-                      <textarea
-                        rows={2}
-                        value={sent.freeTranslation}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setDocumentState((prev) => ({
-                            ...prev,
-                            sentences: prev.sentences.map((s) => {
-                              if (s.id === sent.id) {
-                                return { ...s, freeTranslation: val };
-                              }
-                              return s;
-                            }),
-                          }));
-                        }}
-                        placeholder="Enter translation here..."
-                      />
-                    </div>
-                  </div>
+                    sent={sent}
+                    isSentActive={isSentActive}
+                    actualIndex={actualIndex}
+                    activeTokenId={activeTokenId}
+                    setActiveSentenceId={setActiveSentenceId}
+                    setActiveTokenId={setActiveTokenId}
+                    addNoteToSentence={addNoteToSentence}
+                    updateFreeTranslation={updateFreeTranslation}
+                  />
                 );
               })}
             </div>
           </section>
-
           {/* Right Column: Selected Token Inspector */}
           <aside className="editor-inspector-card">
             <div className="editor-inspector-header">
-              <p className="workspace-eyebrow" style={{ margin: 0, fontSize: "0.72rem", fontWeight: 700, color: "var(--accent)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                SELECTED TOKEN INSPECTOR
-              </p>
-              <h2 className="editor-inspector-heading">
-                {cleanHeaderWord || "NO TOKEN SELECTED"}
+              <h2 className="workspace-eyebrow" style={{ margin: 0, fontSize: "0.82rem", fontWeight: 700, color: "var(--accent)", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                Selected Token Inspector
               </h2>
             </div>
 
@@ -1481,34 +1420,38 @@ export function GlossEditor({
 
                 {/* 7. Morphemes Breakdown */}
                 <div className="editor-form-group">
-                  <label>Morphemes Breakdown ({activeToken.morphemes?.length || 0})</label>
+                  <label>
+                    Morphemes Breakdown {activeToken.morphemes && activeToken.morphemes.length > 1 ? `(${activeToken.morphemes.length})` : ""}
+                  </label>
                   <div>
-                    {(activeToken.morphemes || []).map((morpheme, idx) => (
-                      <div key={morpheme.id || idx} style={{ marginBottom: "0.6rem" }}>
-                        <div className="morpheme-row">
-                          <input
-                            type="text"
-                            placeholder="form"
-                            value={morpheme.form}
-                            onChange={(e) => updateMorphemeVal(idx, "form", e.target.value)}
-                          />
-                          <input
-                            type="text"
-                            placeholder="gloss"
-                            value={morpheme.gloss}
-                            onChange={(e) => updateMorphemeVal(idx, "gloss", e.target.value)}
-                          />
+                    {activeToken.morphemes && activeToken.morphemes.length > 1 && (
+                      activeToken.morphemes.map((morpheme, idx) => (
+                        <div key={morpheme.id || idx} style={{ marginBottom: "0.6rem" }}>
+                          <div className="morpheme-row">
+                            <input
+                              type="text"
+                              placeholder="form"
+                              value={morpheme.form}
+                              onChange={(e) => updateMorphemeVal(idx, "form", e.target.value)}
+                            />
+                            <input
+                              type="text"
+                              placeholder="gloss"
+                              value={morpheme.gloss}
+                              onChange={(e) => updateMorphemeVal(idx, "gloss", e.target.value)}
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeMorpheme(idx)}
+                            className="morpheme-remove-btn"
+                            title="Remove morpheme"
+                          >
+                            ✕
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => removeMorpheme(idx)}
-                          className="morpheme-remove-btn"
-                          title="Remove morpheme"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ))}
+                      ))
+                    )}
                   </div>
                   <button
                     type="button"
@@ -1637,19 +1580,6 @@ export function GlossEditor({
                       </div>
                     ))}
 
-                    <div style={{ display: "flex", gap: "0.5rem" }}>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          activeSentence &&
-                          addNoteToSentence(activeSentence.id, activeTokenIndexInSent >= 0 ? activeTokenIndexInSent + 1 : undefined)
-                        }
-                        className="add-morpheme-btn"
-                        style={{ fontSize: "0.8rem", padding: "0.35rem 0.75rem" }}
-                      >
-                        + Add Note for {activeToken ? `"${cleanHeaderWord}"` : "Sentence"}
-                      </button>
-                    </div>
                   </div>
                 </fieldset>
 
@@ -1685,7 +1615,7 @@ export function GlossEditor({
                       <a
                         href={activeToken.wiktionaryUrl}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="reference-link"
                         style={{ fontSize: "0.85rem", color: "var(--accent)", fontWeight: 700 }}
                       >
@@ -1747,22 +1677,17 @@ export function GlossEditor({
                 marginBottom: "1.25rem",
               }}
             >
-              <div>
-                <h2
-                  id="edit-metadata-title"
-                  style={{
-                    margin: 0,
-                    fontSize: "1.25rem",
-                    fontFamily: "'Charis SIL', Georgia, serif",
-                    color: "var(--ink)",
-                  }}
-                >
-                  Edit Document Details
-                </h2>
-                <p style={{ margin: "0.2rem 0 0", fontSize: "0.82rem", color: "var(--muted-ink)" }}>
-                  Update original title, historical author, glossing attribution, and shelfmark.
-                </p>
-              </div>
+              <h2
+                id="edit-metadata-title"
+                style={{
+                  margin: 0,
+                  fontSize: "1.25rem",
+                  fontFamily: "'Charis SIL', Georgia, serif",
+                  color: "var(--ink)",
+                }}
+              >
+                Edit Document Details
+              </h2>
               <button
                 type="button"
                 onClick={() => setIsEditingMetadata(false)}
@@ -1810,7 +1735,7 @@ export function GlossEditor({
 
               <div className="editor-form-group" style={{ marginBottom: 0 }}>
                 <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Glossed / Edited By (Translator / Linguist)
+                  Glossed by
                 </label>
                 <input
                   type="text"
@@ -1824,11 +1749,11 @@ export function GlossEditor({
 
               <div className="editor-form-group" style={{ marginBottom: 0 }}>
                 <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Date (Historical Composition or Release Date)
+                  Date
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. c. 890–900 AD or September 30, 2026"
+                  placeholder="e.g. September 30, 2026"
                   value={metaDate}
                   onChange={(e) => setMetaDate(e.target.value)}
                   style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
@@ -1837,7 +1762,7 @@ export function GlossEditor({
 
               <div className="editor-form-group" style={{ marginBottom: 0 }}>
                 <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Source Edition / Manuscript Shelfmark
+                  Edition
                 </label>
                 <input
                   type="text"
