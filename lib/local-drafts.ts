@@ -30,6 +30,17 @@ export interface PendingDraftEntry {
   baseHash?: string;
 }
 
+export interface DraftDivergenceStatus {
+  hasDraft: boolean;
+  isDiverged: boolean;
+  isUpstreamModified: boolean;
+  draftDoc: TextDocument | null;
+  baseHash?: string;
+  repoHash?: string;
+  draftHash?: string;
+  updatedAt?: string;
+}
+
 export type StorageResult<T = void> =
   | { ok: true; data?: T }
   | { ok: false; reason: "quota" | "invalid" | "unavailable" | "not_found"; message: string; error?: string };
@@ -94,7 +105,11 @@ export function readDraft(slug: string): StoredDraft | null {
   return null;
 }
 
-export function writeDraft(slug: string, doc: TextDocument): StorageResult<StoredDraft> {
+export function writeDraft(
+  slug: string,
+  doc: TextDocument,
+  options?: { baseHash?: string }
+): StorageResult<StoredDraft> {
   const storage = getStorage();
   if (!storage) {
     return { ok: false, reason: "unavailable", message: "Browser local storage is not accessible.", error: "Browser local storage is not accessible." };
@@ -102,10 +117,13 @@ export function writeDraft(slug: string, doc: TextDocument): StorageResult<Store
 
   try {
     const hash = computeDocumentHash(doc);
+    const existing = readDraft(slug);
+    const baseHash = options?.baseHash || existing?.baseHash || hash;
+
     const envelope: StoredDraft = {
       version: 1,
       doc,
-      baseHash: hash,
+      baseHash,
       updatedAt: new Date().toISOString(),
     };
 
@@ -113,7 +131,7 @@ export function writeDraft(slug: string, doc: TextDocument): StorageResult<Store
     storage.setItem(v1Key, safeJsonStringify(envelope));
 
     // Also update pending manifest
-    markPending(slug, doc, hash);
+    markPending(slug, doc, baseHash);
 
     if (typeof window !== "undefined") {
       window.dispatchEvent(new Event("glossy:drafts-updated"));
@@ -295,6 +313,54 @@ export function restoreAllHiddenTexts(): void {
 export function getLocalDraft(slug: string): TextDocument | null {
   const draft = readDraft(slug);
   return draft ? draft.doc : null;
+}
+
+export function getDraftDivergenceStatus(
+  slug: string,
+  repoDoc?: TextDocument | null
+): DraftDivergenceStatus {
+  const draft = readDraft(slug);
+  if (!draft || !draft.doc) {
+    return {
+      hasDraft: false,
+      isDiverged: false,
+      isUpstreamModified: false,
+      draftDoc: null,
+    };
+  }
+
+  const draftHash = computeDocumentHash(draft.doc);
+
+  if (repoDoc) {
+    const repoHash = computeDocumentHash(repoDoc);
+    const isDiverged = draftHash !== repoHash;
+    const isUpstreamModified = Boolean(
+      draft.baseHash &&
+        draft.baseHash !== repoHash &&
+        draftHash !== repoHash
+    );
+
+    return {
+      hasDraft: true,
+      isDiverged,
+      isUpstreamModified,
+      draftDoc: draft.doc,
+      baseHash: draft.baseHash,
+      repoHash,
+      draftHash,
+      updatedAt: draft.updatedAt,
+    };
+  }
+
+  return {
+    hasDraft: true,
+    isDiverged: true,
+    isUpstreamModified: false,
+    draftDoc: draft.doc,
+    baseHash: draft.baseHash,
+    draftHash,
+    updatedAt: draft.updatedAt,
+  };
 }
 
 export function createLocalDocument(input: {
