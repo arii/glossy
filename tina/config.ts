@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { createRoot } from "react-dom/client";
 import { defineConfig, type TinaCMS } from "tinacms";
 import { DraftSyncPrompt } from "../components/draft-sync-prompt";

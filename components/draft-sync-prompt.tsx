@@ -1,7 +1,6 @@
 "use client";
 
-import * as React from "react";
-import { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { listPending, readDraft, type PendingDraftEntry } from "../lib/local-drafts";
 import { isTinaAuthenticated, commitAllPendingDrafts } from "../lib/tina-sync";
 import { safeJsonStringify } from "../lib/safe-json";
