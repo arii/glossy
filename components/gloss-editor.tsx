@@ -9,7 +9,7 @@ import { SiteFooter } from "./site-footer";
 import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
 import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
 import { safeJsonStringify } from "../lib/safe-json";
-import { isProtectedSlug } from "../lib/corpus-registry";
+import { isBuiltInSlug } from "../lib/corpus-registry";
 import {
   computeDocumentHash,
   deleteLocalDraft,
@@ -728,12 +728,12 @@ export function GlossEditor({
     URL.revokeObjectURL(url);
   };
 
-  const isProtectedText = isProtectedSlug(
+  const isRepoText = isBuiltInSlug(
     initialDocument.slug || initialDocument.textId || initialDocument.fileName || ""
   );
 
   const handleDeleteText = async () => {
-    if (isProtectedText) return;
+    if (isRepoText) return;
     setIsDeleting(true);
     try {
       if (currentSlug) {
@@ -1011,7 +1011,7 @@ export function GlossEditor({
                     Export LaTeX
                   </button>
 
-                  {!isProtectedText && (
+                  {!isRepoText && (
                     <button
                       type="button"
                       onClick={() => {

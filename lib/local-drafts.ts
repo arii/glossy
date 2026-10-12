@@ -2,7 +2,6 @@ import type { TextDocument } from "./types";
 import { safeJsonStringify } from "./safe-json";
 import {
   isBuiltInSlug,
-  isProtectedSlug,
   BUILT_IN_CORPUS,
   getBuiltInMetadata,
 } from "./corpus-registry";
@@ -383,8 +382,8 @@ export function createLocalDocument(input: {
     return {
       ok: false,
       reason: "invalid",
-      message: `The slug "${generatedSlug}" collides with a protected built-in corpus text. Please choose a different title or slug.`,
-      error: `The slug "${generatedSlug}" collides with a protected built-in corpus text.`,
+      message: `The slug "${generatedSlug}" collides with a built-in corpus text. Please choose a different title or slug.`,
+      error: `The slug "${generatedSlug}" collides with a built-in corpus text.`,
     };
   }
 
@@ -423,7 +422,7 @@ export interface WorkspaceTextItem {
 export function isWorkspaceSlug(slug: string): boolean {
   if (!slug) return false;
   const s = slug.toLowerCase();
-  if (isProtectedSlug(s)) return true;
+  if (isBuiltInSlug(s)) return true;
   return readDraft(s) !== null;
 }
 

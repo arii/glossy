@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { BUILT_IN_CORPUS, isBuiltInSlug, isProtectedSlug, getBuiltInMetadata } from "../lib/corpus-registry.ts";
+import { BUILT_IN_CORPUS, isBuiltInSlug, getBuiltInMetadata } from "../lib/corpus-registry.ts";
 import {
   isWorkspaceSlug,
   getWorkspaceTexts,
@@ -28,16 +28,10 @@ assert.equal(isBuiltInSlug("caedmon-hymn"), true, "caedmon-hymn should be recogn
 assert.equal(isBuiltInSlug("the-wanderer"), true, "the-wanderer should be recognized as built-in");
 assert.equal(isBuiltInSlug("non-existent-random-slug"), false, "random slug should not be built-in");
 
-// Test 2: Protected status checks
-assert.equal(isProtectedSlug("ohthere"), true, "ohthere must be protected");
-assert.equal(isProtectedSlug("beowulf-prologue"), true, "beowulf-prologue must be protected");
-assert.equal(isProtectedSlug("caedmon-hymn"), true, "caedmon-hymn must be protected");
-assert.equal(isProtectedSlug("the-wanderer"), true, "the-wanderer must be protected");
-
-// Test 3: Metadata retrieval
+// Test 2: Metadata retrieval
 const ohthereMeta = getBuiltInMetadata("ohthere");
 assert.ok(ohthereMeta, "ohthere metadata must exist");
-assert.equal(ohthereMeta.protected, true, "ohthere should be protected");
+assert.equal(ohthereMeta.sentenceCount, 75, "ohthere sentence count must be 75");
 
 // Test 4: Workspace slug checks
 assert.equal(isWorkspaceSlug("ohthere"), true, "ohthere must be in workspace");
