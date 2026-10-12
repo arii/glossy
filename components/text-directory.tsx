@@ -529,7 +529,7 @@ export function TextDirectory({
                           }}
                         >
                           <Trash2 style={{ width: "0.85rem", height: "0.85rem" }} />{" "}
-                          {choice.isLocalOnly ? "Delete Local Draft" : "Revert edits / Discard Draft"}
+                          {choice.isLocalOnly ? "Delete Local Draft" : "Discard Draft Changes"}
                         </button>
                       )}
                     </div>

@@ -21,15 +21,18 @@ console.log("Running Unified TinaCMS Commit Pipeline & Modern Storage Unit Tests
 
 // Test 1: Built-in corpus checks
 assert.ok(Array.isArray(BUILT_IN_CORPUS), "BUILT_IN_CORPUS must be an array");
-assert.equal(BUILT_IN_CORPUS.length, 1, "BUILT_IN_CORPUS should have exactly 1 core text at startup");
+assert.equal(BUILT_IN_CORPUS.length, 4, "BUILT_IN_CORPUS should have 4 core built-in texts");
 assert.equal(isBuiltInSlug("ohthere"), true, "ohthere should be recognized as built-in");
 assert.equal(isBuiltInSlug("beowulf-prologue"), true, "beowulf-prologue should be recognized as built-in");
+assert.equal(isBuiltInSlug("caedmon-hymn"), true, "caedmon-hymn should be recognized as built-in");
+assert.equal(isBuiltInSlug("the-wanderer"), true, "the-wanderer should be recognized as built-in");
 assert.equal(isBuiltInSlug("non-existent-random-slug"), false, "random slug should not be built-in");
 
 // Test 2: Protected status checks
 assert.equal(isProtectedSlug("ohthere"), true, "ohthere must be protected");
-assert.equal(isProtectedSlug("beowulf-prologue"), false, "beowulf-prologue must NOT be protected");
-assert.equal(isProtectedSlug("caedmon-hymn"), false, "caedmon-hymn must NOT be protected");
+assert.equal(isProtectedSlug("beowulf-prologue"), true, "beowulf-prologue must be protected");
+assert.equal(isProtectedSlug("caedmon-hymn"), true, "caedmon-hymn must be protected");
+assert.equal(isProtectedSlug("the-wanderer"), true, "the-wanderer must be protected");
 
 // Test 3: Metadata retrieval
 const ohthereMeta = getBuiltInMetadata("ohthere");
@@ -38,12 +41,11 @@ assert.equal(ohthereMeta.protected, true, "ohthere should be protected");
 
 // Test 4: Workspace slug checks
 assert.equal(isWorkspaceSlug("ohthere"), true, "ohthere must be in workspace");
-assert.equal(isWorkspaceSlug("beowulf-prologue"), false, "uningested preset beowulf-prologue must NOT be in workspace");
+assert.equal(isWorkspaceSlug("beowulf-prologue"), true, "beowulf-prologue must be in workspace");
 
 // Test 5: getWorkspaceTexts
 const defaultTexts = getWorkspaceTexts();
-assert.equal(defaultTexts.length, 1, "Default workspace must contain only 1 text (Ohthere)");
-assert.equal(defaultTexts[0].slug, "ohthere");
+assert.equal(defaultTexts.length, 4, "Default workspace must contain 4 core built-in texts");
 
 // Test 6: sanitizeDraftForTinaMutation unit tests
 const editorDoc = {
