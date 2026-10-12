@@ -2,7 +2,7 @@
   "blocks": [],
   "date": "September 30, 2026",
   "textId": "ohthere",
-  "slug": "ohthere-wulfstan",
+  "slug": "ohthere",
   "language": "Old English",
   "author": "Tyler Lemon",
   "historicalAuthor": "Alfred the Great's Circle / Anonymous",
@@ -25,13 +25,13 @@
           "id": "paragraph-1-sentence-1-word-1",
           "originalWord": "Ōhthere",
           "morphologicalGloss": "Ohthere.NOM.SG",
-          "sourceGlossTex": "Ohthere\\textsc{.nom.sg}",
+          "sourceGlossTex": "Ohthere.\\textsc{nom.sg}",
           "analysis": {
             "lemma": "Ōhthere",
             "partOfSpeech": "noun",
             "features": {
               "case": "nominative",
-              "gender": "neuter"
+              "gender": "masculine"
             },
             "morphemes": [
               {
@@ -16318,7 +16318,7 @@
           "sourceGlossTex": "tame-\\textsc{gen.pl.str}",
           "analysis": {
             "lemma": "tam",
-            "partOfSpeech": "adjective",
+            "partOfSpeech": "noun",
             "features": {
               "case": "genitive",
               "number": "plural",
@@ -17689,8 +17689,8 @@
         {
           "id": "paragraph-4-sentence-4-word-13",
           "originalWord": "mā",
-          "morphologicalGloss": "large.COMP.ADV",
-          "sourceGlossTex": "large.\\textsc{comp}.\\textsc{adv}",
+          "morphologicalGloss": "large.CMP.ADV",
+          "sourceGlossTex": "large.\\textsc{cmp.adv}",
           "analysis": {
             "lemma": "mā",
             "partOfSpeech": "noun",
@@ -17701,7 +17701,7 @@
                 "gloss": "large.COMP.ADV"
               }
             ],
-            "definition": "large.COMP.ADV",
+            "definition": "large.CMP.ADV",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/ma#Old_English"
           },
           "review": {
@@ -23257,9 +23257,9 @@
         {
           "id": "paragraph-5-sentence-4-word-13",
           "originalWord": "smæl-r-e",
-          "morphologicalGloss": "narrow-COMP-NOM.SG.N.WK",
+          "morphologicalGloss": "narrow-CMP-NOM.SG.N.WK",
           "trailingPunctuation": ".",
-          "sourceGlossTex": "narrow-\\textsc{comp}-\\textsc{nom.sg.n.wk}",
+          "sourceGlossTex": "narrow-\\textsc{cmp}-\\textsc{nom.sg.n.wk}",
           "analysis": {
             "lemma": "smælr",
             "partOfSpeech": "noun",
@@ -23278,7 +23278,7 @@
               {
                 "id": "paragraph-5-sentence-4-word-13-morpheme-2",
                 "form": "r",
-                "gloss": "COMP"
+                "gloss": "CMP"
               },
               {
                 "id": "paragraph-5-sentence-4-word-13-morpheme-3",
@@ -23286,7 +23286,7 @@
                 "gloss": "NOM.SG.N.WK"
               }
             ],
-            "definition": "narrow-COMP-NOM.SG.N.WK",
+            "definition": "narrow-CMP-NOM.SG.N.WK",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/sm%C3%A6lr#Old_English"
           },
           "review": {
@@ -23758,9 +23758,9 @@
         {
           "id": "paragraph-5-sentence-5-word-15",
           "originalWord": "brād-r-e",
-          "morphologicalGloss": "broad-COMP-NOM.SG.N.WK",
+          "morphologicalGloss": "broad-CMP-NOM.SG.N.WK",
           "trailingPunctuation": ".",
-          "sourceGlossTex": "broad-\\textsc{comp}-\\textsc{nom.sg.n.wk}",
+          "sourceGlossTex": "broad-\\textsc{cmp}-\\textsc{nom.sg.n.wk}",
           "analysis": {
             "lemma": "brādr",
             "partOfSpeech": "noun",
@@ -23779,7 +23779,7 @@
               {
                 "id": "paragraph-5-sentence-5-word-15-morpheme-2",
                 "form": "r",
-                "gloss": "COMP"
+                "gloss": "CMP"
               },
               {
                 "id": "paragraph-5-sentence-5-word-15-morpheme-3",
@@ -23787,7 +23787,7 @@
                 "gloss": "NOM.SG.N.WK"
               }
             ],
-            "definition": "broad-COMP-NOM.SG.N.WK",
+            "definition": "broad-CMP-NOM.SG.N.WK",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/bradr#Old_English"
           },
           "review": {
@@ -31701,8 +31701,8 @@
         {
           "id": "paragraph-7-sentence-1-word-15",
           "originalWord": "brād-r-e",
-          "morphologicalGloss": "broad-COMP-NOM.SG.F.WK",
-          "sourceGlossTex": "broad-\\textsc{comp}-\\textsc{nom.sg.f.wk}",
+          "morphologicalGloss": "broad-CMP-NOM.SG.F.WK",
+          "sourceGlossTex": "broad-\\textsc{cmp}-\\textsc{nom.sg.f.wk}",
           "analysis": {
             "lemma": "brādr",
             "partOfSpeech": "noun",
@@ -31721,7 +31721,7 @@
               {
                 "id": "paragraph-7-sentence-1-word-15-morpheme-2",
                 "form": "r",
-                "gloss": "COMP"
+                "gloss": "CMP"
               },
               {
                 "id": "paragraph-7-sentence-1-word-15-morpheme-3",
@@ -31729,7 +31729,7 @@
                 "gloss": "NOM.SG.F.WK"
               }
             ],
-            "definition": "broad-COMP-NOM.SG.F.WK",
+            "definition": "broad-CMP-NOM.SG.F.WK",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/bradr#Old_English"
           },
           "review": {
@@ -35254,6 +35254,7 @@
             "partOfSpeech": "verb",
             "features": {
               "number": "plural",
+              "person": 3,
               "tense": "past",
               "mood": "indicative"
             },
@@ -35269,7 +35270,7 @@
                 "gloss": "IND.PL"
               }
             ],
-            "definition": "come-PST-IND.PL",
+            "definition": "come-PST",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/coman#Old_English"
           },
           "review": {
@@ -45392,8 +45393,8 @@
         {
           "id": "paragraph-11-sentence-1-word-39",
           "originalWord": "mār-an",
-          "morphologicalGloss": "large.COMP-ACC.PL",
-          "sourceGlossTex": "large\\textsc{.comp}-\\textsc{acc.pl}",
+          "morphologicalGloss": "large.CMP-ACC.PL",
+          "sourceGlossTex": "large\\textsc{.cmp}-\\textsc{acc.pl}",
           "analysis": {
             "lemma": "māran",
             "partOfSpeech": "noun",
@@ -45405,7 +45406,7 @@
               {
                 "id": "paragraph-11-sentence-1-word-39-morpheme-1",
                 "form": "mār",
-                "gloss": "large.COMP"
+                "gloss": "large.CMP"
               },
               {
                 "id": "paragraph-11-sentence-1-word-39-morpheme-2",
@@ -45413,7 +45414,7 @@
                 "gloss": "ACC.PL"
               }
             ],
-            "definition": "large.COMP-ACC.PL",
+            "definition": "large.CMP-ACC.PL",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/maran#Old_English"
           },
           "review": {
@@ -47799,9 +47800,9 @@
         {
           "id": "paragraph-11-sentence-3-word-35",
           "originalWord": "mā",
-          "morphologicalGloss": "large.COMP.ADV",
+          "morphologicalGloss": "large.CMP.ADV",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "large.\\textsc{comp}.\\textsc{adv}",
+          "sourceGlossTex": "large.\\textsc{cmp.adv}",
           "analysis": {
             "lemma": "mā",
             "partOfSpeech": "noun",
@@ -47812,7 +47813,7 @@
                 "gloss": "large.COMP.ADV"
               }
             ],
-            "definition": "large.COMP.ADV",
+            "definition": "large.CMP.ADV",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/ma#Old_English"
           },
           "review": {
