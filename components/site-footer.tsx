@@ -1,9 +1,53 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import attributionData from "../content/pages/attribution.json";
+import { formatRelativeTime } from "../lib/utils";
 
-export function SiteFooter() {
-  const feedbackUrl = "https://github.com/arii/glossy/issues/new?template=feedback.yml&title=Feedback%20%2F%20Report";
+export interface SiteFooterProps {
+  platformCreator?: string;
+  platformCreatorUrl?: string;
+  defaultEditor?: string;
+  defaultEditorUrl?: string;
+}
+
+export function buildFeedbackUrl(
+  envCommitSha = process.env.NEXT_PUBLIC_COMMIT_SHA,
+  envAppVersion = process.env.NEXT_PUBLIC_APP_VERSION,
+): string {
+  const commitSha = envCommitSha ?? "dev";
+  const shortSha = commitSha.length >= 7 ? commitSha.substring(0, 7) : commitSha;
+  const appVersion = envAppVersion ?? "0.1.0";
+
+  const feedbackParams = new URLSearchParams({
+    template: "feedback.yml",
+    title: `Feedback / Report [${shortSha}]`,
+    environment: `Build: v${appVersion} (${shortSha}) - commit: ${commitSha}`,
+  });
+
+  return `https://github.com/arii/glossy/issues/new?${feedbackParams.toString()}`;
+}
+
+export function SiteFooter(props: SiteFooterProps) {
+  const platformCreator = props.platformCreator ?? attributionData.platformCreator;
+  const platformCreatorUrl = props.platformCreatorUrl ?? attributionData.platformCreatorUrl;
+  const defaultEditor = props.defaultEditor ?? attributionData.defaultEditor;
+  const defaultEditorUrl = props.defaultEditorUrl ?? attributionData.defaultEditorUrl;
+
+  const feedbackUrl = buildFeedbackUrl();
+
+  const [lastUpdated, setLastUpdated] = useState<string>("");
+
+  useEffect(() => {
+    if (process.env.NEXT_PUBLIC_BUILD_TIME) {
+      setLastUpdated(formatRelativeTime(process.env.NEXT_PUBLIC_BUILD_TIME));
+    }
+  }, []);
+
+  const commitSha = process.env.NEXT_PUBLIC_COMMIT_SHA ?? "dev";
+  const appVersion = process.env.NEXT_PUBLIC_APP_VERSION ?? "0.1.0";
+  const displayCommit = commitSha.slice(0, 7);
 
   return (
     <footer className="site-footer">
@@ -15,23 +59,44 @@ export function SiteFooter() {
           </div>
           <div className="site-footer-credits">
             Developed by{" "}
-            <a
-              href="https://boomtick.blog/services"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="site-footer-author-link"
-            >
-              Ariel Anders
-            </a>{" "}
+            {platformCreatorUrl ? (
+              <a
+                href={platformCreatorUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="site-footer-author-link"
+              >
+                {platformCreator}
+              </a>
+            ) : (
+              platformCreator
+            )}{" "}
             with{" "}
+            {defaultEditorUrl ? (
+              <a
+                href={defaultEditorUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="site-footer-author-link"
+              >
+                {defaultEditor}
+              </a>
+            ) : (
+              defaultEditor
+            )}
+          </div>
+          <div className="site-footer-version">
+            v{appVersion} (
             <a
-              href="https://sites.google.com/view/tyler-lemon"
+              href={`https://github.com/arii/glossy/commit/${commitSha}`}
               target="_blank"
               rel="noopener noreferrer"
               className="site-footer-author-link"
             >
-              Tyler Lemon
+              {displayCommit}
             </a>
+            )
+            {lastUpdated ? ` · Last updated ${lastUpdated}` : ""}
           </div>
         </div>
 

@@ -316,12 +316,17 @@ export async function commitPendingDraft(
   if (authToken) {
     try {
       const cloudUrl = getTinaCloudUrl();
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+      const cleanToken = authToken.replace(/[\r\n\t\x00-\x1f\x7f]+/g, "").trim();
+      if (cleanToken) {
+        headers["Authorization"] = `Bearer ${cleanToken}`;
+      }
+
       const res = await fetch(cloudUrl, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
+        headers,
         body: JSON.stringify({
           query: UPDATE_TEXT_MUTATION,
           variables: { relativePath, params: sanitizedParams },

@@ -1,7 +1,4 @@
 {
-  "a1Intro": "Scholars and learners can expand the corpus via + New Text by pasting new sentences or loading presets like Beowulf: Prologue, Cædmon's Hymn, or The Wanderer:",
-  "a2Intro": "Glossy provides a reliable local-first persistence and publishing workflow to ensure seamless editing and Git-backed content management:",
-  "a3Intro": "",
   "abbreviations": [
     {
       "abbr": "1",
@@ -256,82 +253,14 @@
       "name": "weak declension (def.)"
     }
   ],
-  "architectureSpecDescription": "Edits autosave locally as draft documents, deliberate saves register in the pending manifest, and authenticated TinaCMS sessions commit drafts to the Git repository.",
-  "architectureSpecTitle": "Data Pipeline & Verification",
-  "canonicalRuleDescription": "All Old English adjectives default to Masculine Nominative Singular Strong citation form. Numerals 2 & 3 default to twēgen and þrīe.",
-  "canonicalRuleTitle": "Quick Canonical Rule",
-  "description": "Comprehensive reference guide split into linguistic editorial standards and system engineering architecture.",
-  "eyebrow": "Linguistic Standards & System Architecture",
-  "ingestionSteps": [
-    {
-      "description": "Punctuation is cleanly isolated and bound morphemes (hyphenated compound terms like ġeār-dag-um) are systematically segmented into glossable lexical units.",
-      "num": "1",
-      "title": "Automatic Tokenization & Compound Splitting"
-    },
-    {
-      "description": "Every token is evaluated through the Old English linguistic engine, assigning canonical masculine nominative singular strong adjective lemmas, infinitive verb lemmas, nominative noun lemmas, and direct Wiktionary etymological links.",
-      "num": "2",
-      "title": "Contextual Lemmatization Engine"
-    }
-  ],
-  "ipaSpecifications": [
-    {
-      "description": "Transcriptions use phonemic slashes /.../ for citation headwords.",
-      "title": "Phonemic Slashes"
-    },
-    {
-      "description": "Vowel length is transcribed with the standard IPA triangular length mark ː (U+02D0), not an ASCII colon.",
-      "title": "Triangular Length Colon"
-    },
-    {
-      "description": "Polysyllabic stress is indicated with the IPA vertical stroke ˈ (U+02C8) preceding the stressed syllable (e.g. /ˈbuː.ɑn/).",
-      "title": "Primary Stress"
-    },
-    {
-      "description": "Pronunciations reflect the canonical lemma headword rather than contextual inflected forms.",
-      "title": "Uninflected Citation"
-    }
-  ],
+  "description": "Comprehensive reference guide for Leipzig interlinear glossing standards and morphological tagging abbreviations.",
+  "eyebrow": "Linguistic Reference & Standards",
   "l1Intro": "An interlinear gloss is a standard linguistic format following Leipzig glossing standards that presents original historical text with word-by-word and morpheme-by-morpheme grammatical breakdowns aligned directly underneath:",
   "l1TierGlosses": "what | we.NOM | Spear-Dane-GEN.PL | in | yore-day-DAT.PL",
   "l1TierHeaderBadge": "",
   "l1TierHeaderTitle": "Three-Tier Interlinear Structure",
   "l1TierTokens": "Hwæt | wē | Gār-Den-a | in | ġeār-dag-um",
   "l1TierTranslation": "“Lo! We have heard of the Spear-Danes in days of yore...”",
-  "l2CalloutBody": "Certain adjectives historically belong to the ja/jō-stem class and legitimately end in -e in their masculine nominative singular strong citation form (e.g. wēste \"desert, waste\", blīðe \"happy\", clǣne \"clean\", dȳre \"precious\"). The engine preserves these base forms without stripping their root vowel.",
-  "l2CalloutTitle": "Ja/Jō-stem Adjectives Retaining Base \"-e\"",
-  "l2Paragraph1": "In Old English, every single adjective inflects into over 15 distinct surface endings depending on gender (masculine, feminine, neuter), grammatical case (nominative, accusative, genitive, dative, instrumental), number (singular, plural), and declension (strong vs weak).",
-  "l2Paragraph2": "For instance, the word for all occurs in the text as eall, ealne, ealles, ealra, eallum, and ealle. Standard dictionaries (Bosworth-Toller, Sweet, Clark Hall, Wiktionary) universally choose the Masculine Nominative Singular Strong form (eall) as the single authoritative headword.",
-  "l3Intro": "Lemmatizing Old English numbers requires a clear rule: for numbers that don't have a singular form (e.g. 2, 3) or numbers above 1, we strictly cite the Masculine Nominative form:",
-  "l4IpaIntro": "Phonetic transcriptions follow the International Phonetic Alphabet standards established for West Saxon Old English:",
-  "l4IpaSubtitle": "Pronunciation keys aligned with West Saxon phonology",
-  "l4IpaTitle": "IPA Phonetic Transcription Standard",
-  "l4WiktionaryIntro": "Glossy generates external reference links according to official Wiktionary:About Old English policies:",
-  "l4WiktionarySubtitle": "Standard URL and anchor formatting according to official policy",
-  "l4WiktionaryTitle": "Wiktionary Entry Naming Conventions",
-  "numeralCards": [
-    {
-      "badge": "2 & 3",
-      "description": "Numbers 2 and 3 declension paradigms cite the masculine nominative (twēgen resolving twā/tū/twǣm, and þrīe resolving þrēo/þrim).",
-      "title": "Nominal Plurals (twēgen & þrīe)"
-    },
-    {
-      "badge": "1, 4–19",
-      "description": "Numbers with masculine nominative citation: ān (1), fēower (4), fīf (5), siex (6), seofon (7), eahta (8), nigon (9), tīen (10).",
-      "title": "Cardinals (ān, fēower, fīf)"
-    },
-    {
-      "badge": "20–100",
-      "description": "Decades ending in -tig (e.g. twēntig 20, syxtig 60) and hundreds (hund, hundtēontiġ) are treated as neuter noun quantifiers.",
-      "title": "Decades & Hundreds (twēntig, syxtig)"
-    },
-    {
-      "badge": "Verification",
-      "description": "All numerals in the corpus are audited for canonical headword citation and Wiktionary URL targets.",
-      "isFullWidth": true,
-      "title": "Corpus Numeral Audit"
-    }
-  ],
   "sections": [
     {
       "domain": "linguistics",
@@ -340,86 +269,7 @@
       "id": "section-l1",
       "num": "1",
       "title": "How Interlinear Glossing Works"
-    },
-    {
-      "domain": "linguistics",
-      "domainNum": "L2",
-      "eyebrow": "Linguistic Standards",
-      "id": "section-l2",
-      "num": "2",
-      "title": "Why Adjectives Use Masculine Nominative Singular Strong Form"
-    },
-    {
-      "domain": "linguistics",
-      "domainNum": "L3",
-      "eyebrow": "Morphological Edge Cases",
-      "id": "section-l3",
-      "num": "3",
-      "title": "The Numeral Lemmatization Standard (Masculine Nominative)"
-    },
-    {
-      "domain": "linguistics",
-      "domainNum": "L4",
-      "eyebrow": "Lexicographic Standards",
-      "id": "section-l4",
-      "num": "4",
-      "title": "Official Wiktionary & IPA Formatting Standards"
-    },
-    {
-      "domain": "architecture",
-      "domainNum": "A1",
-      "eyebrow": "Corpus Expansion",
-      "id": "section-a1",
-      "num": "1",
-      "title": "Ingesting & Glossing New Texts (Beowulf, Cædmon, Custom OE)"
-    },
-    {
-      "domain": "architecture",
-      "domainNum": "A2",
-      "eyebrow": "Architecture & Storage",
-      "id": "section-a2",
-      "num": "2",
-      "title": "Local Drafts, Manifest Tracking, & TinaCMS Publishing"
     }
   ],
-  "storageTiers": [
-    {
-      "description": "Every edit is automatically saved to local storage, protecting working edits against accidental reloads.",
-      "tier": "Layer 1",
-      "timing": "Autosave",
-      "title": "Browser Local Draft"
-    },
-    {
-      "description": "Clicking Save draft records the document in the pending drafts manifest with an updated content hash and timestamp.",
-      "tier": "Layer 2",
-      "timing": "Save Action",
-      "title": "Pending Draft Manifest"
-    },
-    {
-      "description": "Signing in through Tina Admin allows committing pending drafts directly to the Git-backed repository.",
-      "tier": "Layer 3",
-      "timing": "Authenticated Sign-In",
-      "title": "TinaCMS Git Commit"
-    }
-  ],
-  "title": "Documentation & Reference Guides",
-  "verificationTools": [],
-  "wiktionaryGuidelines": [
-    {
-      "description": "Vowel macrons (ā, ē, ī, ō, ū, ȳ) and palatal dots (ċ, ġ) are modern editorial additions and are omitted from page titles (e.g. secgan, hlaford).",
-      "title": "Diacritics Stripped in Page Titles"
-    },
-    {
-      "description": "Ash (æ), thorn (þ), and eth (ð) are standard Latin letters in Wiktionary titles (e.g. cweþan#Old_English).",
-      "title": "Historical Letters Retained"
-    },
-    {
-      "description": "Proper nouns and tribal names are capitalized (Ohthere, Ælfred); common vocabulary is always lowercase.",
-      "title": "Proper Noun Capitalization"
-    },
-    {
-      "description": "Headword links specifically target the #Old_English section anchor to jump past other languages directly to Old English.",
-      "title": "Anchor Standard"
-    }
-  ]
+  "title": "Documentation & Reference Guides"
 }

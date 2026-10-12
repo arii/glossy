@@ -250,7 +250,7 @@ export function DraftSyncPrompt({
           <a
             href={`/edit/${firstSlug}`}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             style={{
               background: "#292524",
               color: "#d6d3d1",

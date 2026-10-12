@@ -91,3 +91,25 @@ Glossy adheres to International Phonetic Association guidelines for Old English 
 | `npm run validate:lemmas` | Audits tokens in the corpus for canonical lemma and Wiktionary compliance. |
 | `npm run test:smoke` | Automated end-to-end smoke test verifying reader, editor, new texts, and admin routes. |
 | `npm run build` | Compiles Tina schemas and builds the production Next.js application. |
+
+---
+
+## 5. Release Management & Conventional Commits
+
+Glossy uses [Release Please](https://github.com/googleapis/release-please-action) for automated semantic versioning, changelog generation, and GitHub release tagging based on [Conventional Commits](https://www.conventionalcommits.org/).
+
+### Commit Message Conventions
+
+When contributing code changes, format commit messages using the standard prefixes below:
+
+- `feat:` — Introduces a new feature or capability (bumps `minor` version, e.g. `0.1.0` $\to$ `0.2.0`).
+- `fix:` — Fixes a bug or defect (bumps `patch` version, e.g. `0.1.0` $\to$ `0.1.1`).
+- `perf:` — Performance improvements (bumps `patch` version).
+- `chore:`, `docs:`, `style:`, `refactor:`, `test:` — Build process, documentation, maintenance, or test updates (no automated version release triggered unless specified).
+- `BREAKING CHANGE:` — Adding `BREAKING CHANGE:` in the footer or `!` after type/scope (e.g., `feat!: ...`) bumps `major` version (e.g. `0.1.0` $\to$ `1.0.0`).
+
+### Automated Release Workflow
+
+1. Pushes to `main` trigger the Release Please GitHub Action workflow (`.github/workflows/release-please.yml`).
+2. Release Please calculates the next semantic version based on conventional commits and maintains a rolling **Release PR** containing updated version references in `package.json` and `.release-please-manifest.json`, along with an updated `CHANGELOG.md`.
+3. Merging the Release PR automatically tags the release (e.g. `v0.2.0`) and creates an official GitHub Release with release notes.

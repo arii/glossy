@@ -236,7 +236,7 @@ export function parseGb4eToTextDocument(
   };
 }
 
-function extractInflectionFeatures(gloss: string): InflectionFeatures {
+export function extractInflectionFeatures(gloss: string): InflectionFeatures {
   const upper = gloss.toUpperCase();
   const features: InflectionFeatures = {};
 
@@ -244,24 +244,51 @@ function extractInflectionFeatures(gloss: string): InflectionFeatures {
   else if (upper.includes("ACC")) features.case = "accusative";
   else if (upper.includes("GEN")) features.case = "genitive";
   else if (upper.includes("DAT")) features.case = "dative";
-  else if (upper.includes("INS")) features.case = "instrumental";
+  else if (upper.includes("INS") || upper.includes("INST")) features.case = "instrumental";
 
   if (upper.includes("PL")) features.number = "plural";
   else if (upper.includes("DU")) features.number = "dual";
   else if (upper.includes("SG")) features.number = "singular";
 
-  if (upper.includes(".M") || upper.includes("-M") || upper.endsWith(".M") || upper.includes("M.NOM") || upper.includes("M.ACC") || upper.includes("M.DAT") || upper.includes("M.GEN")) {
+  if (
+    upper.includes(".M") ||
+    upper.includes("-M") ||
+    upper.endsWith(".M") ||
+    upper.includes("M.NOM") ||
+    upper.includes("M.ACC") ||
+    upper.includes("M.DAT") ||
+    upper.includes("M.GEN") ||
+    upper.includes("MASC")
+  ) {
     features.gender = "masculine";
-  } else if (upper.includes(".F") || upper.includes("-F") || upper.endsWith(".F") || upper.includes("F.NOM") || upper.includes("F.ACC") || upper.includes("F.DAT") || upper.includes("F.GEN")) {
+  } else if (
+    upper.includes(".F") ||
+    upper.includes("-F") ||
+    upper.endsWith(".F") ||
+    upper.includes("F.NOM") ||
+    upper.includes("F.ACC") ||
+    upper.includes("F.DAT") ||
+    upper.includes("F.GEN") ||
+    upper.includes("FEM")
+  ) {
     features.gender = "feminine";
-  } else if (upper.includes(".N") || upper.includes("-N") || upper.endsWith(".N") || upper.includes("N.NOM") || upper.includes("N.ACC") || upper.includes("N.DAT") || upper.includes("N.GEN")) {
+  } else if (
+    upper.includes(".N") ||
+    upper.includes("-N") ||
+    upper.endsWith(".N") ||
+    upper.includes("N.NOM") ||
+    upper.includes("N.ACC") ||
+    upper.includes("N.DAT") ||
+    upper.includes("N.GEN") ||
+    upper.includes("NEUT")
+  ) {
     features.gender = "neuter";
   }
 
-  if (upper.includes("PST")) features.tense = "past";
-  else if (upper.includes("PRS")) features.tense = "present";
+  if (upper.includes("PST") || upper.includes("PAST")) features.tense = "past";
+  else if (upper.includes("PRS") || upper.includes("PRES")) features.tense = "present";
 
-  if (upper.includes("SJV")) features.mood = "subjunctive";
+  if (upper.includes("SJV") || upper.includes("SUBJ") || upper.includes("SBJV")) features.mood = "subjunctive";
   else if (upper.includes("IND")) features.mood = "indicative";
   else if (upper.includes("IMP")) features.mood = "imperative";
   else if (upper.includes("INF")) features.mood = "infinitive";
@@ -270,8 +297,8 @@ function extractInflectionFeatures(gloss: string): InflectionFeatures {
   else if (upper.includes("2SG") || upper.includes("2PL") || upper.includes(".2")) features.person = 2;
   else if (upper.includes("3SG") || upper.includes("3PL") || upper.includes(".3")) features.person = 3;
 
-  if (upper.includes("SUP")) features.degree = "superlative";
-  else if (upper.includes("CMP") && !upper.includes("COMP")) features.degree = "comparative";
+  if (upper.includes("SUP") || upper.includes("MEST") || upper.includes("MOST")) features.degree = "superlative";
+  else if ((upper.includes("CMP") || upper.includes("COMPR")) && !upper.includes("COMP")) features.degree = "comparative";
 
   if (upper.includes("STR")) features.declension = "strong";
   else if (upper.includes("WK")) features.declension = "weak";

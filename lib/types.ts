@@ -267,8 +267,6 @@ export type AttributionPageContent = {
   chicagoCitationTemplate?: string;
 };
 
-export type DocsDomain = "all" | "linguistics" | "architecture";
-
 export type GlossingAbbreviationItem = {
   abbr: string;
   name: string;
@@ -286,57 +284,17 @@ export type DocSectionItem = {
   badge?: string;
 };
 
-export type NumeralCardItem = {
-  badge: string;
-  title: string;
-  description: string;
-  isFullWidth?: boolean;
-};
-
-export type VerificationToolItem = {
-  name: string;
-  command: string;
-  target: string;
-};
-
-export type IngestionStepItem = {
-  num: string;
-  title: string;
-  description: string;
-};
-
-export type WiktionaryGuidelineItem = {
-  title: string;
-  description: string;
-};
-
-export type IpaSpecificationItem = {
-  title: string;
-  description: string;
-};
-
-export type StorageTierItem = {
-  tier: string;
-  timing: string;
-  title: string;
-  description: string;
-};
-
 export type DocsPageContent = {
   title?: string;
   eyebrow?: string;
   description?: string;
-  canonicalRuleTitle?: string;
-  canonicalRuleDescription?: string;
-  architectureSpecTitle?: string;
-  architectureSpecDescription?: string;
+  l1Intro?: string;
+  l1TierHeaderTitle?: string;
+  l1TierHeaderBadge?: string;
+  l1TierTokens?: string;
+  l1TierGlosses?: string;
+  l1TierTranslation?: string;
   sections?: DocSectionItem[];
   abbreviations?: GlossingAbbreviationItem[];
-  numeralCards?: NumeralCardItem[];
-  verificationTools?: VerificationToolItem[];
-  ingestionSteps?: IngestionStepItem[];
-  wiktionaryGuidelines?: WiktionaryGuidelineItem[];
-  ipaSpecifications?: IpaSpecificationItem[];
-  storageTiers?: StorageTierItem[];
 };
 

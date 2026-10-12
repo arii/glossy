@@ -277,6 +277,35 @@ assert.equal(getTinaAuthToken(), null, "Initial tina auth token should be null")
 mockStore.set("tinacms-auth", "mock-jwt-token-12345");
 assert.equal(getTinaAuthToken(), "mock-jwt-token-12345", "getTinaAuthToken must retrieve stored token");
 
+// Test 13: Robust Tina Auth Token Sanitization & JSON Parsing
+// JSON object with access_token
+mockStore.set("tinacms-auth", JSON.stringify({ access_token: "jwt-access-token-999" }));
+assert.equal(getTinaAuthToken(), "jwt-access-token-999", "Must extract access_token from JSON object");
+
+// JSON object with id_token
+mockStore.set("tinacms-auth", JSON.stringify({ id_token: "jwt-id-token-888" }));
+assert.equal(getTinaAuthToken(), "jwt-id-token-888", "Must extract id_token from JSON object");
+
+// Token wrapped in quotes
+mockStore.set("tinacms-auth", '"quoted-token-777"');
+assert.equal(getTinaAuthToken(), "quoted-token-777", "Must strip wrapping quotes");
+
+// Token with Bearer prefix
+mockStore.set("tinacms-auth", "Bearer bearer-prefixed-token-666");
+assert.equal(getTinaAuthToken(), "bearer-prefixed-token-666", "Must strip leading Bearer prefix");
+
+// Token with newlines and trailing whitespace
+mockStore.set("tinacms-auth", "  \n\r token-with-newlines \t\n  ");
+assert.equal(getTinaAuthToken(), "token-with-newlines", "Must strip newlines and carriage returns");
+
+// JSON object with newlines and whitespace
+mockStore.set("tinacms-auth", '{\n  "access_token": "json-newline-token"\n}');
+assert.equal(getTinaAuthToken(), "json-newline-token", "Must parse formatted JSON and extract clean token");
+
+// Empty JSON object
+mockStore.set("tinacms-auth", "{}");
+assert.equal(getTinaAuthToken(), null, "Empty JSON object must return null");
+
 // Clean up
 mockStore.clear();
 delete global.window;

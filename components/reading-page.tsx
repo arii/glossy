@@ -3,7 +3,7 @@
 import { SiteNav } from "./site-nav";
 import { PageHero } from "./page-hero";
 import { SiteFooter } from "./site-footer";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getGlossRecords, getReadingPassage } from "../lib/passage-utils";
@@ -135,16 +135,58 @@ export function ReadingPage({
     );
   }, [selectedSlug, texts, deletedSlugs]);
 
-  const baseText = texts.find((text) => text.slug === selectedSlug) ?? texts[0];
+  // Memoize base lookup so we don't scan the entire corpus on every render.
+  const baseText = useMemo(() => texts.find((text) => text.slug === selectedSlug), [texts, selectedSlug]);
   const selectedText = localDraftText ?? baseText;
-  const glossRecords = selectedText ? getGlossRecords(selectedText) : {};
-  const readingPassage = selectedText ? getReadingPassage(selectedText) : undefined;
+
+  // Memoize heavy object instantiation from getGlossRecords to prevent unnecessary downstream re-renders.
+  const glossRecords = useMemo(() => selectedText ? getGlossRecords(selectedText) : {}, [selectedText]);
+
+  // Memoize the reading passage transformation which involves nested array iterations.
+  const readingPassage = useMemo(() => selectedText ? getReadingPassage(selectedText) : undefined, [selectedText]);
   const selectedRecord = selectedId ? glossRecords[selectedId] : undefined;
 
   const currentTitle = readingPassage?.title;
-  const witnessShelfmark = selectedText?.shelfmark || "BL Cotton MS Tiberius B i, fol. 11r–15v";
-  const sourceEdition = selectedText?.sourceEdition || "Old English Orosius (ed. Bately 1980 / Sweet)";
-  const currentSource = `Witness: ${witnessShelfmark} · Critical Edition: ${sourceEdition}`;
+  const witnessShelfmark = selectedText?.shelfmark;
+  const sourceEdition = selectedText?.sourceEdition;
+  const currentSource = witnessShelfmark && sourceEdition ? `Witness: ${witnessShelfmark} · Critical Edition: ${sourceEdition}` : "";
+
+    // Aggregate all notes across sentences
+  // Memoized because flatMap and nested iterations are expensive to run on every state change (e.g. hover).
+  const aggregatedApparatus = useMemo(() => {
+    const doc = selectedText || { slug: "", textId: "" };
+    return (selectedText?.sentences || []).flatMap((sent, sIdx: number) => {
+      const sNum = sent.id.match(/\d+$/)?.[0] || String(sIdx + 1);
+      const itemNotes = (sent.notes || []).map((note) => {
+        let targetWordForm = "";
+        if (note.targetWordIndex != null && sent.words[note.targetWordIndex - 1]) {
+          targetWordForm = sent.words[note.targetWordIndex - 1].originalWord;
+        }
+        return {
+          id: note.id,
+          sentenceId: sent.id,
+          sentenceLabel: `Sentence ${sNum}${note.targetWordIndex ? `.${note.targetWordIndex}` : ""}`,
+          wordForm: targetWordForm,
+          marker: note.marker || "*",
+          type: note.type || "general",
+          text: note.text,
+        };
+      });
+
+      const stringNotes = (sent.footnotes || []).map((fnText: string, fnIdx: number) => ({
+        id: `fn-${doc.slug || doc.textId}-${sent.id}-${fnIdx + 1}`,
+        sentenceId: sent.id,
+        sentenceLabel: `Sentence ${sNum}`,
+        wordForm: "",
+        gloss: fnText,
+        marker: String(fnIdx + 1),
+        type: "general" as const,
+        text: fnText,
+      }));
+
+      return [...itemNotes, ...stringNotes];
+    });
+  }, [selectedText]);
 
   const isDeletedLocally = isClientReady && deletedSlugs.includes(selectedSlug);
 
@@ -216,39 +258,7 @@ export function ReadingPage({
     lastTriggerId.current = id;
   };
 
-  // Aggregate all notes across sentences
-  const doc = selectedText || { slug: "", textId: "" };
-  const aggregatedApparatus = (selectedText?.sentences || []).flatMap((sent, sIdx) => {
-    const sNum = sent.id.match(/\d+$/)?.[0] || String(sIdx + 1);
-    const itemNotes = (sent.notes || []).map((note) => {
-      let targetWordForm = "";
-      if (note.targetWordIndex != null && sent.words[note.targetWordIndex - 1]) {
-        targetWordForm = sent.words[note.targetWordIndex - 1].originalWord;
-      }
-      return {
-        id: note.id,
-        sentenceId: sent.id,
-        sentenceLabel: `Sentence ${sNum}${note.targetWordIndex ? `.${note.targetWordIndex}` : ""}`,
-        wordForm: targetWordForm,
-        marker: note.marker || "*",
-        type: note.type || "general",
-        text: note.text,
-      };
-    });
 
-    const stringNotes = (sent.footnotes || []).map((fnText, fnIdx) => ({
-      id: `fn-${doc.slug || doc.textId}-${sent.id}-${fnIdx + 1}`,
-      sentenceId: sent.id,
-      sentenceLabel: `Sentence ${sNum}`,
-      wordForm: "",
-      gloss: fnText,
-      marker: String(fnIdx + 1),
-      type: "general" as const,
-      text: fnText,
-    }));
-
-    return [...itemNotes, ...stringNotes];
-  });
 
   return (
     <>

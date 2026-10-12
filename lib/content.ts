@@ -10,7 +10,7 @@ import type {
   DocsPageContent,
 } from "./types";
 
-export { getGlossRecords, getReadingPassage } from "./passage-utils";
+export { formatInflectionDescription, getGlossRecords, getReadingPassage } from "./passage-utils";
 
 const contentDirectory = path.join(process.cwd(), "content", "texts");
 
