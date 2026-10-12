@@ -2161,7 +2161,7 @@ h2 {
 
 .docs-tier-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 1.5rem;
   font-size: 0.95rem;
   font-weight: 700;
@@ -2171,7 +2171,7 @@ h2 {
 
 .docs-tier-glosses {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 1.5rem;
   font-size: 0.82rem;
   color: #e7e5e4;
