@@ -1,4 +1,4 @@
-import type { TextDocument } from "./types";
+import type { TextDocument, ReadingSentence, InterlinearWord, Morpheme, PartOfSpeech, InflectionFeatures } from "./types";
 import { safeJsonStringify } from "./safe-json";
 import {
   isBuiltInSlug,
@@ -13,12 +13,16 @@ export const HIDDEN_SLUGS_KEY = "glossy:v1:deleted_slugs";
 export const ACTIVE_SLUG_KEY = "glossy:v1:active_slug";
 export const TINA_AUTH_STORAGE_KEY = "tinacms-auth";
 
-export interface StoredDraft {
+export interface StoredDraftEnvelope {
   version: 1;
-  doc: TextDocument;
+  slug: string;
   baseHash: string;
-  updatedAt: string;
+  savedAt: string;
+  updatedAt?: string;
+  doc: TextDocument;
 }
+
+export type StoredDraft = StoredDraftEnvelope;
 
 export interface PendingDraftEntry {
   slug: string;
@@ -41,9 +45,21 @@ export interface DraftDivergenceStatus {
   updatedAt?: string;
 }
 
+export type StorageErrorType =
+  | "QUOTA_EXCEEDED"
+  | "STORAGE_UNAVAILABLE"
+  | "CORRUPTED_DATA"
+  | "NOT_FOUND"
+  | "INVALID_INPUT";
+
 export type StorageResult<T = void> =
-  | { ok: true; data?: T }
-  | { ok: false; reason: "quota" | "invalid" | "unavailable" | "not_found"; message: string; error?: string };
+  | { ok: true; data: T }
+  | {
+      ok: false;
+      error: StorageErrorType;
+      reason?: "quota" | "invalid" | "unavailable" | "not_found" | "corrupt";
+      message: string;
+    };
 
 function computeSimpleHash(input: unknown): string {
   const str = typeof input === "string" ? input : safeJsonStringify(input);
@@ -78,16 +94,191 @@ export function computeDocumentHash(doc: TextDocument): string {
   });
 }
 
+let isMigrated = false;
+
 function getStorage(): Storage | null {
   if (typeof window === "undefined") return null;
+  let storage: Storage | null = null;
   try {
-    return window.localStorage;
+    storage = window.localStorage;
   } catch {
     return null;
   }
+
+  if (storage && !isMigrated) {
+    isMigrated = true;
+    migrateLegacyDrafts(storage);
+  }
+
+  return storage;
 }
 
-export function readDraft(slug: string): StoredDraft | null {
+export function migrateLegacyDrafts(storageOverride?: Storage): { migratedCount: number } {
+  let storage: Storage | null = storageOverride || null;
+  if (!storage && typeof window !== "undefined") {
+    try {
+      storage = window.localStorage;
+    } catch {
+      return { migratedCount: 0 };
+    }
+  }
+  if (!storage) return { migratedCount: 0 };
+
+  let migratedCount = 0;
+
+  try {
+    const keys: string[] = [];
+    for (let i = 0; i < storage.length; i++) {
+      const k = storage.key(i);
+      if (k) keys.push(k);
+    }
+
+    // 1. Migrate legacy draft keys: glossy_draft_<slug> and glossy_document_<slug>
+    for (const key of keys) {
+      let slug = "";
+      if (key.startsWith("glossy_draft_")) {
+        slug = key.slice("glossy_draft_".length);
+      } else if (key.startsWith("glossy_document_")) {
+        slug = key.slice("glossy_document_".length);
+      }
+
+      if (slug && !slug.includes("snapshot")) {
+        const v1Key = `${DRAFT_STORAGE_PREFIX}${slug}`;
+        const existingV1 = storage.getItem(v1Key);
+
+        if (!existingV1) {
+          const raw = storage.getItem(key);
+          if (raw) {
+            try {
+              const parsed = JSON.parse(raw);
+              if (parsed && typeof parsed === "object") {
+                let doc: TextDocument | null = null;
+
+                if (parsed.doc && parsed.doc.sentences) {
+                  doc = parsed.doc as TextDocument;
+                } else if (parsed.sentences && Array.isArray(parsed.sentences)) {
+                  // Check if it is an EditorDocument (sentences containing tokens)
+                  const firstSent = parsed.sentences[0];
+                  if (firstSent && Array.isArray(firstSent.tokens) && !firstSent.words) {
+                    // Convert EditorDocument shape to TextDocument shape
+                    doc = {
+                      textId: parsed.textId || slug,
+                      slug: parsed.slug || slug,
+                      language: "Old English",
+                      title: parsed.title || slug,
+                      author: parsed.author || parsed.glossedBy || "Anonymous",
+                      historicalAuthor: parsed.historicalAuthor,
+                      glossedBy: parsed.glossedBy,
+                      editor: parsed.editor,
+                      date: parsed.date || "c. 9th–11th Century",
+                      source: parsed.source || slug,
+                      sourceFile: parsed.sourceFile || `${slug}.json`,
+                      status: parsed.status || "draft",
+                      blocks: parsed.blocks || [],
+                      sentences: parsed.sentences.map((s: {
+                        id?: string;
+                        freeTranslation?: string;
+                        translation?: string;
+                        footnotes?: string[];
+                        notes?: ReadingSentence["notes"];
+                        tokens?: Array<{
+                          id?: string;
+                          sourceForm?: string;
+                          sourceGloss?: string;
+                          literalTexGloss?: string;
+                          lemma?: string;
+                          pos?: PartOfSpeech;
+                          explanation?: string;
+                          inflections?: InflectionFeatures;
+                          morphemes?: Morpheme[];
+                          ipa?: string;
+                          wiktionaryUrl?: string;
+                          trailingPunctuation?: string;
+                          review?: InterlinearWord["review"];
+                        }>;
+                      }, sIdx: number) => ({
+                        id: s.id || `sent-${sIdx + 1}`,
+                        translation: s.freeTranslation || s.translation || "",
+                        footnotes: s.footnotes,
+                        notes: s.notes,
+                        words: (s.tokens || []).map((t, tIdx) => ({
+                          id: t.id || `sent-${sIdx + 1}-token-${tIdx + 1}`,
+                          originalWord: (t.sourceForm || "").replace(/[.,;:!?]+$/, ""),
+                          morphologicalGloss: t.sourceGloss || "",
+                          trailingPunctuation: t.trailingPunctuation,
+                          sourceGlossTex: t.literalTexGloss,
+                          analysis: {
+                            lemma: t.lemma,
+                            partOfSpeech: t.pos,
+                            features: t.inflections,
+                            morphemes: t.morphemes,
+                            definition: t.explanation,
+                            phonetic: t.ipa,
+                            wiktionaryUrl: t.wiktionaryUrl,
+                          },
+                          review: t.review,
+                        })),
+                      })),
+                    };
+                  } else {
+                    doc = parsed as TextDocument;
+                  }
+                }
+
+                if (doc) {
+                  const now = new Date().toISOString();
+                  const envelope: StoredDraftEnvelope = {
+                    version: 1,
+                    slug,
+                    baseHash: computeDocumentHash(doc),
+                    savedAt: now,
+                    updatedAt: now,
+                    doc,
+                  };
+                  storage.setItem(v1Key, safeJsonStringify(envelope));
+                  migratedCount++;
+                }
+              }
+            } catch {}
+          }
+        }
+        storage.removeItem(key);
+      } else if (key.startsWith("glossy-editor-snapshot-v2-")) {
+        storage.removeItem(key);
+      }
+    }
+
+    // 2. Migrate legacy pending manifest: glossy_pending_drafts -> glossy:v1:pending_drafts
+    const legacyPendingRaw = storage.getItem("glossy_pending_drafts");
+    if (legacyPendingRaw) {
+      try {
+        const legacyPending = JSON.parse(legacyPendingRaw);
+        const currentV1PendingRaw = storage.getItem(PENDING_MANIFEST_KEY);
+        const v1Pending = currentV1PendingRaw ? JSON.parse(currentV1PendingRaw) : {};
+        const merged = { ...legacyPending, ...v1Pending };
+        storage.setItem(PENDING_MANIFEST_KEY, JSON.stringify(merged));
+      } catch {}
+      storage.removeItem("glossy_pending_drafts");
+    }
+
+    // 3. Migrate legacy deleted slugs: glossy_deleted_slugs -> glossy:v1:deleted_slugs
+    const legacyDeletedRaw = storage.getItem("glossy_deleted_slugs");
+    if (legacyDeletedRaw) {
+      try {
+        const legacyDeleted = JSON.parse(legacyDeletedRaw);
+        const currentV1DeletedRaw = storage.getItem(HIDDEN_SLUGS_KEY);
+        const v1Deleted = currentV1DeletedRaw ? JSON.parse(currentV1DeletedRaw) : [];
+        const mergedSet = new Set([...(Array.isArray(legacyDeleted) ? legacyDeleted : []), ...(Array.isArray(v1Deleted) ? v1Deleted : [])]);
+        storage.setItem(HIDDEN_SLUGS_KEY, JSON.stringify(Array.from(mergedSet)));
+      } catch {}
+      storage.removeItem("glossy_deleted_slugs");
+    }
+  } catch {}
+
+  return { migratedCount };
+}
+
+export function readDraft(slug: string): StoredDraftEnvelope | null {
   const storage = getStorage();
   if (!storage || !slug) return null;
 
@@ -96,8 +287,14 @@ export function readDraft(slug: string): StoredDraft | null {
   if (!v1Raw) return null;
 
   try {
-    const parsed = JSON.parse(v1Raw) as StoredDraft;
+    const parsed = JSON.parse(v1Raw) as StoredDraftEnvelope;
     if (parsed && parsed.doc && parsed.version === 1) {
+      if (!parsed.savedAt && parsed.updatedAt) {
+        parsed.savedAt = parsed.updatedAt;
+      }
+      if (!parsed.updatedAt && parsed.savedAt) {
+        parsed.updatedAt = parsed.savedAt;
+      }
       return parsed;
     }
   } catch {}
@@ -109,22 +306,30 @@ export function writeDraft(
   slug: string,
   doc: TextDocument,
   options?: { baseHash?: string }
-): StorageResult<StoredDraft> {
+): StorageResult<StoredDraftEnvelope> {
   const storage = getStorage();
   if (!storage) {
-    return { ok: false, reason: "unavailable", message: "Browser local storage is not accessible.", error: "Browser local storage is not accessible." };
+    return {
+      ok: false,
+      error: "STORAGE_UNAVAILABLE",
+      reason: "unavailable",
+      message: "Browser local storage is not accessible.",
+    };
   }
 
   try {
     const hash = computeDocumentHash(doc);
     const existing = readDraft(slug);
     const baseHash = options?.baseHash || existing?.baseHash || hash;
+    const now = new Date().toISOString();
 
-    const envelope: StoredDraft = {
+    const envelope: StoredDraftEnvelope = {
       version: 1,
-      doc,
+      slug,
       baseHash,
-      updatedAt: new Date().toISOString(),
+      savedAt: now,
+      updatedAt: now,
+      doc,
     };
 
     const v1Key = `${DRAFT_STORAGE_PREFIX}${slug}`;
@@ -134,27 +339,42 @@ export function writeDraft(
     markPending(slug, doc, baseHash);
 
     if (typeof window !== "undefined") {
-      window.dispatchEvent(new Event("glossy:drafts-updated"));
+      window.dispatchEvent(new CustomEvent("glossy:drafts-updated", { detail: { slug } }));
     }
 
     return { ok: true, data: envelope };
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : "Storage error";
-    const isQuota = msg.toLowerCase().includes("quota") || msg.toLowerCase().includes("exceeded");
+  } catch (err: unknown) {
+    const isQuota =
+      (err instanceof DOMException && (err.name === "QuotaExceededError" || err.code === 22)) ||
+      (err instanceof Error && (err.message.toLowerCase().includes("quota") || err.message.toLowerCase().includes("exceeded")));
+
+    if (isQuota) {
+      return {
+        ok: false,
+        error: "QUOTA_EXCEEDED",
+        reason: "quota",
+        message: "LocalStorage quota exceeded. Please discard old drafts to free space.",
+      };
+    }
     return {
       ok: false,
-      reason: isQuota ? "quota" : "unavailable",
-      message: isQuota
-        ? "LocalStorage quota exceeded. Please discard old drafts to free space."
-        : msg,
-      error: msg,
+      error: "STORAGE_UNAVAILABLE",
+      reason: "unavailable",
+      message: err instanceof Error ? err.message : "Storage error",
     };
   }
 }
 
-export function deleteLocalDraft(slug: string): boolean {
+export function deleteLocalDraft(slug: string): StorageResult<void> {
   const storage = getStorage();
-  if (!storage || !slug) return false;
+  if (!storage || !slug) {
+    return {
+      ok: false,
+      error: "STORAGE_UNAVAILABLE",
+      reason: "unavailable",
+      message: "Storage unavailable or invalid slug.",
+    };
+  }
 
   try {
     storage.removeItem(`${DRAFT_STORAGE_PREFIX}${slug}`);
@@ -165,19 +385,24 @@ export function deleteLocalDraft(slug: string): boolean {
     storage.setItem(PENDING_MANIFEST_KEY, JSON.stringify(manifest));
 
     if (typeof window !== "undefined") {
-      window.dispatchEvent(new Event("glossy:drafts-updated"));
+      window.dispatchEvent(new CustomEvent("glossy:drafts-updated", { detail: { slug } }));
     }
-    return true;
-  } catch {
-    return false;
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return {
+      ok: false,
+      error: "STORAGE_UNAVAILABLE",
+      reason: "unavailable",
+      message: err instanceof Error ? err.message : "Delete operation failed.",
+    };
   }
 }
 
-export function listLocalDrafts(): StoredDraft[] {
+export function listLocalDrafts(): StoredDraftEnvelope[] {
   const storage = getStorage();
   if (!storage) return [];
 
-  const results: StoredDraft[] = [];
+  const results: StoredDraftEnvelope[] = [];
   const visitedSlugs = new Set<string>();
 
   try {
@@ -213,9 +438,16 @@ export function listPending(): Record<string, PendingDraftEntry> {
   }
 }
 
-export function markPending(slug: string, doc: TextDocument, currentHash?: string): void {
+export function markPending(slug: string, doc: TextDocument, currentHash?: string): StorageResult<void> {
   const storage = getStorage();
-  if (!storage || !slug) return;
+  if (!storage || !slug) {
+    return {
+      ok: false,
+      error: "STORAGE_UNAVAILABLE",
+      reason: "unavailable",
+      message: "Storage unavailable or invalid slug.",
+    };
+  }
 
   try {
     const manifest = listPending();
@@ -236,14 +468,29 @@ export function markPending(slug: string, doc: TextDocument, currentHash?: strin
 
     storage.setItem(PENDING_MANIFEST_KEY, JSON.stringify(manifest));
     if (typeof window !== "undefined") {
-      window.dispatchEvent(new Event("glossy:drafts-updated"));
+      window.dispatchEvent(new CustomEvent("glossy:drafts-updated", { detail: { slug } }));
     }
-  } catch {}
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return {
+      ok: false,
+      error: "STORAGE_UNAVAILABLE",
+      reason: "unavailable",
+      message: err instanceof Error ? err.message : "Failed to update pending manifest.",
+    };
+  }
 }
 
-export function markDraftAsSynced(slug: string, syncedHash?: string): void {
+export function markDraftAsSynced(slug: string, syncedHash?: string): StorageResult<void> {
   const storage = getStorage();
-  if (!storage || !slug) return;
+  if (!storage || !slug) {
+    return {
+      ok: false,
+      error: "STORAGE_UNAVAILABLE",
+      reason: "unavailable",
+      message: "Storage unavailable or invalid slug.",
+    };
+  }
 
   try {
     const manifest = listPending();
@@ -254,10 +501,18 @@ export function markDraftAsSynced(slug: string, syncedHash?: string): void {
       }
       storage.setItem(PENDING_MANIFEST_KEY, JSON.stringify(manifest));
       if (typeof window !== "undefined") {
-        window.dispatchEvent(new Event("glossy:drafts-updated"));
+        window.dispatchEvent(new CustomEvent("glossy:drafts-updated", { detail: { slug } }));
       }
     }
-  } catch {}
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return {
+      ok: false,
+      error: "STORAGE_UNAVAILABLE",
+      reason: "unavailable",
+      message: err instanceof Error ? err.message : "Failed to mark draft as synced.",
+    };
+  }
 }
 
 export function getHiddenSlugs(): string[] {
@@ -272,35 +527,80 @@ export function getHiddenSlugs(): string[] {
   }
 }
 
-export function hideBuiltInText(slug: string): void {
+export function hideBuiltInText(slug: string): StorageResult<void> {
   const storage = getStorage();
-  if (!storage || !slug) return;
+  if (!storage || !slug) {
+    return {
+      ok: false,
+      error: "STORAGE_UNAVAILABLE",
+      reason: "unavailable",
+      message: "Storage unavailable or invalid slug.",
+    };
+  }
 
   try {
     const hidden = new Set(getHiddenSlugs());
     hidden.add(slug);
     storage.setItem(HIDDEN_SLUGS_KEY, JSON.stringify(Array.from(hidden)));
-  } catch {}
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return {
+      ok: false,
+      error: "STORAGE_UNAVAILABLE",
+      reason: "unavailable",
+      message: err instanceof Error ? err.message : "Failed to hide text.",
+    };
+  }
 }
 
-export function restoreHiddenText(slug: string): void {
+export function restoreHiddenText(slug: string): StorageResult<void> {
   const storage = getStorage();
-  if (!storage || !slug) return;
+  if (!storage || !slug) {
+    return {
+      ok: false,
+      error: "STORAGE_UNAVAILABLE",
+      reason: "unavailable",
+      message: "Storage unavailable or invalid slug.",
+    };
+  }
 
   try {
     const hidden = new Set(getHiddenSlugs());
     hidden.delete(slug);
     storage.setItem(HIDDEN_SLUGS_KEY, JSON.stringify(Array.from(hidden)));
-  } catch {}
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return {
+      ok: false,
+      error: "STORAGE_UNAVAILABLE",
+      reason: "unavailable",
+      message: err instanceof Error ? err.message : "Failed to restore text.",
+    };
+  }
 }
 
-export function restoreAllHiddenTexts(): void {
+export function restoreAllHiddenTexts(): StorageResult<void> {
   const storage = getStorage();
-  if (!storage) return;
+  if (!storage) {
+    return {
+      ok: false,
+      error: "STORAGE_UNAVAILABLE",
+      reason: "unavailable",
+      message: "Storage unavailable.",
+    };
+  }
 
   try {
     storage.removeItem(HIDDEN_SLUGS_KEY);
-  } catch {}
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return {
+      ok: false,
+      error: "STORAGE_UNAVAILABLE",
+      reason: "unavailable",
+      message: err instanceof Error ? err.message : "Failed to restore all hidden texts.",
+    };
+  }
 }
 
 export function getLocalDraft(slug: string): TextDocument | null {
@@ -341,7 +641,7 @@ export function getDraftDivergenceStatus(
       baseHash: draft.baseHash,
       repoHash,
       draftHash,
-      updatedAt: draft.updatedAt,
+      updatedAt: draft.savedAt || draft.updatedAt,
     };
   }
 
@@ -352,7 +652,7 @@ export function getDraftDivergenceStatus(
     draftDoc: draft.doc,
     baseHash: draft.baseHash,
     draftHash,
-    updatedAt: draft.updatedAt,
+    updatedAt: draft.savedAt || draft.updatedAt,
   };
 }
 
@@ -371,7 +671,12 @@ export function createLocalDocument(input: {
 }): StorageResult<TextDocument> {
   const title = input.title.trim();
   if (!title) {
-    return { ok: false, reason: "invalid", message: "Document title is required.", error: "Document title is required." };
+    return {
+      ok: false,
+      error: "INVALID_INPUT",
+      reason: "invalid",
+      message: "Document title is required.",
+    };
   }
 
   const generatedSlug = (input.slug || title)
@@ -382,9 +687,9 @@ export function createLocalDocument(input: {
   if (isBuiltInSlug(generatedSlug) && !input.overwrite) {
     return {
       ok: false,
+      error: "INVALID_INPUT",
       reason: "invalid",
       message: `The slug "${generatedSlug}" collides with a protected built-in corpus text. Please choose a different title or slug.`,
-      error: `The slug "${generatedSlug}" collides with a protected built-in corpus text.`,
     };
   }
 
@@ -485,20 +790,30 @@ export function getActiveSlug(): string | null {
   }
 }
 
-export function setActiveSlug(slug: string): void {
+export function setActiveSlug(slug: string): StorageResult<void> {
   const storage = getStorage();
-  if (!storage || !slug) return;
+  if (!storage || !slug) {
+    return { ok: false, error: "STORAGE_UNAVAILABLE", message: "Storage unavailable or empty slug." };
+  }
   try {
     storage.setItem(ACTIVE_SLUG_KEY, slug);
-  } catch {}
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return { ok: false, error: "STORAGE_UNAVAILABLE", message: err instanceof Error ? err.message : "Failed to set active slug." };
+  }
 }
 
-export function clearActiveSlug(): void {
+export function clearActiveSlug(): StorageResult<void> {
   const storage = getStorage();
-  if (!storage) return;
+  if (!storage) {
+    return { ok: false, error: "STORAGE_UNAVAILABLE", message: "Storage unavailable." };
+  }
   try {
     storage.removeItem(ACTIVE_SLUG_KEY);
-  } catch {}
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return { ok: false, error: "STORAGE_UNAVAILABLE", message: err instanceof Error ? err.message : "Failed to clear active slug." };
+  }
 }
 
 export function getTinaAuthToken(): string | null {
@@ -542,7 +857,7 @@ export function getTinaAuthToken(): string | null {
       token = token.slice(7).trim();
     }
 
-    // Strip newlines, carriage returns, tabs, and control characters to prevent header injection / fetch TypeError
+    // Strip newlines, carriage returns, tabs, and control characters
     token = token.replace(/[\r\n\t\x00-\x1f\x7f]+/g, "").trim();
 
     return token.length > 0 ? token : null;

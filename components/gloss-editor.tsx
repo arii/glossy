@@ -465,10 +465,11 @@ export function GlossEditor({
     const timer = window.setTimeout(() => {
       const res = writeDraft(documentState.slug || currentSlug, currentDoc);
       if (!res.ok) {
-        if (res.reason === "quota") {
+        if (res.error === "QUOTA_EXCEEDED" || res.reason === "quota") {
           setSaveStatus({
             kind: "error",
             message: res.message,
+            details: "Your browser storage quota has been exceeded. Please discard old drafts or clear site data to save new edits.",
           });
         }
         setAutosaveStatus("idle");
@@ -696,7 +697,8 @@ export function GlossEditor({
       if (!res.ok) {
         setSaveStatus({
           kind: "error",
-          message: res.error || res.message || "Failed to save local draft.",
+          message: res.message || "Failed to save local draft.",
+          details: res.error === "QUOTA_EXCEEDED" ? "Browser storage quota limit exceeded. Discard unneeded drafts to free space." : undefined,
         });
       } else {
         const serialized = safeJsonStringify(documentState);
@@ -758,7 +760,15 @@ export function GlossEditor({
     setIsDeleting(true);
     try {
       if (currentSlug) {
-        deleteLocalDraft(currentSlug);
+        const res = deleteLocalDraft(currentSlug);
+        if (!res.ok) {
+          setSaveStatus({
+            kind: "error",
+            message: res.message || "Failed to delete local draft.",
+          });
+          setIsDeleting(false);
+          return;
+        }
       }
 
       router.push("/");

@@ -242,7 +242,7 @@ assert.ok(wsSlugs.includes("battle-of-brunanburh"), "workspace texts must includ
 // Test deleteLocalDraft dispatches event and removes text
 dispatchedEvents.length = 0;
 const deleteRes = deleteLocalDraft("battle-of-brunanburh");
-assert.equal(deleteRes, true, "deleteLocalDraft must return true");
+assert.equal(deleteRes.ok, true, "deleteLocalDraft must return ok: true");
 assert.ok(dispatchedEvents.includes("glossy:drafts-updated"), "deleteLocalDraft must dispatch glossy:drafts-updated");
 assert.equal(isWorkspaceSlug("battle-of-brunanburh"), false, "Deleted draft must not be in workspace");
 

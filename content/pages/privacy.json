@@ -15,9 +15,11 @@
     },
     {
       "bullets": [
-        "Local Draft Envelopes: Working document drafts and editing snapshots stored in canonical schema format.",
-        "Uncommitted Draft Index: Local manifest index tracking uncommitted draft changes.",
-        "Active Document Selection: Remembers your last active text selection in the reader."
+        "Local Draft Envelopes (glossy:v1:draft:<slug>): Versioned envelopes storing working document drafts in canonical schema format.",
+        "Uncommitted Draft Manifest (glossy:v1:pending_drafts): Local manifest index tracking uncommitted draft changes and synchronization status.",
+        "Hidden Texts Index (glossy:v1:deleted_slugs): Tracks texts hidden from your local corpus view.",
+        "Active Document Selection (glossy:v1:active_slug): Remembers your last active text selection in the reader and editor.",
+        "TinaCMS Auth Session (tinacms-auth): Stores authentication session tokens for committing drafts to Git when logged in."
       ],
       "content": "To ensure your work is preserved across page reloads and available offline, Glossy stores draft documents and user preferences locally in your web browser:",
       "num": "2",
