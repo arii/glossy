@@ -23,18 +23,18 @@ export function GlossPopup({ record, onClose }: GlossPopupProps) {
 
   return (
     <aside
-      id="gloss-popup"
+      id={`gloss-popup-${record.id}`}
       className="gloss-popup"
       role="region"
       aria-live="polite"
-      aria-labelledby="gloss-popup-heading"
+      aria-labelledby={`gloss-popup-heading-${record.id}`}
       tabIndex={-1}
     >
       <div className="sheet-handle" aria-hidden="true" />
       <div className="popup-heading">
         <div>
           <p className="field-label">Selected word</p>
-          <h2 id="gloss-popup-heading">{record.surface}</h2>
+          <h2 id={`gloss-popup-heading-${record.id}`}>{record.surface}</h2>
           <p className="lemma-line">
             {analysis.lemma} · {analysis.partOfSpeech}
           </p>
@@ -134,4 +134,3 @@ function explainGloss(gloss: string) {
 
   return explanations[gloss] ?? "Source gloss abbreviation";
 }
-

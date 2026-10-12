@@ -29,7 +29,7 @@ export function PageHeader({
     >
       {eyebrow && (
         <p
-          className="text-[11px] font-mono tracking-widest uppercase text-stone-500 mb-2"
+          className="text-xs font-mono tracking-widest uppercase text-stone-500 mb-2"
           {...eyebrowProps}
         >
           {eyebrow}

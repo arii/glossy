@@ -18,6 +18,7 @@ import {
 import { AnnotatedPassage } from "./annotated-passage";
 import { GlossPopup } from "./gloss-popup";
 import { AttributionModal } from "./attribution-modal";
+import { SentenceErrorBoundary } from "./sentence-error-boundary";
 
 type ReadingPageProps = {
   texts: TextDocument[];
@@ -209,7 +210,7 @@ export function ReadingPage({
                 padding: "0.6rem 1.25rem",
                 borderRadius: "0.35rem",
                 background: "var(--accent)",
-                color: "#ffffff",
+                color: "var(--paper, #ffffff)",
                 fontWeight: 600,
                 border: "none",
                 cursor: "pointer",
@@ -225,7 +226,7 @@ export function ReadingPage({
                 alignItems: "center",
                 padding: "0.6rem 1.25rem",
                 borderRadius: "0.35rem",
-                background: "#fbf7ee",
+                background: "var(--surface)",
                 color: "var(--ink)",
                 fontWeight: 600,
                 border: "1px solid var(--rule)",
@@ -258,8 +259,6 @@ export function ReadingPage({
     lastTriggerId.current = id;
   };
 
-
-
   return (
     <>
       <SiteNav current="read" slug={texts.some((text) => text.slug === selectedSlug) ? selectedSlug : (texts[0]?.slug ?? "ohthere")} />
@@ -275,8 +274,8 @@ export function ReadingPage({
                 alignItems: "center",
                 gap: "0.35rem",
                 padding: "0.25rem 0.6rem",
-                background: "#fbf7ee",
-                border: "1px solid #dfcfb8",
+                background: "var(--surface)",
+                border: "1px solid var(--rule)",
                 borderRadius: "0.25rem",
                 fontSize: "0.75rem",
                 fontWeight: 600,
@@ -330,18 +329,20 @@ export function ReadingPage({
           <section className="passage" aria-label="Passage text">
             {readingPassage?.blocks ? (
               readingPassage.blocks.map((block) => (
-                <div className="passage-block" key={block.id}>
-                  <AnnotatedPassage
-                    segments={block.segments}
-                    records={glossRecords}
-                    notes={block.notes}
-                    selectedId={selectedId}
-                    onHover={selectOnHover}
-                    onSelect={pinSelection}
-                    onTriggerFocus={rememberTrigger}
-                  />
-                  <p className="translation">{block.translation}</p>
-                </div>
+                <SentenceErrorBoundary key={block.id} sentenceId={block.id}>
+                  <div className="passage-block">
+                    <AnnotatedPassage
+                      segments={block.segments}
+                      records={glossRecords}
+                      notes={block.notes}
+                      selectedId={selectedId}
+                      onHover={selectOnHover}
+                      onSelect={pinSelection}
+                      onTriggerFocus={rememberTrigger}
+                    />
+                    <p className="translation">{block.translation}</p>
+                  </div>
+                </SentenceErrorBoundary>
               ))
             ) : null}
           </section>
@@ -412,7 +413,7 @@ export function ReadingPage({
                     alignItems: "baseline",
                   }}
                 >
-                  <strong style={{ color: "#7b3f2a", fontFamily: "monospace", minWidth: "4rem" }}>
+                  <strong style={{ color: "var(--accent)", fontFamily: "monospace", minWidth: "4rem" }}>
                     {item.sentenceLabel}
                     {item.wordForm ? ` (${item.wordForm})` : ""}:
                   </strong>
@@ -421,8 +422,8 @@ export function ReadingPage({
                     style={{
                       fontSize: "0.7rem",
                       fontWeight: 600,
-                      background: "#fef3c7",
-                      color: "#92400e",
+                      background: "var(--badge-bg, #fef3c7)",
+                      color: "var(--badge-text, #92400e)",
                       borderRadius: "0.25rem",
                       padding: "0.1rem 0.4rem",
                       marginLeft: "auto",

@@ -93,12 +93,13 @@ export function AnnotatedPassage({
               className={`inline-gloss-unit${isSelected ? " is-active-unit" : ""}`}
             >
               <button
-                className={`gloss-trigger${record.analysis.morphemes.length > 1 ? " is-multi-morpheme" : ""}${isSelected ? " is-selected" : ""}`}
                 type="button"
+                className={`gloss-trigger gloss-token-trigger focus:outline-none focus:ring-2 focus:ring-accent${record.analysis.morphemes.length > 1 ? " is-multi-morpheme" : ""}${isSelected ? " is-selected" : ""}`}
                 data-gloss-trigger={record.id}
                 aria-pressed={isSelected}
                 aria-expanded={isSelected}
-                aria-controls="gloss-popup"
+                aria-haspopup="dialog"
+                aria-controls={`gloss-popup-${record.id}`}
                 data-selected={isSelected}
                 onPointerOver={() => handleHover(record.id)}
                 onMouseOver={() => handleHover(record.id)}
@@ -110,8 +111,15 @@ export function AnnotatedPassage({
                   onTriggerFocus(record.id);
                   onSelect(record.id);
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onTriggerFocus(record.id);
+                    onSelect(record.id);
+                  }
+                }}
               >
-                {segment.value}
+                <span className="token-word">{segment.value}</span>
               </button>
               {wordNotes.map((note) => (
                 <button
@@ -127,13 +135,14 @@ export function AnnotatedPassage({
                     }
                   }}
                   title={`[${note.type}] ${note.text}`}
+                  aria-label={`Note ${note.marker || "*"}: ${note.text}`}
                   style={{
                     background: "transparent",
                     border: "none",
                     padding: "0 1px",
                     fontSize: "0.72rem",
                     fontWeight: 800,
-                    color: "#b45309",
+                    color: "var(--badge-text, #b45309)",
                     cursor: "pointer",
                     verticalAlign: "super",
                     lineHeight: 1,
@@ -161,13 +170,14 @@ export function AnnotatedPassage({
               }
             }}
             title={`[${note.type}] ${note.text}`}
+            aria-label={`Footnote ${note.marker || "fn"}: ${note.text}`}
             style={{
               background: "transparent",
               border: "none",
               padding: "0 2px",
               fontSize: "0.75rem",
               fontWeight: 800,
-              color: "#92400e",
+              color: "var(--badge-text, #92400e)",
               cursor: "pointer",
               verticalAlign: "super",
               marginLeft: "2px",
