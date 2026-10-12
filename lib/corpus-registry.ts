@@ -18,9 +18,7 @@ export interface BuiltInTextMetadata {
   defaultTokenCount?: number;
 }
 
-// Only Ohthere is listed as a default built-in corpus text at startup.
-// Other classic texts (Beowulf, Cædmon's Hymn, The Wanderer) are loaded on-demand
-// as presets from the "+ New Text" panel, becoming custom cards only after creation.
+// All four classical texts are core built-in corpus texts.
 export const BUILT_IN_CORPUS: BuiltInTextMetadata[] = [
   {
     textId: "ohthere",
@@ -41,14 +39,10 @@ export const BUILT_IN_CORPUS: BuiltInTextMetadata[] = [
     defaultSentenceCount: 75,
     defaultTokenCount: 1716,
   },
-];
-
-// Preserves metadata reference for other presets if/when they are ingested by the user.
-export const ALL_PRESETS_METADATA: Record<string, BuiltInTextMetadata> = {
-  "beowulf-prologue": {
+  {
     textId: "beowulf-prologue",
     slug: "beowulf-prologue",
-    title: "Beowulf (Prologue)",
+    title: "Beowulf: Prologue (Lines 1–11)",
     author: "Anonymous",
     editor: "Tyler Lemon",
     shelfmark: "BL Cotton MS Vitellius A. xv, fol. 129r–198v (Nowell Codex)",
@@ -59,12 +53,12 @@ export const ALL_PRESETS_METADATA: Record<string, BuiltInTextMetadata> = {
     sourceEdition: "Klaeber's Beowulf (4th ed. Fulk, Bjork, Niles 2008)",
     witness: "BL Cotton MS Vitellius A. xv, fol. 129r–198v (Nowell Codex)",
     origDate: "c. 700–1000 AD",
-    protected: false,
+    protected: true,
     description: "The epic opening lines of the premier Old English heroic alliterative poem.",
     defaultSentenceCount: 11,
     defaultTokenCount: 53,
   },
-  "caedmon-hymn": {
+  {
     textId: "caedmon-hymn",
     slug: "caedmon-hymn",
     title: "Cædmon's Hymn",
@@ -78,12 +72,12 @@ export const ALL_PRESETS_METADATA: Record<string, BuiltInTextMetadata> = {
     sourceEdition: "Dobbie (1942), ASPR VI",
     witness: "CUL MS Kk. 5. 16, fol. 128v",
     origDate: "c. 658–680 AD",
-    protected: false,
+    protected: true,
     description: "The earliest surviving recorded Old English Christian poem.",
-    defaultSentenceCount: 9,
+    defaultSentenceCount: 2,
     defaultTokenCount: 42,
   },
-  "the-wanderer": {
+  {
     textId: "the-wanderer",
     slug: "the-wanderer",
     title: "The Wanderer (Opening)",
@@ -97,16 +91,26 @@ export const ALL_PRESETS_METADATA: Record<string, BuiltInTextMetadata> = {
     sourceEdition: "Krapp & Dobbie (1936), ASPR III",
     witness: "Exeter Book, fol. 76v–79r",
     origDate: "c. 10th Century AD",
-    protected: false,
+    protected: true,
     description: "An Old English elegiac poem reflecting on exile, memory, and the transience of worldly glory.",
-    defaultSentenceCount: 5,
+    defaultSentenceCount: 2,
     defaultTokenCount: 26,
   },
-};
+];
+
+// Preserves metadata reference for presets if/when requested.
+export const ALL_PRESETS_METADATA: Record<string, BuiltInTextMetadata> = BUILT_IN_CORPUS.reduce(
+  (acc, text) => {
+    acc[text.slug] = text;
+    return acc;
+  },
+  {} as Record<string, BuiltInTextMetadata>
+);
 
 export function isProtectedSlug(slug: string): boolean {
   if (!slug) return false;
-  return slug.toLowerCase() === "ohthere";
+  const s = slug.toLowerCase();
+  return BUILT_IN_CORPUS.some((t) => t.slug.toLowerCase() === s || t.textId.toLowerCase() === s);
 }
 
 export function isBuiltInSlug(slug: string): boolean {
