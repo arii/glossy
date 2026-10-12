@@ -7,7 +7,6 @@ import { SentenceRow } from "./sentence-row";
 import { PageHero } from "./page-hero";
 import { SiteFooter } from "./site-footer";
 import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
-import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
 import { safeJsonStringify } from "../lib/safe-json";
 import { isProtectedSlug } from "../lib/corpus-registry";
 import {
@@ -18,18 +17,20 @@ import {
   writeDraft,
   type WorkspaceTextItem,
 } from "../lib/local-drafts";
+import {
+  stripLatexFootnotes,
+  textDocumentToEditorDoc,
+  editorDocToTextDocument,
+  type EditorDocument,
+  type EditorToken,
+} from "../lib/editor-converters";
 import type {
   TextDocument,
-  ReadingSentence,
-  InterlinearWord,
   Morpheme,
   PartOfSpeech,
   InflectionFeatures,
   NoteItem,
   NoteType,
-  ReviewMetadata,
-  PassageBlock,
-  LinguisticAnalysis,
 } from "../lib/types";
 import {
   BookOpen,
@@ -41,243 +42,8 @@ import {
   X,
 } from "lucide-react";
 import { DraftSyncPrompt } from "./draft-sync-prompt";
+import { EditMetadataModal } from "./edit-metadata-modal";
 import { isTinaAuthenticated } from "../lib/tina-sync";
-
-export interface EditorToken {
-  id: string;
-  sourceForm: string;
-  sourceGloss: string;
-  literalTexGloss: string;
-  lemma: string;
-  pos: PartOfSpeech;
-  explanation: string;
-  inflections: InflectionFeatures;
-  morphemes: Morpheme[];
-  ipa: string;
-  wiktionaryUrl: string;
-  trailingPunctuation?: string;
-  pronunciationSource?: string;
-  historicalNote?: string;
-  review?: ReviewMetadata;
-}
-
-export interface EditorSentence {
-  id: string;
-  tokens: EditorToken[];
-  freeTranslation: string;
-  footnotes?: string[];
-  notes?: NoteItem[];
-}
-
-export interface EditorDocument {
-  textId: string;
-  slug: string;
-  title: string;
-  author: string;
-  historicalAuthor?: string;
-  glossedBy?: string;
-  editor?: string;
-  shelfmark?: string;
-  dialect?: string;
-  historicalDate?: string;
-  date: string;
-  source: string;
-  sourceFile: string;
-  sourceEdition?: string;
-  language: "Old English";
-  status: "draft" | "review" | "published";
-  sentences: EditorSentence[];
-  blocks?: PassageBlock[];
-}
-
-
-
-function stripLatexFootnotes(text: string): string {
-  let result = "";
-  let i = 0;
-  while (i < text.length) {
-    if (text.startsWith("\\footnote{", i)) {
-      i += 10;
-      let depth = 1;
-      while (i < text.length && depth > 0) {
-        if (text[i] === "{") depth++;
-        else if (text[i] === "}") depth--;
-        i++;
-      }
-    } else {
-      result += text[i];
-      i++;
-    }
-  }
-  return result;
-}
-
-export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number): EditorToken {
-  const inflections = w.analysis?.features || {};
-  const lex = resolveOldEnglishLexicon(w.originalWord, w.morphologicalGloss || w.originalWord);
-  const resolvedLemma = w.analysis?.lemma || lex.lemma;
-  const resolvedPos = (w.analysis?.partOfSpeech || lex.pos || "noun") as PartOfSpeech;
-  const resolvedExpl =
-    w.analysis?.definition !== undefined && w.analysis.definition !== ""
-      ? w.analysis.definition
-      : lex.definition || w.morphologicalGloss || "";
-  const resolvedIpa = w.analysis?.phonetic || "";
-  const resolvedWiktionary = w.analysis?.wiktionaryUrl || "";
-
-  const rawMorphemes = w.analysis?.morphemes || [];
-  const normalizedMorphemes: Morpheme[] = rawMorphemes.map((m) => {
-    const res: Morpheme = {
-      form: m.form || (m as unknown as { morpheme?: string }).morpheme || "",
-      gloss: m.gloss || "",
-    };
-    if (m.id) res.id = m.id;
-    if (m.kind) res.kind = m.kind;
-    return res;
-  });
-
-  return {
-    id: w.id || `sent-${sIdx + 1}-token-${tIdx + 1}`,
-    sourceForm: `${w.originalWord}${w.trailingPunctuation || ""}`,
-    sourceGloss: w.morphologicalGloss || w.originalWord,
-    literalTexGloss: w.sourceGlossTex || w.morphologicalGloss || w.originalWord,
-    lemma: resolvedLemma,
-    pos: resolvedPos,
-    explanation: resolvedExpl,
-    inflections: { ...inflections },
-    morphemes: normalizedMorphemes,
-    ipa: resolvedIpa,
-    wiktionaryUrl: resolvedWiktionary,
-    trailingPunctuation: w.trailingPunctuation,
-    pronunciationSource: w.analysis?.pronunciationSource,
-    historicalNote: w.analysis?.historicalNote,
-    review: w.review,
-  };
-}
-
-export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
-  const rawAuthor = doc.author || (doc.source ? doc.source.split(/[·•]/)[0]?.trim() : "");
-  const glossedByMatch =
-    doc.glossedBy ||
-    doc.editor ||
-    (rawAuthor.includes("Alfred") || rawAuthor.includes("Anonymous")
-      ? "Tyler Lemon"
-      : rawAuthor.replace(/^(Translated and glossed by\s*)+/gi, "").trim());
-  const dateMatch =
-    doc.date || (doc.source ? doc.source.split(/[·•]/)[1]?.trim() : "");
-
-  return {
-    textId: doc.textId || "",
-    slug: doc.slug || "",
-    title: doc.title || "",
-    author: glossedByMatch,
-    historicalAuthor: doc.historicalAuthor || (doc.author?.includes("Alfred") ? doc.author : undefined),
-    glossedBy: glossedByMatch,
-    editor: doc.editor || glossedByMatch,
-    shelfmark: doc.shelfmark,
-    dialect: doc.dialect,
-    historicalDate: doc.historicalDate,
-    date: doc.date || dateMatch,
-    source: doc.source || `${glossedByMatch} · ${dateMatch}`,
-    sourceFile: doc.sourceFile || "",
-    sourceEdition: doc.sourceEdition || undefined,
-    language: "Old English",
-    status: doc.status || "published",
-    blocks: doc.blocks || [],
-    sentences: (doc.sentences || []).map((sent: ReadingSentence, sIdx: number) => ({
-      id: sent.id || `sent-${sIdx + 1}`,
-      freeTranslation: sent.translation || "",
-      footnotes: sent.footnotes,
-      notes: sent.notes ? [...sent.notes] : undefined,
-      tokens: (sent.words || []).map((w: InterlinearWord, tIdx: number) =>
-        wordToEditorToken(w, sIdx, tIdx),
-      ),
-    })),
-  };
-}
-
-export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
-  const resolvedAuthor = doc.author || doc.glossedBy;
-  const result: TextDocument = {
-    textId: doc.textId,
-    slug: doc.slug,
-    language: "Old English",
-    author: resolvedAuthor,
-    historicalAuthor: doc.historicalAuthor || undefined,
-    glossedBy: doc.glossedBy || undefined,
-    editor: doc.editor || undefined,
-    shelfmark: doc.shelfmark || undefined,
-    dialect: doc.dialect || undefined,
-    historicalDate: doc.historicalDate || undefined,
-    date: doc.date,
-    title: doc.title,
-    source: doc.source || (resolvedAuthor ? `${resolvedAuthor} · ${doc.date}` : doc.date),
-    sourceFile: doc.sourceFile,
-    sourceEdition: doc.sourceEdition || undefined,
-    status: doc.status,
-    sentences: doc.sentences.map((sent) => ({
-      id: sent.id,
-      translation: sent.freeTranslation,
-      footnotes: sent.footnotes && sent.footnotes.length > 0 ? sent.footnotes : undefined,
-      notes: sent.notes && sent.notes.length > 0 ? [...sent.notes] : undefined,
-      words: sent.tokens.map((tok) => {
-        const punctuationMatch = tok.sourceForm.match(/[.,;:!?]+$/);
-        const originalCleanWord =
-          tok.morphemes && tok.morphemes.length > 1
-            ? tok.morphemes.map((m) => m.form).filter(Boolean).join("-")
-            : tok.sourceForm.replace(/[.,;:!?]+$/, "");
-
-        const sourceGlossVal =
-          tok.morphemes && tok.morphemes.length > 1
-            ? tok.morphemes.map((m) => m.gloss).filter(Boolean).join("-")
-            : tok.sourceGloss || tok.sourceForm;
-
-        const texGlossVal =
-          tok.morphemes && tok.morphemes.length > 1
-            ? tok.morphemes.map((m) => plainToTexGloss(m.gloss)).filter(Boolean).join("-")
-            : tok.literalTexGloss || plainToTexGloss(tok.sourceGloss);
-
-        const trailingPunctuation =
-          tok.trailingPunctuation !== undefined
-            ? tok.trailingPunctuation
-            : punctuationMatch
-            ? punctuationMatch[0]
-            : undefined;
-
-        const analysis: LinguisticAnalysis = {
-          lemma: tok.lemma,
-          partOfSpeech: tok.pos,
-          features: { ...tok.inflections },
-          morphemes: tok.morphemes.map((m) => {
-            const res: Morpheme = { form: m.form, gloss: m.gloss };
-            if (m.id) res.id = m.id;
-            if (m.kind) res.kind = m.kind;
-            return res;
-          }),
-          definition: tok.explanation,
-          phonetic: tok.ipa || undefined,
-          pronunciationSource: tok.pronunciationSource || undefined,
-          historicalNote: tok.historicalNote || undefined,
-          wiktionaryUrl: tok.wiktionaryUrl || undefined,
-        };
-
-        const word: InterlinearWord = {
-          id: tok.id,
-          originalWord: originalCleanWord,
-          morphologicalGloss: sourceGlossVal,
-          trailingPunctuation,
-          sourceGlossTex: texGlossVal,
-          analysis,
-          review: tok.review,
-        };
-        return word;
-      }),
-    })),
-    blocks: doc.blocks || [],
-  };
-
-
-  return result;
-}
 
 export function GlossEditor({
   initialDocument,
@@ -310,13 +76,6 @@ export function GlossEditor({
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditingMetadata, setIsEditingMetadata] = useState(false);
-
-  // Metadata modal form state
-  const [metaTitle, setMetaTitle] = useState("");
-  const [metaHistoricalAuthor, setMetaHistoricalAuthor] = useState("");
-  const [metaGlossedBy, setMetaGlossedBy] = useState("");
-  const [metaDate, setMetaDate] = useState("");
-  const [metaSourceEdition, setMetaSourceEdition] = useState("");
   const [showSyncPrompt, setShowSyncPrompt] = useState(false);
 
   const [workspaceTexts, setWorkspaceTexts] = useState<WorkspaceTextItem[]>(() =>
@@ -487,7 +246,6 @@ export function GlossEditor({
     activeSentence?.tokens.find((t) => t.id === activeTokenId) ||
     documentState?.sentences.flatMap((s) => s.tokens).find((t) => t.id === activeTokenId);
 
-
   const currentIndex = documentState
     ? documentState.sentences.findIndex((s) => s.id === activeSentenceId)
     : -1;
@@ -624,38 +382,25 @@ export function GlossEditor({
     [activeTokenId],
   );
 
-  // Open metadata editing modal initialized with current state
-  const handleOpenMetadataModal = () => {
-    setMetaTitle(documentState.title || "");
-    setMetaHistoricalAuthor(documentState.historicalAuthor || "Anonymous");
-    setMetaGlossedBy(documentState.glossedBy || documentState.editor || "");
-    setMetaDate(documentState.date || "");
-    setMetaSourceEdition(documentState.sourceEdition || documentState.shelfmark || "");
-    setIsEditingMetadata(true);
-  };
-
-  const handleSaveMetadata = (e: React.FormEvent) => {
-    e.preventDefault();
-    const updatedTitle = metaTitle.trim() || documentState.title;
-    const updatedHistAuthor = metaHistoricalAuthor.trim() || "Anonymous";
-    const updatedGlossedBy = metaGlossedBy.trim() || "";
-    const updatedDate = metaDate.trim() || documentState.date;
-    const updatedSourceEdition = metaSourceEdition.trim();
-
+  const handleSaveMetadata = (metadata: {
+    title: string;
+    historicalAuthor: string;
+    glossedBy: string;
+    date: string;
+    sourceEdition: string;
+  }) => {
     setDocumentState((prev) => ({
       ...prev,
-      title: updatedTitle,
-      author: updatedGlossedBy,
-      historicalAuthor: updatedHistAuthor,
-      glossedBy: updatedGlossedBy,
-      editor: updatedGlossedBy,
-      date: updatedDate,
-      sourceEdition: updatedSourceEdition,
-      shelfmark: updatedSourceEdition || prev.shelfmark,
-      source: `${updatedGlossedBy} · ${updatedDate}`,
+      title: metadata.title,
+      author: metadata.glossedBy,
+      historicalAuthor: metadata.historicalAuthor,
+      glossedBy: metadata.glossedBy,
+      editor: metadata.glossedBy,
+      date: metadata.date,
+      sourceEdition: metadata.sourceEdition,
+      shelfmark: metadata.sourceEdition || prev.shelfmark,
+      source: `${metadata.glossedBy} · ${metadata.date}`,
     }));
-
-    setIsEditingMetadata(false);
   };
 
   // Discard changes to restore initial snapshot and completely remove draft
@@ -888,7 +633,6 @@ export function GlossEditor({
     syncMorphemesAndToken(currentMorphemes);
   };
 
-
   const updateFreeTranslation = useCallback((sentId: string, val: string) => {
     setDocumentState((prev) => ({
       ...prev,
@@ -927,7 +671,6 @@ export function GlossEditor({
     );
   }
 
-
   // Clean, displayable form for the selected token header
   const cleanHeaderWord = activeToken?.sourceForm
     ? activeToken.sourceForm.replace(/[.,;:!?]+$/, "")
@@ -945,7 +688,7 @@ export function GlossEditor({
               <span>{documentState.title}</span>
               <button
                 type="button"
-                onClick={handleOpenMetadataModal}
+                onClick={() => setIsEditingMetadata(true)}
                 className="workspace-link"
                 style={{
                   display: "inline-flex",
@@ -1147,7 +890,7 @@ export function GlossEditor({
           </div>
         )}
 
-        {/* Top Sentence Navigator Bar (matching original screenshot) */}
+        {/* Top Sentence Navigator Bar */}
         <section className="editor-nav-box" style={{ marginTop: "1.5rem" }}>
           <div>
             <p className="workspace-eyebrow" style={{ margin: 0, fontSize: "0.75rem", fontWeight: 700, color: "var(--accent)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
@@ -1238,6 +981,7 @@ export function GlossEditor({
               })}
             </div>
           </section>
+
           {/* Right Column: Selected Token Inspector */}
           <aside className="editor-inspector-card">
             <div className="editor-inspector-header">
@@ -1599,7 +1343,6 @@ export function GlossEditor({
                         />
                       </div>
                     ))}
-
                   </div>
                 </fieldset>
 
@@ -1655,190 +1398,12 @@ export function GlossEditor({
       </main>
 
       {/* Edit Document Details Modal */}
-      {isEditingMetadata && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="edit-metadata-title"
-          style={{
-            position: "fixed",
-            inset: 0,
-            backgroundColor: "rgba(28, 25, 23, 0.65)",
-            backdropFilter: "blur(3px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "1rem",
-            zIndex: 9999,
-          }}
-          onClick={() => setIsEditingMetadata(false)}
-        >
-          <div
-            style={{
-              background: "var(--surface)",
-              border: "1px solid var(--rule)",
-              borderRadius: "0.6rem",
-              maxWidth: "36rem",
-              width: "100%",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              boxShadow: "0 1.5rem 3rem rgba(0, 0, 0, 0.25)",
-              padding: "1.75rem",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                paddingBottom: "0.85rem",
-                borderBottom: "1px solid var(--rule)",
-                marginBottom: "1.25rem",
-              }}
-            >
-              <h2
-                id="edit-metadata-title"
-                style={{
-                  margin: 0,
-                  fontSize: "1.25rem",
-                  fontFamily: "'Charis SIL', Georgia, serif",
-                  color: "var(--ink)",
-                }}
-              >
-                Edit Document Details
-              </h2>
-              <button
-                type="button"
-                onClick={() => setIsEditingMetadata(false)}
-                aria-label="Close dialog"
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "var(--muted-ink)",
-                  cursor: "pointer",
-                  padding: "0.25rem",
-                  borderRadius: "0.25rem",
-                }}
-              >
-                <X style={{ width: "1.25rem", height: "1.25rem" }} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSaveMetadata} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-              <div className="editor-form-group" style={{ marginBottom: 0 }}>
-                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Original Text Title
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. The Voyages of Ohthere and Wulfstan"
-                  value={metaTitle}
-                  onChange={(e) => setMetaTitle(e.target.value)}
-                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
-                />
-              </div>
-
-              <div className="editor-form-group" style={{ marginBottom: 0 }}>
-                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Historical Author / Speaker
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Anonymous, King Alfred, Cædmon, Bede"
-                  value={metaHistoricalAuthor}
-                  onChange={(e) => setMetaHistoricalAuthor(e.target.value)}
-                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
-                />
-              </div>
-
-              <div className="editor-form-group" style={{ marginBottom: 0 }}>
-                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Glossed by
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Tyler Lemon"
-                  value={metaGlossedBy}
-                  onChange={(e) => setMetaGlossedBy(e.target.value)}
-                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
-                />
-              </div>
-
-              <div className="editor-form-group" style={{ marginBottom: 0 }}>
-                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Date
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. September 30, 2026"
-                  value={metaDate}
-                  onChange={(e) => setMetaDate(e.target.value)}
-                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
-                />
-              </div>
-
-              <div className="editor-form-group" style={{ marginBottom: 0 }}>
-                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Edition
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. BL Cotton MS Tiberius B i, fol. 11r–15v"
-                  value={metaSourceEdition}
-                  onChange={(e) => setMetaSourceEdition(e.target.value)}
-                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
-                />
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  gap: "0.6rem",
-                  marginTop: "0.75rem",
-                  paddingTop: "0.85rem",
-                  borderTop: "1px solid var(--rule)",
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={() => setIsEditingMetadata(false)}
-                  style={{
-                    padding: "0.45rem 1rem",
-                    borderRadius: "0.35rem",
-                    border: "1px solid var(--rule)",
-                    background: "var(--surface)",
-                    color: "var(--ink)",
-                    fontSize: "0.85rem",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  style={{
-                    padding: "0.45rem 1.1rem",
-                    borderRadius: "0.35rem",
-                    border: "none",
-                    background: "var(--accent)",
-                    color: "#ffffff",
-                    fontSize: "0.85rem",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                  }}
-                >
-                  Save Details
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <EditMetadataModal
+        isOpen={isEditingMetadata}
+        onClose={() => setIsEditingMetadata(false)}
+        documentState={documentState}
+        onSave={handleSaveMetadata}
+      />
 
       <DraftSyncPrompt
         forceShow={showSyncPrompt}
