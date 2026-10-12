@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback, useMemo, useRef } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { SiteNav } from "./site-nav";
 import { SentenceRow } from "./sentence-row";
@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 import { DraftSyncPrompt } from "./draft-sync-prompt";
 import { isTinaAuthenticated } from "../lib/tina-sync";
+import { EditMetadataModal } from "./edit-metadata-modal";
 
 export interface EditorToken {
   id: string;
@@ -310,27 +311,7 @@ export function GlossEditor({
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditingMetadata, setIsEditingMetadata] = useState(false);
-
-  // Metadata modal form state
-  const [metaTitle, setMetaTitle] = useState("");
-  const [metaHistoricalAuthor, setMetaHistoricalAuthor] = useState("");
-  const [metaGlossedBy, setMetaGlossedBy] = useState("");
-  const [metaDate, setMetaDate] = useState("");
-  const [metaSourceEdition, setMetaSourceEdition] = useState("");
   const [showSyncPrompt, setShowSyncPrompt] = useState(false);
-  const mouseDownTargetRef = useRef<EventTarget | null>(null);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isEditingMetadata) {
-        setIsEditingMetadata(false);
-      }
-    };
-    if (isEditingMetadata) {
-      window.addEventListener("keydown", handleKeyDown);
-    }
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isEditingMetadata]);
 
   const [workspaceTexts, setWorkspaceTexts] = useState<WorkspaceTextItem[]>(() =>
     getWorkspaceTexts({
@@ -638,36 +619,7 @@ export function GlossEditor({
 
   // Open metadata editing modal initialized with current state
   const handleOpenMetadataModal = () => {
-    setMetaTitle(documentState.title || "");
-    setMetaHistoricalAuthor(documentState.historicalAuthor || "Anonymous");
-    setMetaGlossedBy(documentState.glossedBy || documentState.editor || "");
-    setMetaDate(documentState.date || "");
-    setMetaSourceEdition(documentState.sourceEdition || documentState.shelfmark || "");
     setIsEditingMetadata(true);
-  };
-
-  const handleSaveMetadata = (e: React.FormEvent) => {
-    e.preventDefault();
-    const updatedTitle = metaTitle.trim() || documentState.title;
-    const updatedHistAuthor = metaHistoricalAuthor.trim() || "Anonymous";
-    const updatedGlossedBy = metaGlossedBy.trim() || "";
-    const updatedDate = metaDate.trim() || documentState.date;
-    const updatedSourceEdition = metaSourceEdition.trim();
-
-    setDocumentState((prev) => ({
-      ...prev,
-      title: updatedTitle,
-      author: updatedGlossedBy,
-      historicalAuthor: updatedHistAuthor,
-      glossedBy: updatedGlossedBy,
-      editor: updatedGlossedBy,
-      date: updatedDate,
-      sourceEdition: updatedSourceEdition,
-      shelfmark: updatedSourceEdition || prev.shelfmark,
-      source: `${updatedGlossedBy} · ${updatedDate}`,
-    }));
-
-    setIsEditingMetadata(false);
   };
 
   // Discard changes to restore initial snapshot and completely remove draft
@@ -1659,201 +1611,14 @@ export function GlossEditor({
 
       {/* Edit Document Details Modal */}
       {isEditingMetadata && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="edit-metadata-title"
-          style={{
-            position: "fixed",
-            inset: 0,
-            backgroundColor: "rgba(28, 25, 23, 0.65)",
-            backdropFilter: "blur(3px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "1rem",
-            zIndex: 9999,
+        <EditMetadataModal
+          document={documentState}
+          onClose={() => setIsEditingMetadata(false)}
+          onSave={(patch) => {
+            setDocumentState((prev) => ({ ...prev, ...patch }));
+            setIsEditingMetadata(false);
           }}
-          onMouseDown={(e) => {
-            mouseDownTargetRef.current = e.target;
-          }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget && mouseDownTargetRef.current === e.currentTarget) {
-              setIsEditingMetadata(false);
-            }
-            mouseDownTargetRef.current = null;
-          }}
-        >
-          <div
-            style={{
-              background: "var(--surface)",
-              border: "1px solid var(--rule)",
-              borderRadius: "0.6rem",
-              maxWidth: "36rem",
-              width: "100%",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              boxShadow: "0 1.5rem 3rem rgba(0, 0, 0, 0.25)",
-              padding: "1.75rem",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                paddingBottom: "0.85rem",
-                borderBottom: "1px solid var(--rule)",
-                marginBottom: "1.25rem",
-              }}
-            >
-              <h2
-                id="edit-metadata-title"
-                style={{
-                  margin: 0,
-                  fontSize: "1.25rem",
-                  fontFamily: "'Charis SIL', Georgia, serif",
-                  color: "var(--ink)",
-                }}
-              >
-                Edit Document Details
-              </h2>
-              <button
-                type="button"
-                onClick={() => setIsEditingMetadata(false)}
-                aria-label="Close dialog"
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "var(--muted-ink)",
-                  cursor: "pointer",
-                  padding: "0.25rem",
-                  borderRadius: "0.25rem",
-                }}
-              >
-                <X style={{ width: "1.25rem", height: "1.25rem" }} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSaveMetadata} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-              <div className="editor-form-group" style={{ marginBottom: 0 }}>
-                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Original Text Title
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. The Voyages of Ohthere and Wulfstan"
-                  value={metaTitle}
-                  onChange={(e) => setMetaTitle(e.target.value)}
-                  onFocus={(e) => e.target.select()}
-                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
-                />
-              </div>
-
-              <div className="editor-form-group" style={{ marginBottom: 0 }}>
-                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Historical Author / Speaker
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Anonymous, King Alfred, Cædmon, Bede"
-                  value={metaHistoricalAuthor}
-                  onChange={(e) => setMetaHistoricalAuthor(e.target.value)}
-                  onFocus={(e) => e.target.select()}
-                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
-                />
-              </div>
-
-              <div className="editor-form-group" style={{ marginBottom: 0 }}>
-                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Glossed by
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Tyler Lemon"
-                  value={metaGlossedBy}
-                  onChange={(e) => setMetaGlossedBy(e.target.value)}
-                  onFocus={(e) => e.target.select()}
-                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
-                />
-              </div>
-
-              <div className="editor-form-group" style={{ marginBottom: 0 }}>
-                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Date
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. September 30, 2026"
-                  value={metaDate}
-                  onChange={(e) => setMetaDate(e.target.value)}
-                  onFocus={(e) => e.target.select()}
-                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
-                />
-              </div>
-
-              <div className="editor-form-group" style={{ marginBottom: 0 }}>
-                <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-                  Edition
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. BL Cotton MS Tiberius B i, fol. 11r–15v"
-                  value={metaSourceEdition}
-                  onChange={(e) => setMetaSourceEdition(e.target.value)}
-                  onFocus={(e) => e.target.select()}
-                  style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
-                />
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  gap: "0.6rem",
-                  marginTop: "0.75rem",
-                  paddingTop: "0.85rem",
-                  borderTop: "1px solid var(--rule)",
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={() => setIsEditingMetadata(false)}
-                  style={{
-                    padding: "0.45rem 1rem",
-                    borderRadius: "0.35rem",
-                    border: "1px solid var(--rule)",
-                    background: "var(--surface)",
-                    color: "var(--ink)",
-                    fontSize: "0.85rem",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  style={{
-                    padding: "0.45rem 1.1rem",
-                    borderRadius: "0.35rem",
-                    border: "none",
-                    background: "var(--accent)",
-                    color: "#ffffff",
-                    fontSize: "0.85rem",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                  }}
-                >
-                  Save Details
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        />
       )}
 
       <DraftSyncPrompt
