@@ -210,16 +210,16 @@ export function parseGb4eToTextDocument(
   defaults: Partial<TextDocument> = {},
 ): TextDocument {
   const parsed = parseGb4e(source);
-  const title = defaults.title || parsed.title || "The voyages of Ohthere and Wulfstan";
-  const author = defaults.author || parsed.author || "Tyler Lemon";
-  const date = defaults.date || parsed.date || "September 30, 2026";
-  const slug = defaults.slug || "ohthere";
-  const textId = defaults.textId || "ohthere";
+  const title = defaults.title ?? parsed.title ?? "The voyages of Ohthere and Wulfstan";
+  const author = defaults.author ?? parsed.author ?? "Tyler Lemon";
+  const date = defaults.date ?? parsed.date ?? "September 30, 2026";
+  const slug = defaults.slug ?? "ohthere";
+  const textId = defaults.textId ?? "ohthere";
 
   return {
     textId,
     slug,
-    language: defaults.language || "Old English",
+    language: defaults.language ?? "Old English",
     author,
     editor: defaults.editor,
     shelfmark: defaults.shelfmark,
@@ -227,12 +227,12 @@ export function parseGb4eToTextDocument(
     historicalDate: defaults.historicalDate,
     date,
     title,
-    source: defaults.source || `${author} · ${date}`,
-    sourceFile: defaults.sourceFile || "references/Voyages_of_Ohthere_Wulfstan.tex",
+    source: defaults.source ?? `${author} · ${date}`,
+    sourceFile: defaults.sourceFile ?? "references/Voyages_of_Ohthere_Wulfstan.tex",
     sourceEdition: defaults.sourceEdition,
-    status: defaults.status || "published",
+    status: defaults.status ?? "published",
     sentences: parsed.sentences,
-    blocks: defaults.blocks || [],
+    blocks: defaults.blocks ?? [],
   };
 }
 
