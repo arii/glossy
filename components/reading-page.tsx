@@ -10,6 +10,8 @@ import { getGlossRecords, getReadingPassage } from "../lib/passage-utils";
 import type { TextDocument } from "../lib/types";
 import {
   getLocalDraft,
+  getDraftDivergenceStatus,
+  deleteLocalDraft,
   getHiddenSlugs,
   restoreHiddenText,
   getWorkspaceTexts,
@@ -18,6 +20,8 @@ import {
 import { AnnotatedPassage } from "./annotated-passage";
 import { GlossPopup } from "./gloss-popup";
 import { AttributionModal } from "./attribution-modal";
+import { DraftDiffModal } from "./draft-diff-modal";
+import { GitCommit, Edit3, Trash2, AlertTriangle } from "lucide-react";
 
 type ReadingPageProps = {
   texts: TextDocument[];
@@ -36,6 +40,7 @@ export function ReadingPage({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [pinnedId, setPinnedId] = useState<string | null>(null);
   const [attributionOpen, setAttributionOpen] = useState(false);
+  const [diffModalOpen, setDiffModalOpen] = useState(false);
   const lastTriggerId = useRef<string | null>(null);
   const glossAreaRef = useRef<HTMLElement | null>(null);
 
@@ -138,6 +143,11 @@ export function ReadingPage({
   // Memoize base lookup so we don't scan the entire corpus on every render.
   const baseText = useMemo(() => texts.find((text) => text.slug === selectedSlug), [texts, selectedSlug]);
   const selectedText = localDraftText ?? baseText;
+
+  const divergenceStatus = useMemo(
+    () => getDraftDivergenceStatus(selectedSlug, baseText),
+    [selectedSlug, baseText]
+  );
 
   // Memoize heavy object instantiation from getGlossRecords to prevent unnecessary downstream re-renders.
   const glossRecords = useMemo(() => selectedText ? getGlossRecords(selectedText) : {}, [selectedText]);
@@ -324,6 +334,124 @@ export function ReadingPage({
           historicalDate={selectedText?.historicalDate}
           sourceEdition={selectedText?.sourceEdition}
           source={currentSource}
+        />
+
+        {divergenceStatus.isDiverged && (
+          <div
+            style={{
+              margin: "1rem 0 1.5rem",
+              padding: "0.85rem 1.25rem",
+              background: divergenceStatus.isUpstreamModified ? "#fef2f2" : "#fefce8",
+              border: `1px solid ${divergenceStatus.isUpstreamModified ? "#f87171" : "#fef08a"}`,
+              borderRadius: "0.5rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: "0.75rem",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+              <AlertTriangle style={{ width: "1.25rem", height: "1.25rem", color: divergenceStatus.isUpstreamModified ? "#dc2626" : "#ca8a04", flexShrink: 0 }} />
+              <div>
+                <strong style={{ fontSize: "0.88rem", color: divergenceStatus.isUpstreamModified ? "#991b1b" : "#854d0e", display: "block" }}>
+                  {divergenceStatus.isUpstreamModified
+                    ? "Upstream Conflict: Local Draft Diverged from Updated Repository Edition"
+                    : "Viewing Working Client Draft (Unpublished Local Edits)"}
+                </strong>
+                <span style={{ fontSize: "0.8rem", color: "var(--muted-ink)" }}>
+                  {divergenceStatus.isUpstreamModified
+                    ? "The underlying repository document was updated upstream after your local edits were saved."
+                    : "This reading view displays your uncommitted client-side draft."}
+                </span>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+              <button
+                type="button"
+                onClick={() => setDiffModalOpen(true)}
+                style={{
+                  padding: "0.35rem 0.75rem",
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                  borderRadius: "0.25rem",
+                  background: "#ffffff",
+                  border: "1px solid var(--rule)",
+                  color: "var(--ink)",
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.3rem",
+                }}
+              >
+                <GitCommit style={{ width: "0.85rem", height: "0.85rem" }} />
+                Compare Diff
+              </button>
+
+              <Link
+                href={`/edit/${selectedSlug}`}
+                style={{
+                  padding: "0.35rem 0.75rem",
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                  borderRadius: "0.25rem",
+                  background: "var(--accent)",
+                  color: "#ffffff",
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.3rem",
+                }}
+              >
+                <Edit3 style={{ width: "0.85rem", height: "0.85rem" }} />
+                Edit Draft
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm(`Discard local edits for "${currentTitle}" and revert to published repository edition?`)) {
+                    deleteLocalDraft(selectedSlug);
+                    setLocalDraftText(null);
+                  }
+                }}
+                style={{
+                  padding: "0.35rem 0.65rem",
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                  borderRadius: "0.25rem",
+                  background: "transparent",
+                  border: "1px solid #f87171",
+                  color: "#b91c1c",
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.3rem",
+                }}
+                title="Discard local draft and revert to repository edition"
+              >
+                <Trash2 style={{ width: "0.85rem", height: "0.85rem" }} />
+                Revert
+              </button>
+            </div>
+          </div>
+        )}
+
+        <DraftDiffModal
+          isOpen={diffModalOpen}
+          onClose={() => setDiffModalOpen(false)}
+          slug={selectedSlug}
+          repoDoc={baseText}
+          draftDoc={localDraftText}
+          updatedAt={divergenceStatus.updatedAt}
+          isUpstreamModified={divergenceStatus.isUpstreamModified}
+          onDiscard={() => {
+            deleteLocalDraft(selectedSlug);
+            setLocalDraftText(null);
+          }}
+          onOpenEditor={() => router.push(`/edit/${selectedSlug}`)}
+          onExport={() => router.push(`/edit/${selectedSlug}`)}
         />
 
         <div className="reading-layout">
