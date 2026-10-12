@@ -13,6 +13,7 @@ import { isProtectedSlug } from "../lib/corpus-registry";
 import {
   computeDocumentHash,
   deleteLocalDraft,
+  getDraftDivergenceStatus,
   getWorkspaceTexts,
   readDraft,
   writeDraft,
@@ -32,14 +33,17 @@ import type {
   LinguisticAnalysis,
 } from "../lib/types";
 import {
+  AlertTriangle,
   BookOpen,
   Edit,
+  GitCommit,
   RefreshCw,
   Save,
   Trash2,
   FileText,
   X,
 } from "lucide-react";
+import { DraftDiffModal } from "./draft-diff-modal";
 import { DraftSyncPrompt } from "./draft-sync-prompt";
 import { isTinaAuthenticated } from "../lib/tina-sync";
 import { EditMetadataModal } from "./edit-metadata-modal";
@@ -311,6 +315,9 @@ export function GlossEditor({
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditingMetadata, setIsEditingMetadata] = useState(false);
+
+
+  const [diffModalOpen, setDiffModalOpen] = useState(false);
   const [showSyncPrompt, setShowSyncPrompt] = useState(false);
 
   const [workspaceTexts, setWorkspaceTexts] = useState<WorkspaceTextItem[]>(() =>
@@ -347,6 +354,13 @@ export function GlossEditor({
       return "";
     }
   }, [initialDocument]);
+
+  const divergenceStatus = useMemo(() => {
+    // We intentionally ignore autosaveStatus inside the function
+    // but want to trigger a recompute when it changes
+    return getDraftDivergenceStatus(currentSlug, initialDocument);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSlug, initialDocument, autosaveStatus]);
 
   // Restore from initial master document
   const loadFromMasterTex = useCallback(async () => {
@@ -1034,6 +1048,105 @@ export function GlossEditor({
         />
 
         {/* Global Action Alerts */}
+
+        {divergenceStatus.isDiverged && (
+          <div
+            style={{
+              margin: "1rem 2rem 1.5rem",
+              padding: "0.85rem 1.25rem",
+              background: divergenceStatus.isUpstreamModified ? "#fef2f2" : "#fefce8",
+              border: `1px solid ${divergenceStatus.isUpstreamModified ? "#f87171" : "#fef08a"}`,
+              borderRadius: "0.5rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: "0.75rem",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+              <AlertTriangle style={{ width: "1.25rem", height: "1.25rem", color: divergenceStatus.isUpstreamModified ? "#dc2626" : "#ca8a04", flexShrink: 0 }} />
+              <div>
+                <strong style={{ fontSize: "0.88rem", color: divergenceStatus.isUpstreamModified ? "#991b1b" : "#854d0e", display: "block" }}>
+                  {divergenceStatus.isUpstreamModified
+                    ? "Upstream Conflict: Local Draft Diverged from Updated Repository Edition"
+                    : "Viewing Working Client Draft (Unpublished Local Edits)"}
+                </strong>
+                <span style={{ fontSize: "0.8rem", color: "var(--muted-ink)" }}>
+                  {divergenceStatus.isUpstreamModified
+                    ? "The underlying repository document was updated upstream after your local edits were saved."
+                    : "This reading view displays your uncommitted client-side draft."}
+                </span>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+              <button
+                type="button"
+                onClick={() => setDiffModalOpen(true)}
+                style={{
+                  padding: "0.35rem 0.75rem",
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                  borderRadius: "0.25rem",
+                  background: "#ffffff",
+                  border: "1px solid var(--rule)",
+                  color: "var(--ink)",
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.3rem",
+                }}
+              >
+                <GitCommit style={{ width: "0.85rem", height: "0.85rem" }} />
+                Compare Diff
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm(`Discard local edits for "${documentState.title}" and revert to published repository edition?`)) {
+                    discardChanges();
+                  }
+                }}
+                style={{
+                  padding: "0.35rem 0.65rem",
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                  borderRadius: "0.25rem",
+                  background: "transparent",
+                  border: "1px solid #f87171",
+                  color: "#b91c1c",
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.3rem",
+                }}
+                title="Discard local draft and revert to repository edition"
+              >
+                <Trash2 style={{ width: "0.85rem", height: "0.85rem" }} />
+                Revert
+              </button>
+            </div>
+          </div>
+        )}
+
+        <DraftDiffModal
+          isOpen={diffModalOpen}
+          onClose={() => setDiffModalOpen(false)}
+          slug={currentSlug}
+          repoDoc={initialDocument}
+          draftDoc={editorDocToTextDocument(documentState)}
+          updatedAt={divergenceStatus.updatedAt}
+          isUpstreamModified={divergenceStatus.isUpstreamModified}
+          onDiscard={() => {
+            discardChanges();
+            setDiffModalOpen(false);
+          }}
+          onOpenEditor={() => setDiffModalOpen(false)}
+          onExport={handleExportJson}
+        />
+
         {saveStatus.message && (
           <div
             className={`editor-save-status ${
