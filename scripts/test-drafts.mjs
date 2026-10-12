@@ -138,8 +138,6 @@ global.fetch = async () => ({
 });
 
 global.window.localStorage.setItem("tinacms-auth", "mock-token");
-process.env.TINA_CLIENT_ID = "test";
-process.env.TINA_BRANCH = "test";
 
 const rejectRes = await commitPendingDraft("caedmon-hymn");
 

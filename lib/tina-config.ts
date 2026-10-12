@@ -26,14 +26,11 @@ export function getTinaGraphQLUrl(
   clientId: string = TINA_CLIENT_ID,
   branch: string = TINA_BRANCH,
 ): string {
-  // If an explicit URL override is provided (e.g. for local dev), use it directly
-  if (process.env.NEXT_PUBLIC_TINA_GRAPHQL_URL || process.env.NEXT_PUBLIC_TINA_LOCAL_URL) {
-    return (process.env.NEXT_PUBLIC_TINA_GRAPHQL_URL || process.env.NEXT_PUBLIC_TINA_LOCAL_URL || "")
-      .trim()
-      .replace(/[\r\n\t]+/g, "");
+  // If the environment explicitly specifies the GraphQL URL, use it
+  if (process.env.NEXT_PUBLIC_TINA_GRAPHQL_URL) {
+    return process.env.NEXT_PUBLIC_TINA_GRAPHQL_URL.trim().replace(/[\r\n\t]+/g, "");
   }
 
-  // Otherwise, construct the standard Cloud URL
   const safeClientId = encodeURIComponent(clientId.trim().replace(/[\r\n\t]+/g, ""));
   const safeBranch = encodeURIComponent(branch.trim().replace(/[\r\n\t]+/g, ""));
 
