@@ -128,7 +128,7 @@ assert.equal(pending1.synced, false, "Fresh draft must have synced: false");
 const noAuthRes = await commitPendingDraft("caedmon-hymn");
 assert.equal(noAuthRes.outcome, "needs-login", "Unauthenticated commit attempt must yield needs-login outcome");
 
-// 7b. Test GraphQL rejection outcome (rejected)
+// 7b. Test GraphQL rejection outcome (rejected via CMS client)
 const mockErrorCms = {
   api: {
     tina: {
@@ -144,7 +144,7 @@ assert.equal(rejectRes.ok, false, "Rejected GraphQL response must return ok: fal
 assert.equal(rejectRes.outcome, "rejected", "Rejected GraphQL response must return outcome: rejected");
 assert.equal(rejectRes.error, "Schema validation failure: invalid sentence ID");
 
-// 7c. Test Successful Commit outcome (committed)
+// 7c. Test Successful Commit outcome (committed via CMS client)
 const mockSuccessCms = {
   api: {
     tina: {
@@ -163,6 +163,24 @@ assert.equal(commitRes.outcome, "committed", "Successful commit must return outc
 
 const pending2 = listPending()["caedmon-hymn"];
 assert.equal(pending2.synced, true, "After successful commit, manifest entry must have synced: true");
+
+// 7c-ii. Test Localhost Commit fallback (without cms client object)
+global.window.location.hostname = "localhost";
+global.fetch = async (url, options) => {
+  assert.ok(url.includes("/graphql"), "Must call local GraphQL endpoint");
+  const body = JSON.parse(options.body);
+  assert.equal(body.variables.relativePath, "caedmon-hymn.json");
+  return {
+    status: 200,
+    json: async () => ({
+      data: { updateText: { id: "caedmon-hymn", title: "Cædmon's Hymn" } },
+    }),
+  };
+};
+const localRes = await commitPendingDraft("caedmon-hymn");
+assert.equal(localRes.ok, true, "Localhost commit must return ok: true");
+assert.equal(localRes.outcome, "committed", "Localhost commit must return outcome: committed");
+global.window.location.hostname = "example.com";
 
 // 7d. Test Edit-After-Commit scenario
 const updatedCaedmonDoc = {

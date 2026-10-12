@@ -8,11 +8,16 @@ import {
   Edit3,
   Info,
   MoreVertical,
+  GitCommit,
+  AlertTriangle,
 } from "lucide-react";
 import { AttributionModal, type AttributionConfig } from "./attribution-modal";
+import { DraftDiffModal } from "./draft-diff-modal";
 import {
   listLocalDrafts,
   deleteLocalDraft,
+  readDraft,
+  getDraftDivergenceStatus,
 } from "../lib/local-drafts";
 import { isProtectedSlug, getBuiltInMetadata } from "../lib/corpus-registry";
 
@@ -34,6 +39,8 @@ export type TextChoice = {
   isProtected?: boolean;
   isLocalOnly?: boolean;
   hasLocalDraft?: boolean;
+  isDiverged?: boolean;
+  isUpstreamModified?: boolean;
 };
 
 export function TextDirectory({
@@ -45,6 +52,7 @@ export function TextDirectory({
 }) {
   const [choices, setChoices] = useState<TextChoice[]>(initialChoices);
   const [activeModalChoice, setActiveModalChoice] = useState<TextChoice | null>(null);
+  const [diffChoice, setDiffChoice] = useState<TextChoice | null>(null);
   const [openMenuSlug, setOpenMenuSlug] = useState<string | null>(null);
 
   const router = useRouter();
@@ -108,6 +116,16 @@ export function TextDirectory({
 
       const visibleInitial = initialChoices.map((c) => {
         const meta = getBuiltInMetadata(c.slug);
+        const hasDraft = localSlugsWithEdits.has(c.slug) || localSlugsWithEdits.has(meta?.slug || "") || localSlugsWithEdits.has(meta?.textId || "");
+        let isDiverged = false;
+        let isUpstreamModified = false;
+
+        if (hasDraft) {
+          const status = getDraftDivergenceStatus(c.slug);
+          isDiverged = status.isDiverged;
+          isUpstreamModified = status.isUpstreamModified;
+        }
+
         return {
           ...c,
           author: c.author || meta?.author,
@@ -117,7 +135,9 @@ export function TextDirectory({
           historicalDate: c.historicalDate || meta?.historicalDate || meta?.origDate,
           sourceEdition: c.sourceEdition || meta?.sourceEdition,
           witness: c.shelfmark || c.witness || meta?.shelfmark || meta?.witness || c.source,
-          hasLocalDraft: localSlugsWithEdits.has(c.slug) || localSlugsWithEdits.has(meta?.slug || "") || localSlugsWithEdits.has(meta?.textId || ""),
+          hasLocalDraft: hasDraft,
+          isDiverged,
+          isUpstreamModified,
         };
       });
 
@@ -197,13 +217,13 @@ export function TextDirectory({
               className="workspace-choice-card"
             >
               <div>
-                {/* Top row: Title */}
+                {/* Top row: Title & Badges */}
                 <div
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "flex-start",
-                    gap: "0.75rem",
+                    gap: "0.5rem",
                     marginBottom: "0.5rem",
                   }}
                 >
@@ -219,6 +239,52 @@ export function TextDirectory({
                   >
                     {choice.title}
                   </h3>
+
+                  {(choice.isLocalOnly || choice.hasLocalDraft) && (
+                    <span
+                      style={{
+                        fontSize: "0.68rem",
+                        fontWeight: 700,
+                        padding: "0.15rem 0.45rem",
+                        borderRadius: "0.25rem",
+                        whiteSpace: "nowrap",
+                        background: choice.isUpstreamModified
+                          ? "#fef2f2"
+                          : choice.isLocalOnly
+                          ? "#eff6ff"
+                          : "#fefce8",
+                        color: choice.isUpstreamModified
+                          ? "#b91c1c"
+                          : choice.isLocalOnly
+                          ? "#1d4ed8"
+                          : "#a16207",
+                        border: `1px solid ${
+                          choice.isUpstreamModified
+                            ? "#fca5a5"
+                            : choice.isLocalOnly
+                            ? "#bfdbfe"
+                            : "#fef08a"
+                        }`,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "0.2rem",
+                      }}
+                      title={
+                        choice.isUpstreamModified
+                          ? "Repo text updated upstream after draft creation"
+                          : choice.isLocalOnly
+                          ? "Custom document created locally"
+                          : "Unpublished local edits in browser"
+                      }
+                    >
+                      {choice.isUpstreamModified && <AlertTriangle style={{ width: "0.65rem", height: "0.65rem" }} />}
+                      {choice.isUpstreamModified
+                        ? "Conflict"
+                        : choice.isLocalOnly
+                        ? "Local Only"
+                        : "Unpublished Draft"}
+                    </span>
+                  )}
                 </div>
 
                 {/* Author line in bold */}
@@ -418,6 +484,32 @@ export function TextDirectory({
                         <button
                           type="button"
                           onClick={() => {
+                            setDiffChoice(choice);
+                            setOpenMenuSlug(null);
+                          }}
+                          style={{
+                            width: "100%",
+                            textAlign: "left",
+                            minHeight: "44px",
+                            padding: "0.5rem 0.85rem",
+                            fontSize: "0.82rem",
+                            background: "transparent",
+                            border: "none",
+                            color: "var(--ink)",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.4rem",
+                          }}
+                        >
+                          <GitCommit style={{ width: "0.85rem", height: "0.85rem" }} /> Inspect Diff
+                        </button>
+                      )}
+
+                      {(choice.isLocalOnly || choice.hasLocalDraft) && (
+                        <button
+                          type="button"
+                          onClick={() => {
                             handleDelete(choice);
                             setOpenMenuSlug(null);
                           }}
@@ -465,6 +557,26 @@ export function TextDirectory({
           source={activeModalChoice.witness || activeModalChoice.source}
           config={attributionConfig}
           content={attributionConfig}
+        />
+      )}
+
+      {/* Draft Diff Modal */}
+      {diffChoice && (
+        <DraftDiffModal
+          isOpen={Boolean(diffChoice)}
+          onClose={() => setDiffChoice(null)}
+          slug={diffChoice.slug}
+          repoDoc={(() => {
+            const match = initialChoices.find((c) => c.slug === diffChoice.slug);
+            if (!match) return null;
+            return match as unknown as import("../lib/types").TextDocument;
+          })()}
+          draftDoc={readDraft(diffChoice.slug)?.doc}
+          updatedAt={readDraft(diffChoice.slug)?.updatedAt}
+          isUpstreamModified={diffChoice.isUpstreamModified}
+          onDiscard={() => handleDelete(diffChoice)}
+          onOpenEditor={() => navigate(`/edit/${diffChoice.slug}`)}
+          onExport={() => navigate(`/edit/${diffChoice.slug}`)}
         />
       )}
     </div>

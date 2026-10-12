@@ -6,5 +6,6 @@
   "primaryAction": {
     "href": "/edit/new",
     "label": "Gloss a New Text"
-  }
+  },
+  "title": "Glossy"
 }
