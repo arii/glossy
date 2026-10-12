@@ -130,17 +130,19 @@ export default function DocsPage() {
                     </span>
                   ) : null}
                 </div>
-                <div className="docs-tier-grid" data-tina-field={tinaField(docs, "l1TierTokens")}>
-                  {(docs.l1TierTokens || "Hwæt | wē | Gār-Den-a | in | ġeār-dag-um").split("|").map((token, i) => (
-                    <div key={i}>{token.trim()}</div>
-                  ))}
-                </div>
-                <div className="docs-tier-glosses" data-tina-field={tinaField(docs, "l1TierGlosses")}>
-                  {(docs.l1TierGlosses || "what | we.NOM | Spear-Dane-GEN.PL | in | yore-day-DAT.PL").split("|").map((gloss, i) => (
-                    <div key={i} style={{ color: i === 0 ? "#d6d3d1" : "#fde68a" }}>
-                      {gloss.trim()}
-                    </div>
-                  ))}
+                <div className="docs-tier-wrapper" data-tina-field={tinaField(docs, "l1TierTokens")}>
+                  {(docs.l1TierTokens || "Hwæt | wē | Gār-Den-a | in | ġeār-dag-um").split("|").map((token, i) => {
+                    const glosses = (docs.l1TierGlosses || "what | we.NOM | Spear-Dane-GEN.PL | in | yore-day-DAT.PL").split("|");
+                    const gloss = glosses[i] || "";
+                    return (
+                      <div key={i} className="docs-interlinear-pair">
+                        <div className="docs-tier-token">{token.trim()}</div>
+                        <div className="docs-tier-gloss" style={{ color: i === 0 ? "#d6d3d1" : "#fde68a" }}>
+                          {gloss.trim()}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
                 <div className="docs-tier-trans" data-tina-field={tinaField(docs, "l1TierTranslation")}>
                   {docs.l1TierTranslation || "“Lo! We have heard of the Spear-Danes in days of yore...”"}
