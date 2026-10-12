@@ -19,7 +19,9 @@ import {
   readDraft,
   getDraftDivergenceStatus,
 } from "../lib/local-drafts";
-import { isBuiltInSlug, getBuiltInMetadata } from "../lib/corpus-registry";
+import { isBuiltInSlug, getBuiltInMetadata, getBuiltInDocument } from "../lib/corpus-registry";
+
+import type { TextDocument } from "../lib/types";
 
 export type TextChoice = {
   slug: string;
@@ -40,6 +42,7 @@ export type TextChoice = {
   hasLocalDraft?: boolean;
   isDiverged?: boolean;
   isUpstreamModified?: boolean;
+  fullDoc?: TextDocument;
 };
 
 export function TextDirectory({
@@ -566,8 +569,11 @@ export function TextDirectory({
           slug={diffChoice.slug}
           repoDoc={(() => {
             const match = initialChoices.find((c) => c.slug === diffChoice.slug);
-            if (!match) return null;
-            return match as unknown as import("../lib/types").TextDocument;
+            if (match?.fullDoc) return match.fullDoc;
+            const builtIn = getBuiltInDocument(diffChoice.slug);
+            if (builtIn) return builtIn;
+            if (match && Array.isArray((match as unknown as TextDocument).sentences)) return match as unknown as TextDocument;
+            return null;
           })()}
           draftDoc={readDraft(diffChoice.slug)?.doc}
           updatedAt={readDraft(diffChoice.slug)?.updatedAt}

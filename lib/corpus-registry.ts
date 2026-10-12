@@ -69,3 +69,9 @@ export function getBuiltInMetadata(slug: string): BuiltInTextMetadata | undefine
   const s = slug.toLowerCase();
   return BUILT_IN_CORPUS.find((t) => t.slug.toLowerCase() === s || t.textId.toLowerCase() === s);
 }
+
+export function getBuiltInDocument(slug: string): TextDocument | undefined {
+  if (!slug) return undefined;
+  const s = slug.toLowerCase();
+  return RAW_TEXTS.find((t) => t.slug.toLowerCase() === s || t.textId.toLowerCase() === s);
+}

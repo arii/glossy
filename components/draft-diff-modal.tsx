@@ -19,10 +19,37 @@ export interface DraftDiffModalProps {
 
 export interface DiffItem {
   id: string;
-  type: "meta" | "sentence_translation" | "word_gloss" | "sentence_count";
+  type:
+    | "meta"
+    | "sentence_translation"
+    | "sentence_notes"
+    | "word_gloss"
+    | "word_pos"
+    | "word_features"
+    | "word_morphemes"
+    | "word_definition"
+    | "sentence_count";
   label: string;
   repoValue: string;
   draftValue: string;
+}
+
+function formatFeatures(features?: Record<string, unknown>): string {
+  if (!features || Object.keys(features).length === 0) return "(none)";
+  return Object.entries(features)
+    .filter(([, v]) => v != null && v !== "")
+    .map(([k, v]) => `${k}: ${v}`)
+    .join(", ") || "(none)";
+}
+
+function formatMorphemes(morphemes?: Array<{ form?: string; gloss?: string }>): string {
+  if (!morphemes || morphemes.length === 0) return "(none)";
+  return morphemes.map((m) => `${m.form || "?"} [${m.gloss || "?"}]`).join(" + ") || "(none)";
+}
+
+function formatNotes(notes?: Array<{ marker?: string; text?: string; type?: string }>): string {
+  if (!notes || notes.length === 0) return "(none)";
+  return notes.map((n) => `[${n.marker || "*"}] (${n.type || "note"}): ${n.text || ""}`).join("; ") || "(none)";
 }
 
 export function DraftDiffModal({
@@ -42,7 +69,7 @@ export function DraftDiffModal({
     const items: DiffItem[] = [];
 
     if (repoDoc) {
-      if ((repoDoc.title || "") !== (draftDoc.title || "")) {
+      if ((repoDoc.title || "").trim() !== (draftDoc.title || "").trim()) {
         items.push({
           id: "meta-title",
           type: "meta",
@@ -52,17 +79,19 @@ export function DraftDiffModal({
         });
       }
 
-      if ((repoDoc.author || "") !== (draftDoc.author || "")) {
+      const repoAuthor = (repoDoc.author || repoDoc.glossedBy || "").trim();
+      const draftAuthor = (draftDoc.author || draftDoc.glossedBy || "").trim();
+      if (repoAuthor !== draftAuthor) {
         items.push({
           id: "meta-author",
           type: "meta",
-          label: "Author / Speaker",
-          repoValue: repoDoc.author || "(empty)",
-          draftValue: draftDoc.author || "(empty)",
+          label: "Author / Editor",
+          repoValue: repoAuthor || "(empty)",
+          draftValue: draftAuthor || "(empty)",
         });
       }
 
-      if ((repoDoc.sourceEdition || "") !== (draftDoc.sourceEdition || "")) {
+      if ((repoDoc.sourceEdition || "").trim() !== (draftDoc.sourceEdition || "").trim()) {
         items.push({
           id: "meta-edition",
           type: "meta",
@@ -101,6 +130,18 @@ export function DraftDiffModal({
             });
           }
 
+          const repoNotesFormatted = formatNotes(repoSent.notes);
+          const draftNotesFormatted = formatNotes(draftSent.notes);
+          if (repoNotesFormatted !== draftNotesFormatted) {
+            items.push({
+              id: `sent-notes-${i + 1}`,
+              type: "sentence_notes",
+              label: `Sentence ${i + 1} Notes / Critical Apparatus`,
+              repoValue: repoNotesFormatted,
+              draftValue: draftNotesFormatted,
+            });
+          }
+
           const repoWords = repoSent.words || [];
           const draftWords = draftSent.words || [];
           const maxWords = Math.max(repoWords.length, draftWords.length);
@@ -109,6 +150,7 @@ export function DraftDiffModal({
             const rw = repoWords[w];
             const dw = draftWords[w];
             if (rw && dw) {
+              const wordWord = dw.originalWord || rw.originalWord;
               const rwGloss = rw.morphologicalGloss || rw.originalWord;
               const dwGloss = dw.morphologicalGloss || dw.originalWord;
               const rwLemma = rw.analysis?.lemma || "";
@@ -118,9 +160,57 @@ export function DraftDiffModal({
                 items.push({
                   id: `word-gloss-${i + 1}-${w + 1}`,
                   type: "word_gloss",
-                  label: `Sentence ${i + 1}, Word #${w + 1} (${dw.originalWord})`,
+                  label: `Sentence ${i + 1}, Word #${w + 1} (${wordWord}) — Gloss / Lemma`,
                   repoValue: `Gloss: "${rwGloss}"${rwLemma ? ` · Lemma: ${rwLemma}` : ""}`,
                   draftValue: `Gloss: "${dwGloss}"${dwLemma ? ` · Lemma: ${dwLemma}` : ""}`,
+                });
+              }
+
+              const rwPos = rw.analysis?.partOfSpeech || "";
+              const dwPos = dw.analysis?.partOfSpeech || "";
+              if (rwPos !== dwPos) {
+                items.push({
+                  id: `word-pos-${i + 1}-${w + 1}`,
+                  type: "word_pos",
+                  label: `Sentence ${i + 1}, Word #${w + 1} (${wordWord}) — Part of Speech`,
+                  repoValue: rwPos || "(unclassified)",
+                  draftValue: dwPos || "(unclassified)",
+                });
+              }
+
+              const rwDef = (rw.analysis?.definition || "").trim();
+              const dwDef = (dw.analysis?.definition || "").trim();
+              if (rwDef !== dwDef) {
+                items.push({
+                  id: `word-def-${i + 1}-${w + 1}`,
+                  type: "word_definition",
+                  label: `Sentence ${i + 1}, Word #${w + 1} (${wordWord}) — Definition`,
+                  repoValue: rwDef || "(none)",
+                  draftValue: dwDef || "(none)",
+                });
+              }
+
+              const rwFeaturesFormatted = formatFeatures(rw.analysis?.features as Record<string, unknown> | undefined);
+              const dwFeaturesFormatted = formatFeatures(dw.analysis?.features as Record<string, unknown> | undefined);
+              if (rwFeaturesFormatted !== dwFeaturesFormatted) {
+                items.push({
+                  id: `word-feat-${i + 1}-${w + 1}`,
+                  type: "word_features",
+                  label: `Sentence ${i + 1}, Word #${w + 1} (${wordWord}) — Inflection Features`,
+                  repoValue: rwFeaturesFormatted,
+                  draftValue: dwFeaturesFormatted,
+                });
+              }
+
+              const rwMorphemesFormatted = formatMorphemes(rw.analysis?.morphemes);
+              const dwMorphemesFormatted = formatMorphemes(dw.analysis?.morphemes);
+              if (rwMorphemesFormatted !== dwMorphemesFormatted) {
+                items.push({
+                  id: `word-morph-${i + 1}-${w + 1}`,
+                  type: "word_morphemes",
+                  label: `Sentence ${i + 1}, Word #${w + 1} (${wordWord}) — Morphemes`,
+                  repoValue: rwMorphemesFormatted,
+                  draftValue: dwMorphemesFormatted,
                 });
               }
             } else if (!rw && dw) {
