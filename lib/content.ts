@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { TextDocumentSchema } from "./schemas/corpus";
 import type {
   TextDocument,
   HomePageContent,
@@ -125,10 +126,13 @@ export function loadTextDocuments(): LoadedTextDocument[] {
 
   const documents = fileNames.map((fileName) => {
     const filePath = path.join(contentDirectory, fileName);
-    const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as unknown;
-    const normalized = normalizeDocumentShape(requireObject(parsed, `Text document "${fileName}"`), fileName);
+    const parsed = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    const validated = TextDocumentSchema.parse(parsed);
 
-    return { ...normalized, fileName: path.basename(fileName, ".json") } as LoadedTextDocument;
+    return {
+      ...(validated as TextDocument),
+      fileName: path.basename(fileName, ".json"),
+    } as LoadedTextDocument;
   });
 
   assertTextDocuments(documents);
@@ -141,7 +145,8 @@ export function assertTextDocuments(documents: unknown[]): asserts documents is 
 
   for (const [documentIndex, value] of documents.entries()) {
     const context = `Text document at index ${documentIndex}`;
-    const document = requireObject(value, context);
+    const validated = TextDocumentSchema.parse(value);
+    const document = validated as Record<string, unknown>;
 
     const textId = requireString(document, "textId", context);
     const slug = requireString(document, "slug", context);
@@ -169,11 +174,15 @@ export function assertTextDocuments(documents: unknown[]): asserts documents is 
       const sentence = requireObject(sentenceValue, sentenceContext);
       requireString(sentence, "id", sentenceContext);
       if (typeof sentence.translation !== "string" || sentence.translation.trim() === "") {
-        sentence.translation = typeof sentence.translation === "string" && sentence.translation !== ""
-          ? sentence.translation
-          : "No translation provided.";
+        sentence.translation =
+          typeof sentence.translation === "string" && sentence.translation !== ""
+            ? sentence.translation
+            : "No translation provided.";
       }
-      const words = requireArray(sentence.words, `${sentenceContext} words`);
+      const words = requireArray(
+        sentence.words ?? sentence.tokens,
+        `${sentenceContext} words`,
+      );
       for (const [wordIndex, wordValue] of words.entries()) {
         const wordContext = `${sentenceContext} word ${wordIndex}`;
         const word = requireObject(wordValue, wordContext);
@@ -182,14 +191,6 @@ export function assertTextDocuments(documents: unknown[]): asserts documents is 
       }
     }
   }
-}
-
-function normalizeDocumentShape(document: Record<string, unknown>, fileName: string): Record<string, unknown> {
-  if (!Array.isArray(document.sentences)) {
-    throw new Error(`Text document "${fileName}" must contain a sentences array.`);
-  }
-
-  return document;
 }
 
 function requireObject(value: unknown, context: string): Record<string, unknown> {

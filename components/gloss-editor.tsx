@@ -126,8 +126,9 @@ export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number
 
   const rawMorphemes = w.analysis?.morphemes || [];
   const normalizedMorphemes: Morpheme[] = rawMorphemes.map((m) => {
+    const legacyMorpheme = "morpheme" in m && typeof (m as Record<string, unknown>).morpheme === "string" ? ((m as Record<string, unknown>).morpheme as string) : "";
     const res: Morpheme = {
-      form: m.form || (m as unknown as { morpheme?: string }).morpheme || "",
+      form: m.form || legacyMorpheme || "",
       gloss: m.gloss || "",
     };
     if (m.id) res.id = m.id;
@@ -411,12 +412,15 @@ export function GlossEditor({
               .trim(),
             tokens: (s.tokens || []).map((tok) => ({
               ...tok,
-              morphemes: (tok.morphemes || []).map((m) => ({
-                id: m.id,
-                form: m.form || (m as unknown as { morpheme?: string }).morpheme || "",
-                gloss: m.gloss || "",
-                kind: m.kind,
-              })),
+              morphemes: (tok.morphemes || []).map((m) => {
+                const legacyMorpheme = "morpheme" in m && typeof (m as Record<string, unknown>).morpheme === "string" ? ((m as Record<string, unknown>).morpheme as string) : "";
+                return {
+                  id: m.id,
+                  form: m.form || legacyMorpheme || "",
+                  gloss: m.gloss || "",
+                  kind: m.kind,
+                };
+              }),
             })),
           })),
         };

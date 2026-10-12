@@ -59,21 +59,8 @@ const HERO_PREVIEW_TOKENS = [
   },
 ];
 
-// Default seed content for home page
-const DEFAULT_HOME_CONTENT = {
-  title: "Glossy · Interlinear Texts",
-  eyebrow: "Interlinear Texts",
-  heading: "Read a text or work on its glosses.",
-  description:
-    "Read, edit, and publish morphologically tagged historical texts with standardized Leipzig three-tier alignment, canonical dictionary headwords, and compilable LaTeX gb4e export.",
-  primaryAction: {
-    label: "+ Gloss a New Text",
-    href: "/edit/new",
-  },
-};
-
 const INITIAL_HOME_PAGE_DATA = {
-  homePage: (homeContentData as unknown as HomePageContent) || (DEFAULT_HOME_CONTENT as HomePageContent),
+  homePage: homeContentData as HomePageContent,
 };
 const HOME_PAGE_VARS = { relativePath: "home.json" };
 
@@ -99,7 +86,7 @@ export default function Home() {
     data: INITIAL_HOME_PAGE_DATA,
   });
 
-  const page = ((pageData?.homePage || homeContentData) as unknown as HomePageContent) || (DEFAULT_HOME_CONTENT as HomePageContent);
+  const page = (pageData?.homePage ?? homeContentData) as HomePageContent;
 
   const [previewMode, setPreviewMode] = useState<"reader" | "editor">("reader");
   const [selectedTokenIdx, setSelectedTokenIdx] = useState<number>(3); // default to 'hlāforde'

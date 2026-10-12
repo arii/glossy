@@ -236,15 +236,15 @@ export default function NewTextPage() {
               parsed.slug ||
               parsed.textId ||
               file.name.replace(/\.[^/.]+$/, "").toLowerCase().replace(/[^a-z0-9]+/g, "-");
-            setTitle(parsed.title || file.name.replace(/\.[^/.]+$/, ""));
+            setTitle(parsed.title ?? file.name.replace(/\.[^/.]+$/, ""));
             setSlug(docSlug);
-            setAuthor(parsed.author || "Anonymous");
-            setEditor(parsed.editor || "Tyler Lemon");
-            setShelfmark(parsed.shelfmark || parsed.source || "");
-            setDialect(parsed.dialect || "");
-            setHistoricalDate(parsed.historicalDate || parsed.date || "");
-            setSourceEdition(parsed.sourceEdition || "");
-            setSource(parsed.source || "Uploaded JSON Document");
+            setAuthor(parsed.author ?? "Anonymous");
+            setEditor(parsed.editor ?? "Tyler Lemon");
+            setShelfmark(parsed.shelfmark ?? parsed.source ?? "");
+            setDialect(parsed.dialect ?? "");
+            setHistoricalDate(parsed.historicalDate ?? parsed.date ?? "");
+            setSourceEdition(parsed.sourceEdition ?? "");
+            setSource(parsed.source ?? "Uploaded JSON Document");
             setUploadedSentences(parsed.sentences);
             setRawText(
               parsed.sentences
@@ -350,11 +350,11 @@ export default function NewTextPage() {
       setTitle(preset.title);
       setSlug(preset.slug);
       setAuthor(preset.author);
-      setEditor(preset.editor || "Tyler Lemon");
-      setShelfmark(preset.shelfmark || preset.source);
-      setDialect(preset.dialect || "");
-      setHistoricalDate(preset.historicalDate || "");
-      setSourceEdition(preset.sourceEdition || "");
+      setEditor(preset.editor ?? "Tyler Lemon");
+      setShelfmark(preset.shelfmark ?? preset.source ?? "");
+      setDialect(preset.dialect ?? "");
+      setHistoricalDate(preset.historicalDate ?? "");
+      setSourceEdition(preset.sourceEdition ?? "");
       setSource(preset.source);
       setRawText(preset.lines.map((l) => l.oe).join("\n"));
       setRawTranslations(preset.lines.map((l) => l.en).join("\n"));

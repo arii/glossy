@@ -25,6 +25,9 @@ export const SentenceSchema = z.preprocess(
       if (!obj.tokens && Array.isArray(obj.words)) {
         obj.tokens = obj.words;
       }
+      if (!obj.words && Array.isArray(obj.tokens)) {
+        obj.words = obj.tokens;
+      }
       if (!obj.originalText && Array.isArray(obj.tokens)) {
         obj.originalText = (obj.tokens as Array<Record<string, unknown>>)
           .map((t) => (t?.originalWord as string) || "")
@@ -41,19 +44,32 @@ export const SentenceSchema = z.preprocess(
       originalText: z.string().default(""),
       translation: z.string().default(""),
       tokens: z.array(WordTokenSchema),
+      words: z.array(WordTokenSchema).optional(),
     })
     .passthrough(),
 );
 
 export const TextDocumentSchema = z
   .object({
+    textId: z.string().optional(),
     slug: z.string(),
     title: z.string(),
     author: z.string().default("Anonymous"),
     editor: z.string().default(""),
     date: z.string().default(""),
     edition: z.string().default(""),
+    shelfmark: z.string().optional(),
+    dialect: z.string().optional(),
+    historicalDate: z.string().optional(),
+    historicalAuthor: z.string().optional(),
+    glossedBy: z.string().optional(),
+    source: z.string().default(""),
+    sourceFile: z.string().default(""),
+    sourceEdition: z.string().optional(),
+    language: z.string().default("Old English"),
+    status: z.enum(["draft", "review", "published"]).default("published"),
     sentences: z.array(SentenceSchema),
+    blocks: z.array(z.unknown()).optional(),
   })
   .passthrough();
 
