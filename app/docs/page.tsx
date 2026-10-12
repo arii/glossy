@@ -609,7 +609,7 @@ export default function DocsPage() {
                             <a
                               href="https://en.wiktionary.org/wiki/Wiktionary:About_Old_English"
                               target="_blank"
-                              rel="noreferrer"
+                              rel="noopener noreferrer"
                               style={{ color: "var(--accent)", fontWeight: 600, textDecoration: "underline" }}
                             >
                               Wiktionary:About Old English{" "}

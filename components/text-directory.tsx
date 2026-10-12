@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   Trash2,
   BookOpen,
@@ -46,6 +46,15 @@ export function TextDirectory({
   const [choices, setChoices] = useState<TextChoice[]>(initialChoices);
   const [activeModalChoice, setActiveModalChoice] = useState<TextChoice | null>(null);
   const [openMenuSlug, setOpenMenuSlug] = useState<string | null>(null);
+
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
+  const navigate = useCallback((url: string) => {
+    startTransition(() => {
+      router.push(url);
+    });
+  }, [router]);
 
   const reloadCorpus = useCallback(() => {
     if (typeof window === "undefined") return;
@@ -281,8 +290,13 @@ export function TextDirectory({
                     minWidth: 0,
                   }}
                 >
-                  <Link
+                  <a
                     href={choice.isLocalOnly ? `/read?slug=${choice.slug}` : `/read/${choice.slug}`}
+                    onClick={(e) => {
+                      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                      e.preventDefault();
+                      navigate(choice.isLocalOnly ? `/read?slug=${choice.slug}` : `/read/${choice.slug}`);
+                    }}
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
@@ -297,13 +311,19 @@ export function TextDirectory({
                       fontWeight: 600,
                       textDecoration: "none",
                       whiteSpace: "nowrap",
+                      opacity: isPending ? 0.7 : 1,
                     }}
                   >
                     <BookOpen style={{ width: "0.85rem", height: "0.85rem" }} /> Read
-                  </Link>
+                  </a>
 
-                  <Link
+                  <a
                     href={choice.isLocalOnly ? `/edit?slug=${choice.slug}` : `/edit/${choice.slug}`}
+                    onClick={(e) => {
+                      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                      e.preventDefault();
+                      navigate(choice.isLocalOnly ? `/edit?slug=${choice.slug}` : `/edit/${choice.slug}`);
+                    }}
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
@@ -319,10 +339,11 @@ export function TextDirectory({
                       fontWeight: 600,
                       textDecoration: "none",
                       whiteSpace: "nowrap",
+                      opacity: isPending ? 0.7 : 1,
                     }}
                   >
                     <Edit3 style={{ width: "0.85rem", height: "0.85rem" }} /> Edit
-                  </Link>
+                  </a>
 
                 </div>
 

@@ -217,6 +217,7 @@ export function ReadingPage({
   };
 
   // Aggregate all notes across sentences
+  const doc = selectedText || { slug: "", textId: "" };
   const aggregatedApparatus = (selectedText?.sentences || []).flatMap((sent, sIdx) => {
     const sNum = sent.id.match(/\d+$/)?.[0] || String(sIdx + 1);
     const itemNotes = (sent.notes || []).map((note) => {
@@ -236,10 +237,11 @@ export function ReadingPage({
     });
 
     const stringNotes = (sent.footnotes || []).map((fnText, fnIdx) => ({
-      id: `fn-${sent.id}-${fnIdx + 1}`,
+      id: `fn-${doc.slug || doc.textId}-${sent.id}-${fnIdx + 1}`,
       sentenceId: sent.id,
       sentenceLabel: `Sentence ${sNum}`,
       wordForm: "",
+      gloss: fnText,
       marker: String(fnIdx + 1),
       type: "general" as const,
       text: fnText,

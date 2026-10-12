@@ -52,7 +52,7 @@ export function GlossPopup({ record, onClose }: GlossPopupProps) {
               className="pronunciation-source"
               href={analysis.pronunciationSource}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               source
             </a>
@@ -97,7 +97,7 @@ export function GlossPopup({ record, onClose }: GlossPopupProps) {
       )}
 
       {analysis.wiktionaryUrl && (
-        <a className="reference-link" href={analysis.wiktionaryUrl} target="_blank" rel="noreferrer">
+        <a className="reference-link" href={analysis.wiktionaryUrl} target="_blank" rel="noopener noreferrer">
           Open in Wiktionary <span aria-hidden="true">↗</span>
         </a>
       )}

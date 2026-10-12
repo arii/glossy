@@ -3,7 +3,10 @@ import fs from "node:fs";
 import path from "node:path";
 import prettier from "prettier";
 
-console.log("Starting TinaCMS dev server with Next.js (port 4001 + 3000)...");
+const PORT = Number(process.env.PORT ?? 3000);
+const TINA_PORT = Number(process.env.TINA_PORT ?? 4001);
+
+console.log(`Starting TinaCMS dev server with Next.js (port ${TINA_PORT} + ${PORT})...`);
 
 // Auto-format and sort JSON files in content/ whenever changed (e.g. by TinaCMS)
 const contentDir = path.join(process.cwd(), "content");
@@ -42,7 +45,7 @@ if (fs.existsSync(contentDir)) {
   });
 }
 
-const child = spawn('npx tinacms dev -c "next dev -p 3000 -H 0.0.0.0"', {
+const child = spawn(`npx tinacms dev -p ${TINA_PORT} -c "next dev -p ${PORT} -H 0.0.0.0"`, {
   stdio: "inherit",
   shell: true,
 });
