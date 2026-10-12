@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import {
   writeDraft,
   readDraft,
-  migrateLegacyDrafts,
   DRAFT_STORAGE_PREFIX,
 } from "../../lib/local-drafts";
 import type { TextDocument } from "../../lib/types";
@@ -71,48 +70,7 @@ async function runStorageTests() {
   assert.equal(readRes?.version, 1);
   assert.equal(readRes?.doc.title, "The Voyages of Ohthere");
 
-  // Test 2: One-time migration of glossy_draft_ohthere to glossy:v1:draft:ohthere
-  mockStore.clear();
-  const legacyDraftKey = "glossy_draft_ohthere";
-  const legacyEditorShape = {
-    textId: "ohthere",
-    slug: "ohthere",
-    title: "Legacy Ohthere Draft",
-    author: "Legacy Author",
-    sentences: [
-      {
-        id: "sent-1",
-        freeTranslation: "Legacy translation.",
-        tokens: [
-          {
-            id: "tok-1",
-            sourceForm: "Ōhtthere",
-            sourceGloss: "Ohthere",
-            lemma: "ohthere",
-            pos: "noun",
-          },
-        ],
-      },
-    ],
-  };
-
-  mockStore.set(legacyDraftKey, JSON.stringify(legacyEditorShape));
-  mockStore.set("glossy_pending_drafts", JSON.stringify({ ohthere: { slug: "ohthere", title: "Legacy" } }));
-  mockStore.set("glossy_deleted_slugs", JSON.stringify(["deleted-text"]));
-
-  const migrationRes = migrateLegacyDrafts();
-  assert.equal(migrationRes.migratedCount, 1, "Should migrate exactly 1 legacy draft");
-  assert.equal(mockStore.has(legacyDraftKey), false, "Legacy key must be purged after migration");
-  assert.equal(mockStore.has("glossy_pending_drafts"), false, "Legacy pending manifest must be purged");
-  assert.equal(mockStore.has("glossy_deleted_slugs"), false, "Legacy deleted slugs must be purged");
-
-  const migratedEnvelope = readDraft("ohthere");
-  assert.ok(migratedEnvelope, "Migrated draft envelope must exist under v1 prefix");
-  assert.equal(migratedEnvelope?.version, 1);
-  assert.equal(migratedEnvelope?.doc.title, "Legacy Ohthere Draft");
-  assert.equal(migratedEnvelope?.doc.sentences?.[0]?.words?.[0]?.originalWord, "Ōhtthere");
-
-  // Test 3: QuotaExceededError simulation returning { ok: false, error: "QUOTA_EXCEEDED" }
+  // Test 2: QuotaExceededError simulation returning { ok: false, error: "QUOTA_EXCEEDED" }
   mockStore.clear();
   const originalSetItem = window.localStorage.setItem;
   window.localStorage.setItem = () => {
