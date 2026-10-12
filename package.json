@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@google/genai": "^2.27.0",
+    "@myriaddreamin/typst-ts-renderer": "^0.7.0",
     "@myriaddreamin/typst-ts-web-compiler": "^0.7.0",
     "@myriaddreamin/typst.ts": "^0.7.0",
     "@tinacms/cli": "^3.1.0",

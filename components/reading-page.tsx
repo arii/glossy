@@ -18,6 +18,7 @@ import {
 import { AnnotatedPassage } from "./annotated-passage";
 import { GlossPopup } from "./gloss-popup";
 import { AttributionModal } from "./attribution-modal";
+import { exportToPdf } from "../lib/export-pdf";
 
 type ReadingPageProps = {
   texts: TextDocument[];
@@ -267,25 +268,50 @@ export function ReadingPage({
         <PageHero
           eyebrow="Interlinear"
           badge={
-            <button
-              type="button"
-              onClick={() => setAttributionOpen(true)}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.35rem",
-                padding: "0.25rem 0.6rem",
-                background: "#fbf7ee",
-                border: "1px solid #dfcfb8",
-                borderRadius: "0.25rem",
-                fontSize: "0.75rem",
-                fontWeight: 600,
-                color: "var(--accent)",
-                cursor: "pointer",
-              }}
-            >
-              Attribution &amp; Citation
-            </button>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  if (selectedText) {
+                    exportToPdf(selectedText).catch(e => console.error("PDF export failed:", e));
+                  }
+                }}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.35rem",
+                  padding: "0.25rem 0.6rem",
+                  background: "#fbf7ee",
+                  border: "1px solid #dfcfb8",
+                  borderRadius: "0.25rem",
+                  fontSize: "0.75rem",
+                  fontWeight: 600,
+                  color: "var(--accent)",
+                  cursor: "pointer",
+                }}
+              >
+                Download PDF
+              </button>
+              <button
+                type="button"
+                onClick={() => setAttributionOpen(true)}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.35rem",
+                  padding: "0.25rem 0.6rem",
+                  background: "#fbf7ee",
+                  border: "1px solid #dfcfb8",
+                  borderRadius: "0.25rem",
+                  fontSize: "0.75rem",
+                  fontWeight: 600,
+                  color: "var(--accent)",
+                  cursor: "pointer",
+                }}
+              >
+                Attribution &amp; Citation
+              </button>
+            </div>
           }
           title={currentTitle}
           description={currentSource}

@@ -7,6 +7,7 @@ import { SentenceRow } from "./sentence-row";
 import { PageHero } from "./page-hero";
 import { SiteFooter } from "./site-footer";
 import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
+import { exportToPdf } from "../lib/export-pdf";
 import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
 import { safeJsonStringify } from "../lib/safe-json";
 import { isProtectedSlug } from "../lib/corpus-registry";
@@ -1031,6 +1032,17 @@ export function GlossEditor({
                   >
                     Export LaTeX
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      exportToPdf(documentState as unknown as TextDocument).catch(e => console.error("PDF export failed:", e));
+                    }}
+                    className="workspace-link workspace-link-latex"
+                    title="Download Typst-generated PDF"
+                  >
+                    Export PDF
+                  </button>
+
 
                   {!isProtectedText && (
                     <button
