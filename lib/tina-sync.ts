@@ -6,7 +6,7 @@ import {
   computeDocumentHash,
   getTinaAuthToken,
 } from "./local-drafts";
-import { getTinaGraphQLUrl } from "./tina-config";
+import { isLocalMode, getTinaGraphQLUrl } from "./tina-config";
 
 export type CommitOutcome = "committed" | "needs-login" | "unreachable" | "rejected";
 
@@ -164,6 +164,11 @@ export function sanitizeDraftForTinaMutation(
 export function isTinaAuthenticated(cms?: unknown): boolean {
   if (typeof window === "undefined") return false;
 
+  // Local development does not require TinaCloud authentication
+  if (isLocalMode()) {
+    return true;
+  }
+
   // Check cms instance API
   if (cms && typeof cms === "object" && "api" in cms) {
     const tinaApi = (cms as { api?: { tina?: { request?: unknown } } })?.api?.tina;
@@ -218,20 +223,86 @@ export async function commitPendingDraft(
   const fileName = (draftDoc.fileName || draftDoc.textId || slug) as string;
   const relativePath = `${fileName.endsWith(".json") ? fileName : `${fileName}.json`}`;
 
-  try {
-    const graphqlUrl = getTinaGraphQLUrl();
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
+  // If Tina CMS instance is available (e.g. within Tina Admin), execute mutation via CMS API
+  if (options?.cms && typeof options.cms === "object" && "api" in options.cms) {
+    const tinaApi = (options.cms as {
+      api?: {
+        tina?: {
+          request: (
+            query: string,
+            options?: { variables: Record<string, unknown> },
+          ) => Promise<{ data?: unknown; errors?: Array<{ message: string }> }>;
+        };
+      };
+    })?.api?.tina;
 
-    const authToken = getTinaAuthToken();
-    if (authToken) {
-      const cleanToken = authToken.replace(/[\r\n\t\x00-\x1f\x7f]+/g, "").trim();
-      if (cleanToken) {
-        headers["Authorization"] = `Bearer ${cleanToken}`;
+    if (tinaApi?.request) {
+      try {
+        const res = await tinaApi.request(UPDATE_TEXT_MUTATION, {
+          variables: { relativePath, params: sanitizedParams },
+        });
+
+        if (res?.errors && res.errors.length > 0) {
+          const errMsgs = res.errors.map((e) => e.message);
+          return {
+            outcome: "rejected",
+            ok: false,
+            slug,
+            error: errMsgs[0] || "GraphQL mutation rejected",
+            errors: errMsgs,
+          };
+        }
+
+        markDraftAsSynced(slug, contentHash);
+        return { outcome: "committed", ok: true, slug };
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Tina API client request failed";
+        const isAuthErr = msg.toLowerCase().includes("auth") || msg.toLowerCase().includes("unauthorized");
+        return {
+          outcome: isAuthErr ? "needs-login" : "rejected",
+          ok: false,
+          slug,
+          error: msg,
+        };
       }
     }
+  }
 
+  // Otherwise, commit via GraphQL HTTP endpoint
+  const isLocal = isLocalMode();
+  const graphqlUrl = getTinaGraphQLUrl();
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  // Remote mode requires TinaCloud authentication
+  if (!isLocal) {
+    const authToken = getTinaAuthToken();
+    if (!authToken) {
+      return {
+        outcome: "needs-login",
+        ok: false,
+        slug,
+        error: "TinaCMS authentication required or token expired. Please log in.",
+      };
+    }
+    const cleanToken = authToken.replace(/[\r\n\t\x00-\x1f\x7f]+/g, "").trim();
+    if (cleanToken) {
+      headers["Authorization"] = `Bearer ${cleanToken}`;
+    }
+  }
+
+  if (!graphqlUrl) {
+    return {
+      outcome: "rejected",
+      ok: false,
+      slug,
+      error: "TinaCMS GraphQL URL is not configured. Set NEXT_PUBLIC_TINA_GRAPHQL_URL or NEXT_PUBLIC_TINA_CLIENT_ID.",
+    };
+  }
+
+  try {
     const res = await fetch(graphqlUrl, {
       method: "POST",
       headers,
@@ -268,12 +339,9 @@ export async function commitPendingDraft(
     }
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Network failure";
-
-    // Distinguish auth/config errors from simple unreachability
     if (msg.includes("invalid") || msg.includes("missing")) {
       return { outcome: "rejected", ok: false, slug, error: msg };
     }
-
     return {
       outcome: "unreachable",
       ok: false,
