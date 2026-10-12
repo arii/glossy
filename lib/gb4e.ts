@@ -213,7 +213,7 @@ export function parseGb4eToTextDocument(
   const title = defaults.title || parsed.title || "The voyages of Ohthere and Wulfstan";
   const author = defaults.author || parsed.author || "Tyler Lemon";
   const date = defaults.date || parsed.date || "September 30, 2026";
-  const slug = defaults.slug || "ohthere-wulfstan";
+  const slug = defaults.slug || "ohthere";
   const textId = defaults.textId || "ohthere";
 
   return {

@@ -23,13 +23,11 @@ console.log("Running Unified TinaCMS Commit Pipeline & Modern Storage Unit Tests
 assert.ok(Array.isArray(BUILT_IN_CORPUS), "BUILT_IN_CORPUS must be an array");
 assert.equal(BUILT_IN_CORPUS.length, 1, "BUILT_IN_CORPUS should have exactly 1 core text at startup");
 assert.equal(isBuiltInSlug("ohthere"), true, "ohthere should be recognized as built-in");
-assert.equal(isBuiltInSlug("ohthere-wulfstan"), true, "ohthere-wulfstan should be recognized as built-in");
 assert.equal(isBuiltInSlug("beowulf-prologue"), true, "beowulf-prologue should be recognized as built-in");
 assert.equal(isBuiltInSlug("non-existent-random-slug"), false, "random slug should not be built-in");
 
 // Test 2: Protected status checks
 assert.equal(isProtectedSlug("ohthere"), true, "ohthere must be protected");
-assert.equal(isProtectedSlug("ohthere-wulfstan"), true, "ohthere-wulfstan must be protected");
 assert.equal(isProtectedSlug("beowulf-prologue"), false, "beowulf-prologue must NOT be protected");
 assert.equal(isProtectedSlug("caedmon-hymn"), false, "caedmon-hymn must NOT be protected");
 
@@ -40,7 +38,6 @@ assert.equal(ohthereMeta.protected, true, "ohthere should be protected");
 
 // Test 4: Workspace slug checks
 assert.equal(isWorkspaceSlug("ohthere"), true, "ohthere must be in workspace");
-assert.equal(isWorkspaceSlug("ohthere-wulfstan"), true, "ohthere-wulfstan alias must be in workspace");
 assert.equal(isWorkspaceSlug("beowulf-prologue"), false, "uningested preset beowulf-prologue must NOT be in workspace");
 
 // Test 5: getWorkspaceTexts
@@ -305,6 +302,31 @@ assert.equal(getTinaAuthToken(), "json-newline-token", "Must parse formatted JSO
 // Empty JSON object
 mockStore.set("tinacms-auth", "{}");
 assert.equal(getTinaAuthToken(), null, "Empty JSON object must return null");
+
+// Test 14: Canonical Slug Deduplication in getWorkspaceTexts
+mockStore.clear();
+writeDraft("ohthere", {
+  textId: "ohthere",
+  slug: "ohthere",
+  title: "The Voyages of Ohthere and Wulfstan",
+  language: "Old English",
+  author: "Alfred the Great's Circle",
+  sentences: [],
+});
+
+const deduplicatedWorkspace = getWorkspaceTexts({
+  currentSlug: "ohthere",
+  allLoadedTexts: [{ slug: "ohthere", title: "The Voyages of Ohthere and Wulfstan" }],
+});
+
+const ohthereMatches = deduplicatedWorkspace.filter(
+  (t) => t.slug === "ohthere",
+);
+assert.equal(
+  ohthereMatches.length,
+  1,
+  "Ohthere text must not be duplicated in workspace texts",
+);
 
 // Clean up
 mockStore.clear();

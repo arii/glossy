@@ -106,14 +106,12 @@ export const ALL_PRESETS_METADATA: Record<string, BuiltInTextMetadata> = {
 
 export function isProtectedSlug(slug: string): boolean {
   if (!slug) return false;
-  const s = slug.toLowerCase();
-  return s === "ohthere" || s === "ohthere-wulfstan";
+  return slug.toLowerCase() === "ohthere";
 }
 
 export function isBuiltInSlug(slug: string): boolean {
   if (!slug) return false;
   const s = slug.toLowerCase();
-  if (s === "ohthere-wulfstan") return true;
   if (BUILT_IN_CORPUS.some((t) => t.slug.toLowerCase() === s || t.textId.toLowerCase() === s)) {
     return true;
   }
@@ -123,9 +121,6 @@ export function isBuiltInSlug(slug: string): boolean {
 export function getBuiltInMetadata(slug: string): BuiltInTextMetadata | undefined {
   if (!slug) return undefined;
   const s = slug.toLowerCase();
-  if (s === "ohthere-wulfstan") {
-    return BUILT_IN_CORPUS.find((t) => t.slug === "ohthere");
-  }
   const defaultMeta = BUILT_IN_CORPUS.find((t) => t.slug.toLowerCase() === s || t.textId.toLowerCase() === s);
   if (defaultMeta) return defaultMeta;
   return ALL_PRESETS_METADATA[s];
