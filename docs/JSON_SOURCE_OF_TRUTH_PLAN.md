@@ -105,8 +105,7 @@ export interface LinguisticAnalysis {
 
 ### Phase 5: Verified Document Life-Cycle & Phantom-Edit Prevention
 - [x] **Step 5.1 — Canonical Startup Directory**:
-  - Only Ohthere (`/read/ohthere` and `/edit/ohthere`) is listed in the main corpus directory at startup.
-  - Example presets (Beowulf, Cædmon's Hymn, The Wanderer) only become workspace cards if and when explicitly ingested or uploaded by the user.
+  - All four classical texts (`ohthere`, `beowulf-prologue`, `caedmon-hymn`, and `the-wanderer`) are listed as first-class core texts in the corpus directory at startup.
 - [x] **Step 5.2 — Elimination of Phantom Formatting Edits**:
   - Opening the editor computes a baseline hash from the normalized document.
   - If no actual linguistic or translational changes are made (`currentHash === baselineHash`), draft storage is bypassed, preventing pristine texts from being falsely tagged as "Edited (Draft)".
@@ -114,7 +113,7 @@ export interface LinguisticAnalysis {
 - [x] **Step 5.3 — Streamlined Action Model & Working Deletion**:
   - Removed "hide on this device" complexity.
   - Working delete/revert handlers in the card 3-dot menu and editor header cleanly remove the draft from `localStorage` (`glossy:v1:draft:<slug>`, `glossy_draft_<slug>`, and pending manifest).
-  - Core canonical Ohthere remains protected from accidental deletion while allowing users to discard working edits back to the pristine master copy.
+  - Repository texts remain protected from accidental deletion while allowing users to discard working edits back to the pristine master copy.
 
 ### Phase 6: Redundant `texSource` Investigation and Elimination
 - [x] **Step 6.1 — Architectural Investigation of `texSource`**:
