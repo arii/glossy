@@ -3,1223 +3,1954 @@
   "textId": "beowulf-prologue",
   "slug": "beowulf-prologue",
   "language": "Old English",
-  "author": "Ariel Anders",
-  "historicalAuthor": "Anonymous",
-  "glossedBy": "Ariel Anders",
-  "editor": "Ariel Anders",
-  "shelfmark": "Klaeber's Beowulf (4th ed. Fulk, Bjork, Niles 2008)",
+  "author": "Tyler Lemon",
+  "glossedBy": "Tyler Lemon",
+  "editor": "Tyler Lemon",
+  "shelfmark": "BL Cotton MS Vitellius A. xv, fol. 129r–198v (Nowell Codex)",
   "dialect": "Late West Saxon (with Anglian features)",
   "historicalDate": "c. 700–1000 AD (MS c. 1000–1010 AD)",
   "title": "Beowulf: Prologue (Lines 1–11)",
-  "source": "Ariel Anders · c. 700–1000 AD (MS c. 1000–1010 AD)",
-  "sourceFile": "beowulf-prologue.json",
+  "source": "London, British Library, Cotton MS Vitellius A. xv, ff. 129r–198v",
+  "sourceFile": "references/Beowulf_Prologue.tex",
   "sourceEdition": "Klaeber's Beowulf (4th ed. Fulk, Bjork, Niles 2008)",
-  "status": "draft",
+  "status": "published",
   "sentences": [
     {
-      "id": "sent-1",
-      "translation": "Listen! We of the Spear-Danes in days of yore,",
+      "id": "paragraph-1-sentence-1",
+      "translation": "Listen! We of the Spear-Danes in days of yore, of the people's kings, have heard of their glory, how those noble princes performed courageous deeds.",
       "words": [
         {
-          "id": "token-1-1",
+          "id": "paragraph-1-sentence-1-word-1",
           "originalWord": "Hwæt",
-          "morphologicalGloss": "hwā",
+          "morphologicalGloss": "listen",
           "trailingPunctuation": "!",
-          "sourceGlossTex": "hwā",
+          "sourceGlossTex": "listen",
           "analysis": {
-            "lemma": "hwā",
-            "partOfSpeech": "pronoun",
+            "lemma": "hwæt",
+            "partOfSpeech": "interjection",
             "morphemes": [
               {
-                "form": "Hwæt!",
-                "gloss": "hwā"
+                "id": "paragraph-1-sentence-1-word-1-morpheme-1",
+                "form": "Hwæt",
+                "gloss": "listen"
               }
             ],
-            "definition": "pronoun (hwā)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/hwa#Old_English"
+            "definition": "Listen!, What!, Lo!, Behold!",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/hwæt#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-1 / word 1"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-1-2",
+          "id": "paragraph-1-sentence-1-word-2",
           "originalWord": "Wē",
-          "morphologicalGloss": "wē",
-          "sourceGlossTex": "wē",
+          "morphologicalGloss": "1PL.NOM",
+          "sourceGlossTex": "\\textsc{1pl.nom}",
           "analysis": {
             "lemma": "wē",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "pronoun",
+            "features": {
+              "case": "nominative",
+              "number": "plural",
+              "person": 1
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-1-word-2-morpheme-1",
                 "form": "Wē",
-                "gloss": "wē"
+                "gloss": "1PL.NOM"
               }
             ],
-            "definition": "noun (wē)",
+            "definition": "we",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/we#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-1 / word 2"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-1-3",
+          "id": "paragraph-1-sentence-1-word-3",
           "originalWord": "Gār-Den-a",
-          "morphologicalGloss": "Spear-Dane-GEN.PL",
-          "sourceGlossTex": "Spear-Dane-\\textsc{gen.pl}",
+          "morphologicalGloss": "spear-Dane-GEN.PL",
+          "sourceGlossTex": "spear-Dane-\\textsc{gen.pl}",
           "analysis": {
-            "lemma": "gārdena",
+            "lemma": "Gār-Dene",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "genitive",
+              "number": "plural",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-1-word-3-morpheme-1",
                 "form": "Gār",
-                "gloss": "Spear"
+                "gloss": "spear"
               },
               {
+                "id": "paragraph-1-sentence-1-word-3-morpheme-2",
                 "form": "Den",
                 "gloss": "Dane"
               },
               {
+                "id": "paragraph-1-sentence-1-word-3-morpheme-3",
                 "form": "a",
                 "gloss": "GEN.PL"
               }
             ],
-            "definition": "noun (gārdena)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/gardena#Old_English"
+            "definition": "Spear-Danes",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/Gar-Dene#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-1 / word 3"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-1-4",
+          "id": "paragraph-1-sentence-1-word-4",
           "originalWord": "in",
           "morphologicalGloss": "in",
           "sourceGlossTex": "in",
           "analysis": {
             "lemma": "in",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "preposition",
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-1-word-4-morpheme-1",
                 "form": "in",
                 "gloss": "in"
               }
             ],
-            "definition": "noun (in)",
+            "definition": "in, into, on",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/in#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-1 / word 4"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-1-5",
+          "id": "paragraph-1-sentence-1-word-5",
           "originalWord": "ġeār-dag-um",
           "morphologicalGloss": "year-day-DAT.PL",
           "trailingPunctuation": ",",
           "sourceGlossTex": "year-day-\\textsc{dat.pl}",
           "analysis": {
-            "lemma": "ġeārdagum",
+            "lemma": "ġēardag",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "dative",
+              "number": "plural",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-1-word-5-morpheme-1",
                 "form": "ġeār",
                 "gloss": "year"
               },
               {
+                "id": "paragraph-1-sentence-1-word-5-morpheme-2",
                 "form": "dag",
                 "gloss": "day"
               },
               {
+                "id": "paragraph-1-sentence-1-word-5-morpheme-3",
                 "form": "um",
                 "gloss": "DAT.PL"
               }
             ],
-            "definition": "noun (ġeārdagum)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/geardagum#Old_English"
+            "definition": "days of yore, ancient times",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/geardag#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-1 / word 5"
+            },
+            "notes": ""
           }
         }
       ]
     },
     {
-      "id": "sent-2",
-      "translation": "of the people's kings, have heard of their glory, hi",
+      "id": "paragraph-1-sentence-2",
+      "translation": "of the people's kings, have heard of their glory,",
       "words": [
         {
-          "id": "token-2-1",
+          "id": "paragraph-1-sentence-2-word-1",
           "originalWord": "þēod-cyning-a",
           "morphologicalGloss": "people-king-GEN.PL",
           "trailingPunctuation": ",",
           "sourceGlossTex": "people-king-\\textsc{gen.pl}",
           "analysis": {
-            "lemma": "þēodcyninga",
+            "lemma": "þēodcyning",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "genitive",
+              "number": "plural",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-2-word-1-morpheme-1",
                 "form": "þēod",
                 "gloss": "people"
               },
               {
+                "id": "paragraph-1-sentence-2-word-1-morpheme-2",
                 "form": "cyning",
                 "gloss": "king"
               },
               {
+                "id": "paragraph-1-sentence-2-word-1-morpheme-3",
                 "form": "a",
                 "gloss": "GEN.PL"
               }
             ],
-            "definition": "noun (þēodcyninga)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%BEeodcyninga#Old_English"
+            "definition": "people's king, national king",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/þeodcyning#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-2 / word 1"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-2-2",
+          "id": "paragraph-1-sentence-2-word-2",
           "originalWord": "þrym",
-          "morphologicalGloss": "þrym",
-          "sourceGlossTex": "þrym",
+          "morphologicalGloss": "glory.ACC.SG",
+          "sourceGlossTex": "glory\\textsc{.acc.sg}",
           "analysis": {
-            "lemma": "þrym",
+            "lemma": "þrymm",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "accusative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-2-word-2-morpheme-1",
                 "form": "þrym",
-                "gloss": "þrym"
+                "gloss": "glory.ACC.SG"
               }
             ],
-            "definition": "noun (þrym)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%BErym#Old_English"
+            "definition": "glory, majesty, power",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/þrymm#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-2 / word 2"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-2-3",
+          "id": "paragraph-1-sentence-2-word-3",
           "originalWord": "ġe-frūn-on",
-          "morphologicalGloss": "PFX-frūn-PST.PL",
+          "morphologicalGloss": "PFV-hear.PST-PL",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "\\textsc{pfx}-frūn-\\textsc{pst.pl}",
+          "sourceGlossTex": "\\textsc{pfv}-hear\\textsc{.pst}-\\textsc{pl}",
           "analysis": {
-            "lemma": "ġefrūnon",
-            "partOfSpeech": "noun",
+            "lemma": "ġefrīnan",
+            "partOfSpeech": "verb",
+            "features": {
+              "number": "plural",
+              "tense": "past",
+              "mood": "indicative"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-2-word-3-morpheme-1",
                 "form": "ġe",
-                "gloss": "PFX"
+                "gloss": "PFV"
               },
               {
+                "id": "paragraph-1-sentence-2-word-3-morpheme-2",
                 "form": "frūn",
-                "gloss": "frūn"
+                "gloss": "hear.PST"
               },
               {
+                "id": "paragraph-1-sentence-2-word-3-morpheme-3",
                 "form": "on",
-                "gloss": "PST.PL"
+                "gloss": "PL"
               }
             ],
-            "definition": "noun (ġefrūnon)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/gefrunon#Old_English"
+            "definition": "to learn by asking, hear of",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/gefrinan#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-2 / word 3"
+            },
+            "notes": ""
           }
         }
       ]
     },
     {
-      "id": "sent-3",
+      "id": "paragraph-1-sentence-3",
       "translation": "how those noble princes performed courageous deeds.",
-      "notes": [
-        {
-          "id": "fn-sent-3-1791827935785-1",
-          "marker": "1",
-          "type": "manuscript_variant",
-          "text": "hello world!"
-        }
-      ],
       "words": [
         {
-          "id": "token-3-1",
+          "id": "paragraph-1-sentence-3-word-1",
           "originalWord": "hū",
-          "morphologicalGloss": "hū",
-          "sourceGlossTex": "hū",
+          "morphologicalGloss": "how",
+          "sourceGlossTex": "how",
           "analysis": {
             "lemma": "hū",
             "partOfSpeech": "adverb",
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-3-word-1-morpheme-1",
                 "form": "hū",
-                "gloss": "hū"
+                "gloss": "how"
               }
             ],
-            "definition": "adverb (hū)",
+            "definition": "how",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/hu#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-3 / word 1"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-3-2",
+          "id": "paragraph-1-sentence-3-word-2",
           "originalWord": "ðā",
-          "morphologicalGloss": "sē",
-          "sourceGlossTex": "sē",
+          "morphologicalGloss": "DEF.NOM.PL",
+          "sourceGlossTex": "\\textsc{def.nom.pl}",
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
+            "features": {
+              "case": "nominative",
+              "number": "plural"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-3-word-2-morpheme-1",
                 "form": "ðā",
-                "gloss": "sē"
+                "gloss": "DEF.NOM.PL"
               }
             ],
-            "definition": "determiner (sē)",
+            "definition": "the, those",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/se#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-3 / word 2"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-3-3",
+          "id": "paragraph-1-sentence-3-word-3",
           "originalWord": "æþeling-as",
-          "morphologicalGloss": "æþeling-as",
-          "sourceGlossTex": "æþeling-as",
+          "morphologicalGloss": "noble-NOM.PL",
+          "sourceGlossTex": "noble-\\textsc{nom.pl}",
           "analysis": {
-            "lemma": "æþelingas",
+            "lemma": "æþeling",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "nominative",
+              "number": "plural",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-3-word-3-morpheme-1",
                 "form": "æþeling",
-                "gloss": "æþeling"
+                "gloss": "noble"
               },
               {
+                "id": "paragraph-1-sentence-3-word-3-morpheme-2",
                 "form": "as",
-                "gloss": "as"
+                "gloss": "NOM.PL"
               }
             ],
-            "definition": "noun (æþelingas)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%A6%C3%BEelingas#Old_English"
+            "definition": "noble, prince, lord",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/æþeling#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-3 / word 3"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-3-4",
+          "id": "paragraph-1-sentence-3-word-4",
           "originalWord": "ellen",
-          "morphologicalGloss": "ellen",
-          "sourceGlossTex": "ellen",
+          "morphologicalGloss": "valor.ACC.SG",
+          "sourceGlossTex": "valor\\textsc{.acc.sg}",
           "analysis": {
             "lemma": "ellen",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "accusative",
+              "number": "singular",
+              "gender": "neuter"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-3-word-4-morpheme-1",
                 "form": "ellen",
-                "gloss": "ellen"
+                "gloss": "valor.ACC.SG"
               }
             ],
-            "definition": "noun (ellen)",
+            "definition": "courage, valor, noble deed",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/ellen#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-3 / word 4"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-3-5",
+          "id": "paragraph-1-sentence-3-word-5",
           "originalWord": "fremed-on",
-          "morphologicalGloss": "fremed-PST.PL",
+          "morphologicalGloss": "perform.PST-PL",
           "trailingPunctuation": ".",
-          "sourceGlossTex": "fremed-\\textsc{pst.pl}",
+          "sourceGlossTex": "perform\\textsc{.pst}-\\textsc{pl}",
           "analysis": {
-            "lemma": "fremedon",
-            "partOfSpeech": "noun",
+            "lemma": "fremman",
+            "partOfSpeech": "verb",
+            "features": {
+              "number": "plural",
+              "tense": "past",
+              "mood": "indicative"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-3-word-5-morpheme-1",
                 "form": "fremed",
-                "gloss": "fremed"
+                "gloss": "perform.PST"
               },
               {
+                "id": "paragraph-1-sentence-3-word-5-morpheme-2",
                 "form": "on",
-                "gloss": "PST.PL"
+                "gloss": "PL"
               }
             ],
-            "definition": "noun (fremedon)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/fremedon#Old_English"
+            "definition": "to do, perform, accomplish",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/fremman#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-3 / word 5"
+            },
+            "notes": ""
           }
         }
       ]
     },
     {
-      "id": "sent-4",
-      "translation": "Often Scyld Scefing from troops of enemies,",
+      "id": "paragraph-1-sentence-4",
+      "translation": "Often Scyld Scefing from troops of enemies, from many tribes, seized the mead-benches,",
       "words": [
         {
-          "id": "token-4-1",
+          "id": "paragraph-1-sentence-4-word-1",
           "originalWord": "Oft",
-          "morphologicalGloss": "oft",
-          "sourceGlossTex": "oft",
+          "morphologicalGloss": "often",
+          "sourceGlossTex": "often",
           "analysis": {
             "lemma": "oft",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "adverb",
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-4-word-1-morpheme-1",
                 "form": "Oft",
-                "gloss": "oft"
+                "gloss": "often"
               }
             ],
-            "definition": "noun (oft)",
+            "definition": "often, frequently",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/oft#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-4 / word 1"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-4-2",
+          "id": "paragraph-1-sentence-4-word-2",
           "originalWord": "Scyld",
-          "morphologicalGloss": "scyld",
-          "sourceGlossTex": "scyld",
+          "morphologicalGloss": "Scyld.NOM.SG",
+          "sourceGlossTex": "Scyld\\textsc{.nom.sg}",
           "analysis": {
-            "lemma": "scyld",
+            "lemma": "Scyld",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-4-word-2-morpheme-1",
                 "form": "Scyld",
-                "gloss": "scyld"
+                "gloss": "Scyld.NOM.SG"
               }
             ],
-            "definition": "noun (scyld)",
+            "definition": "Scyld (legendary Danish king)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/Scyld#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-4 / word 2"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-4-3",
+          "id": "paragraph-1-sentence-4-word-3",
           "originalWord": "Scēf-ing",
-          "morphologicalGloss": "scēf-son.of",
-          "sourceGlossTex": "scēf-son\\textsc{.}of",
+          "morphologicalGloss": "Sceaf-son.NOM.SG",
+          "sourceGlossTex": "Sceaf-son\\textsc{.nom.sg}",
           "analysis": {
-            "lemma": "scēfing",
+            "lemma": "Scēfing",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-4-word-3-morpheme-1",
                 "form": "Scēf",
-                "gloss": "scēf"
+                "gloss": "Sceaf"
               },
               {
+                "id": "paragraph-1-sentence-4-word-3-morpheme-2",
                 "form": "ing",
-                "gloss": "son.of"
+                "gloss": "son.NOM.SG"
               }
             ],
-            "definition": "noun (scēfing)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/scefing#Old_English"
+            "definition": "son of Sceaf (patronymic)",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/Scefing#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-4 / word 3"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-4-4",
+          "id": "paragraph-1-sentence-4-word-4",
           "originalWord": "sceaþe-na",
-          "morphologicalGloss": "sceaþe-na",
-          "sourceGlossTex": "sceaþe-na",
+          "morphologicalGloss": "enemy-GEN.PL",
+          "sourceGlossTex": "enemy-\\textsc{gen.pl}",
           "analysis": {
-            "lemma": "sceaþena",
+            "lemma": "sceaþa",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "genitive",
+              "number": "plural",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-4-word-4-morpheme-1",
                 "form": "sceaþe",
-                "gloss": "sceaþe"
+                "gloss": "enemy"
               },
               {
+                "id": "paragraph-1-sentence-4-word-4-morpheme-2",
                 "form": "na",
-                "gloss": "na"
+                "gloss": "GEN.PL"
               }
             ],
-            "definition": "noun (sceaþena)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/scea%C3%BEena#Old_English"
+            "definition": "enemy, warrior, harmer",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/sceaþa#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-4 / word 4"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-4-5",
+          "id": "paragraph-1-sentence-4-word-5",
           "originalWord": "þrēat-um",
-          "morphologicalGloss": "þrēat-DAT.PL",
+          "morphologicalGloss": "troop-DAT.PL",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "þrēat-\\textsc{dat.pl}",
+          "sourceGlossTex": "troop-\\textsc{dat.pl}",
           "analysis": {
-            "lemma": "þrēatum",
+            "lemma": "þrēat",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "dative",
+              "number": "plural",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-4-word-5-morpheme-1",
                 "form": "þrēat",
-                "gloss": "þrēat"
+                "gloss": "troop"
               },
               {
+                "id": "paragraph-1-sentence-4-word-5-morpheme-2",
                 "form": "um",
                 "gloss": "DAT.PL"
               }
             ],
-            "definition": "noun (þrēatum)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%BEreatum#Old_English"
+            "definition": "troop, host, crowd",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/þreat#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-4 / word 5"
+            },
+            "notes": ""
           }
         }
       ]
     },
     {
-      "id": "sent-5",
+      "id": "paragraph-1-sentence-5",
       "translation": "from many tribes, seized the mead-benches,",
       "words": [
         {
-          "id": "token-5-1",
+          "id": "paragraph-1-sentence-5-word-1",
           "originalWord": "manig-um",
-          "morphologicalGloss": "manig-DAT.PL",
-          "sourceGlossTex": "manig-\\textsc{dat.pl}",
+          "morphologicalGloss": "many-DAT.PL",
+          "sourceGlossTex": "many-\\textsc{dat.pl}",
           "analysis": {
-            "lemma": "manigum",
-            "partOfSpeech": "noun",
+            "lemma": "manig",
+            "partOfSpeech": "adjective",
+            "features": {
+              "case": "dative",
+              "number": "plural",
+              "gender": "feminine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-5-word-1-morpheme-1",
                 "form": "manig",
-                "gloss": "manig"
+                "gloss": "many"
               },
               {
+                "id": "paragraph-1-sentence-5-word-1-morpheme-2",
                 "form": "um",
                 "gloss": "DAT.PL"
               }
             ],
-            "definition": "noun (manigum)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/manigum#Old_English"
+            "definition": "many",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/manig#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-5 / word 1"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-5-2",
+          "id": "paragraph-1-sentence-5-word-2",
           "originalWord": "mǣġþ-um",
-          "morphologicalGloss": "mǣġþ-DAT.PL",
+          "morphologicalGloss": "tribe-DAT.PL",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "mǣġþ-\\textsc{dat.pl}",
+          "sourceGlossTex": "tribe-\\textsc{dat.pl}",
           "analysis": {
-            "lemma": "mǣġþum",
+            "lemma": "mǣġþ",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "dative",
+              "number": "plural",
+              "gender": "feminine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-5-word-2-morpheme-1",
                 "form": "mǣġþ",
-                "gloss": "mǣġþ"
+                "gloss": "tribe"
               },
               {
+                "id": "paragraph-1-sentence-5-word-2-morpheme-2",
                 "form": "um",
                 "gloss": "DAT.PL"
               }
             ],
-            "definition": "noun (mǣġþum)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/m%C3%A6g%C3%BEum#Old_English"
+            "definition": "tribe, nation, family",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/mægþ#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-5 / word 2"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-5-3",
+          "id": "paragraph-1-sentence-5-word-3",
           "originalWord": "meodo-setl-a",
-          "morphologicalGloss": "mead-bench-GEN.PL",
-          "sourceGlossTex": "mead-bench-\\textsc{gen.pl}",
+          "morphologicalGloss": "mead-seat-GEN.PL",
+          "sourceGlossTex": "mead-seat-\\textsc{gen.pl}",
           "analysis": {
-            "lemma": "meodosetla",
+            "lemma": "meodosetl",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "genitive",
+              "number": "plural",
+              "gender": "neuter"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-5-word-3-morpheme-1",
                 "form": "meodo",
                 "gloss": "mead"
               },
               {
+                "id": "paragraph-1-sentence-5-word-3-morpheme-2",
                 "form": "setl",
-                "gloss": "bench"
+                "gloss": "seat"
               },
               {
+                "id": "paragraph-1-sentence-5-word-3-morpheme-3",
                 "form": "a",
                 "gloss": "GEN.PL"
               }
             ],
-            "definition": "noun (meodosetla)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/meodosetla#Old_English"
+            "definition": "mead-bench, mead-seat",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/meodosetl#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-5 / word 3"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-5-4",
+          "id": "paragraph-1-sentence-5-word-4",
           "originalWord": "of-tēah",
-          "morphologicalGloss": "of-tēah",
+          "morphologicalGloss": "PV-deprive.PST.3SG",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "of-tēah",
+          "sourceGlossTex": "\\textsc{pv}-deprive\\textsc{.pst.3sg}",
           "analysis": {
-            "lemma": "oftēah",
-            "partOfSpeech": "noun",
+            "lemma": "oftēon",
+            "partOfSpeech": "verb",
+            "features": {
+              "number": "singular",
+              "person": 3,
+              "tense": "past",
+              "mood": "indicative"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-5-word-4-morpheme-1",
                 "form": "of",
-                "gloss": "of"
+                "gloss": "PV"
               },
               {
+                "id": "paragraph-1-sentence-5-word-4-morpheme-2",
                 "form": "tēah",
-                "gloss": "tēah"
+                "gloss": "deprive.PST.3SG"
               }
             ],
-            "definition": "noun (oftēah)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/ofteah#Old_English"
+            "definition": "to withhold, deprive of, withdraw",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/ofteon#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-5 / word 4"
+            },
+            "notes": ""
           }
         }
       ]
     },
     {
-      "id": "sent-6",
-      "translation": "terrified the earls, after he was first",
+      "id": "paragraph-1-sentence-6",
+      "translation": "terrified the earls, after he was first found destitute;",
       "words": [
         {
-          "id": "token-6-1",
+          "id": "paragraph-1-sentence-6-word-1",
           "originalWord": "egs-od-e",
-          "morphologicalGloss": "egs-od-DAT.SG",
-          "sourceGlossTex": "egs-od-\\textsc{dat.sg}",
+          "morphologicalGloss": "terrify-PST-IND.3SG",
+          "sourceGlossTex": "terrify-\\textsc{pst}-\\textsc{ind.3sg}",
           "analysis": {
-            "lemma": "egsode",
-            "partOfSpeech": "noun",
+            "lemma": "egsian",
+            "partOfSpeech": "verb",
+            "features": {
+              "number": "singular",
+              "person": 3,
+              "tense": "past",
+              "mood": "indicative"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-6-word-1-morpheme-1",
                 "form": "egs",
-                "gloss": "egs"
+                "gloss": "terrify"
               },
               {
+                "id": "paragraph-1-sentence-6-word-1-morpheme-2",
                 "form": "od",
-                "gloss": "od"
+                "gloss": "PST"
               },
               {
+                "id": "paragraph-1-sentence-6-word-1-morpheme-3",
                 "form": "e",
-                "gloss": "DAT.SG"
+                "gloss": "IND.3SG"
               }
             ],
-            "definition": "noun (egsode)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/egsode#Old_English"
+            "definition": "to terrify, frighten",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/egsian#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-6 / word 1"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-6-2",
+          "id": "paragraph-1-sentence-6-word-2",
           "originalWord": "eorl-as",
-          "morphologicalGloss": "eorl-as",
+          "morphologicalGloss": "earl-ACC.PL",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "eorl-as",
+          "sourceGlossTex": "earl-\\textsc{acc.pl}",
           "analysis": {
-            "lemma": "eorlas",
+            "lemma": "eorl",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "accusative",
+              "number": "plural",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-6-word-2-morpheme-1",
                 "form": "eorl",
-                "gloss": "eorl"
+                "gloss": "earl"
               },
               {
+                "id": "paragraph-1-sentence-6-word-2-morpheme-2",
                 "form": "as",
-                "gloss": "as"
+                "gloss": "ACC.PL"
               }
             ],
-            "definition": "noun (eorlas)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/eorlas#Old_English"
+            "definition": "earl, nobleman, warrior",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/eorl#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-6 / word 2"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-6-3",
+          "id": "paragraph-1-sentence-6-word-3",
           "originalWord": "syððan",
-          "morphologicalGloss": "syððan",
-          "sourceGlossTex": "syððan",
+          "morphologicalGloss": "after",
+          "sourceGlossTex": "after",
           "analysis": {
-            "lemma": "syððan",
-            "partOfSpeech": "noun",
+            "lemma": "siþþan",
+            "partOfSpeech": "conjunction",
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-6-word-3-morpheme-1",
                 "form": "syððan",
-                "gloss": "syððan"
+                "gloss": "after"
               }
             ],
-            "definition": "noun (syððan)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/sy%C3%B0%C3%B0an#Old_English"
+            "definition": "since, after that, when",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/siþþan#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-6 / word 3"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-6-4",
+          "id": "paragraph-1-sentence-6-word-4",
           "originalWord": "ǣrest",
-          "morphologicalGloss": "ǣrest",
-          "sourceGlossTex": "ǣrest",
+          "morphologicalGloss": "first.SUP",
+          "sourceGlossTex": "first\\textsc{.sup}",
           "analysis": {
             "lemma": "ǣrest",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "adverb",
+            "features": {
+              "degree": "superlative"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-6-word-4-morpheme-1",
                 "form": "ǣrest",
-                "gloss": "ǣrest"
+                "gloss": "first.SUP"
               }
             ],
-            "definition": "noun (ǣrest)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%A6rest#Old_English"
+            "definition": "first, for the first time",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/ærest#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-6 / word 4"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-6-5",
+          "id": "paragraph-1-sentence-6-word-5",
           "originalWord": "wearð",
-          "morphologicalGloss": "wearð",
-          "sourceGlossTex": "wearð",
+          "morphologicalGloss": "become.PST.3SG",
+          "sourceGlossTex": "become\\textsc{.pst.3sg}",
           "analysis": {
-            "lemma": "wearð",
-            "partOfSpeech": "noun",
+            "lemma": "weorþan",
+            "partOfSpeech": "verb",
+            "features": {
+              "number": "singular",
+              "person": 3,
+              "tense": "past",
+              "mood": "indicative"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-6-word-5-morpheme-1",
                 "form": "wearð",
-                "gloss": "wearð"
+                "gloss": "become.PST.3SG"
               }
             ],
-            "definition": "noun (wearð)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/wear%C3%B0#Old_English"
+            "definition": "to become, happen, be",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/weorþan#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-6 / word 5"
+            },
+            "notes": ""
           }
         }
       ]
     },
     {
-      "id": "sent-7",
+      "id": "paragraph-1-sentence-7",
       "translation": "found destitute; he experienced solace for that,",
       "words": [
         {
-          "id": "token-7-1",
+          "id": "paragraph-1-sentence-7-word-1",
           "originalWord": "fēa-sceaft",
-          "morphologicalGloss": "fēa-sceaft",
-          "sourceGlossTex": "fēa-sceaft",
+          "morphologicalGloss": "destitute-NOM.SG",
+          "sourceGlossTex": "destitute-\\textsc{nom.sg}",
           "analysis": {
             "lemma": "fēasceaft",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "adjective",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-7-word-1-morpheme-1",
                 "form": "fēa",
-                "gloss": "fēa"
+                "gloss": "destitute"
               },
               {
+                "id": "paragraph-1-sentence-7-word-1-morpheme-2",
                 "form": "sceaft",
-                "gloss": "sceaft"
+                "gloss": "NOM.SG"
               }
             ],
-            "definition": "noun (fēasceaft)",
+            "definition": "destitute, helpless, wretched",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/feasceaft#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-7 / word 1"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-7-2",
+          "id": "paragraph-1-sentence-7-word-2",
           "originalWord": "fund-en",
-          "morphologicalGloss": "fund-PTCP",
+          "morphologicalGloss": "find-PSTP.NOM.SG",
           "trailingPunctuation": ";",
-          "sourceGlossTex": "fund-\\textsc{ptcp}",
+          "sourceGlossTex": "find-\\textsc{pstp.nom.sg}",
           "analysis": {
-            "lemma": "funden",
-            "partOfSpeech": "noun",
+            "lemma": "findan",
+            "partOfSpeech": "verb",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "tense": "past"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-7-word-2-morpheme-1",
                 "form": "fund",
-                "gloss": "fund"
+                "gloss": "find"
               },
               {
+                "id": "paragraph-1-sentence-7-word-2-morpheme-2",
                 "form": "en",
-                "gloss": "PTCP"
+                "gloss": "PSTP.NOM.SG"
               }
             ],
-            "definition": "noun (funden)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/funden#Old_English"
+            "definition": "found (past participle)",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/findan#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-7 / word 2"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-7-3",
+          "id": "paragraph-1-sentence-7-word-3",
           "originalWord": "hē",
-          "morphologicalGloss": "hē",
-          "sourceGlossTex": "hē",
+          "morphologicalGloss": "3SG.M.NOM",
+          "sourceGlossTex": "\\textsc{3sg.m.nom}",
           "analysis": {
             "lemma": "hē",
             "partOfSpeech": "pronoun",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine",
+              "person": 3
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-7-word-3-morpheme-1",
                 "form": "hē",
-                "gloss": "hē"
+                "gloss": "3SG.M.NOM"
               }
             ],
-            "definition": "pronoun (hē)",
+            "definition": "he",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-7 / word 3"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-7-4",
+          "id": "paragraph-1-sentence-7-word-4",
           "originalWord": "þæs",
-          "morphologicalGloss": "sē",
-          "sourceGlossTex": "sē",
+          "morphologicalGloss": "DEM.GEN.SG",
+          "sourceGlossTex": "\\textsc{dem.gen.sg}",
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
+            "features": {
+              "case": "genitive",
+              "number": "singular",
+              "gender": "neuter"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-7-word-4-morpheme-1",
                 "form": "þæs",
-                "gloss": "sē"
+                "gloss": "DEM.GEN.SG"
               }
             ],
-            "definition": "determiner (sē)",
+            "definition": "of that, for that",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/se#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-7 / word 4"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-7-5",
+          "id": "paragraph-1-sentence-7-word-5",
           "originalWord": "frōfr-e",
-          "morphologicalGloss": "frōfr-DAT.SG",
-          "sourceGlossTex": "frōfr-\\textsc{dat.sg}",
+          "morphologicalGloss": "solace-ACC.SG",
+          "sourceGlossTex": "solace-\\textsc{acc.sg}",
           "analysis": {
-            "lemma": "frōfre",
+            "lemma": "frōfor",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "accusative",
+              "number": "singular",
+              "gender": "feminine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-7-word-5-morpheme-1",
                 "form": "frōfr",
-                "gloss": "frōfr"
+                "gloss": "solace"
               },
               {
+                "id": "paragraph-1-sentence-7-word-5-morpheme-2",
                 "form": "e",
-                "gloss": "DAT.SG"
+                "gloss": "ACC.SG"
               }
             ],
-            "definition": "noun (frōfre)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/frofre#Old_English"
+            "definition": "solace, comfort, help",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/frofor#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-7 / word 5"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-7-6",
+          "id": "paragraph-1-sentence-7-word-6",
           "originalWord": "ġe-bād",
-          "morphologicalGloss": "PFX-bīdan",
+          "morphologicalGloss": "PFV-experience.PST.3SG",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "\\textsc{pfx}-bīdan",
+          "sourceGlossTex": "\\textsc{pfv}-experience\\textsc{.pst.3sg}",
           "analysis": {
-            "lemma": "ġebād",
-            "partOfSpeech": "noun",
+            "lemma": "ġebīdan",
+            "partOfSpeech": "verb",
+            "features": {
+              "number": "singular",
+              "person": 3,
+              "tense": "past",
+              "mood": "indicative"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-7-word-6-morpheme-1",
                 "form": "ġe",
-                "gloss": "PFX"
+                "gloss": "PFV"
               },
               {
+                "id": "paragraph-1-sentence-7-word-6-morpheme-2",
                 "form": "bād",
-                "gloss": "bīdan"
+                "gloss": "experience.PST.3SG"
               }
             ],
-            "definition": "noun (ġebād)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/gebad#Old_English"
+            "definition": "to experience, live to see, await",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/gebidan#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-7 / word 6"
+            },
+            "notes": ""
           }
         }
       ]
     },
     {
-      "id": "sent-8",
+      "id": "paragraph-1-sentence-8",
       "translation": "grew under the clouds, prospered in honors,",
       "words": [
         {
-          "id": "token-8-1",
+          "id": "paragraph-1-sentence-8-word-1",
           "originalWord": "wēox",
-          "morphologicalGloss": "weaxan",
-          "sourceGlossTex": "weaxan",
+          "morphologicalGloss": "grow.PST.3SG",
+          "sourceGlossTex": "grow\\textsc{.pst.3sg}",
           "analysis": {
             "lemma": "weaxan",
             "partOfSpeech": "verb",
+            "features": {
+              "number": "singular",
+              "person": 3,
+              "tense": "past",
+              "mood": "indicative"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-8-word-1-morpheme-1",
                 "form": "wēox",
-                "gloss": "weaxan"
+                "gloss": "grow.PST.3SG"
               }
             ],
-            "definition": "verb (weaxan)",
+            "definition": "to grow, wax, increase",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/weaxan#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-8 / word 1"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-8-2",
+          "id": "paragraph-1-sentence-8-word-2",
           "originalWord": "under",
           "morphologicalGloss": "under",
           "sourceGlossTex": "under",
           "analysis": {
             "lemma": "under",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "preposition",
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-8-word-2-morpheme-1",
                 "form": "under",
                 "gloss": "under"
               }
             ],
-            "definition": "noun (under)",
+            "definition": "under, beneath",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/under#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-8 / word 2"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-8-3",
+          "id": "paragraph-1-sentence-8-word-3",
           "originalWord": "wolcn-um",
-          "morphologicalGloss": "wolcn-DAT.PL",
+          "morphologicalGloss": "cloud-DAT.PL",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "wolcn-\\textsc{dat.pl}",
+          "sourceGlossTex": "cloud-\\textsc{dat.pl}",
           "analysis": {
-            "lemma": "wolcnum",
+            "lemma": "wolcen",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "dative",
+              "number": "plural",
+              "gender": "neuter"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-8-word-3-morpheme-1",
                 "form": "wolcn",
-                "gloss": "wolcn"
+                "gloss": "cloud"
               },
               {
+                "id": "paragraph-1-sentence-8-word-3-morpheme-2",
                 "form": "um",
                 "gloss": "DAT.PL"
               }
             ],
-            "definition": "noun (wolcnum)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/wolcnum#Old_English"
+            "definition": "cloud, sky, heavens",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/wolcen#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-8 / word 3"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-8-4",
+          "id": "paragraph-1-sentence-8-word-4",
           "originalWord": "weorð-mynd-um",
-          "morphologicalGloss": "weorð-mynd-DAT.PL",
-          "sourceGlossTex": "weorð-mynd-\\textsc{dat.pl}",
+          "morphologicalGloss": "honor-glory-DAT.PL",
+          "sourceGlossTex": "honor-glory-\\textsc{dat.pl}",
           "analysis": {
-            "lemma": "weorðmyndum",
+            "lemma": "weorðmynd",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "dative",
+              "number": "plural",
+              "gender": "feminine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-8-word-4-morpheme-1",
                 "form": "weorð",
-                "gloss": "weorð"
+                "gloss": "honor"
               },
               {
+                "id": "paragraph-1-sentence-8-word-4-morpheme-2",
                 "form": "mynd",
-                "gloss": "mynd"
+                "gloss": "glory"
               },
               {
+                "id": "paragraph-1-sentence-8-word-4-morpheme-3",
                 "form": "um",
                 "gloss": "DAT.PL"
               }
             ],
-            "definition": "noun (weorðmyndum)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/weor%C3%B0myndum#Old_English"
+            "definition": "honor, dignity, glory",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/weorþmynd#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-8 / word 4"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-8-5",
+          "id": "paragraph-1-sentence-8-word-5",
           "originalWord": "þāh",
-          "morphologicalGloss": "þāh",
+          "morphologicalGloss": "prosper.PST.3SG",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "þāh",
+          "sourceGlossTex": "prosper\\textsc{.pst.3sg}",
           "analysis": {
-            "lemma": "þāh",
-            "partOfSpeech": "noun",
+            "lemma": "þēon",
+            "partOfSpeech": "verb",
+            "features": {
+              "number": "singular",
+              "person": 3,
+              "tense": "past",
+              "mood": "indicative"
+            },
             "morphemes": [
               {
-                "form": "þāh,",
-                "gloss": "þāh"
+                "id": "paragraph-1-sentence-8-word-5-morpheme-1",
+                "form": "þāh",
+                "gloss": "prosper.PST.3SG"
               }
             ],
-            "definition": "noun (þāh)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%BEah#Old_English"
+            "definition": "to thrive, prosper, flourish",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/þeon#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-8 / word 5"
+            },
+            "notes": ""
           }
         }
       ]
     },
     {
-      "id": "sent-9",
-      "translation": "until each of the surrounding peoples",
+      "id": "paragraph-1-sentence-9",
+      "translation": "until each of the surrounding peoples across the whale-road had to obey him,",
       "words": [
         {
-          "id": "token-9-1",
+          "id": "paragraph-1-sentence-9-word-1",
           "originalWord": "oð-þæt",
-          "morphologicalGloss": "oð-sē",
-          "sourceGlossTex": "oð-sē",
+          "morphologicalGloss": "until",
+          "sourceGlossTex": "until",
           "analysis": {
-            "lemma": "oðþæt",
-            "partOfSpeech": "noun",
+            "lemma": "oþþæt",
+            "partOfSpeech": "conjunction",
             "morphemes": [
               {
-                "form": "oð",
-                "gloss": "oð"
-              },
-              {
-                "form": "þæt",
-                "gloss": "sē"
+                "id": "paragraph-1-sentence-9-word-1-morpheme-1",
+                "form": "oð-þæt",
+                "gloss": "until"
               }
             ],
-            "definition": "noun (oðþæt)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/o%C3%B0%C3%BE%C3%A6t#Old_English"
+            "definition": "until, up to that point",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/oþþæt#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-9 / word 1"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-9-2",
+          "id": "paragraph-1-sentence-9-word-2",
           "originalWord": "him",
-          "morphologicalGloss": "hē",
-          "sourceGlossTex": "hē",
+          "morphologicalGloss": "3SG.M.DAT",
+          "sourceGlossTex": "\\textsc{3sg.m.dat}",
           "analysis": {
             "lemma": "hē",
             "partOfSpeech": "pronoun",
+            "features": {
+              "case": "dative",
+              "number": "singular",
+              "gender": "masculine",
+              "person": 3
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-9-word-2-morpheme-1",
                 "form": "him",
-                "gloss": "hē"
+                "gloss": "3SG.M.DAT"
               }
             ],
-            "definition": "pronoun (hē)",
+            "definition": "him, to him",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-9 / word 2"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-9-3",
+          "id": "paragraph-1-sentence-9-word-3",
           "originalWord": "ǣġ-hwylċ",
-          "morphologicalGloss": "ǣġ-hwilċ",
-          "sourceGlossTex": "ǣġ-hwilċ",
+          "morphologicalGloss": "each-NOM.SG",
+          "sourceGlossTex": "each-\\textsc{nom.sg}",
           "analysis": {
-            "lemma": "ǣġhwylċ",
-            "partOfSpeech": "noun",
+            "lemma": "ǣġhwilċ",
+            "partOfSpeech": "pronoun",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-9-word-3-morpheme-1",
                 "form": "ǣġ",
-                "gloss": "ǣġ"
+                "gloss": "each"
               },
               {
+                "id": "paragraph-1-sentence-9-word-3-morpheme-2",
                 "form": "hwylċ",
-                "gloss": "hwilċ"
+                "gloss": "NOM.SG"
               }
             ],
-            "definition": "noun (ǣġhwylċ)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%A6ghwylc#Old_English"
+            "definition": "each, every one",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/æghwilc#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-9 / word 3"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-9-4",
+          "id": "paragraph-1-sentence-9-word-4",
           "originalWord": "þār-a",
-          "morphologicalGloss": "þār-GEN.PL",
-          "sourceGlossTex": "þār-\\textsc{gen.pl}",
+          "morphologicalGloss": "DEF-GEN.PL",
+          "sourceGlossTex": "\\textsc{def}-\\textsc{gen.pl}",
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
+            "features": {
+              "case": "genitive",
+              "number": "plural"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-9-word-4-morpheme-1",
                 "form": "þār",
-                "gloss": "þār"
+                "gloss": "DEF"
               },
               {
+                "id": "paragraph-1-sentence-9-word-4-morpheme-2",
                 "form": "a",
                 "gloss": "GEN.PL"
               }
             ],
-            "definition": "determiner (sē)",
+            "definition": "of those, of the",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/se#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-9 / word 4"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-9-5",
+          "id": "paragraph-1-sentence-9-word-5",
           "originalWord": "ymb-sitt-end-ra",
-          "morphologicalGloss": "ymb-sitt-end-GEN.PL",
-          "sourceGlossTex": "ymb-sitt-end-\\textsc{gen.pl}",
+          "morphologicalGloss": "around-sit-PTCP-GEN.PL",
+          "sourceGlossTex": "around-sit-\\textsc{ptcp}-\\textsc{gen.pl}",
           "analysis": {
-            "lemma": "ymbsittendra",
+            "lemma": "ymbsittend",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "genitive",
+              "number": "plural",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-9-word-5-morpheme-1",
                 "form": "ymb",
-                "gloss": "ymb"
+                "gloss": "around"
               },
               {
+                "id": "paragraph-1-sentence-9-word-5-morpheme-2",
                 "form": "sitt",
-                "gloss": "sitt"
+                "gloss": "sit"
               },
               {
+                "id": "paragraph-1-sentence-9-word-5-morpheme-3",
                 "form": "end",
-                "gloss": "end"
+                "gloss": "PTCP"
               },
               {
+                "id": "paragraph-1-sentence-9-word-5-morpheme-4",
                 "form": "ra",
                 "gloss": "GEN.PL"
               }
             ],
-            "definition": "noun (ymbsittendra)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/ymbsittendra#Old_English"
+            "definition": "neighbor, one sitting around",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/ymbsittend#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-9 / word 5"
+            },
+            "notes": ""
           }
         }
       ]
     },
     {
-      "id": "sent-10",
+      "id": "paragraph-1-sentence-10",
       "translation": "across the whale-road had to obey him,",
       "words": [
         {
-          "id": "token-10-1",
+          "id": "paragraph-1-sentence-10-word-1",
           "originalWord": "ofer",
-          "morphologicalGloss": "ofer",
-          "sourceGlossTex": "ofer",
+          "morphologicalGloss": "across",
+          "sourceGlossTex": "across",
           "analysis": {
             "lemma": "ofer",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "preposition",
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-10-word-1-morpheme-1",
                 "form": "ofer",
-                "gloss": "ofer"
+                "gloss": "across"
               }
             ],
-            "definition": "noun (ofer)",
+            "definition": "over, across, beyond",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/ofer#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-10 / word 1"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-10-2",
+          "id": "paragraph-1-sentence-10-word-2",
           "originalWord": "hron-rād-e",
-          "morphologicalGloss": "whale-road-DAT.SG",
-          "sourceGlossTex": "whale-road-\\textsc{dat.sg}",
+          "morphologicalGloss": "whale-road-ACC.SG",
+          "sourceGlossTex": "whale-road-\\textsc{acc.sg}",
           "analysis": {
-            "lemma": "hronrāde",
+            "lemma": "hronrād",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "accusative",
+              "number": "singular",
+              "gender": "feminine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-10-word-2-morpheme-1",
                 "form": "hron",
                 "gloss": "whale"
               },
               {
+                "id": "paragraph-1-sentence-10-word-2-morpheme-2",
                 "form": "rād",
                 "gloss": "road"
               },
               {
+                "id": "paragraph-1-sentence-10-word-2-morpheme-3",
                 "form": "e",
-                "gloss": "DAT.SG"
+                "gloss": "ACC.SG"
               }
             ],
-            "definition": "noun (hronrāde)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/hronrade#Old_English"
+            "definition": "whale-road (kenning for the sea)",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/hronrad#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-10 / word 2"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-10-3",
+          "id": "paragraph-1-sentence-10-word-3",
           "originalWord": "hȳr-an",
-          "morphologicalGloss": "hȳr-INF",
-          "sourceGlossTex": "hȳr-\\textsc{inf}",
+          "morphologicalGloss": "obey-INF",
+          "sourceGlossTex": "obey-\\textsc{inf}",
           "analysis": {
             "lemma": "hȳran",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "verb",
+            "features": {
+              "mood": "infinitive"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-10-word-3-morpheme-1",
                 "form": "hȳr",
-                "gloss": "hȳr"
+                "gloss": "obey"
               },
               {
+                "id": "paragraph-1-sentence-10-word-3-morpheme-2",
                 "form": "an",
                 "gloss": "INF"
               }
             ],
-            "definition": "noun (hȳran)",
+            "definition": "to hear, obey, serve",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/hyran#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-10 / word 3"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-10-4",
+          "id": "paragraph-1-sentence-10-word-4",
           "originalWord": "scol-d-e",
-          "morphologicalGloss": "scol-PST-DAT.SG",
+          "morphologicalGloss": "shall-PST-IND.3SG",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "scol-\\textsc{pst}-\\textsc{dat.sg}",
+          "sourceGlossTex": "shall-\\textsc{pst}-\\textsc{ind.3sg}",
           "analysis": {
-            "lemma": "scolde",
-            "partOfSpeech": "noun",
+            "lemma": "sculan",
+            "partOfSpeech": "verb",
+            "features": {
+              "number": "singular",
+              "person": 3,
+              "tense": "past",
+              "mood": "indicative"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-10-word-4-morpheme-1",
                 "form": "scol",
-                "gloss": "scol"
+                "gloss": "shall"
               },
               {
+                "id": "paragraph-1-sentence-10-word-4-morpheme-2",
                 "form": "d",
                 "gloss": "PST"
               },
               {
+                "id": "paragraph-1-sentence-10-word-4-morpheme-3",
                 "form": "e",
-                "gloss": "DAT.SG"
+                "gloss": "IND.3SG"
               }
             ],
-            "definition": "noun (scolde)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/scolde#Old_English"
+            "definition": "must, had to, should",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/sculan#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-10 / word 4"
+            },
+            "notes": ""
           }
         }
       ]
     },
     {
-      "id": "sent-11",
+      "id": "paragraph-1-sentence-11",
       "translation": "and pay tribute. That was a good king!",
       "words": [
         {
-          "id": "token-11-1",
+          "id": "paragraph-1-sentence-11-word-1",
           "originalWord": "gomb-an",
-          "morphologicalGloss": "gomb-INF",
-          "sourceGlossTex": "gomb-\\textsc{inf}",
+          "morphologicalGloss": "tribute-ACC.SG",
+          "sourceGlossTex": "tribute-\\textsc{acc.sg}",
           "analysis": {
-            "lemma": "gomban",
+            "lemma": "gombe",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "accusative",
+              "number": "singular",
+              "gender": "feminine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-11-word-1-morpheme-1",
                 "form": "gomb",
-                "gloss": "gomb"
+                "gloss": "tribute"
               },
               {
+                "id": "paragraph-1-sentence-11-word-1-morpheme-2",
                 "form": "an",
-                "gloss": "INF"
+                "gloss": "ACC.SG"
               }
             ],
-            "definition": "noun (gomban)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/gomban#Old_English"
+            "definition": "tribute, tax",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/gombe#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-11 / word 1"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-11-2",
+          "id": "paragraph-1-sentence-11-word-2",
           "originalWord": "gyld-an",
-          "morphologicalGloss": "gyld-INF",
+          "morphologicalGloss": "pay-INF",
           "trailingPunctuation": ".",
-          "sourceGlossTex": "gyld-\\textsc{inf}",
+          "sourceGlossTex": "pay-\\textsc{inf}",
           "analysis": {
-            "lemma": "gyldan",
-            "partOfSpeech": "noun",
+            "lemma": "gieldan",
+            "partOfSpeech": "verb",
+            "features": {
+              "mood": "infinitive"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-11-word-2-morpheme-1",
                 "form": "gyld",
-                "gloss": "gyld"
+                "gloss": "pay"
               },
               {
+                "id": "paragraph-1-sentence-11-word-2-morpheme-2",
                 "form": "an",
                 "gloss": "INF"
               }
             ],
-            "definition": "noun (gyldan)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/gyldan#Old_English"
+            "definition": "to pay, yield, render",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/gieldan#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-11 / word 2"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-11-3",
+          "id": "paragraph-1-sentence-11-word-3",
           "originalWord": "Þæt",
-          "morphologicalGloss": "sē",
-          "sourceGlossTex": "sē",
+          "morphologicalGloss": "that.NOM.SG",
+          "sourceGlossTex": "that\\textsc{.nom.sg}",
           "analysis": {
             "lemma": "sē",
             "partOfSpeech": "determiner",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "neuter"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-11-word-3-morpheme-1",
                 "form": "Þæt",
-                "gloss": "sē"
+                "gloss": "that.NOM.SG"
               }
             ],
-            "definition": "determiner (sē)",
+            "definition": "that",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/se#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-11 / word 3"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-11-4",
+          "id": "paragraph-1-sentence-11-word-4",
           "originalWord": "wæs",
-          "morphologicalGloss": "wesan",
-          "sourceGlossTex": "wesan",
+          "morphologicalGloss": "be.PST.3SG",
+          "sourceGlossTex": "be\\textsc{.pst.3sg}",
           "analysis": {
             "lemma": "wesan",
             "partOfSpeech": "verb",
+            "features": {
+              "number": "singular",
+              "person": 3,
+              "tense": "past",
+              "mood": "indicative"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-11-word-4-morpheme-1",
                 "form": "wæs",
-                "gloss": "wesan"
+                "gloss": "be.PST.3SG"
               }
             ],
-            "definition": "verb (wesan)",
+            "definition": "was (past tense of be)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/wesan#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-11 / word 4"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-11-5",
+          "id": "paragraph-1-sentence-11-word-5",
           "originalWord": "gōd",
-          "morphologicalGloss": "gōd",
-          "sourceGlossTex": "gōd",
+          "morphologicalGloss": "good.NOM.SG",
+          "sourceGlossTex": "good\\textsc{.nom.sg}",
           "analysis": {
             "lemma": "gōd",
             "partOfSpeech": "adjective",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
+                "id": "paragraph-1-sentence-11-word-5-morpheme-1",
                 "form": "gōd",
-                "gloss": "gōd"
+                "gloss": "good.NOM.SG"
               }
             ],
-            "definition": "adjective (gōd)",
+            "definition": "good, noble, worthy",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/god#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-11 / word 5"
+            },
+            "notes": ""
           }
         },
         {
-          "id": "token-11-6",
+          "id": "paragraph-1-sentence-11-word-6",
           "originalWord": "cyning",
-          "morphologicalGloss": "cyning",
+          "morphologicalGloss": "king.NOM.SG",
           "trailingPunctuation": "!",
-          "sourceGlossTex": "cyning",
+          "sourceGlossTex": "king\\textsc{.nom.sg}",
           "analysis": {
             "lemma": "cyning",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
-                "form": "cyning!",
-                "gloss": "cyning"
+                "id": "paragraph-1-sentence-11-word-6-morpheme-1",
+                "form": "cyning",
+                "gloss": "king.NOM.SG"
               }
             ],
-            "definition": "noun (cyning)",
+            "definition": "king, ruler",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/cyning#Old_English"
+          },
+          "review": {
+            "status": "source-checked",
+            "source": {
+              "file": "references/Beowulf_Prologue.tex",
+              "locator": "paragraph-1-sentence-11 / word 6"
+            },
+            "notes": ""
           }
         }
       ]
