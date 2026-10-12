@@ -113,10 +113,9 @@ export default function Home() {
     kind: "text",
     author: c.author,
     source: c.source,
-    sentenceCount: c.defaultSentenceCount,
-    tokenCount: c.defaultTokenCount,
+    sentenceCount: c.sentenceCount,
+    tokenCount: c.tokenCount,
     status: "published",
-    isProtected: c.protected,
   }));
 
   const activeToken = HERO_PREVIEW_TOKENS[selectedTokenIdx];

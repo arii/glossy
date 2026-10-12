@@ -19,7 +19,7 @@ import {
   readDraft,
   getDraftDivergenceStatus,
 } from "../lib/local-drafts";
-import { isProtectedSlug, getBuiltInMetadata } from "../lib/corpus-registry";
+import { isBuiltInSlug, getBuiltInMetadata } from "../lib/corpus-registry";
 
 export type TextChoice = {
   slug: string;
@@ -36,7 +36,6 @@ export type TextChoice = {
   sentenceCount?: number;
   tokenCount?: number;
   status?: string;
-  isProtected?: boolean;
   isLocalOnly?: boolean;
   hasLocalDraft?: boolean;
   isDiverged?: boolean;
@@ -86,11 +85,11 @@ export function TextDirectory({
           const meta = getBuiltInMetadata(slug);
           const sCount =
             (doc.sentences && doc.sentences.length > 0 ? doc.sentences.length : undefined) ??
-            meta?.defaultSentenceCount;
+            meta?.sentenceCount;
           const tCount =
             (doc.sentences && doc.sentences.length > 0
               ? doc.sentences.reduce((acc, s) => acc + (s.words?.length || 0), 0)
-              : undefined) ?? meta?.defaultTokenCount;
+              : undefined) ?? meta?.tokenCount;
 
           customChoices.push({
             slug,
@@ -107,7 +106,6 @@ export function TextDirectory({
             sentenceCount: sCount,
             tokenCount: tCount,
             status: "draft",
-            isProtected: false,
             isLocalOnly: true,
             hasLocalDraft: true,
           });
@@ -171,7 +169,7 @@ export function TextDirectory({
 
   const handleDelete = (choice: TextChoice) => {
     if (choice.isLocalOnly) {
-      if (isProtectedSlug(choice.slug)) {
+      if (isBuiltInSlug(choice.slug)) {
         return;
       }
       deleteLocalDraft(choice.slug);
@@ -529,7 +527,7 @@ export function TextDirectory({
                           }}
                         >
                           <Trash2 style={{ width: "0.85rem", height: "0.85rem" }} />{" "}
-                          {choice.isLocalOnly ? "Delete Local Draft" : "Revert edits / Discard Draft"}
+                          {choice.isLocalOnly ? "Delete Local Draft" : "Discard Draft Changes"}
                         </button>
                       )}
                     </div>
