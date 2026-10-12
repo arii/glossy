@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { SiteNav } from "./site-nav";
 import { SentenceRow } from "./sentence-row";
@@ -318,6 +318,19 @@ export function GlossEditor({
   const [metaDate, setMetaDate] = useState("");
   const [metaSourceEdition, setMetaSourceEdition] = useState("");
   const [showSyncPrompt, setShowSyncPrompt] = useState(false);
+  const mouseDownTargetRef = useRef<EventTarget | null>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isEditingMetadata) {
+        setIsEditingMetadata(false);
+      }
+    };
+    if (isEditingMetadata) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isEditingMetadata]);
 
   const [workspaceTexts, setWorkspaceTexts] = useState<WorkspaceTextItem[]>(() =>
     getWorkspaceTexts({
@@ -1661,7 +1674,15 @@ export function GlossEditor({
             padding: "1rem",
             zIndex: 9999,
           }}
-          onClick={() => setIsEditingMetadata(false)}
+          onMouseDown={(e) => {
+            mouseDownTargetRef.current = e.target;
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget && mouseDownTargetRef.current === e.currentTarget) {
+              setIsEditingMetadata(false);
+            }
+            mouseDownTargetRef.current = null;
+          }}
         >
           <div
             style={{
@@ -1726,6 +1747,7 @@ export function GlossEditor({
                   placeholder="e.g. The Voyages of Ohthere and Wulfstan"
                   value={metaTitle}
                   onChange={(e) => setMetaTitle(e.target.value)}
+                  onFocus={(e) => e.target.select()}
                   style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
                 />
               </div>
@@ -1739,6 +1761,7 @@ export function GlossEditor({
                   placeholder="e.g. Anonymous, King Alfred, Cædmon, Bede"
                   value={metaHistoricalAuthor}
                   onChange={(e) => setMetaHistoricalAuthor(e.target.value)}
+                  onFocus={(e) => e.target.select()}
                   style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
                 />
               </div>
@@ -1753,6 +1776,7 @@ export function GlossEditor({
                   placeholder="e.g. Tyler Lemon"
                   value={metaGlossedBy}
                   onChange={(e) => setMetaGlossedBy(e.target.value)}
+                  onFocus={(e) => e.target.select()}
                   style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
                 />
               </div>
@@ -1766,6 +1790,7 @@ export function GlossEditor({
                   placeholder="e.g. September 30, 2026"
                   value={metaDate}
                   onChange={(e) => setMetaDate(e.target.value)}
+                  onFocus={(e) => e.target.select()}
                   style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
                 />
               </div>
@@ -1779,6 +1804,7 @@ export function GlossEditor({
                   placeholder="e.g. BL Cotton MS Tiberius B i, fol. 11r–15v"
                   value={metaSourceEdition}
                   onChange={(e) => setMetaSourceEdition(e.target.value)}
+                  onFocus={(e) => e.target.select()}
                   style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
                 />
               </div>
