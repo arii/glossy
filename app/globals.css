@@ -943,10 +943,12 @@ h2 {
   }
 }
 
+.workspace-link:disabled,
 .workspace-button:disabled {
   color: var(--muted-ink);
   cursor: not-allowed;
   opacity: 0.55;
+  border-color: var(--rule);
 }
 
 .editor-save-status {

@@ -120,22 +120,25 @@ export function TextDirectory({
         const hasDraft = localSlugsWithEdits.has(c.slug) || localSlugsWithEdits.has(meta?.slug || "") || localSlugsWithEdits.has(meta?.textId || "");
         let isDiverged = false;
         let isUpstreamModified = false;
+        let activeDoc: TextDocument | null = null;
 
         if (hasDraft) {
           const status = getDraftDivergenceStatus(c.slug);
           isDiverged = status.isDiverged;
           isUpstreamModified = status.isUpstreamModified;
+          activeDoc = status.draftDoc || readDraft(c.slug)?.doc || null;
         }
 
         return {
           ...c,
-          author: c.author || meta?.author,
-          editor: c.editor || meta?.editor,
-          shelfmark: c.shelfmark || meta?.shelfmark || meta?.witness,
-          dialect: c.dialect || meta?.dialect,
-          historicalDate: c.historicalDate || meta?.historicalDate || meta?.origDate,
-          sourceEdition: c.sourceEdition || meta?.sourceEdition,
-          witness: c.shelfmark || c.witness || meta?.shelfmark || meta?.witness || c.source,
+          title: activeDoc?.title || c.title,
+          author: activeDoc?.author || activeDoc?.historicalAuthor || activeDoc?.glossedBy || c.author || meta?.author,
+          editor: activeDoc?.editor || c.editor || meta?.editor,
+          shelfmark: activeDoc?.shelfmark || c.shelfmark || meta?.shelfmark || meta?.witness,
+          dialect: activeDoc?.dialect || c.dialect || meta?.dialect,
+          historicalDate: activeDoc?.historicalDate || c.historicalDate || meta?.historicalDate || meta?.origDate,
+          sourceEdition: activeDoc?.sourceEdition || c.sourceEdition || meta?.sourceEdition,
+          witness: activeDoc?.shelfmark || activeDoc?.source || c.shelfmark || c.witness || meta?.shelfmark || meta?.witness || c.source,
           hasLocalDraft: hasDraft,
           isDiverged,
           isUpstreamModified,

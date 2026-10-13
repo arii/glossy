@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { listPending, readDraft, type PendingDraftEntry } from "../lib/local-drafts";
 import { isTinaAuthenticated, commitAllPendingDrafts } from "../lib/tina-sync";
-import { safeJsonStringify } from "../lib/safe-json";
+import { formatExportJson } from "../lib/canonical-json";
 import { Download } from "lucide-react";
 
 export interface DraftSyncPromptProps {
@@ -140,7 +140,7 @@ export function DraftSyncPrompt({
     const draft = readDraft(slugToDownload);
     if (!draft || !draft.doc) return;
 
-    const jsonStr = safeJsonStringify(draft.doc, null, 2);
+    const jsonStr = formatExportJson(draft.doc);
     const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const anchor = window.document.createElement("a");

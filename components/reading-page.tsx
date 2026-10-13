@@ -41,6 +41,11 @@ export function ReadingPage({
   const [pinnedId, setPinnedId] = useState<string | null>(null);
   const [attributionOpen, setAttributionOpen] = useState(false);
   const [diffModalOpen, setDiffModalOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   const lastTriggerId = useRef<string | null>(null);
   const glossAreaRef = useRef<HTMLElement | null>(null);
 
@@ -160,7 +165,9 @@ export function ReadingPage({
 
   const divergenceStatus = useMemo(
     () => getDraftDivergenceStatus(selectedSlug, baseText),
-    [selectedSlug, baseText]
+    // Re-evaluate divergence when localDraftText transitions (e.g. gets deleted via discard)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedSlug, baseText, localDraftText]
   );
 
   // Memoize heavy object instantiation from getGlossRecords to prevent unnecessary downstream re-renders.
@@ -350,7 +357,7 @@ export function ReadingPage({
           source={currentSource}
         />
 
-        {divergenceStatus.isDiverged && (
+        {isMounted && divergenceStatus.isDiverged && (
           <div
             style={{
               margin: "1rem 0 1.5rem",
