@@ -1,0 +1,20 @@
+{
+  "id": "maestan-n-1",
+  "lemma": "mǣstan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "large-SUP-NOM.PL.M.WK"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "large-SUP-ACC.SG.M.WK"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "large-SUP-DAT.SG.M.WK"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

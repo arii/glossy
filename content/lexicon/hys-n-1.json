@@ -1,0 +1,12 @@
+{
+  "id": "hys-n-1",
+  "lemma": "hys",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "3SG.M.GEN"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

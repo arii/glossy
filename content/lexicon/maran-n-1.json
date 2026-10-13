@@ -1,0 +1,12 @@
+{
+  "id": "maran-n-1",
+  "lemma": "māran",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "large.CMP-ACC.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

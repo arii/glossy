@@ -1,0 +1,12 @@
+{
+  "id": "comean-v-1",
+  "lemma": "cōmean",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "come.PST-SJV.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

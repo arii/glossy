@@ -1,0 +1,12 @@
+{
+  "id": "soth-n-1",
+  "lemma": "sōþ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "truth-GEN.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

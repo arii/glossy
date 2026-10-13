@@ -1,0 +1,12 @@
+{
+  "id": "betux-n-1",
+  "lemma": "betux",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "by-twofold"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

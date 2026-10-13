@@ -1,0 +1,16 @@
+{
+  "id": "othre-n-1",
+  "lemma": "ōðre",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "other-NOM.PL.M.STR"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "other-ACC.SG.F.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "dyre-n-1",
+  "lemma": "dȳre",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "dear-NOM.PL.M.STR"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "dear-NOM.PL.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "micle-n-1",
+  "lemma": "micle",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "large-ADV"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

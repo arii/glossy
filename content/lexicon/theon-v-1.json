@@ -1,0 +1,12 @@
+{
+  "id": "theon-v-1",
+  "lemma": "þēon",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to thrive, prosper, flourish"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

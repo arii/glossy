@@ -1,0 +1,12 @@
+{
+  "id": "fiscath-n-1",
+  "lemma": "fiscað",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "fish-NMLZ.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

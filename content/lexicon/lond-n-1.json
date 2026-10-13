@@ -1,0 +1,12 @@
+{
+  "id": "lond-n-1",
+  "lemma": "lond",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "land.ACC.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

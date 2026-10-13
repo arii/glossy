@@ -1,0 +1,12 @@
+{
+  "id": "we-pron-1",
+  "lemma": "wē",
+  "pos": "PRON",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "we"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

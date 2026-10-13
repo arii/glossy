@@ -1,0 +1,16 @@
+{
+  "id": "oferfreosan-v-1",
+  "lemma": "oferfrēosan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to freeze over"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "over-freeze-PART.NOM.SG.M.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

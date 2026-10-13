@@ -1,0 +1,12 @@
+{
+  "id": "nytan-v-1",
+  "lemma": "nytan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "NEG-know.PST-IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

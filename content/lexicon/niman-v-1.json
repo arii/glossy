@@ -1,0 +1,12 @@
+{
+  "id": "niman-v-1",
+  "lemma": "niman",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "take-IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

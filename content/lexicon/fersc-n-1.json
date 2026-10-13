@@ -1,0 +1,12 @@
+{
+  "id": "fersc-n-1",
+  "lemma": "fersċ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "fresh-NOM.PL.M.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

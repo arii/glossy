@@ -1,0 +1,12 @@
+{
+  "id": "oferferan-v-1",
+  "lemma": "oferfēran",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "over-travel-INF"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "hatan-v-1",
+  "lemma": "hātan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "call-PRS.IND.PL"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "call-PASS.PRS.IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

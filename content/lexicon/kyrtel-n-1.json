@@ -1,0 +1,12 @@
+{
+  "id": "kyrtel-n-1",
+  "lemma": "kyrtel",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "coat.ACC.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

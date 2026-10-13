@@ -1,0 +1,20 @@
+{
+  "id": "unforbaerned-n-1",
+  "lemma": "unforbærned",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "un-for-burn-PART.NOM.SG.M.STR"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "un-for-burn-PART.NOM.PL.M.STR"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "un-for-burn-PART.ACC.SG.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "weste-adj-1",
+  "lemma": "wēste",
+  "pos": "ADJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "waste-NOM.SG.N.STR"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "waste-ACC.SG.N.WK"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

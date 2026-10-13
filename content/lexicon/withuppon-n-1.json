@@ -1,0 +1,12 @@
+{
+  "id": "withuppon-n-1",
+  "lemma": "wiðuppon",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "against-up-in"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "cirr-n-1",
+  "lemma": "ċirr",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "occasion-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

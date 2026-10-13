@@ -1,0 +1,12 @@
+{
+  "id": "aethel-n-1",
+  "lemma": "æþel",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "noble-ACC.SG.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "manig-n-1",
+  "lemma": "maniġ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "many.NOM.SG.F.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

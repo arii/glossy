@@ -1,0 +1,12 @@
+{
+  "id": "ricostan-n-1",
+  "lemma": "rīċostan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "rich-SUP-NOM.PL.WK"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "are-n-1",
+  "lemma": "āre",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "noun (āre)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

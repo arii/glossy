@@ -1,0 +1,12 @@
+{
+  "id": "swithe-adv-1",
+  "lemma": "swīðe",
+  "pos": "ADV",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "very, strongly, exceedingly"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "northweard-adj-1",
+  "lemma": "norþweard",
+  "pos": "ADJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "north-ward-DAT.SG.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

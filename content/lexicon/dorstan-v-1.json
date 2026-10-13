@@ -1,0 +1,12 @@
+{
+  "id": "dorstan-v-1",
+  "lemma": "dorstan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "dare-PST-IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

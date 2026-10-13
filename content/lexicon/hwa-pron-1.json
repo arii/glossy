@@ -1,0 +1,12 @@
+{
+  "id": "hwa-pron-1",
+  "lemma": "hwā",
+  "pos": "PRON",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "what.ACC"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

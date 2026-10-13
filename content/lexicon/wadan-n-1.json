@@ -1,0 +1,12 @@
+{
+  "id": "wadan-n-1",
+  "lemma": "wadan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "noun (wadan)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

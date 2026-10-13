@@ -1,0 +1,12 @@
+{
+  "id": "gebrowen-n-1",
+  "lemma": "ġebrowen",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "PFX-brew-PART.NOM.SG.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "spraecan-v-1",
+  "lemma": "sprǣcan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "speak.PST-IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

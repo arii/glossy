@@ -1,0 +1,12 @@
+{
+  "id": "gombe-n-1",
+  "lemma": "gombe",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "tribute, tax"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

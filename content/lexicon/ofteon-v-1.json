@@ -1,0 +1,12 @@
+{
+  "id": "ofteon-v-1",
+  "lemma": "oftēon",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to withhold, deprive of, withdraw"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

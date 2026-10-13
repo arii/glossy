@@ -1,0 +1,12 @@
+{
+  "id": "fel-n-1",
+  "lemma": "fel",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "skin.ACC.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

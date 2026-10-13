@@ -1,0 +1,12 @@
+{
+  "id": "gebetan-v-1",
+  "lemma": "ġebētan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "PFX-atone.for-INF"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

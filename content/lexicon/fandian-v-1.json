@@ -1,0 +1,12 @@
+{
+  "id": "fandian-v-1",
+  "lemma": "fandian",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "find.out-THM-INF"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

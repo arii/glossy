@@ -1,0 +1,12 @@
+{
+  "id": "weg-n-1",
+  "lemma": "weg",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "way-DAT.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

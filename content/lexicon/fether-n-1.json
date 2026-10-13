@@ -1,0 +1,12 @@
+{
+  "id": "fether-n-1",
+  "lemma": "feðer",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "feather-DAT.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

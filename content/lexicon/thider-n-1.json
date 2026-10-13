@@ -1,0 +1,12 @@
+{
+  "id": "thider-n-1",
+  "lemma": "ðider",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to.there"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

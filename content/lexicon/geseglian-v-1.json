@@ -1,0 +1,20 @@
+{
+  "id": "geseglian-v-1",
+  "lemma": "geseġlian",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to sail"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "PFX-sail-INF"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "PFX-sail-THM-INF"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

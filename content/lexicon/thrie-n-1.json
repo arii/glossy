@@ -1,0 +1,20 @@
+{
+  "id": "thrie-n-1",
+  "lemma": "þrīe",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "three.ACC.M"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "three-DAT"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "three-GEN"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

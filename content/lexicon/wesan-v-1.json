@@ -1,0 +1,45 @@
+{
+  "id": "wesan-v-1",
+  "lemma": "wesan",
+  "pos": "V",
+  "ipa": "/wæs/",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to be (subjunctive)"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "to be (is)"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "to be"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "was (past tense of be)"
+    },
+    "sense-5": {
+      "id": "sense-5",
+      "definition": "be.PRS.SJV.SG"
+    },
+    "sense-6": {
+      "id": "sense-6",
+      "definition": "be.PRS.IND.3SG"
+    },
+    "sense-7": {
+      "id": "sense-7",
+      "definition": "be.PST.IND.3SG"
+    },
+    "sense-8": {
+      "id": "sense-8",
+      "definition": "be.PST-IND.PL"
+    },
+    "sense-9": {
+      "id": "sense-9",
+      "definition": "be.PST-SJV.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

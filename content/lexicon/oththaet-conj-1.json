@@ -1,0 +1,12 @@
+{
+  "id": "oththaet-conj-1",
+  "lemma": "oþþæt",
+  "pos": "CONJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "until, up to that point"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

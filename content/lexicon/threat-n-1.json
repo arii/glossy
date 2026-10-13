@@ -1,0 +1,12 @@
+{
+  "id": "threat-n-1",
+  "lemma": "þrēat",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "troop, host, crowd"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

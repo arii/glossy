@@ -1,0 +1,12 @@
+{
+  "id": "sillend-n-1",
+  "lemma": "sillend",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Sillende.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "theodcyning-n-1",
+  "lemma": "þēodcyning",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "people's king, national king"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

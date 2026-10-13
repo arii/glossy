@@ -1,0 +1,28 @@
+{
+  "id": "cyning-n-1",
+  "lemma": "cyning",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "king"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "king, ruler"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "king-DAT.SG"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "king.ACC.SG"
+    },
+    "sense-5": {
+      "id": "sense-5",
+      "definition": "king.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

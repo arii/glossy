@@ -1,0 +1,12 @@
+{
+  "id": "fremman-v-1",
+  "lemma": "fremman",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to do, perform, accomplish"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

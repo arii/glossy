@@ -1,0 +1,12 @@
+{
+  "id": "aer-n-1",
+  "lemma": "ǣr",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "before"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

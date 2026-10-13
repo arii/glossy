@@ -1,0 +1,12 @@
+{
+  "id": "healfan-v-1",
+  "lemma": "healfan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "side-ACC.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

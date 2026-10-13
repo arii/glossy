@@ -1,0 +1,12 @@
+{
+  "id": "man-n-1",
+  "lemma": "man",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "man.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

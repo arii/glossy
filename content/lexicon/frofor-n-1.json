@@ -1,0 +1,12 @@
+{
+  "id": "frofor-n-1",
+  "lemma": "frōfor",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "solace, comfort, help"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

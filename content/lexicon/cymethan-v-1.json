@@ -1,0 +1,12 @@
+{
+  "id": "cymethan-v-1",
+  "lemma": "cymeðan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "come.PRS-IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "aerest-n-1",
+  "lemma": "ǣrest",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "noun (ǣrest)"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "before-SUP.ADV"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

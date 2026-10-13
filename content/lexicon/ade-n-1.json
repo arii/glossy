@@ -1,0 +1,12 @@
+{
+  "id": "ade-n-1",
+  "lemma": "āde",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "pyre-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

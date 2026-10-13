@@ -1,0 +1,12 @@
+{
+  "id": "of-n-1",
+  "lemma": "of",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "from"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

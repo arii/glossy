@@ -1,0 +1,24 @@
+{
+  "id": "cuman-v-1",
+  "lemma": "cuman",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to come"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "come-INF"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "come-PRS.IND.3SG"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "come.PRS-IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

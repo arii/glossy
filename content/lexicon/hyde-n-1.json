@@ -1,0 +1,12 @@
+{
+  "id": "hyde-n-1",
+  "lemma": "hȳde",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "hide-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

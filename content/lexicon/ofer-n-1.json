@@ -1,0 +1,12 @@
+{
+  "id": "ofer-n-1",
+  "lemma": "ofer",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "over"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

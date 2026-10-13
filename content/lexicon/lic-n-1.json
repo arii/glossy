@@ -1,0 +1,12 @@
+{
+  "id": "lic-n-1",
+  "lemma": "līċ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "body.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

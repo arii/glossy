@@ -1,0 +1,20 @@
+{
+  "id": "mid-prep-1",
+  "lemma": "mid",
+  "pos": "PREP",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "with, among"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "with"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "preposition (mid)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

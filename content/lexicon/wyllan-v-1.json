@@ -1,0 +1,12 @@
+{
+  "id": "wyllan-v-1",
+  "lemma": "wyllan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "want.PRS-IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

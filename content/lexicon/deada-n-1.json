@@ -1,0 +1,12 @@
+{
+  "id": "deada-n-1",
+  "lemma": "dēada",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "dead-NOM.SG.M.WK"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

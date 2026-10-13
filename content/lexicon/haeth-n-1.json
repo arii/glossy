@@ -1,0 +1,12 @@
+{
+  "id": "haeth-n-1",
+  "lemma": "hǣð",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Heath-DAT.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

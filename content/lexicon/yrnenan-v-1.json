@@ -1,0 +1,12 @@
+{
+  "id": "yrnenan-v-1",
+  "lemma": "yrnenan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "run-PART.PRS"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

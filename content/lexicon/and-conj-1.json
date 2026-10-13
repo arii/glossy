@@ -1,0 +1,16 @@
+{
+  "id": "and-conj-1",
+  "lemma": "and",
+  "pos": "CONJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "and"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "conjunction (and)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

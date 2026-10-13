@@ -1,0 +1,12 @@
+{
+  "id": "andefn-n-1",
+  "lemma": "andefn",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "amount.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

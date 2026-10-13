@@ -1,0 +1,12 @@
+{
+  "id": "getheod-n-1",
+  "lemma": "ġeðēod",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "PFX-nation-GEN.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

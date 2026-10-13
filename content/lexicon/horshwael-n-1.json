@@ -1,0 +1,12 @@
+{
+  "id": "horshwael-n-1",
+  "lemma": "horshwæl",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "horse-whale-DAT.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

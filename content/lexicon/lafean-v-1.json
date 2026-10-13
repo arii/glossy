@@ -1,0 +1,12 @@
+{
+  "id": "lafean-v-1",
+  "lemma": "lāfean",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "remainder-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "staelhranasan-v-1",
+  "lemma": "stælhrānasan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "decoy-reindeer-NOM.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

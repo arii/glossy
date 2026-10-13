@@ -1,0 +1,20 @@
+{
+  "id": "sumor-n-1",
+  "lemma": "sumor",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "summer"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "summer-DAT.SG"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "summer.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

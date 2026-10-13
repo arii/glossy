@@ -1,0 +1,12 @@
+{
+  "id": "betweonan-n-1",
+  "lemma": "betwēonan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "by-two-DAT.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

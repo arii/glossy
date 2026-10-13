@@ -1,0 +1,12 @@
+{
+  "id": "feor-n-1",
+  "lemma": "feor",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "far.ADV"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

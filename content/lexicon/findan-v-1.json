@@ -1,0 +1,12 @@
+{
+  "id": "findan-v-1",
+  "lemma": "findan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "found (past participle)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

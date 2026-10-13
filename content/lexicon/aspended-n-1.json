@@ -1,0 +1,12 @@
+{
+  "id": "aspended-n-1",
+  "lemma": "āspended",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "out-spend-PART.NOM.PL.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

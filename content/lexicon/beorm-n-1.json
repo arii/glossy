@@ -1,0 +1,12 @@
+{
+  "id": "beorm-n-1",
+  "lemma": "beorm",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Bjarmian-NOM.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

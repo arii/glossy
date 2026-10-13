@@ -1,0 +1,12 @@
+{
+  "id": "weorthmynd-n-1",
+  "lemma": "weorðmynd",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "honor, dignity, glory"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

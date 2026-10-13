@@ -1,0 +1,12 @@
+{
+  "id": "hu-adv-1",
+  "lemma": "hū",
+  "pos": "ADV",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "how"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "gardene-n-1",
+  "lemma": "Gār-Dene",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Spear-Danes"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

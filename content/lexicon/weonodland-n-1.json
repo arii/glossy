@@ -1,0 +1,20 @@
+{
+  "id": "weonodland-n-1",
+  "lemma": "weonodland",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Wend-land.NOM.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "Wend-land.ACC.SG"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "Wend-land-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

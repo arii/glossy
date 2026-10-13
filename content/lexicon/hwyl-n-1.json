@@ -1,0 +1,12 @@
+{
+  "id": "hwyl-n-1",
+  "lemma": "hwȳl",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "time-DAT.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

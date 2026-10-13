@@ -1,0 +1,12 @@
+{
+  "id": "igland-n-1",
+  "lemma": "īġland",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "island-land.NOM.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

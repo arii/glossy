@@ -1,0 +1,48 @@
+{
+  "id": "eall-adj-1",
+  "lemma": "eall",
+  "pos": "ADJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "all"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "all, entirely"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "all (genitive plural)"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "all-GEN.PL.STR"
+    },
+    "sense-5": {
+      "id": "sense-5",
+      "definition": "all.NOM.SG.N"
+    },
+    "sense-6": {
+      "id": "sense-6",
+      "definition": "all-ACC.SG.M.STR"
+    },
+    "sense-7": {
+      "id": "sense-7",
+      "definition": "all.NOM.SG.N.STR"
+    },
+    "sense-8": {
+      "id": "sense-8",
+      "definition": "all.NOM.PL.N.STR"
+    },
+    "sense-9": {
+      "id": "sense-9",
+      "definition": "all.ACC.SG.N"
+    },
+    "sense-10": {
+      "id": "sense-10",
+      "definition": "all.NOM.PL.N"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

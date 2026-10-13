@@ -1,0 +1,12 @@
+{
+  "id": "byrdesta-n-1",
+  "lemma": "byrdesta",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "birth-SUP-NOM.SG.M.WK"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

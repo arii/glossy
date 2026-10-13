@@ -1,0 +1,12 @@
+{
+  "id": "hire-n-1",
+  "lemma": "hire",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "3SG.F.GEN"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

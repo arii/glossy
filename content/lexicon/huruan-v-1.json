@@ -1,0 +1,12 @@
+{
+  "id": "huruan-v-1",
+  "lemma": "hūruan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "indeed"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

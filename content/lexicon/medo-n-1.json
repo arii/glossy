@@ -1,0 +1,16 @@
+{
+  "id": "medo-n-1",
+  "lemma": "medo",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "mead.ACC.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "mead.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

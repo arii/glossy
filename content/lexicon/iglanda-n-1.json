@@ -1,0 +1,12 @@
+{
+  "id": "iglanda-n-1",
+  "lemma": "īġlanda",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "island-land-GEN.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "secan-v-1",
+  "lemma": "sēcan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to seek, visit"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "seek-PST-IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

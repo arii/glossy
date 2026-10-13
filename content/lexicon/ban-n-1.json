@@ -1,0 +1,12 @@
+{
+  "id": "ban-n-1",
+  "lemma": "bān",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "bone.ACC.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

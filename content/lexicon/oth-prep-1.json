@@ -1,0 +1,16 @@
+{
+  "id": "oth-prep-1",
+  "lemma": "oð",
+  "pos": "PREP",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "until, up to"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "until"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

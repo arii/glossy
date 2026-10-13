@@ -1,0 +1,12 @@
+{
+  "id": "aeht-n-1",
+  "lemma": "ǣht",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "possession-DAT.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

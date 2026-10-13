@@ -1,0 +1,12 @@
+{
+  "id": "full-n-1",
+  "lemma": "full",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "full.ACC.PL.M.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

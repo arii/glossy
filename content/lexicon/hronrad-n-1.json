@@ -1,0 +1,12 @@
+{
+  "id": "hronrad-n-1",
+  "lemma": "hronrād",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "whale-road (kenning for the sea)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

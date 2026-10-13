@@ -1,0 +1,16 @@
+{
+  "id": "twegen-n-1",
+  "lemma": "twēgen",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "two-DAT"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "two.ACC.M"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

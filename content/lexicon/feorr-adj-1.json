@@ -1,0 +1,12 @@
+{
+  "id": "feorr-adj-1",
+  "lemma": "feorr",
+  "pos": "ADJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "far-SUP.ADV"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

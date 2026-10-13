@@ -1,0 +1,12 @@
+{
+  "id": "thaeron-n-1",
+  "lemma": "þǣron",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "there-in"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

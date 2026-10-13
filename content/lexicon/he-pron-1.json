@@ -1,0 +1,76 @@
+{
+  "id": "he-pron-1",
+  "lemma": "hē",
+  "pos": "PRON",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "they (nominative/accusative plural)"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "it (neuter pronoun)"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "him/them (dative of hē)"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "his (genitive of hē)"
+    },
+    "sense-5": {
+      "id": "sense-5",
+      "definition": "he (3rd person pronoun)"
+    },
+    "sense-6": {
+      "id": "sense-6",
+      "definition": "he"
+    },
+    "sense-7": {
+      "id": "sense-7",
+      "definition": "him, to him"
+    },
+    "sense-8": {
+      "id": "sense-8",
+      "definition": "pronoun (hē)"
+    },
+    "sense-9": {
+      "id": "sense-9",
+      "definition": "3SG.M.GEN"
+    },
+    "sense-10": {
+      "id": "sense-10",
+      "definition": "3SG.M.NOM"
+    },
+    "sense-11": {
+      "id": "sense-11",
+      "definition": "3SG.N.NOM"
+    },
+    "sense-12": {
+      "id": "sense-12",
+      "definition": "3SG.M.DAT"
+    },
+    "sense-13": {
+      "id": "sense-13",
+      "definition": "3PL.NOM"
+    },
+    "sense-14": {
+      "id": "sense-14",
+      "definition": "3PL.ACC"
+    },
+    "sense-15": {
+      "id": "sense-15",
+      "definition": "3SG.N.ACC"
+    },
+    "sense-16": {
+      "id": "sense-16",
+      "definition": "3PL.DAT"
+    },
+    "sense-17": {
+      "id": "sense-17",
+      "definition": "3SG.N.GEN"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

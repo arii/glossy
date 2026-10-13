@@ -1,0 +1,12 @@
+{
+  "id": "forspendan-v-1",
+  "lemma": "forspendan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "for-spend-PRS.IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

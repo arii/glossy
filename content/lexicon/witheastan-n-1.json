@@ -1,0 +1,12 @@
+{
+  "id": "witheastan-n-1",
+  "lemma": "wiðēastan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "agaisnt-east-from"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

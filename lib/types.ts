@@ -52,18 +52,58 @@ export type LinguisticAnalysis = {
   wiktionaryUrl?: string;
 };
 
-export type LexiconEntry = {
-  lemma: string;
-  pos: PartOfSpeech;
-  wiktionaryUrl: string;
-  definition?: string;
-  ipa?: string;
-};
+export interface LexiconSense {
+  id: string;
+  definition: string;
+  grammaticalNote?: string;
+}
 
-export type InterlinearWord = {
+export interface LexiconEntry {
+  id: string;
+  lemma: string;
+  pos: "N" | "V" | "ADJ" | "ADV" | "PRON" | "PREP" | "CONJ" | "INTERJ";
+  canonicalFeatures?: {
+    gender?: "MASC" | "FEM" | "NEUT";
+    verbClass?: string;
+  };
+  ipa?: string;
+  senses: Record<string, LexiconSense>;
+  defaultSenseId: string;
+  redirectTo?: string;
+}
+
+export interface WordToken {
   id: string;
   originalWord: string;
-  morphologicalGloss?: string;
+  morphologicalGloss: string;
+  lemmaRef: string | null;
+  selectedSenseId?: string;
+  features?: {
+    case?: "NOM" | "ACC" | "GEN" | "DAT" | "INS";
+    number?: "SG" | "PL";
+    tense?: "PRS" | "PST";
+    mood?: "IND" | "SUB" | "IMP";
+    person?: "1" | "2" | "3";
+  };
+  contextualOverride?: {
+    definition?: string;
+    pos?: string;
+    notes?: string;
+  };
+}
+
+export type LexiconMap = Record<string, LexiconEntry>;
+
+export interface ResolvedWordToken extends WordToken {
+  lemma: string;
+  pos: string;
+  definition: string;
+  wiktionaryUrl: string;
+  ipa?: string;
+  notes?: string;
+}
+
+export type InterlinearWord = WordToken & {
   trailingPunctuation?: string;
   sourceGlossTex?: string;
   analysis?: LinguisticAnalysis;

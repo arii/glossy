@@ -1,0 +1,12 @@
+{
+  "id": "more-n-1",
+  "lemma": "mōre",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "moor-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

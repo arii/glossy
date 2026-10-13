@@ -1,0 +1,12 @@
+{
+  "id": "feo-n-1",
+  "lemma": "fēo",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "property.DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

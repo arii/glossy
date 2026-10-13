@@ -1,0 +1,12 @@
+{
+  "id": "wild-n-1",
+  "lemma": "wild",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "wild-NOM.PL.M.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

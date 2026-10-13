@@ -1,0 +1,17 @@
+{
+  "id": "secgan-v-1",
+  "lemma": "secgan",
+  "pos": "V",
+  "ipa": "/ˈsæː.de/",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to say, speak"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "say-PST-IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

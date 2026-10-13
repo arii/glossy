@@ -1,0 +1,12 @@
+{
+  "id": "standethan-v-1",
+  "lemma": "standeðan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "stand.PRS-IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

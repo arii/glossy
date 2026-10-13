@@ -1,0 +1,12 @@
+{
+  "id": "lang-n-1",
+  "lemma": "lang",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "long-NOM.PL.M.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

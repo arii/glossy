@@ -1,0 +1,12 @@
+{
+  "id": "wolcen-n-1",
+  "lemma": "wolcen",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "cloud, sky, heavens"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

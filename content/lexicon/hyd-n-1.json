@@ -1,0 +1,12 @@
+{
+  "id": "hyd-n-1",
+  "lemma": "hȳd",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "hide.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "angl-n-1",
+  "lemma": "angl",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Angeln-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

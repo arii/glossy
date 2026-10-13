@@ -1,0 +1,12 @@
+{
+  "id": "mile-n-1",
+  "lemma": "mīle",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "mile-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

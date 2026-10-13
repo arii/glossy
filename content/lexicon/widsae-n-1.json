@@ -1,0 +1,16 @@
+{
+  "id": "widsae-n-1",
+  "lemma": "wīdsǣ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "wide-sea.ACC.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "wide-sea.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

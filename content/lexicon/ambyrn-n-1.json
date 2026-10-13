@@ -1,0 +1,12 @@
+{
+  "id": "ambyrn-n-1",
+  "lemma": "ambyrn",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "favorable-ACC.SG.M.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

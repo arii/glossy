@@ -1,0 +1,16 @@
+{
+  "id": "hlaford-n-1",
+  "lemma": "hlāford",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "lord, master"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "lord-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

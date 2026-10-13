@@ -1,0 +1,12 @@
+{
+  "id": "westsae-n-1",
+  "lemma": "westsǣ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "west-sea.ACC.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

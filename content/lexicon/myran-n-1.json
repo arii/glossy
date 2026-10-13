@@ -1,0 +1,12 @@
+{
+  "id": "myran-n-1",
+  "lemma": "mȳran",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "mare-GEN.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "dael-n-1",
+  "lemma": "dǣl",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "deal"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "deal.NOM.SG"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "deal.ACC.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

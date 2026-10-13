@@ -1,0 +1,12 @@
+{
+  "id": "kyning-n-1",
+  "lemma": "kyning",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "king-NOM.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "egsian-v-1",
+  "lemma": "egsian",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to terrify, frighten"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

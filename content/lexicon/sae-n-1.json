@@ -1,0 +1,28 @@
+{
+  "id": "sae-n-1",
+  "lemma": "sǣ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "sea, ocean"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "sea.DAT.SG"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "sea.NOM.SG"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "sea.ACC.SG"
+    },
+    "sense-5": {
+      "id": "sense-5",
+      "definition": "noun (sǣ)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

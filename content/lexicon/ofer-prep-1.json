@@ -1,0 +1,12 @@
+{
+  "id": "ofer-prep-1",
+  "lemma": "ofer",
+  "pos": "PREP",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "over, across, beyond"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

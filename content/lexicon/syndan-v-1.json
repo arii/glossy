@@ -1,0 +1,12 @@
+{
+  "id": "syndan-v-1",
+  "lemma": "syndan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "be.PRS.IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

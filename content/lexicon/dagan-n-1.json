@@ -1,0 +1,12 @@
+{
+  "id": "dagan-n-1",
+  "lemma": "dagan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "day-DAT.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

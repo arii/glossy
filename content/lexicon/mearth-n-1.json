@@ -1,0 +1,12 @@
+{
+  "id": "mearth-n-1",
+  "lemma": "mearð",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "marten-GEN.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

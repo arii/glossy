@@ -1,0 +1,16 @@
+{
+  "id": "steorbord-n-1",
+  "lemma": "stēorbord",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "starboard (right side of ship)"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "steering-board.ACC.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

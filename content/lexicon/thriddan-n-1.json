@@ -1,0 +1,12 @@
+{
+  "id": "thriddan-n-1",
+  "lemma": "þriddan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "third-ACC.SG.M.WK"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

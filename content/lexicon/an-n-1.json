@@ -1,0 +1,24 @@
+{
+  "id": "an-n-1",
+  "lemma": "ān",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "one.NOM.SG.F"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "one.ACC.SG.N"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "one.NOM.SG.M"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "one-DAT.SG.M"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

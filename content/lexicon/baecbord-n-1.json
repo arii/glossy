@@ -1,0 +1,16 @@
+{
+  "id": "baecbord-n-1",
+  "lemma": "bæcbord",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "port / larboard side of ship"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "back-board.ACC.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

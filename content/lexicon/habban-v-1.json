@@ -1,0 +1,24 @@
+{
+  "id": "habban-v-1",
+  "lemma": "habban",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to have"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "have-PRS.IND.PL"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "have-PST-IND.3SG"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "have-INF"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

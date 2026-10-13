@@ -1,0 +1,16 @@
+{
+  "id": "wisl-n-1",
+  "lemma": "wīsl",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Vistula-NOM.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "Vistula-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

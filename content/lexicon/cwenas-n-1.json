@@ -1,0 +1,16 @@
+{
+  "id": "cwenas-n-1",
+  "lemma": "Cwēnas",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Kvens (people of northern Scandinavia)"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "Kven-NOM.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

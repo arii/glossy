@@ -1,0 +1,12 @@
+{
+  "id": "wyrd-n-1",
+  "lemma": "wyrd",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "noun (wyrd)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

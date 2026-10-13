@@ -1,0 +1,12 @@
+{
+  "id": "gebidan-v-1",
+  "lemma": "ġebīdan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to experience, live to see, await"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

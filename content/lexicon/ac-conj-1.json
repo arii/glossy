@@ -1,0 +1,16 @@
+{
+  "id": "ac-conj-1",
+  "lemma": "ac",
+  "pos": "CONJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "but, however"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "but"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

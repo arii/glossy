@@ -1,0 +1,12 @@
+{
+  "id": "thiderweard-n-1",
+  "lemma": "þiderweard",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to.there-ward"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

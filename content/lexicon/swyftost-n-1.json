@@ -1,0 +1,12 @@
+{
+  "id": "swyftost-n-1",
+  "lemma": "swyftost",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "swift-SUP-ACC.PL.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

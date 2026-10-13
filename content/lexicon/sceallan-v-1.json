@@ -1,0 +1,12 @@
+{
+  "id": "sceallan-v-1",
+  "lemma": "sċeallan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "have.to.PRS.IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "aerestan-n-1",
+  "lemma": "ǣrestan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "before-SUP-DAT.SG.M.WK"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

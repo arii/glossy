@@ -1,0 +1,12 @@
+{
+  "id": "syfan-n-1",
+  "lemma": "syfan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "seven"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

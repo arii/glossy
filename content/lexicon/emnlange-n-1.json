@@ -1,0 +1,12 @@
+{
+  "id": "emnlange-n-1",
+  "lemma": "emnlange",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "even-long-ADV"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

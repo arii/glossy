@@ -1,0 +1,12 @@
+{
+  "id": "east-adv-1",
+  "lemma": "ēast",
+  "pos": "ADV",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "east.ADV"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

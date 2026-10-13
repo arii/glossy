@@ -1,0 +1,12 @@
+{
+  "id": "smael-n-1",
+  "lemma": "smæl",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "narrow.NOM.SG.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "other-adj-1",
+  "lemma": "ōþer",
+  "pos": "ADJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "other-DAT.PL.STR"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "other-ACC.SG.F.STR"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "other.NOM.SG.M.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

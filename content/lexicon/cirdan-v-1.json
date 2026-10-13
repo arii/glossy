@@ -1,0 +1,12 @@
+{
+  "id": "cirdan-v-1",
+  "lemma": "ċirdan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "turn-PST-IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "benimthan-v-1",
+  "lemma": "benimðan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "by-take.PRS-IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

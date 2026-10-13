@@ -1,0 +1,12 @@
+{
+  "id": "easteweard-n-1",
+  "lemma": "ēasteweard",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "east-ward"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

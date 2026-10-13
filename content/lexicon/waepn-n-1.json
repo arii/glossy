@@ -1,0 +1,12 @@
+{
+  "id": "waepn-n-1",
+  "lemma": "wǣpn",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "weapon-DAT.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

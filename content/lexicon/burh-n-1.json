@@ -1,0 +1,12 @@
+{
+  "id": "burh-n-1",
+  "lemma": "burh",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "town.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "ettan-v-1",
+  "lemma": "ettan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "graze-INF"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

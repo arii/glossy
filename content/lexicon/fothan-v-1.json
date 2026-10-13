@@ -1,0 +1,12 @@
+{
+  "id": "fothan-v-1",
+  "lemma": "fōðan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "catch-PRS.IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

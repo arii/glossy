@@ -1,0 +1,12 @@
+{
+  "id": "falster-n-1",
+  "lemma": "falster",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Falster.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

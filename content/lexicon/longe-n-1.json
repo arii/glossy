@@ -1,0 +1,16 @@
+{
+  "id": "longe-n-1",
+  "lemma": "longe",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "long-ADV"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "noun (longe)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

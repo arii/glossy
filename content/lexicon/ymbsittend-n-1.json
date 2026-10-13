@@ -1,0 +1,12 @@
+{
+  "id": "ymbsittend-n-1",
+  "lemma": "ymbsittend",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "neighbor, one sitting around"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

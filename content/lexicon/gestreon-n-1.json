@@ -1,0 +1,12 @@
+{
+  "id": "gestreon-n-1",
+  "lemma": "ġestrēon",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "PFX-treasure"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

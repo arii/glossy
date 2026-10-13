@@ -1,0 +1,12 @@
+{
+  "id": "eas-n-1",
+  "lemma": "ēas",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "river-GEN.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

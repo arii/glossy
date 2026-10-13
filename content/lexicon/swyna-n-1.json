@@ -1,0 +1,12 @@
+{
+  "id": "swyna-n-1",
+  "lemma": "swȳna",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "swine-GEN.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

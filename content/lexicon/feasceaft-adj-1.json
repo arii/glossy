@@ -1,0 +1,12 @@
+{
+  "id": "feasceaft-adj-1",
+  "lemma": "fēasceaft",
+  "pos": "ADJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "destitute, helpless, wretched"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

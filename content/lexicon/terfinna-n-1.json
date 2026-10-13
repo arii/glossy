@@ -1,0 +1,12 @@
+{
+  "id": "terfinna-n-1",
+  "lemma": "terfinna",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Ter-Finn-GEN.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

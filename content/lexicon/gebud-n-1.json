@@ -1,0 +1,12 @@
+{
+  "id": "gebud-n-1",
+  "lemma": "ġebūd",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "PFX-dwell-PART.ACC.SG.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

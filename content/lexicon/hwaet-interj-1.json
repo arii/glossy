@@ -1,0 +1,12 @@
+{
+  "id": "hwaet-interj-1",
+  "lemma": "hwæt",
+  "pos": "INTERJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Listen!, What!, Lo!, Behold!"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "hider-n-1",
+  "lemma": "hider",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to.here"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

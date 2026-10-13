@@ -1,0 +1,12 @@
+{
+  "id": "haten-n-1",
+  "lemma": "hāten",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "call-PART-NOM.PL.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

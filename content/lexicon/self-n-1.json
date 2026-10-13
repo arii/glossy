@@ -1,0 +1,12 @@
+{
+  "id": "self-n-1",
+  "lemma": "self",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "self.NOM.SG.M.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

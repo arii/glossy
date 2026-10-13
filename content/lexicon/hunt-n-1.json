@@ -1,0 +1,12 @@
+{
+  "id": "hunt-n-1",
+  "lemma": "hunt",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "hunt-AGT.DAT.PL.M"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

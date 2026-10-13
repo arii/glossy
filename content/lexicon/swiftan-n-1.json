@@ -1,0 +1,12 @@
+{
+  "id": "swiftan-n-1",
+  "lemma": "swiftan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "swift-NOM.PL.N.WK"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

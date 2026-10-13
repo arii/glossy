@@ -1,0 +1,16 @@
+{
+  "id": "hyt-n-1",
+  "lemma": "hyt",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "3SG.N.NOM"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "3SG.N.ACC"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

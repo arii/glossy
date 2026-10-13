@@ -1,0 +1,12 @@
+{
+  "id": "forbaerned-n-1",
+  "lemma": "forbærned",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "for-burn-PART.NOM.SG.M.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

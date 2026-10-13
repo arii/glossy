@@ -1,0 +1,12 @@
+{
+  "id": "feoh-n-1",
+  "lemma": "feoh",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "property.ACC.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

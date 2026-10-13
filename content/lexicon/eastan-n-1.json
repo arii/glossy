@@ -1,0 +1,12 @@
+{
+  "id": "eastan-n-1",
+  "lemma": "ēastan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "east-from"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

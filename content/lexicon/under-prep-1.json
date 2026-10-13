@@ -1,0 +1,12 @@
+{
+  "id": "under-prep-1",
+  "lemma": "under",
+  "pos": "PREP",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "under, beneath"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

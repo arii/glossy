@@ -1,0 +1,12 @@
+{
+  "id": "nu-adv-1",
+  "lemma": "nū",
+  "pos": "ADV",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "noun (nū)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

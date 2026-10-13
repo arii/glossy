@@ -1,0 +1,12 @@
+{
+  "id": "hym-n-1",
+  "lemma": "hym",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "3SG.M.DAT"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

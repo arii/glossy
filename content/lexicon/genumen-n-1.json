@@ -1,0 +1,12 @@
+{
+  "id": "genumen-n-1",
+  "lemma": "ġenumen",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "PFX-take-PART.NOM.SG.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

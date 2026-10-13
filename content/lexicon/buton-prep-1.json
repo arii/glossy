@@ -1,0 +1,12 @@
+{
+  "id": "buton-prep-1",
+  "lemma": "būton",
+  "pos": "PREP",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "except"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "sciringesheal-n-1",
+  "lemma": "sċīringesheal",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Skiringssal.ACC.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "Skiringssal-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

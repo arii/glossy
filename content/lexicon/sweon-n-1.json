@@ -1,0 +1,12 @@
+{
+  "id": "sweon-n-1",
+  "lemma": "swēon",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Swede.DAT.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

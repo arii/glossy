@@ -1,0 +1,12 @@
+{
+  "id": "siglan-v-1",
+  "lemma": "siġlan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "sail-INF"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

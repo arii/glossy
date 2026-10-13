@@ -1,0 +1,20 @@
+{
+  "id": "theah-conj-1",
+  "lemma": "þēah",
+  "pos": "CONJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "though, although, however"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "though"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "conjunction (þēah)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

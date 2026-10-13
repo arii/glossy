@@ -1,0 +1,16 @@
+{
+  "id": "eorthan-n-1",
+  "lemma": "eorðan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "noun (eorðan)"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "ground-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "bidan-v-1",
+  "lemma": "bīdan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "wait.PST.IND.3SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "wait-INF"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

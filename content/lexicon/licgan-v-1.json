@@ -1,0 +1,24 @@
+{
+  "id": "licgan-v-1",
+  "lemma": "licgan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to lie, extend"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "lie.PST-SJV.SG"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "lie-PRS.IND.3SG"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "lie-PRS.IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

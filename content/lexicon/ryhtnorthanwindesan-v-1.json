@@ -1,0 +1,12 @@
+{
+  "id": "ryhtnorthanwindesan-v-1",
+  "lemma": "ryhtnorþanwindesan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "right-north-from-wind-GEN.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

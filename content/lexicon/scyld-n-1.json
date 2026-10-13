@@ -1,0 +1,12 @@
+{
+  "id": "scyld-n-1",
+  "lemma": "Scyld",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Scyld (legendary Danish king)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

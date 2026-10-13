@@ -1,0 +1,12 @@
+{
+  "id": "syxa-n-1",
+  "lemma": "syxa",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "six-GEN.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

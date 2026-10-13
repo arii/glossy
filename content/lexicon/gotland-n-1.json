@@ -1,0 +1,16 @@
+{
+  "id": "gotland-n-1",
+  "lemma": "gotland",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Jute-land.NOM.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "Got-land"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

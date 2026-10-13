@@ -1,0 +1,12 @@
+{
+  "id": "hwaelhunta-n-1",
+  "lemma": "hwælhunta",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "whale-hunt-AGT.NOM.PL.M"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

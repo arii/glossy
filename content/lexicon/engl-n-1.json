@@ -1,0 +1,12 @@
+{
+  "id": "engl-n-1",
+  "lemma": "engl",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "English-NOM.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "siex-n-1",
+  "lemma": "siex",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "six"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

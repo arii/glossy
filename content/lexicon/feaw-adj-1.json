@@ -1,0 +1,12 @@
+{
+  "id": "feaw-adj-1",
+  "lemma": "fēaw",
+  "pos": "ADJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "few-DAT.PL.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

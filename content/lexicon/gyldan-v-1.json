@@ -1,0 +1,12 @@
+{
+  "id": "gyldan-v-1",
+  "lemma": "ġyldan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "pay-INF"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

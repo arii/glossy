@@ -1,0 +1,16 @@
+{
+  "id": "deadan-n-1",
+  "lemma": "dēadan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "dead-GEN.SG.M.WK"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "dead-NOM.PL.WK"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

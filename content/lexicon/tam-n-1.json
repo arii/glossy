@@ -1,0 +1,12 @@
+{
+  "id": "tam-n-1",
+  "lemma": "tam",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "tame-GEN.PL.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "westen-n-1",
+  "lemma": "wēsten",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "wasteland-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

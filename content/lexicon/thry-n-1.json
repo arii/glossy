@@ -1,0 +1,12 @@
+{
+  "id": "thry-n-1",
+  "lemma": "þrȳ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "three.ACC.M"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

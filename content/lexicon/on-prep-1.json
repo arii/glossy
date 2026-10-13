@@ -1,0 +1,16 @@
+{
+  "id": "on-prep-1",
+  "lemma": "on",
+  "pos": "PREP",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "in, on, upon"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "in"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "unfrith-n-1",
+  "lemma": "unfriþ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "un-peace-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "forhwaega-n-1",
+  "lemma": "forhwæga",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "for-some"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

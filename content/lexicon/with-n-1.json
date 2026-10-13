@@ -1,0 +1,12 @@
+{
+  "id": "with-n-1",
+  "lemma": "wið",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "against"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

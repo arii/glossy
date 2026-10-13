@@ -1,0 +1,20 @@
+{
+  "id": "deor-n-1",
+  "lemma": "dēor",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "wild animal, beast"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "animal-GEN.PL"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "animal.ACC.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

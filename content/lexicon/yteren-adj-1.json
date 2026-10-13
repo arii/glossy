@@ -1,0 +1,12 @@
+{
+  "id": "yteren-adj-1",
+  "lemma": "yteren",
+  "pos": "ADJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "otter-ADJ-ACC.SG.M.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

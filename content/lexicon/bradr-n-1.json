@@ -1,0 +1,16 @@
+{
+  "id": "bradr-n-1",
+  "lemma": "brādr",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "broad-CMP-NOM.SG.N.WK"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "broad-CMP-NOM.SG.F.WK"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

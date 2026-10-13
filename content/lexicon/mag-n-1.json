@@ -1,0 +1,12 @@
+{
+  "id": "mag-n-1",
+  "lemma": "māg",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "kinsman-DAT.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

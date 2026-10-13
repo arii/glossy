@@ -1,0 +1,12 @@
+{
+  "id": "unspedig-adj-1",
+  "lemma": "unspēdig",
+  "pos": "ADJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "un-wealth-ADJ-NOM.PL.WK"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

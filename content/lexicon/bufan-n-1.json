@@ -1,0 +1,12 @@
+{
+  "id": "bufan-n-1",
+  "lemma": "bufan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "by-up-from"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

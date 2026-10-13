@@ -1,0 +1,12 @@
+{
+  "id": "metudes-n-1",
+  "lemma": "metudes",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "noun (metudes)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

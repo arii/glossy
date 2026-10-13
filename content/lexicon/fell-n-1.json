@@ -1,0 +1,16 @@
+{
+  "id": "fell-n-1",
+  "lemma": "fell",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "skin-DAT.PL"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "skin.ACC.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

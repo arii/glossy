@@ -1,0 +1,12 @@
+{
+  "id": "byrig-n-1",
+  "lemma": "byriġ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "town.DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

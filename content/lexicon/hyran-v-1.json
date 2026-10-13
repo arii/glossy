@@ -1,0 +1,16 @@
+{
+  "id": "hyran-v-1",
+  "lemma": "hȳran",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to hear, obey, serve"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "belong-PRS.IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

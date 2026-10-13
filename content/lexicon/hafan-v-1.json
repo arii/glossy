@@ -1,0 +1,12 @@
+{
+  "id": "hafan-v-1",
+  "lemma": "hafan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "have-PRS.IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

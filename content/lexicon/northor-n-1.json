@@ -1,0 +1,12 @@
+{
+  "id": "northor-n-1",
+  "lemma": "norðor",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "north-CMP.ADV"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "hrythe-n-1",
+  "lemma": "hrȳðe",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "cow-GEN.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

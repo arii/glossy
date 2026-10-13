@@ -1,0 +1,12 @@
+{
+  "id": "gefrinan-v-1",
+  "lemma": "ġefrīnan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to learn by asking, hear of"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

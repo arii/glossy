@@ -1,0 +1,28 @@
+{
+  "id": "seglian-v-1",
+  "lemma": "seġlian",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to sail"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "sail-PST-IND.3SG"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "sail-THM-INF"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "sail-THM-PST-SJV.SG"
+    },
+    "sense-5": {
+      "id": "sense-5",
+      "definition": "sail-THM-PST-IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

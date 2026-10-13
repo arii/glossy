@@ -1,0 +1,12 @@
+{
+  "id": "toth-n-1",
+  "lemma": "tōð",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "tooth.ACC.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

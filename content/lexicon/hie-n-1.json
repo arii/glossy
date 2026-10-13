@@ -1,0 +1,12 @@
+{
+  "id": "hie-n-1",
+  "lemma": "hie",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "3PL.GEN"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

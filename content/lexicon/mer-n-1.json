@@ -1,0 +1,16 @@
+{
+  "id": "mer-n-1",
+  "lemma": "mer",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "lake-NOM.PL"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "lake-ACC.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

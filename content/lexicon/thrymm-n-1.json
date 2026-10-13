@@ -1,0 +1,12 @@
+{
+  "id": "thrymm-n-1",
+  "lemma": "þrymm",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "glory, majesty, power"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

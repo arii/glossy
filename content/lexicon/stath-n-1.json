@@ -1,0 +1,12 @@
+{
+  "id": "stath-n-1",
+  "lemma": "stað",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "river.shore-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

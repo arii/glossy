@@ -1,0 +1,12 @@
+{
+  "id": "weaxan-v-1",
+  "lemma": "weaxan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to grow, wax, increase"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

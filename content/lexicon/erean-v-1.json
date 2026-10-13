@@ -1,0 +1,12 @@
+{
+  "id": "erean-v-1",
+  "lemma": "erean",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "plough-PST-IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

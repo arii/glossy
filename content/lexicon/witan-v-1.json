@@ -1,0 +1,12 @@
+{
+  "id": "witan-v-1",
+  "lemma": "witan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "know.PST-IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

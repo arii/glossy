@@ -1,0 +1,12 @@
+{
+  "id": "weorthan-v-1",
+  "lemma": "weorþan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to become, happen, be"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

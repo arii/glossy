@@ -1,0 +1,12 @@
+{
+  "id": "gewician-v-1",
+  "lemma": "ġewīcian",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "PFX-camp-THM-PST-IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

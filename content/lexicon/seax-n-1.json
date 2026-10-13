@@ -1,0 +1,12 @@
+{
+  "id": "seax-n-1",
+  "lemma": "seax",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Saxon-DAT.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

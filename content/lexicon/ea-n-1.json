@@ -1,0 +1,20 @@
+{
+  "id": "ea-n-1",
+  "lemma": "ēa",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "river.NOM.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "river.ACC.SG"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "river.DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

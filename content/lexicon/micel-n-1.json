@@ -1,0 +1,12 @@
+{
+  "id": "micel-n-1",
+  "lemma": "miċel",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "large.NOM.SG.F.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

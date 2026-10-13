@@ -1,0 +1,12 @@
+{
+  "id": "aetheling-n-1",
+  "lemma": "æþeling",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "noble, prince, lord"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

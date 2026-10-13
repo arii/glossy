@@ -1,0 +1,12 @@
+{
+  "id": "saedan-v-1",
+  "lemma": "sǣdan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "say-PST-IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

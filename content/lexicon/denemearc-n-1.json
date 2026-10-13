@@ -1,0 +1,12 @@
+{
+  "id": "denemearc-n-1",
+  "lemma": "denemearc",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Dane-NOM.PL-mark-ACC.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

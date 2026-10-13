@@ -1,0 +1,16 @@
+{
+  "id": "truso-n-1",
+  "lemma": "truso",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Truso.DAT.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "Truso.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

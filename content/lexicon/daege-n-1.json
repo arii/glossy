@@ -1,0 +1,12 @@
+{
+  "id": "daege-n-1",
+  "lemma": "dæġe",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "day-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

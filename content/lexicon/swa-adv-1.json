@@ -1,0 +1,16 @@
+{
+  "id": "swa-adv-1",
+  "lemma": "swā",
+  "pos": "ADV",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "adverb (swā)"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "as"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

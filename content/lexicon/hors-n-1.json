@@ -1,0 +1,28 @@
+{
+  "id": "hors-n-1",
+  "lemma": "hors",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "horse"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "horse-DAT.PL"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "horse.ACC.PL"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "horse.ACC.SG"
+    },
+    "sense-5": {
+      "id": "sense-5",
+      "definition": "horse.NOM.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

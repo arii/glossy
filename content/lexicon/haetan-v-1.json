@@ -1,0 +1,12 @@
+{
+  "id": "haetan-v-1",
+  "lemma": "hǣtan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "call.PRS.IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

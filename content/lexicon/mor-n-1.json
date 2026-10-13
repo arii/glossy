@@ -1,0 +1,36 @@
+{
+  "id": "mor-n-1",
+  "lemma": "mōr",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "moor, highland waste"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "moor-NOM.PL"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "moor-DAT.PL"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "moor.NOM.SG"
+    },
+    "sense-5": {
+      "id": "sense-5",
+      "definition": "moor-GEN.SG"
+    },
+    "sense-6": {
+      "id": "sense-6",
+      "definition": "moor.ACC.SG"
+    },
+    "sense-7": {
+      "id": "sense-7",
+      "definition": "moor-ACC.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "buan-v-1",
+  "lemma": "būan",
+  "pos": "V",
+  "ipa": "/ˈbuː.ɑn/",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to dwell, inhabit"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "be-prep-1",
+  "lemma": "be",
+  "pos": "PREP",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "by, along, near"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "by"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

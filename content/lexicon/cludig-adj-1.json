@@ -1,0 +1,12 @@
+{
+  "id": "cludig-adj-1",
+  "lemma": "clūdiġ",
+  "pos": "ADJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "rock-ADJ.NOM.SG.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

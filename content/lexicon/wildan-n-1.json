@@ -1,0 +1,12 @@
+{
+  "id": "wildan-n-1",
+  "lemma": "wildan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "wild-ACC.PL.WK"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

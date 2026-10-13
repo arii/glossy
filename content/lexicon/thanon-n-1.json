@@ -1,0 +1,12 @@
+{
+  "id": "thanon-n-1",
+  "lemma": "þanon",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "thence"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

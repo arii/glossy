@@ -1,0 +1,12 @@
+{
+  "id": "ofersean-v-1",
+  "lemma": "ofersēan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "over-see-INF"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

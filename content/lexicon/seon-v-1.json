@@ -1,0 +1,12 @@
+{
+  "id": "seon-v-1",
+  "lemma": "sēon",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "PFX-see.PST.IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

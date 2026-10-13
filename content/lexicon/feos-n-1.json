@@ -1,0 +1,12 @@
+{
+  "id": "feos-n-1",
+  "lemma": "fēos",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "property-GEN.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

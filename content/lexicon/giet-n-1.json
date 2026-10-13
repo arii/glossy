@@ -1,0 +1,12 @@
+{
+  "id": "giet-n-1",
+  "lemma": "ġīet",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "yet"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

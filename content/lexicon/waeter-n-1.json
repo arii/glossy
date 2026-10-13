@@ -1,0 +1,16 @@
+{
+  "id": "waeter-n-1",
+  "lemma": "wæter",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "water"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "water-GEN.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

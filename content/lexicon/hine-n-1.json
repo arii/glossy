@@ -1,0 +1,12 @@
+{
+  "id": "hine-n-1",
+  "lemma": "hine",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "3SG.M.ACC"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

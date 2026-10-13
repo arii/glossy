@@ -1,0 +1,12 @@
+{
+  "id": "ligethan-v-1",
+  "lemma": "liġeðan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "lie-PRS.IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

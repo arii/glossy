@@ -1,0 +1,16 @@
+{
+  "id": "port-n-1",
+  "lemma": "port",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "port.NOM.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "port-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

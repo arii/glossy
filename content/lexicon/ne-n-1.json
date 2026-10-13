@@ -1,0 +1,12 @@
+{
+  "id": "ne-n-1",
+  "lemma": "ne",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "NEG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

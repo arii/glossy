@@ -1,0 +1,16 @@
+{
+  "id": "drincan-v-1",
+  "lemma": "drincan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to drink"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "drink.PRS-IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

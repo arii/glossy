@@ -1,0 +1,12 @@
+{
+  "id": "beren-adj-1",
+  "lemma": "beren",
+  "pos": "ADJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "bear-ADJ-ACC.SG.M.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

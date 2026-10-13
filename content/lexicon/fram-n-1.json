@@ -1,0 +1,12 @@
+{
+  "id": "fram-n-1",
+  "lemma": "fram",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "from"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

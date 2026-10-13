@@ -1,0 +1,12 @@
+{
+  "id": "winodland-n-1",
+  "lemma": "winodland",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Wend-land-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

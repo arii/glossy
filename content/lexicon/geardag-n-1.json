@@ -1,0 +1,12 @@
+{
+  "id": "geardag-n-1",
+  "lemma": "ġēardag",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "days of yore, ancient times"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

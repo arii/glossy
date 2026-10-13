@@ -1,0 +1,16 @@
+{
+  "id": "estland-n-1",
+  "lemma": "ēstland",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Est-land-DAT.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "Est-land.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

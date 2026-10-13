@@ -1,0 +1,12 @@
+{
+  "id": "word-n-1",
+  "lemma": ")",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": ")"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

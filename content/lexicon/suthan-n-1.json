@@ -1,0 +1,12 @@
+{
+  "id": "suthan-n-1",
+  "lemma": "sūðan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "south-from"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

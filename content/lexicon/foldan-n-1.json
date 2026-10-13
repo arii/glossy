@@ -1,0 +1,12 @@
+{
+  "id": "foldan-n-1",
+  "lemma": "foldan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "noun (foldan)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

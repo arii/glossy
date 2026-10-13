@@ -1,0 +1,12 @@
+{
+  "id": "hio-n-1",
+  "lemma": "hīo",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "3SG.F.NOM"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

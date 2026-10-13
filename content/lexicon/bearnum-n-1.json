@@ -1,0 +1,12 @@
+{
+  "id": "bearnum-n-1",
+  "lemma": "bearnum",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "noun (bearnum)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

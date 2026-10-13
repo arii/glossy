@@ -1,0 +1,12 @@
+{
+  "id": "month-n-1",
+  "lemma": "mōnð",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "month-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

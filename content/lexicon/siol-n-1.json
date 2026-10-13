@@ -1,0 +1,12 @@
+{
+  "id": "siol-n-1",
+  "lemma": "sīol",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "seal-GEN.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

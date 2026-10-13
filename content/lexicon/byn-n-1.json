@@ -1,0 +1,12 @@
+{
+  "id": "byn-n-1",
+  "lemma": "bȳn",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "dwell-PART-DAT.SG.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

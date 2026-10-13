@@ -1,0 +1,12 @@
+{
+  "id": "weard-n-1",
+  "lemma": "weard",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "noun (weard)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

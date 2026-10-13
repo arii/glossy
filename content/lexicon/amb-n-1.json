@@ -1,0 +1,12 @@
+{
+  "id": "amb-n-1",
+  "lemma": "amb",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "amber-GEN.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

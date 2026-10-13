@@ -1,0 +1,12 @@
+{
+  "id": "sylf-n-1",
+  "lemma": "sylf",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "self.NOM.PL.M.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

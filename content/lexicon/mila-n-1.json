@@ -1,0 +1,12 @@
+{
+  "id": "mila-n-1",
+  "lemma": "mīla",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "mile-GEN.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

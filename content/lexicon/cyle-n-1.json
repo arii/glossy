@@ -1,0 +1,12 @@
+{
+  "id": "cyle-n-1",
+  "lemma": "ċyle",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "cold-ACC.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

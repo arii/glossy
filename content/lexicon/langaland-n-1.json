@@ -1,0 +1,12 @@
+{
+  "id": "langaland-n-1",
+  "lemma": "langaland",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Long-land.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

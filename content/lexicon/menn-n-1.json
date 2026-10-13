@@ -1,0 +1,12 @@
+{
+  "id": "menn-n-1",
+  "lemma": "menn",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "man.NOM.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

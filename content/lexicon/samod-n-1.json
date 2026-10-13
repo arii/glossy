@@ -1,0 +1,12 @@
+{
+  "id": "samod-n-1",
+  "lemma": "samod",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "together"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

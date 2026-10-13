@@ -1,0 +1,16 @@
+{
+  "id": "eardian-v-1",
+  "lemma": "eardian",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "live-THM-PRS.IND.PL"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "live-THM-PST-IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

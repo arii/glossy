@@ -1,0 +1,12 @@
+{
+  "id": "geond-n-1",
+  "lemma": "geond",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "noun (geond)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

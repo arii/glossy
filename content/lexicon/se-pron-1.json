@@ -1,0 +1,172 @@
+{
+  "id": "se-pron-1",
+  "lemma": "sē",
+  "pos": "PRON",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "the, that (feminine nominative)"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "the, that (masculine nominative)"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "that, the (neuter nominative/accusative)"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "the, those"
+    },
+    "sense-5": {
+      "id": "sense-5",
+      "definition": "of that, for that"
+    },
+    "sense-6": {
+      "id": "sense-6",
+      "definition": "of those, of the"
+    },
+    "sense-7": {
+      "id": "sense-7",
+      "definition": "that"
+    },
+    "sense-8": {
+      "id": "sense-8",
+      "definition": "determiner (sē)"
+    },
+    "sense-9": {
+      "id": "sense-9",
+      "definition": "DET.DEF.DAT.SG.N"
+    },
+    "sense-10": {
+      "id": "sense-10",
+      "definition": "DET.DEF.ACC.SG.F"
+    },
+    "sense-11": {
+      "id": "sense-11",
+      "definition": "DET.DEF.NOM.SG.N"
+    },
+    "sense-12": {
+      "id": "sense-12",
+      "definition": "DET.DEF.DAT.SG.F"
+    },
+    "sense-13": {
+      "id": "sense-13",
+      "definition": "DEM.DIST"
+    },
+    "sense-14": {
+      "id": "sense-14",
+      "definition": "then"
+    },
+    "sense-15": {
+      "id": "sense-15",
+      "definition": "DET.DEF.ACC.SG.N"
+    },
+    "sense-16": {
+      "id": "sense-16",
+      "definition": "DET.DEF.NOM.PL"
+    },
+    "sense-17": {
+      "id": "sense-17",
+      "definition": "DET.DEF.DAT.PL"
+    },
+    "sense-18": {
+      "id": "sense-18",
+      "definition": "DET.DEF.NOM.SG.F"
+    },
+    "sense-19": {
+      "id": "sense-19",
+      "definition": "DEM.DIST.DAT.SG.N"
+    },
+    "sense-20": {
+      "id": "sense-20",
+      "definition": "DET.DEF.GEN.SG.F"
+    },
+    "sense-21": {
+      "id": "sense-21",
+      "definition": "DEM.DIST.NOM.SG.N"
+    },
+    "sense-22": {
+      "id": "sense-22",
+      "definition": "DET.DEF.GEN.PL"
+    },
+    "sense-23": {
+      "id": "sense-23",
+      "definition": "REL"
+    },
+    "sense-24": {
+      "id": "sense-24",
+      "definition": "DET.DEF.GEN.SG.N"
+    },
+    "sense-25": {
+      "id": "sense-25",
+      "definition": "DET.DEF.ACC.PL"
+    },
+    "sense-26": {
+      "id": "sense-26",
+      "definition": "DET.DEF.DAT.SG.M"
+    },
+    "sense-27": {
+      "id": "sense-27",
+      "definition": "DET.DEF.NOM.SG.M"
+    },
+    "sense-28": {
+      "id": "sense-28",
+      "definition": "DEM.DIST.NOM.PL"
+    },
+    "sense-29": {
+      "id": "sense-29",
+      "definition": "DEM.DIST.GEN.PL"
+    },
+    "sense-30": {
+      "id": "sense-30",
+      "definition": "DET.DEF.ACC.SG.M"
+    },
+    "sense-31": {
+      "id": "sense-31",
+      "definition": "DEM.DIST.ACC.SG.N"
+    },
+    "sense-32": {
+      "id": "sense-32",
+      "definition": "DET.DEF.GEN.SG.M"
+    },
+    "sense-33": {
+      "id": "sense-33",
+      "definition": "DEM.DIST.ACC.SG.M"
+    },
+    "sense-34": {
+      "id": "sense-34",
+      "definition": "DEM.DIST.NOM.SG.F"
+    },
+    "sense-35": {
+      "id": "sense-35",
+      "definition": "DEM.DIST.NOM.SG.M"
+    },
+    "sense-36": {
+      "id": "sense-36",
+      "definition": "DEM.DIST.DAT.PL"
+    },
+    "sense-37": {
+      "id": "sense-37",
+      "definition": "DEM.DIST.ACC.PL"
+    },
+    "sense-38": {
+      "id": "sense-38",
+      "definition": "DEM.DIST.INS.SG.N"
+    },
+    "sense-39": {
+      "id": "sense-39",
+      "definition": "DET.DEF.INS.SG.M"
+    },
+    "sense-40": {
+      "id": "sense-40",
+      "definition": "DEM.DIST.DAT.SG.F"
+    },
+    "sense-41": {
+      "id": "sense-41",
+      "definition": "DEM.DIST.GEN.SG.N"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

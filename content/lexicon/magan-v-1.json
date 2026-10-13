@@ -1,0 +1,24 @@
+{
+  "id": "magan-v-1",
+  "lemma": "magan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "verb (magan)"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "can-PST-IND.3SG"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "can.PRS.IND.3SG"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "can.PRS-IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

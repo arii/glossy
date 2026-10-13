@@ -1,0 +1,12 @@
+{
+  "id": "ham-n-1",
+  "lemma": "hām",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "home.DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

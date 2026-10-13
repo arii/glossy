@@ -1,0 +1,16 @@
+{
+  "id": "mycel-n-1",
+  "lemma": "myċel",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "large.NOM.SG.F.STR"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "large.NOM.SG.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

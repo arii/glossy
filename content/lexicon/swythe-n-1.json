@@ -1,0 +1,12 @@
+{
+  "id": "swythe-n-1",
+  "lemma": "swȳþe",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "strong-ADV"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

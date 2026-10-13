@@ -1,0 +1,12 @@
+{
+  "id": "aernan-v-1",
+  "lemma": "ærnan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "run-PRS.IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

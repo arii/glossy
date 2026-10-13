@@ -1,0 +1,12 @@
+{
+  "id": "brohtan-v-1",
+  "lemma": "brōhtan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "bring-PST-IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

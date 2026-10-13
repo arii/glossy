@@ -1,0 +1,12 @@
+{
+  "id": "se-conj-1",
+  "lemma": "sē",
+  "pos": "CONJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "that (complementizer)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

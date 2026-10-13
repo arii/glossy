@@ -1,0 +1,16 @@
+{
+  "id": "sciprap-n-1",
+  "lemma": "sċiprāp",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "ship-rope-DAT.PL"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "ship-rope-ACC.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

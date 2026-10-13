@@ -1,0 +1,12 @@
+{
+  "id": "for-n-1",
+  "lemma": "for",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "for"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

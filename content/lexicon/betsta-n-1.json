@@ -1,0 +1,12 @@
+{
+  "id": "betsta-n-1",
+  "lemma": "betsta",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "good-SUP-NOM.SG.M.WK"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

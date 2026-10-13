@@ -1,0 +1,12 @@
+{
+  "id": "northweg-n-1",
+  "lemma": "norðweġ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "north-way.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "belimpethan-v-1",
+  "lemma": "belimpeðan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "by-happen-PRS.IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

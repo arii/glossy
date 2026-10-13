@@ -1,0 +1,12 @@
+{
+  "id": "syththan-n-1",
+  "lemma": "syðþan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "afterwards"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

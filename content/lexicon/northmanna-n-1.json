@@ -1,0 +1,12 @@
+{
+  "id": "northmanna-n-1",
+  "lemma": "norðmanna",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "north-man-GEN.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

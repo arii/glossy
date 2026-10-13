@@ -1,0 +1,16 @@
+{
+  "id": "asettan-v-1",
+  "lemma": "āsettan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to set out, place"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "out-set-PRS.SJV.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

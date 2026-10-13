@@ -1,0 +1,12 @@
+{
+  "id": "west-adv-1",
+  "lemma": "west",
+  "pos": "ADV",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "west.ADV"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

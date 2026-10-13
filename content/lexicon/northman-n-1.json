@@ -1,0 +1,28 @@
+{
+  "id": "northman-n-1",
+  "lemma": "Norþman",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Northmen, Norwegians"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "Northman, Norwegian"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "north-man-GEN.PL"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "north-man.ACC.PL"
+    },
+    "sense-5": {
+      "id": "sense-5",
+      "definition": "north-man.NOM.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "ar-n-1",
+  "lemma": "ār",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "income.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

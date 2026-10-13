@@ -1,0 +1,12 @@
+{
+  "id": "eowland-n-1",
+  "lemma": "eowland",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Ö-land.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

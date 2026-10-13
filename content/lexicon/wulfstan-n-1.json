@@ -1,0 +1,16 @@
+{
+  "id": "wulfstan-n-1",
+  "lemma": "Wulfstān",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Wulfstan (Anglo-Saxon voyager)"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "Wulfstan.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

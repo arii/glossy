@@ -1,0 +1,12 @@
+{
+  "id": "wyrcan-v-1",
+  "lemma": "wyrċan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "make-PRS.IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

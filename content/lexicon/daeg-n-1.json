@@ -1,0 +1,20 @@
+{
+  "id": "daeg-n-1",
+  "lemma": "dæġ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "day-ACC.PL"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "day-DAT.PL"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "day.ACC.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

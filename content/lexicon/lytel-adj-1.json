@@ -1,0 +1,12 @@
+{
+  "id": "lytel-adj-1",
+  "lemma": "lȳtel",
+  "pos": "ADJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "little.CMP-NOM.SG.M.WK"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

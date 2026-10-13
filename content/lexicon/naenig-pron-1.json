@@ -1,0 +1,12 @@
+{
+  "id": "naenig-pron-1",
+  "lemma": "nǣniġ",
+  "pos": "PRON",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "NEG-any.NOM.SG.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "forth-n-1",
+  "lemma": "forþ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "forth.ADV"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

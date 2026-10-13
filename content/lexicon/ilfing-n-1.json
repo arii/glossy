@@ -1,0 +1,12 @@
+{
+  "id": "ilfing-n-1",
+  "lemma": "ilfing",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Elbląg.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

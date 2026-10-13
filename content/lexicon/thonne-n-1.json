@@ -1,0 +1,16 @@
+{
+  "id": "thonne-n-1",
+  "lemma": "ðonne",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "than"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "then"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

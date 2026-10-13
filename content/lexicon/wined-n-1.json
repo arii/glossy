@@ -1,0 +1,12 @@
+{
+  "id": "wined-n-1",
+  "lemma": "wined",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Wend-DAT.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

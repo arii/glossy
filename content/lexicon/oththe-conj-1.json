@@ -1,0 +1,12 @@
+{
+  "id": "oththe-conj-1",
+  "lemma": "oþþe",
+  "pos": "CONJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "or"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

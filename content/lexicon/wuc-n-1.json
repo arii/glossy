@@ -1,0 +1,12 @@
+{
+  "id": "wuc-n-1",
+  "lemma": "wuc",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "week-DAT.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

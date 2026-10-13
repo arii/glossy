@@ -1,0 +1,20 @@
+{
+  "id": "to-prep-1",
+  "lemma": "tō",
+  "pos": "PREP",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to, towards"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "preposition (tō)"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "to"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

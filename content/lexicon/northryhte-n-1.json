@@ -1,0 +1,12 @@
+{
+  "id": "northryhte-n-1",
+  "lemma": "norþryhte",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "north-right-ADV"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "laetan-v-1",
+  "lemma": "lǣtan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "let.PST.IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "god-adj-1",
+  "lemma": "gōd",
+  "pos": "ADJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "good, noble, worthy"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "good.NOM.SG.F.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

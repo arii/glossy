@@ -1,0 +1,12 @@
+{
+  "id": "bane-n-1",
+  "lemma": "bāne",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "bone-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

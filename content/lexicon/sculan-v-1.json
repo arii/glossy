@@ -1,0 +1,20 @@
+{
+  "id": "sculan-v-1",
+  "lemma": "sculan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "must, had to, should"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "verb (sculan)"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "have.to-PST-IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

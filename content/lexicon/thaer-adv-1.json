@@ -1,0 +1,12 @@
+{
+  "id": "thaer-adv-1",
+  "lemma": "þǣr",
+  "pos": "ADV",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "there"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

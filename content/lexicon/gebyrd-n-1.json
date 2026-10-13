@@ -1,0 +1,12 @@
+{
+  "id": "gebyrd-n-1",
+  "lemma": "ġebyrd",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "PFX-birth-DAT.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

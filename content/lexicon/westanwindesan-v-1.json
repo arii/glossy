@@ -1,0 +1,12 @@
+{
+  "id": "westanwindesan-v-1",
+  "lemma": "westanwindesan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "west-from-wind-GEN.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

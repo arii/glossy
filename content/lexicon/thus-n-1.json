@@ -1,0 +1,12 @@
+{
+  "id": "thus-n-1",
+  "lemma": "þus",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "thus"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

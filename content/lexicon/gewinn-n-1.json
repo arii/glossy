@@ -1,0 +1,12 @@
+{
+  "id": "gewinn-n-1",
+  "lemma": "ġewinn",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "PFX-war.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

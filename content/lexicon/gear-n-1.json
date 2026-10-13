@@ -1,0 +1,12 @@
+{
+  "id": "gear-n-1",
+  "lemma": "ġēar",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "year.ACC.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

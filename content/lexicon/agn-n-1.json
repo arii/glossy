@@ -1,0 +1,16 @@
+{
+  "id": "agn-n-1",
+  "lemma": "āgn",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "own-DAT.SG.M.STR"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "own-DAT.SG.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

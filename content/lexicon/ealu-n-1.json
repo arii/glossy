@@ -1,0 +1,16 @@
+{
+  "id": "ealu-n-1",
+  "lemma": "ealu",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "ale, beer"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "ale-GEN.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

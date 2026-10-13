@@ -1,0 +1,12 @@
+{
+  "id": "benorthan-n-1",
+  "lemma": "benorðan",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "by-north-from"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

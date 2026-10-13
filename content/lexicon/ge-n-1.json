@@ -1,0 +1,12 @@
+{
+  "id": "ge-n-1",
+  "lemma": "ġe",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "and"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

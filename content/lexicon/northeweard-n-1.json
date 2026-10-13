@@ -1,0 +1,20 @@
+{
+  "id": "northeweard-n-1",
+  "lemma": "norðeweard",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "north-ward"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "north-ward.ACC.SG.N.STR"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "north-ward-DAT.SG.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

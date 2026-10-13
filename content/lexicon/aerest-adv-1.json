@@ -1,0 +1,12 @@
+{
+  "id": "aerest-adv-1",
+  "lemma": "ǣrest",
+  "pos": "ADV",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "first, for the first time"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

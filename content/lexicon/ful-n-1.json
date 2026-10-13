@@ -1,0 +1,12 @@
+{
+  "id": "ful-n-1",
+  "lemma": "ful",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "noun (ful)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

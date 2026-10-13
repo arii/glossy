@@ -1,0 +1,12 @@
+{
+  "id": "scypu-n-1",
+  "lemma": "sċypu",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "ship-ACC.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -35,7 +35,9 @@
             ],
             "definition": "noun (oft)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/oft#Old_English"
-          }
+          },
+          "lemmaRef": "oft-n-1",
+          "selectedSenseId": "sense-1"
         },
         {
           "id": "token-1-2",
@@ -53,7 +55,9 @@
             ],
             "definition": "pronoun (hē)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
-          }
+          },
+          "lemmaRef": "he-pron-1",
+          "selectedSenseId": "sense-8"
         },
         {
           "id": "token-1-3",
@@ -71,7 +75,9 @@
             ],
             "definition": "noun (ānhaga)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/anhaga#Old_English"
-          }
+          },
+          "lemmaRef": "anhaga-n-1",
+          "selectedSenseId": "sense-1"
         },
         {
           "id": "token-1-4",
@@ -89,7 +95,9 @@
             ],
             "definition": "noun (āre)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/are#Old_English"
-          }
+          },
+          "lemmaRef": "are-n-1",
+          "selectedSenseId": "sense-1"
         },
         {
           "id": "token-1-5",
@@ -108,7 +116,9 @@
             ],
             "definition": "noun (ġebīdeð)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/gebide%C3%B0#Old_English"
-          }
+          },
+          "lemmaRef": "gebideth-n-1",
+          "selectedSenseId": "sense-1"
         },
         {
           "id": "token-1-6",
@@ -126,7 +136,9 @@
             ],
             "definition": "noun (metudes)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/metudes#Old_English"
-          }
+          },
+          "lemmaRef": "metudes-n-1",
+          "selectedSenseId": "sense-1"
         },
         {
           "id": "token-1-7",
@@ -145,7 +157,9 @@
             ],
             "definition": "noun (miltse)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/miltse#Old_English"
-          }
+          },
+          "lemmaRef": "miltse-n-1",
+          "selectedSenseId": "sense-1"
         },
         {
           "id": "token-1-8",
@@ -163,7 +177,9 @@
             ],
             "definition": "conjunction (þēah)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%BEeah#Old_English"
-          }
+          },
+          "lemmaRef": "theah-conj-1",
+          "selectedSenseId": "sense-3"
         },
         {
           "id": "token-1-9",
@@ -181,7 +197,9 @@
             ],
             "definition": "determiner (sē)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/se#Old_English"
-          }
+          },
+          "lemmaRef": "se-pron-1",
+          "selectedSenseId": "sense-8"
         },
         {
           "id": "token-1-10",
@@ -199,7 +217,9 @@
             ],
             "definition": "pronoun (hē)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
-          }
+          },
+          "lemmaRef": "he-pron-1",
+          "selectedSenseId": "sense-8"
         },
         {
           "id": "token-1-11",
@@ -217,7 +237,9 @@
             ],
             "definition": "noun (mōdċeariġ)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/modcearig#Old_English"
-          }
+          },
+          "lemmaRef": "modcearig-n-1",
+          "selectedSenseId": "sense-1"
         },
         {
           "id": "token-1-12",
@@ -235,7 +257,9 @@
             ],
             "definition": "noun (geond)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/geond#Old_English"
-          }
+          },
+          "lemmaRef": "geond-n-1",
+          "selectedSenseId": "sense-1"
         },
         {
           "id": "token-1-13",
@@ -253,7 +277,9 @@
             ],
             "definition": "noun (lagulāde)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/lagulade#Old_English"
-          }
+          },
+          "lemmaRef": "lagulade-n-1",
+          "selectedSenseId": "sense-1"
         },
         {
           "id": "token-1-14",
@@ -271,7 +297,9 @@
             ],
             "definition": "noun (longe)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/longe#Old_English"
-          }
+          },
+          "lemmaRef": "longe-n-1",
+          "selectedSenseId": "sense-2"
         },
         {
           "id": "token-1-15",
@@ -289,7 +317,9 @@
             ],
             "definition": "verb (sculan)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/sculan#Old_English"
-          }
+          },
+          "lemmaRef": "sculan-v-1",
+          "selectedSenseId": "sense-2"
         },
         {
           "id": "token-1-16",
@@ -307,7 +337,9 @@
             ],
             "definition": "noun (hrēran)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/hreran#Old_English"
-          }
+          },
+          "lemmaRef": "hreran-n-1",
+          "selectedSenseId": "sense-1"
         },
         {
           "id": "token-1-17",
@@ -325,7 +357,9 @@
             ],
             "definition": "preposition (mid)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/mid#Old_English"
-          }
+          },
+          "lemmaRef": "mid-prep-1",
+          "selectedSenseId": "sense-3"
         },
         {
           "id": "token-1-18",
@@ -343,7 +377,9 @@
             ],
             "definition": "noun (hondum)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/hondum#Old_English"
-          }
+          },
+          "lemmaRef": "hondum-n-1",
+          "selectedSenseId": "sense-1"
         },
         {
           "id": "token-1-19",
@@ -361,7 +397,9 @@
             ],
             "definition": "noun (hrīmcealde)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/hrimcealde#Old_English"
-          }
+          },
+          "lemmaRef": "hrimcealde-n-1",
+          "selectedSenseId": "sense-1"
         },
         {
           "id": "token-1-20",
@@ -380,7 +418,9 @@
             ],
             "definition": "noun (sǣ)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/s%C3%A6#Old_English"
-          }
+          },
+          "lemmaRef": "sae-n-1",
+          "selectedSenseId": "sense-5"
         },
         {
           "id": "token-1-21",
@@ -398,7 +438,9 @@
             ],
             "definition": "noun (wadan)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/wadan#Old_English"
-          }
+          },
+          "lemmaRef": "wadan-n-1",
+          "selectedSenseId": "sense-1"
         },
         {
           "id": "token-1-22",
@@ -417,7 +459,9 @@
             ],
             "definition": "noun (wræclāstas)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/wr%C3%A6clastas#Old_English"
-          }
+          },
+          "lemmaRef": "wraeclastas-n-1",
+          "selectedSenseId": "sense-1"
         }
       ]
     },
@@ -441,7 +485,9 @@
             ],
             "definition": "noun (wyrd)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/wyrd#Old_English"
-          }
+          },
+          "lemmaRef": "wyrd-n-1",
+          "selectedSenseId": "sense-1"
         },
         {
           "id": "token-2-2",
@@ -459,7 +505,9 @@
             ],
             "definition": "verb (bēon)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/beon#Old_English"
-          }
+          },
+          "lemmaRef": "beon-v-1",
+          "selectedSenseId": "sense-5"
         },
         {
           "id": "token-2-3",
@@ -477,7 +525,9 @@
             ],
             "definition": "noun (ful)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/ful#Old_English"
-          }
+          },
+          "lemmaRef": "ful-n-1",
+          "selectedSenseId": "sense-1"
         },
         {
           "id": "token-2-4",
@@ -496,7 +546,9 @@
             ],
             "definition": "noun (ārǣd)",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/ar%C3%A6d#Old_English"
-          }
+          },
+          "lemmaRef": "araed-n-1",
+          "selectedSenseId": "sense-1"
         }
       ]
     }

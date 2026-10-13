@@ -1,0 +1,20 @@
+{
+  "id": "wician-v-1",
+  "lemma": "wīcian",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to camp, dwell"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "camp-THM-PRS.IND.PL"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "camp-THM-PST-IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "hwaether-conj-1",
+  "lemma": "hwæðer",
+  "pos": "CONJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "whether"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

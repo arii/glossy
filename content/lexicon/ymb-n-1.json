@@ -1,0 +1,12 @@
+{
+  "id": "ymb-n-1",
+  "lemma": "ymb",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "around"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

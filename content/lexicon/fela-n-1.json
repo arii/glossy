@@ -1,0 +1,12 @@
+{
+  "id": "fela-n-1",
+  "lemma": "fela",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "many"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

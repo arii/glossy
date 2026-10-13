@@ -1,0 +1,16 @@
+{
+  "id": "gedon-v-1",
+  "lemma": "ġedōn",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to make, cause, do"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "PFX-do-PRS.IND.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

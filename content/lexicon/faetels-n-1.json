@@ -1,0 +1,16 @@
+{
+  "id": "faetels-n-1",
+  "lemma": "fætels",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "vessel, pouch"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "vessel-ACC.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

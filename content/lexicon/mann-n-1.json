@@ -1,0 +1,32 @@
+{
+  "id": "mann-n-1",
+  "lemma": "mann",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "man.NOM.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "man-DAT.PL"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "one.INDF"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "man.NOM.PL"
+    },
+    "sense-5": {
+      "id": "sense-5",
+      "definition": "man-GEN.SG"
+    },
+    "sense-6": {
+      "id": "sense-6",
+      "definition": "man-NOM.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

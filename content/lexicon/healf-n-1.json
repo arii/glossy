@@ -1,0 +1,12 @@
+{
+  "id": "healf-n-1",
+  "lemma": "healf",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "half.ACC.SG.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

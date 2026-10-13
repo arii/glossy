@@ -1,0 +1,12 @@
+{
+  "id": "maegean-v-1",
+  "lemma": "mæġean",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "can.PRS-SJV.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

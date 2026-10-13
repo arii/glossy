@@ -1,0 +1,12 @@
+{
+  "id": "bi-n-1",
+  "lemma": "bī",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "by"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

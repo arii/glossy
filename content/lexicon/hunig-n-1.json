@@ -1,0 +1,12 @@
+{
+  "id": "hunig-n-1",
+  "lemma": "huniġ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "honey.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

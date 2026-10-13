@@ -1,0 +1,12 @@
+{
+  "id": "fiftig-n-1",
+  "lemma": "fīftiġ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "five-ty-GEN.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "huntoth-n-1",
+  "lemma": "huntoþ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "hunt-NMLZ-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

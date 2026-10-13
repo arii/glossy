@@ -1,0 +1,16 @@
+{
+  "id": "lytl-n-1",
+  "lemma": "lȳtl",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "little-ACC.SG.M.WK"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "little-ACC.PL.N.STR"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

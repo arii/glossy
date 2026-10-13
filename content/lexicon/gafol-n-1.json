@@ -1,0 +1,16 @@
+{
+  "id": "gafol-n-1",
+  "lemma": "gafol",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "tribute-DAT.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "tribute.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

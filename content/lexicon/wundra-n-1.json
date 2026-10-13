@@ -1,0 +1,12 @@
+{
+  "id": "wundra-n-1",
+  "lemma": "wundra",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "noun (wundra)"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

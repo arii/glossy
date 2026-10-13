@@ -1,0 +1,20 @@
+{
+  "id": "beran-v-1",
+  "lemma": "beran",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "bear-GEN.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "bear-PRS.IND.PL"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "bear-INF"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

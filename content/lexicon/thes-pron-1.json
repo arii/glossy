@@ -1,0 +1,28 @@
+{
+  "id": "thes-pron-1",
+  "lemma": "þes",
+  "pos": "PRON",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "this (neuter nominative/accusative)"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "this (demonstrative pronoun)"
+    },
+    "sense-3": {
+      "id": "sense-3",
+      "definition": "DEM.PROX-DAT.SG.N"
+    },
+    "sense-4": {
+      "id": "sense-4",
+      "definition": "DEM.PROX.NOM.SG.N"
+    },
+    "sense-5": {
+      "id": "sense-5",
+      "definition": "DEM.PROX.NOM.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "hwael-n-1",
+  "lemma": "hwæl",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "whale.NOM.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "whale-GEN.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "dene-n-1",
+  "lemma": "dene",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Dane-ACC.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

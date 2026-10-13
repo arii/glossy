@@ -1,0 +1,12 @@
+{
+  "id": "ut-n-1",
+  "lemma": "ūt",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "out"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

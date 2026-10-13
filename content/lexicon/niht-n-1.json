@@ -1,0 +1,16 @@
+{
+  "id": "niht-n-1",
+  "lemma": "niht",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "night.ACC.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "night-DAT.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "eg-n-1",
+  "lemma": "ēġ",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "island.NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

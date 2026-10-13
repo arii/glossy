@@ -1,0 +1,12 @@
+{
+  "id": "hund-n-1",
+  "lemma": "hund",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "hundred.ACC.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

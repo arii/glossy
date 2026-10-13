@@ -1,0 +1,12 @@
+{
+  "id": "metan-v-1",
+  "lemma": "mētan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "meet-PST-IND.3SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

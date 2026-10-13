@@ -1,0 +1,12 @@
+{
+  "id": "mere-n-1",
+  "lemma": "mere",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "lake-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

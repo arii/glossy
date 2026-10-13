@@ -1,0 +1,12 @@
+{
+  "id": "gieldan-v-1",
+  "lemma": "gieldan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "to pay, yield, render"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "estmer-n-1",
+  "lemma": "ēstmer",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Est-lake-ACC.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "Est-lake-NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

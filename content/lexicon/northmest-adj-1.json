@@ -1,0 +1,12 @@
+{
+  "id": "northmest-adj-1",
+  "lemma": "norþmest",
+  "pos": "ADJ",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "north-most.ADV"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

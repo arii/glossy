@@ -1,0 +1,12 @@
+{
+  "id": "plega-n-1",
+  "lemma": "plega",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "play-NOM.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "ungefoge-n-1",
+  "lemma": "unġefōge",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "un-PFX-joining-ADV"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

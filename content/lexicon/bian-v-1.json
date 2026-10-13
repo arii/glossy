@@ -1,0 +1,12 @@
+{
+  "id": "bian-v-1",
+  "lemma": "bīan",
+  "pos": "V",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "be.HAB-INF"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "fiscer-n-1",
+  "lemma": "fisċer",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "fish-AGT.M-DAT.PL"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "fish-AGT.M-NOM.PL"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

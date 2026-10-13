@@ -1,0 +1,16 @@
+{
+  "id": "aefter-n-1",
+  "lemma": "æfter",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "noun (æfter)"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "after"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

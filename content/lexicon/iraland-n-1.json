@@ -1,0 +1,16 @@
+{
+  "id": "iraland-n-1",
+  "lemma": "īraland",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "Irish-GEN.PL-land.NOM.SG"
+    },
+    "sense-2": {
+      "id": "sense-2",
+      "definition": "Irish-GEN.PL-land-DAT.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

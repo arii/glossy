@@ -1,0 +1,12 @@
+{
+  "id": "meolc-n-1",
+  "lemma": "meolc",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "milk.ACC.SG"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}

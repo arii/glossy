@@ -1,0 +1,12 @@
+{
+  "id": "middeweard-n-1",
+  "lemma": "middeweard",
+  "pos": "N",
+  "senses": {
+    "sense-1": {
+      "id": "sense-1",
+      "definition": "middle-ward"
+    }
+  },
+  "defaultSenseId": "sense-1"
+}
