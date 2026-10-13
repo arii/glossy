@@ -3,6 +3,7 @@
 import React, { useMemo } from "react";
 import type { TextDocument } from "../lib/types";
 import { X, Trash2, Edit3, GitCommit, CheckCircle, AlertTriangle } from "lucide-react";
+import { areDocumentsIdentical, findDocumentDifferences } from "../lib/canonical-json";
 
 export interface DraftDiffModalProps {
   isOpen: boolean;
@@ -23,6 +24,7 @@ export interface DiffItem {
     | "meta"
     | "sentence_translation"
     | "sentence_notes"
+    | "word_raw"
     | "word_gloss"
     | "word_pos"
     | "word_features"
@@ -52,24 +54,15 @@ function formatNotes(notes?: Array<{ marker?: string; text?: string; type?: stri
   return notes.map((n) => `[${n.marker || "*"}] (${n.type || "note"}): ${n.text || ""}`).join("; ") || "(none)";
 }
 
-export function DraftDiffModal({
-  isOpen,
-  onClose,
-  slug,
-  repoDoc,
-  draftDoc,
-  updatedAt,
-  isUpstreamModified = false,
-  onDiscard,
-  onOpenEditor,
-  onExport,
-}: DraftDiffModalProps) {
-  const diffs = useMemo(() => {
-    if (!draftDoc) return [];
-    const items: DiffItem[] = [];
+export function computeDraftDiffs(
+  repoDoc?: TextDocument | null,
+  draftDoc?: TextDocument | null
+): DiffItem[] {
+  if (!draftDoc) return [];
+  const items: DiffItem[] = [];
 
-    if (repoDoc) {
-      if ((repoDoc.title || "").trim() !== (draftDoc.title || "").trim()) {
+  if (repoDoc) {
+    if ((repoDoc.title || "").trim() !== (draftDoc.title || "").trim()) {
         items.push({
           id: "meta-title",
           type: "meta",
@@ -79,25 +72,65 @@ export function DraftDiffModal({
         });
       }
 
-      const repoAuthor = (repoDoc.author || repoDoc.glossedBy || "").trim();
-      const draftAuthor = (draftDoc.author || draftDoc.glossedBy || "").trim();
-      if (repoAuthor !== draftAuthor) {
+      const repoHist = (repoDoc.historicalAuthor || "").trim();
+      const draftHist = (draftDoc.historicalAuthor || "").trim();
+      if (repoHist !== draftHist) {
         items.push({
-          id: "meta-author",
+          id: "meta-historical-author",
           type: "meta",
-          label: "Author / Editor",
-          repoValue: repoAuthor || "(empty)",
-          draftValue: draftAuthor || "(empty)",
+          label: "Historical Author / Speaker",
+          repoValue: repoHist || "(empty)",
+          draftValue: draftHist || "(empty)",
         });
       }
 
-      if ((repoDoc.sourceEdition || "").trim() !== (draftDoc.sourceEdition || "").trim()) {
+      const repoAuthorRaw = (repoDoc.author || "").trim();
+      const draftAuthorRaw = (draftDoc.author || "").trim();
+      const repoGlossedBy = (repoDoc.glossedBy || repoDoc.editor || "").trim();
+      const draftGlossedBy = (draftDoc.glossedBy || draftDoc.editor || "").trim();
+      if (repoAuthorRaw !== draftAuthorRaw || repoGlossedBy !== draftGlossedBy) {
+        items.push({
+          id: "meta-author",
+          type: "meta",
+          label: "Author / Glossed by",
+          repoValue: repoAuthorRaw ? `${repoAuthorRaw}${repoGlossedBy && repoGlossedBy !== repoAuthorRaw ? ` (Glossed: ${repoGlossedBy})` : ""}` : (repoGlossedBy || "(empty)"),
+          draftValue: draftAuthorRaw ? `${draftAuthorRaw}${draftGlossedBy && draftGlossedBy !== draftAuthorRaw ? ` (Glossed: ${draftGlossedBy})` : ""}` : (draftGlossedBy || "(empty)"),
+        });
+      }
+
+      const repoDate = (repoDoc.date || repoDoc.historicalDate || "").trim();
+      const draftDate = (draftDoc.date || draftDoc.historicalDate || "").trim();
+      if (repoDate !== draftDate) {
+        items.push({
+          id: "meta-date",
+          type: "meta",
+          label: "Date",
+          repoValue: repoDate || "(empty)",
+          draftValue: draftDate || "(empty)",
+        });
+      }
+
+      const repoEdition = (repoDoc.sourceEdition || repoDoc.shelfmark || "").trim();
+      const draftEdition = (draftDoc.sourceEdition || draftDoc.shelfmark || "").trim();
+      if (repoEdition !== draftEdition) {
         items.push({
           id: "meta-edition",
           type: "meta",
           label: "Critical Edition / Witness",
-          repoValue: repoDoc.sourceEdition || "(empty)",
-          draftValue: draftDoc.sourceEdition || "(empty)",
+          repoValue: repoEdition || "(empty)",
+          draftValue: draftEdition || "(empty)",
+        });
+      }
+
+      const repoDialect = (repoDoc.dialect || "").trim();
+      const draftDialect = (draftDoc.dialect || "").trim();
+      if (repoDialect !== draftDialect) {
+        items.push({
+          id: "meta-dialect",
+          type: "meta",
+          label: "Dialect",
+          repoValue: repoDialect || "(empty)",
+          draftValue: draftDialect || "(empty)",
         });
       }
 
@@ -151,6 +184,21 @@ export function DraftDiffModal({
             const dw = draftWords[w];
             if (rw && dw) {
               const wordWord = dw.originalWord || rw.originalWord;
+              const rwWord = (rw.originalWord || "").trim();
+              const dwWord = (dw.originalWord || "").trim();
+              const rwPunct = (rw.trailingPunctuation || "").trim();
+              const dwPunct = (dw.trailingPunctuation || "").trim();
+
+              if (rwWord !== dwWord || rwPunct !== dwPunct) {
+                items.push({
+                  id: `word-raw-${i + 1}-${w + 1}`,
+                  type: "word_raw",
+                  label: `Sentence ${i + 1}, Word #${w + 1} (${wordWord}) — Source Form / Raw Token`,
+                  repoValue: `"${rwWord}${rwPunct}" (Token: "${rwWord}"${rwPunct ? `, Punct: "${rwPunct}"` : ""})`,
+                  draftValue: `"${dwWord}${dwPunct}" (Token: "${dwWord}"${dwPunct ? `, Punct: "${dwPunct}"` : ""})`,
+                });
+              }
+
               const rwGloss = rw.morphologicalGloss || rw.originalWord;
               const dwGloss = dw.morphologicalGloss || dw.originalWord;
               const rwLemma = rw.analysis?.lemma || "";
@@ -235,8 +283,35 @@ export function DraftDiffModal({
       });
     }
 
+    if (items.length === 0 && repoDoc && !areDocumentsIdentical(draftDoc, repoDoc)) {
+      const fallbackDiffs = findDocumentDifferences(draftDoc, repoDoc);
+      for (const fd of fallbackDiffs) {
+        items.push({
+          id: `diff-fallback-${fd.path}`,
+          type: "meta",
+          label: `Property: ${fd.path}`,
+          repoValue: fd.repoVal !== undefined ? JSON.stringify(fd.repoVal) : "(absent)",
+          draftValue: fd.draftVal !== undefined ? JSON.stringify(fd.draftVal) : "(absent)",
+        });
+      }
+    }
+
     return items;
-  }, [repoDoc, draftDoc]);
+}
+
+export function DraftDiffModal({
+  isOpen,
+  onClose,
+  slug,
+  repoDoc,
+  draftDoc,
+  updatedAt,
+  isUpstreamModified = false,
+  onDiscard,
+  onOpenEditor,
+  onExport,
+}: DraftDiffModalProps) {
+  const diffs = useMemo(() => computeDraftDiffs(repoDoc, draftDoc), [repoDoc, draftDoc]);
 
   if (!isOpen || !draftDoc) return null;
 

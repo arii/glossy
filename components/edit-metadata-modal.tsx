@@ -10,8 +10,8 @@ interface EditMetadataModalProps {
 
 export function EditMetadataModal({ document, onSave, onClose }: EditMetadataModalProps) {
   const [metaTitle, setMetaTitle] = useState(document.title || "");
-  const [metaHistoricalAuthor, setMetaHistoricalAuthor] = useState(document.historicalAuthor || "Anonymous");
-  const [metaGlossedBy, setMetaGlossedBy] = useState(document.glossedBy || document.editor || "");
+  const [metaHistoricalAuthor, setMetaHistoricalAuthor] = useState(document.historicalAuthor || "");
+  const [metaAuthor, setMetaAuthor] = useState(document.author || document.glossedBy || document.editor || "");
   const [metaDate, setMetaDate] = useState(document.date || "");
   const [metaSourceEdition, setMetaSourceEdition] = useState(document.sourceEdition || document.shelfmark || "");
 
@@ -30,21 +30,21 @@ export function EditMetadataModal({ document, onSave, onClose }: EditMetadataMod
   const handleSaveMetadata = (e: React.FormEvent) => {
     e.preventDefault();
     const updatedTitle = metaTitle.trim() || document.title;
-    const updatedHistAuthor = metaHistoricalAuthor.trim() || "Anonymous";
-    const updatedGlossedBy = metaGlossedBy.trim() || "";
+    const updatedHistAuthor = metaHistoricalAuthor.trim() || undefined;
+    const updatedAuthor = metaAuthor.trim() || document.author;
     const updatedDate = metaDate.trim() || document.date;
     const updatedSourceEdition = metaSourceEdition.trim();
 
     onSave({
       title: updatedTitle,
-      author: updatedGlossedBy,
+      author: updatedAuthor,
       historicalAuthor: updatedHistAuthor,
-      glossedBy: updatedGlossedBy,
-      editor: updatedGlossedBy,
+      glossedBy: updatedAuthor,
+      editor: updatedAuthor,
       date: updatedDate,
-      sourceEdition: updatedSourceEdition,
+      sourceEdition: updatedSourceEdition || undefined,
       shelfmark: updatedSourceEdition || document.shelfmark,
-      source: `${updatedGlossedBy} · ${updatedDate}`,
+      source: `${updatedAuthor} · ${updatedDate}`,
     });
   };
 
@@ -158,14 +158,14 @@ export function EditMetadataModal({ document, onSave, onClose }: EditMetadataMod
 
           <div className="editor-form-group" style={{ marginBottom: 0 }}>
             <label style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--ink)" }}>
-              Glossed by
+              Author / Glossed by
             </label>
             <input
               type="text"
               required
               placeholder="e.g. Tyler Lemon"
-              value={metaGlossedBy}
-              onChange={(e) => setMetaGlossedBy(e.target.value)}
+              value={metaAuthor}
+              onChange={(e) => setMetaAuthor(e.target.value)}
               onFocus={(e) => e.target.select()}
               style={{ padding: "0.5rem 0.75rem", fontSize: "0.9rem", width: "100%" }}
             />

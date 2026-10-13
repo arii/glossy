@@ -65,7 +65,8 @@ export function computeDocumentHash(doc: TextDocument): string {
   const normAuthor = (doc.author || doc.glossedBy || "").trim();
   const normHistoricalAuthor = (doc.historicalAuthor || "").trim();
   const normDate = (doc.date || doc.historicalDate || "").trim();
-  const normEdition = (doc.sourceEdition || "").trim();
+  const normEdition = (doc.sourceEdition || doc.shelfmark || "").trim();
+  const normDialect = (doc.dialect || "").trim();
 
   return computeSimpleHash({
     slug: doc.slug,
@@ -74,6 +75,7 @@ export function computeDocumentHash(doc: TextDocument): string {
     historicalAuthor: normHistoricalAuthor,
     date: normDate,
     sourceEdition: normEdition,
+    dialect: normDialect,
     sentences: (doc.sentences || []).map((s) => ({
       translation: (s.translation || "").trim(),
       notes: (s.notes || []).map((n) => ({

@@ -1,5 +1,10 @@
 import assert from "node:assert/strict";
-import { BUILT_IN_CORPUS, isBuiltInSlug, getBuiltInMetadata } from "../lib/corpus-registry.ts";
+import {
+  BUILT_IN_CORPUS,
+  isBuiltInSlug,
+  getBuiltInMetadata,
+  getBuiltInDocument,
+} from "../lib/corpus-registry.ts";
 import {
   isWorkspaceSlug,
   getWorkspaceTexts,
@@ -22,6 +27,11 @@ import {
   formatExportJson,
   findDocumentDifferences,
 } from "../lib/canonical-json.ts";
+import { computeDraftDiffs } from "../components/draft-diff-modal.tsx";
+import {
+  textDocumentToEditorDoc,
+  editorDocToTextDocument,
+} from "../components/gloss-editor.tsx";
 import { sanitizeDraftForTinaMutation, commitPendingDraft } from "../lib/tina-sync.ts";
 
 console.log("Running Unified TinaCMS Commit Pipeline & Modern Storage Unit Tests...");
@@ -488,6 +498,134 @@ assert.equal(
   upstreamStatus.isUpstreamModified,
   true,
   "Draft created against old repo edition must report upstream conflict when repo changes",
+);
+
+// 16d. Author / Historical Author metadata edits
+const authorEditedDoc = {
+  ...repoDoc,
+  author: "Jane Doe",
+  historicalAuthor: "Anonymous Poet",
+};
+writeDraft("the-wanderer", authorEditedDoc, { baseHash: repoHash });
+const authorStatus = getDraftDivergenceStatus("the-wanderer", repoDoc);
+assert.equal(authorStatus.isDiverged, true, "Author/metadata edits must mark draft diverged");
+assert.equal(
+  authorStatus.isUpstreamModified,
+  false,
+  "Author edits against baseline must not report upstream conflict",
+);
+const metaDiffs = findDocumentDifferences(authorEditedDoc, repoDoc);
+assert.equal(metaDiffs.length, 2, "Author and historicalAuthor must both be detected as differences");
+
+// 16e. Raw token (originalWord / trailingPunctuation) edits
+const rawTokenEditedDoc = {
+  ...repoDoc,
+  sentences: [
+    {
+      id: "s1",
+      words: [
+        {
+          id: "w1",
+          originalWord: "Oftt",
+          trailingPunctuation: ",",
+          analysis: { lemma: "oft", partOfSpeech: "noun" },
+        },
+      ],
+    },
+  ],
+};
+writeDraft("the-wanderer", rawTokenEditedDoc, { baseHash: repoHash });
+const rawTokenStatus = getDraftDivergenceStatus("the-wanderer", repoDoc);
+assert.equal(rawTokenStatus.isDiverged, true, "Raw token edits must mark draft diverged");
+assert.equal(
+  rawTokenStatus.isUpstreamModified,
+  false,
+  "Raw token edits against baseline must not report upstream conflict",
+);
+const rawTokenDiffs = findDocumentDifferences(rawTokenEditedDoc, repoDoc);
+assert.ok(
+  rawTokenDiffs.some((d) => d.path.includes("originalWord")),
+  "originalWord must be detected in findDocumentDifferences",
+);
+assert.ok(
+  rawTokenDiffs.some((d) => d.path.includes("trailingPunctuation")),
+  "trailingPunctuation must be detected in findDocumentDifferences",
+);
+
+// 16f. DraftDiffModal diff generation verification
+const modalMetaDiffs = computeDraftDiffs(repoDoc, authorEditedDoc);
+assert.ok(modalMetaDiffs.length >= 2, "DraftDiffModal must detect author and historicalAuthor diff items");
+assert.ok(
+  modalMetaDiffs.some((d) => d.id === "meta-author"),
+  "DraftDiffModal must produce meta-author diff item",
+);
+assert.ok(
+  modalMetaDiffs.some((d) => d.id === "meta-historical-author"),
+  "DraftDiffModal must produce meta-historical-author diff item",
+);
+
+const modalRawDiffs = computeDraftDiffs(repoDoc, rawTokenEditedDoc);
+assert.ok(modalRawDiffs.length >= 1, "DraftDiffModal must detect raw token changes");
+assert.ok(
+  modalRawDiffs.some((d) => d.type === "word_raw"),
+  "DraftDiffModal must produce word_raw diff item with repo and draft values",
+);
+
+// Test 17: End-to-end The Wanderer details and raw token persistence
+mockStore.clear();
+const wandererDoc = getBuiltInDocument("the-wanderer");
+assert.ok(wandererDoc, "The Wanderer must exist in built-in corpus");
+const wandererBaseHash = computeDocumentHash(wandererDoc);
+
+// Step 1: User loads editor and edits author details
+const editorState = textDocumentToEditorDoc(wandererDoc);
+editorState.author = "Jane Doe";
+editorState.historicalAuthor = "Cynewulf";
+const editedTextDoc = editorDocToTextDocument(editorState);
+assert.equal(editedTextDoc.author, "Jane Doe", "Author must be preserved in serialized document");
+assert.equal(editedTextDoc.historicalAuthor, "Cynewulf", "Historical author must be preserved in serialized document");
+
+// Save draft (simulating immediate modal save or autosave flush)
+writeDraft("the-wanderer", editedTextDoc, { baseHash: wandererBaseHash });
+
+// Step 2: User navigates away to home page and inspects diffs
+const storedWandererDraft = readDraft("the-wanderer");
+assert.ok(storedWandererDraft, "Draft must persist in storage");
+const wandererDiffs = computeDraftDiffs(wandererDoc, storedWandererDraft.doc);
+assert.ok(wandererDiffs.length >= 2, "DraftDiffModal on home page must show at least 2 differences");
+assert.ok(
+  wandererDiffs.some((d) => d.label.includes("Author")),
+  "DraftDiffModal must display Author diff item",
+);
+assert.ok(
+  wandererDiffs.some((d) => d.label.includes("Historical Author")),
+  "DraftDiffModal must display Historical Author diff item",
+);
+
+// Step 3: User navigates back to editor
+const reloadedEditorState = textDocumentToEditorDoc(storedWandererDraft.doc);
+assert.equal(reloadedEditorState.author, "Jane Doe", "Author must survive route transitions");
+assert.equal(reloadedEditorState.historicalAuthor, "Cynewulf", "Historical author must survive route transitions");
+
+// Step 4: User edits raw token in Token Inspector
+// Simulate handleSourceFormChange on first token: "Oft" -> "Oftt,"
+const targetToken = reloadedEditorState.sentences[0].tokens[0];
+const punct = "," ;
+const cleanWord = "Oftt";
+targetToken.sourceForm = "Oftt,";
+targetToken.trailingPunctuation = punct;
+targetToken.morphemes = [{ ...targetToken.morphemes[0], form: cleanWord }];
+
+const rawEditedTextDoc = editorDocToTextDocument(reloadedEditorState);
+assert.equal(rawEditedTextDoc.sentences[0].words[0].originalWord, "Oftt", "originalWord must update from clean word");
+assert.equal(rawEditedTextDoc.sentences[0].words[0].trailingPunctuation, ",", "trailingPunctuation must update from sourceForm punct");
+
+writeDraft("the-wanderer", rawEditedTextDoc, { baseHash: wandererBaseHash });
+const reloadedStored = readDraft("the-wanderer");
+const rawModalDiffs = computeDraftDiffs(wandererDoc, reloadedStored.doc);
+assert.ok(
+  rawModalDiffs.some((d) => d.type === "word_raw"),
+  "DraftDiffModal must display raw token changes after editing source form",
 );
 
 // Clean up

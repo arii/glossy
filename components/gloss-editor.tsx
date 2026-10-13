@@ -179,9 +179,9 @@ export function textDocumentToEditorDoc(doc: TextDocument): EditorDocument {
     textId: doc.textId || "",
     slug: doc.slug || "",
     title: doc.title || "",
-    author: glossedByMatch,
-    historicalAuthor: doc.historicalAuthor || (doc.author?.includes("Alfred") ? doc.author : undefined),
-    glossedBy: glossedByMatch,
+    author: doc.author || glossedByMatch,
+    historicalAuthor: doc.historicalAuthor,
+    glossedBy: doc.glossedBy || glossedByMatch,
     editor: doc.editor || glossedByMatch,
     shelfmark: doc.shelfmark,
     dialect: doc.dialect,
@@ -531,7 +531,15 @@ export function GlossEditor({
       }
     }, 300);
 
-    return () => window.clearTimeout(timer);
+    return () => {
+      window.clearTimeout(timer);
+      const docToFlush = editorDocToTextDocument(documentState);
+      if (!areDocumentsIdentical(docToFlush, initialDocument)) {
+        writeDraft(documentState.slug || currentSlug, docToFlush, {
+          baseHash: baselineHash,
+        });
+      }
+    };
   }, [documentState, isLoading, currentSlug, savedSnapshot, baselineHash, initialDocument]);
 
   // Find active sentence and active token
@@ -845,20 +853,38 @@ export function GlossEditor({
     const cleanWord = punct ? newVal.slice(0, -punct.length) : newVal;
     const parts = cleanWord.split("-").filter(Boolean);
 
+    const current = activeToken.morphemes || [];
+    let updatedMorphemes: Morpheme[];
     if (parts.length > 1) {
-      const current = activeToken.morphemes || [];
-      const updatedMorphemes: Morpheme[] = parts.map((part, idx) => ({
+      updatedMorphemes = parts.map((part, idx) => ({
         id: current[idx]?.id || `${activeToken.id}-morpheme-${idx + 1}`,
         form: part,
         gloss: current[idx]?.gloss || (idx === parts.length - 1 ? activeToken.sourceGloss : part),
       }));
-      updateToken({
-        sourceForm: newVal,
-        morphemes: updatedMorphemes,
-      });
+    } else if (current.length === 1) {
+      updatedMorphemes = [
+        {
+          ...current[0],
+          form: cleanWord,
+        },
+      ];
+    } else if (current.length === 0) {
+      updatedMorphemes = [
+        {
+          id: `${activeToken.id}-morpheme-1`,
+          form: cleanWord,
+          gloss: activeToken.sourceGloss || cleanWord,
+        },
+      ];
     } else {
-      updateToken({ sourceForm: newVal });
+      updatedMorphemes = current;
     }
+
+    updateToken({
+      sourceForm: newVal,
+      trailingPunctuation: punct || undefined,
+      morphemes: updatedMorphemes,
+    });
   };
 
   const handleSourceGlossChange = (newVal: string) => {
@@ -1806,8 +1832,12 @@ export function GlossEditor({
           document={documentState}
           onClose={() => setIsEditingMetadata(false)}
           onSave={(patch) => {
-            setDocumentState((prev) => ({ ...prev, ...patch }));
+            const nextState = { ...documentState, ...patch };
+            setDocumentState(nextState);
             setIsEditingMetadata(false);
+            const textDoc = editorDocToTextDocument(nextState);
+            writeDraft(nextState.slug || currentSlug, textDoc, { baseHash: baselineHash });
+            setAutosaveStatus("saved");
           }}
         />
       )}
