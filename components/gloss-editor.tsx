@@ -319,6 +319,22 @@ export function GlossEditor({
 
   const [diffModalOpen, setDiffModalOpen] = useState(false);
   const [showSyncPrompt, setShowSyncPrompt] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [draftRevision, setDraftRevision] = useState(0);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const handleDraftsUpdated = () => {
+      setDraftRevision((prev) => prev + 1);
+    };
+    window.addEventListener("glossy:drafts-updated", handleDraftsUpdated);
+    return () => {
+      window.removeEventListener("glossy:drafts-updated", handleDraftsUpdated);
+    };
+  }, []);
 
   const [workspaceTexts, setWorkspaceTexts] = useState<WorkspaceTextItem[]>(() =>
     getWorkspaceTexts({
@@ -360,7 +376,7 @@ export function GlossEditor({
     // but want to trigger a recompute when it changes
     return getDraftDivergenceStatus(currentSlug, initialDocument);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentSlug, initialDocument, autosaveStatus]);
+  }, [currentSlug, initialDocument, autosaveStatus, draftRevision]);
 
   // Restore from initial master document
   const loadFromMasterTex = useCallback(async () => {
@@ -1050,7 +1066,7 @@ export function GlossEditor({
 
         {/* Global Action Alerts */}
 
-        {divergenceStatus.isDiverged && (
+        {isMounted && divergenceStatus.isDiverged && (
           <div
             style={{
               margin: "1rem 2rem 1.5rem",
@@ -1132,21 +1148,23 @@ export function GlossEditor({
           </div>
         )}
 
-        <DraftDiffModal
-          isOpen={diffModalOpen}
-          onClose={() => setDiffModalOpen(false)}
-          slug={currentSlug}
-          repoDoc={initialDocument}
-          draftDoc={editorDocToTextDocument(documentState)}
-          updatedAt={divergenceStatus.updatedAt}
-          isUpstreamModified={divergenceStatus.isUpstreamModified}
-          onDiscard={() => {
-            discardChanges();
-            setDiffModalOpen(false);
-          }}
-          onOpenEditor={() => setDiffModalOpen(false)}
-          onExport={handleExportJson}
-        />
+        {isMounted && (
+          <DraftDiffModal
+            isOpen={diffModalOpen}
+            onClose={() => setDiffModalOpen(false)}
+            slug={currentSlug}
+            repoDoc={initialDocument}
+            draftDoc={editorDocToTextDocument(documentState)}
+            updatedAt={divergenceStatus.updatedAt}
+            isUpstreamModified={divergenceStatus.isUpstreamModified}
+            onDiscard={() => {
+              discardChanges();
+              setDiffModalOpen(false);
+            }}
+            onOpenEditor={() => setDiffModalOpen(false)}
+            onExport={handleExportJson}
+          />
+        )}
 
         {saveStatus.message && (
           <div

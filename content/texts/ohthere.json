@@ -25,7 +25,7 @@
           "id": "paragraph-1-sentence-1-word-1",
           "originalWord": "Ōhthere",
           "morphologicalGloss": "Ohthere.NOM.SG",
-          "sourceGlossTex": "Ohthere.\\textsc{nom.sg}",
+          "sourceGlossTex": "Ohthere.\\textsc{nom}",
           "analysis": {
             "lemma": "Ōhthere",
             "partOfSpeech": "noun",

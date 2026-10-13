@@ -55,14 +55,34 @@ function computeSimpleHash(input: unknown): string {
   return `h_${Math.abs(hash).toString(36)}`;
 }
 
-export function computeDocumentHash(doc: TextDocument): string {
+export function isDeepEqual(obj1: unknown, obj2: unknown): boolean {
+  if (obj1 === obj2) return true;
+
+  if (typeof obj1 !== "object" || typeof obj2 !== "object" || obj1 == null || obj2 == null) {
+    return false;
+  }
+
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  if (keys1.length !== keys2.length) return false;
+
+  for (const key of keys1) {
+    if (!keys2.includes(key)) return false;
+    if (!isDeepEqual((obj1 as Record<string, unknown>)[key], (obj2 as Record<string, unknown>)[key])) return false;
+  }
+
+  return true;
+}
+
+export function extractNormalizedDocument(doc: TextDocument): unknown {
   const normTitle = (doc.title || "").trim();
   const normAuthor = (doc.author || doc.glossedBy || "").trim();
   const normHistoricalAuthor = (doc.historicalAuthor || "").trim();
   const normDate = (doc.date || doc.historicalDate || "").trim();
   const normEdition = (doc.sourceEdition || "").trim();
 
-  return computeSimpleHash({
+  return {
     slug: doc.slug,
     title: normTitle,
     author: normAuthor,
@@ -94,7 +114,11 @@ export function computeDocumentHash(doc: TextDocument): string {
         })),
       })),
     })),
-  });
+  };
+}
+
+export function computeDocumentHash(doc: TextDocument): string {
+  return computeSimpleHash(extractNormalizedDocument(doc));
 }
 
 function getStorage(): Storage | null {
@@ -342,10 +366,12 @@ export function getDraftDivergenceStatus(
   }
 
   const draftHash = computeDocumentHash(draft.doc);
+  const draftNorm = extractNormalizedDocument(draft.doc);
 
   if (repoDoc) {
     const repoHash = computeDocumentHash(repoDoc);
-    const isDiverged = draftHash !== repoHash;
+    const repoNorm = extractNormalizedDocument(repoDoc);
+    const isDiverged = !isDeepEqual(draftNorm, repoNorm);
     const isUpstreamModified = Boolean(
       draft.baseHash &&
         draft.baseHash !== repoHash &&
