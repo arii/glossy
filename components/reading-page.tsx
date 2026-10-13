@@ -41,6 +41,11 @@ export function ReadingPage({
   const [pinnedId, setPinnedId] = useState<string | null>(null);
   const [attributionOpen, setAttributionOpen] = useState(false);
   const [diffModalOpen, setDiffModalOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   const lastTriggerId = useRef<string | null>(null);
   const glossAreaRef = useRef<HTMLElement | null>(null);
 
@@ -350,7 +355,7 @@ export function ReadingPage({
           source={currentSource}
         />
 
-        {divergenceStatus.isDiverged && (
+        {isMounted && divergenceStatus.isDiverged && (
           <div
             style={{
               margin: "1rem 0 1.5rem",

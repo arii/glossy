@@ -315,6 +315,11 @@ export function GlossEditor({
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditingMetadata, setIsEditingMetadata] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
 
   const [diffModalOpen, setDiffModalOpen] = useState(false);
@@ -392,6 +397,18 @@ export function GlossEditor({
     const stored = readDraft(currentSlug);
 
     if (stored?.doc) {
+      if (computeDocumentHash(stored.doc) === baselineHash) {
+        deleteLocalDraft(currentSlug);
+        const initial = textDocumentToEditorDoc(initialDocument);
+        setDocumentState(initial);
+        setSavedSnapshot(safeJsonStringify(initial));
+        if (initial.sentences.length > 0) {
+          setActiveSentenceId(initial.sentences[0].id);
+          setActiveTokenId(initial.sentences[0].tokens[0]?.id || "");
+        }
+        return;
+      }
+
       try {
         const parsed = textDocumentToEditorDoc(stored.doc);
         if (!parsed.sentences || parsed.sentences.length !== expectedSentenceCount) {
@@ -447,7 +464,7 @@ export function GlossEditor({
         setActiveTokenId(initial.sentences[0].tokens[0]?.id || "");
       }
     }
-  }, [initialDocument, loadFromMasterTex, currentSlug]);
+  }, [initialDocument, loadFromMasterTex, currentSlug, baselineHash]);
 
   // Autosave to localStorage debounced at 300ms
   useEffect(() => {
@@ -666,9 +683,17 @@ export function GlossEditor({
   const saveToTina = async () => {
     if (!documentState || isSaving) return;
 
+    const textDoc = editorDocToTextDocument(documentState);
+    const docHash = computeDocumentHash(textDoc);
+
+    if (docHash === baselineHash) {
+      window.alert('Document is identical to published edition. No draft needed.');
+      return;
+    }
+
     setIsSaving(true);
     setSaveStatus({ kind: "idle", message: "" });
-    const textDoc = editorDocToTextDocument(documentState);
+
     const targetSlug = textDoc.slug || currentSlug;
 
     try {
@@ -1050,7 +1075,7 @@ export function GlossEditor({
 
         {/* Global Action Alerts */}
 
-        {divergenceStatus.isDiverged && (
+        {isMounted && divergenceStatus.isDiverged && (
           <div
             style={{
               margin: "1rem 2rem 1.5rem",
