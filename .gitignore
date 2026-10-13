@@ -6,6 +6,7 @@
 out/
 node_modules/
 .wrangler/
+/content/_generated/
 /public/admin/
 /tina/__generated__/
 *.tsbuildinfo

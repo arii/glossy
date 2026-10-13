@@ -73,7 +73,10 @@ async function main() {
     }
   }
 
-  printStep("2. Building Next.js production output");
+  printStep("2. Pre-computing lexicon indexes");
+  runCommand("tsx", ["scripts/build-index.mjs"]);
+
+  printStep("3. Building Next.js production output");
   runCommand("next", ["build"]);
 
   console.log("\n✨ Production build completed successfully!\n");
