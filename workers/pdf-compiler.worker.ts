@@ -54,6 +54,12 @@ async function getCompiler(): Promise<ReturnType<typeof createTypstCompiler>> {
   if (initPromise) return initPromise;
 
   initPromise = (async () => {
+    // @ts-expect-error types not available
+    const { setImportWasmModule } = await import('@myriaddreamin/typst-ts-web-compiler');
+    setImportWasmModule(async () => {
+        return '/typst_ts_web_compiler_bg.wasm';
+    });
+
     const fontBuffers = await Promise.all(
       FONT_FILES.map((url) => getCachedFont(url))
     );
@@ -62,6 +68,7 @@ async function getCompiler(): Promise<ReturnType<typeof createTypstCompiler>> {
     // Pass fontLoader to beforeBuild during compiler initialization
     await compiler.init({
       beforeBuild: [loadFonts(fontBuffers)],
+      getModule: () => '/typst_ts_web_compiler_bg.wasm',
     } as unknown as Parameters<typeof compiler.init>[0]);
 
     compilerInstance = compiler;
