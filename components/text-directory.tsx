@@ -122,7 +122,8 @@ export function TextDirectory({
         let isUpstreamModified = false;
 
         if (hasDraft) {
-          const status = getDraftDivergenceStatus(c.slug);
+          const repoDoc = getBuiltInDocument(c.slug);
+          const status = getDraftDivergenceStatus(c.slug, repoDoc);
           isDiverged = status.isDiverged;
           isUpstreamModified = status.isUpstreamModified;
         }
@@ -170,23 +171,30 @@ export function TextDirectory({
     return () => window.removeEventListener("click", handleOutsideClick);
   }, []);
 
-  const handleDelete = (choice: TextChoice) => {
-    if (choice.isLocalOnly) {
-      if (isBuiltInSlug(choice.slug)) {
+  const handleDelete = (choice: TextChoice, options?: { skipConfirm?: boolean }) => {
+    if (!options?.skipConfirm) {
+      const confirmMessage = choice.isLocalOnly
+        ? `Delete local draft "${choice.title}"? This cannot be undone.`
+        : `Discard local edits for "${choice.title}" and revert to published repository edition?`;
+      if (typeof window !== "undefined" && !window.confirm(confirmMessage)) {
         return;
       }
-      deleteLocalDraft(choice.slug);
-      setChoices((prev) => prev.filter((item) => item.slug !== choice.slug));
-      reloadCorpus();
-    } else if (choice.hasLocalDraft) {
-      deleteLocalDraft(choice.slug);
+    }
+
+    deleteLocalDraft(choice.slug);
+
+    if (choice.isLocalOnly) {
+      if (!isBuiltInSlug(choice.slug)) {
+        setChoices((prev) => prev.filter((item) => item.slug !== choice.slug));
+      }
+    } else {
       setChoices((prev) =>
         prev.map((item) =>
-          item.slug === choice.slug ? { ...item, hasLocalDraft: false } : item
+          item.slug === choice.slug ? { ...item, hasLocalDraft: false, isDiverged: false, isUpstreamModified: false } : item
         )
       );
-      reloadCorpus();
     }
+    reloadCorpus();
   };
 
   return (
@@ -578,7 +586,7 @@ export function TextDirectory({
           draftDoc={readDraft(diffChoice.slug)?.doc}
           updatedAt={readDraft(diffChoice.slug)?.updatedAt}
           isUpstreamModified={diffChoice.isUpstreamModified}
-          onDiscard={() => handleDelete(diffChoice)}
+          onDiscard={() => handleDelete(diffChoice, { skipConfirm: true })}
           onOpenEditor={() => navigate(`/edit/${diffChoice.slug}`)}
           onExport={() => navigate(`/edit/${diffChoice.slug}`)}
         />

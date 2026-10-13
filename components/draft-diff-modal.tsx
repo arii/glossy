@@ -238,7 +238,80 @@ export function DraftDiffModal({
     return items;
   }, [repoDoc, draftDoc]);
 
-  if (!isOpen || !draftDoc) return null;
+  if (!isOpen) return null;
+
+  if (!draftDoc) {
+    return (
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="draft-diff-modal-title"
+        style={{
+          position: "fixed",
+          inset: 0,
+          backgroundColor: "rgba(28, 25, 23, 0.75)",
+          backdropFilter: "blur(4px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "1.25rem",
+          zIndex: 99999,
+        }}
+        onClick={onClose}
+      >
+        <div
+          style={{
+            background: "var(--surface)",
+            border: "1px solid var(--rule)",
+            borderRadius: "0.6rem",
+            maxWidth: "32rem",
+            width: "100%",
+            padding: "1.5rem",
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+            boxShadow: "0 1.5rem 3rem rgba(0, 0, 0, 0.3)",
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <h2 id="draft-diff-modal-title" style={{ margin: 0, fontSize: "1.1rem", fontFamily: "'Charis SIL', Georgia, serif" }}>
+              No Active Draft Edits
+            </h2>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close modal"
+              style={{ background: "transparent", border: "none", cursor: "pointer" }}
+            >
+              <X style={{ width: "1.25rem", height: "1.25rem" }} />
+            </button>
+          </div>
+          <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--muted-ink)", lineHeight: 1.5 }}>
+            No local draft edits were found in browser storage for <strong>{slug}</strong>. The local copy may have been cleared or reverted.
+          </p>
+          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "0.5rem" }}>
+            <button
+              type="button"
+              onClick={onClose}
+              style={{
+                padding: "0.45rem 0.9rem",
+                borderRadius: "0.25rem",
+                background: "var(--accent)",
+                color: "#ffffff",
+                border: "none",
+                fontSize: "0.82rem",
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

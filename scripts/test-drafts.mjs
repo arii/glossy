@@ -342,6 +342,30 @@ assert.equal(
   "Ohthere text must not be duplicated in workspace texts",
 );
 
+// Test 15: Case-insensitive and Alias Draft Reading & Deletion
+mockStore.clear();
+writeDraft("Ohthere", {
+  textId: "ohthere-textid",
+  slug: "Ohthere",
+  title: "The Voyages of Ohthere",
+  language: "Old English",
+  sentences: [],
+});
+
+// readDraft with lowercase slug
+const readCaseInsensitive = readDraft("ohthere");
+assert.ok(readCaseInsensitive, "readDraft must find draft when queried with lowercased slug");
+assert.equal(readCaseInsensitive.doc.title, "The Voyages of Ohthere", "readDraft doc title must match");
+
+// readDraft with textId
+const readByTextId = readDraft("ohthere-textid");
+assert.ok(readByTextId, "readDraft must find draft when queried with doc.textId");
+
+// deleteLocalDraft with lowercase slug
+const delRes = deleteLocalDraft("ohthere");
+assert.equal(delRes, true, "deleteLocalDraft must succeed with case-insensitive slug");
+assert.equal(readDraft("ohthere"), null, "readDraft must return null after deletion");
+
 // Clean up
 mockStore.clear();
 delete global.window;

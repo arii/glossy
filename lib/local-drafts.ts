@@ -110,14 +110,55 @@ export function readDraft(slug: string): StoredDraft | null {
   const storage = getStorage();
   if (!storage || !slug) return null;
 
+  // 1. Direct key match
   const v1Key = `${DRAFT_STORAGE_PREFIX}${slug}`;
   const v1Raw = storage.getItem(v1Key);
-  if (!v1Raw) return null;
+  if (v1Raw) {
+    try {
+      const parsed = JSON.parse(v1Raw) as StoredDraft;
+      if (parsed && parsed.doc && parsed.version === 1) {
+        return parsed;
+      }
+    } catch {}
+  }
 
+  // 2. Fallback case-insensitive key or doc.slug / doc.textId match
+  const lowerSlug = slug.toLowerCase();
   try {
-    const parsed = JSON.parse(v1Raw) as StoredDraft;
-    if (parsed && parsed.doc && parsed.version === 1) {
-      return parsed;
+    for (let i = 0; i < storage.length; i++) {
+      const key = storage.key(i);
+      if (key && key.startsWith(DRAFT_STORAGE_PREFIX)) {
+        const keySlug = key.slice(DRAFT_STORAGE_PREFIX.length);
+        if (keySlug.toLowerCase() === lowerSlug) {
+          const raw = storage.getItem(key);
+          if (raw) {
+            const parsed = JSON.parse(raw) as StoredDraft;
+            if (parsed && parsed.doc && parsed.version === 1) {
+              return parsed;
+            }
+          }
+        }
+      }
+    }
+
+    // 3. Fallback scan matching parsed doc.slug or doc.textId
+    for (let i = 0; i < storage.length; i++) {
+      const key = storage.key(i);
+      if (key && key.startsWith(DRAFT_STORAGE_PREFIX)) {
+        const raw = storage.getItem(key);
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw) as StoredDraft;
+            if (parsed && parsed.doc && parsed.version === 1) {
+              const docSlug = (parsed.doc.slug || "").toLowerCase();
+              const docTextId = (parsed.doc.textId || "").toLowerCase();
+              if (docSlug === lowerSlug || docTextId === lowerSlug) {
+                return parsed;
+              }
+            }
+          } catch {}
+        }
+      }
     }
   } catch {}
 
@@ -175,18 +216,73 @@ export function deleteLocalDraft(slug: string): boolean {
   const storage = getStorage();
   if (!storage || !slug) return false;
 
+  let deletedAny = false;
+  const lowerSlug = slug.toLowerCase();
+
   try {
-    storage.removeItem(`${DRAFT_STORAGE_PREFIX}${slug}`);
+    // Collect all matching draft keys
+    const keysToRemove: string[] = [];
+
+    // Direct key
+    const directKey = `${DRAFT_STORAGE_PREFIX}${slug}`;
+    if (storage.getItem(directKey) !== null) {
+      keysToRemove.push(directKey);
+    }
+
+    // Scan for case-insensitive or doc.slug / doc.textId matches
+    for (let i = 0; i < storage.length; i++) {
+      const key = storage.key(i);
+      if (key && key.startsWith(DRAFT_STORAGE_PREFIX)) {
+        const keySlug = key.slice(DRAFT_STORAGE_PREFIX.length);
+        if (keySlug.toLowerCase() === lowerSlug) {
+          if (!keysToRemove.includes(key)) keysToRemove.push(key);
+        } else {
+          const raw = storage.getItem(key);
+          if (raw) {
+            try {
+              const parsed = JSON.parse(raw) as StoredDraft;
+              if (parsed && parsed.doc) {
+                const docSlug = (parsed.doc.slug || "").toLowerCase();
+                const docTextId = (parsed.doc.textId || "").toLowerCase();
+                if (docSlug === lowerSlug || docTextId === lowerSlug) {
+                  if (!keysToRemove.includes(key)) keysToRemove.push(key);
+                }
+              }
+            } catch {}
+          }
+        }
+      }
+    }
+
+    for (const key of keysToRemove) {
+      storage.removeItem(key);
+      deletedAny = true;
+    }
 
     // Remove from pending manifest
     const manifest = listPending();
-    delete manifest[slug];
-    storage.setItem(PENDING_MANIFEST_KEY, JSON.stringify(manifest));
-
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new Event("glossy:drafts-updated"));
+    let manifestChanged = false;
+    for (const mKey of Object.keys(manifest)) {
+      if (
+        mKey === slug ||
+        mKey.toLowerCase() === lowerSlug ||
+        (manifest[mKey].slug && manifest[mKey].slug.toLowerCase() === lowerSlug)
+      ) {
+        delete manifest[mKey];
+        manifestChanged = true;
+      }
     }
-    return true;
+
+    if (manifestChanged) {
+      storage.setItem(PENDING_MANIFEST_KEY, JSON.stringify(manifest));
+    }
+
+    if (deletedAny || manifestChanged) {
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("glossy:drafts-updated"));
+      }
+    }
+    return deletedAny || manifestChanged;
   } catch {
     return false;
   }
