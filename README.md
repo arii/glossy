@@ -51,7 +51,60 @@ Glossy adheres to International Phonetic Association guidelines for Old English 
 
 ---
 
-## 3. Directory Structure
+## 3. Tech Stack: Tools, Languages, Frameworks & Cloud Services
+
+Glossy is engineered using modern web, linguistic, and publishing tools:
+
+| Category | Technology / Tool | Purpose & Usage |
+| :--- | :--- | :--- |
+| **Language & Runtime** | **TypeScript 5** | Strict, end-to-end type safety across data contracts (`TextDocument`, `WordToken`, `Sentence`), AST transformers, and editor logic. |
+| **Framework & Router** | **Next.js 15+ (App Router)** | Hybrid SSG/SSR rendering, client-side route transitions, layout encapsulation, and optimized static asset delivery. |
+| **UI Engine** | **React 19** | Component-driven UI architecture, interactive modal overlays (`DraftDiffModal`, `AttributionModal`), and error boundaries (`SentenceErrorBoundary`). |
+| **Styling & Fonts** | **Tailwind CSS & Charis SIL** | Custom semantic CSS properties (`[data-theme="dark"]`, `sepia`), WCAG 2.1 AA contrast compliance, and scholarly Old English diacritic/IPA rendering. |
+| **Content Management** | **TinaCMS (GraphQL)** | Headless CMS schema (`tina/config.ts`) and authenticated GraphQL commit bridge (`lib/tina-sync.ts`) for committing local drafts into Git repository. |
+| **Data Validation** | **Zod Schemas** | Canonical schema validation (`lib/schemas/corpus.ts`) enforcing runtime type bounds and structural integrity on ingested JSON texts. |
+| **Document Export** | **Typst WebAssembly** | Client-side WASM PDF compilation via `@myriaddreamin/typst.ts` generating downloadable publication-ready interlinear PDFs. |
+| **Hosting & CDN** | **Cloudflare Pages** | High-performance edge deployment (`https://glossy.pages.dev`) via direct build integration (`wrangler.toml`). |
+| **CI/CD & Releases** | **GitHub Actions & Release Please** | Automated semantic versioning, changelog generation, and linting/typechecking pipelines on push to `main`. |
+| **Package Management** | **pnpm** | Fast, deterministic dependency resolution and workspace script orchestration. |
+
+---
+
+## 4. Fulfillment of Primary Technology Requirements
+
+Glossy satisfies all core technical requirements for digital humanities interlinear glossing platforms:
+
+1. **Local-First Browser Persistence**:
+   - Implements a versioned draft envelope (`glossy:v1:draft:<slug>`) storing full document ASTs directly in `localStorage`.
+   - Tracks draft revisions with hash-based divergence detection (`getDraftDivergenceStatus`) and atomic manifest registration (`glossy:v1:pending_drafts`), ensuring zero data loss upon refresh.
+2. **Bidirectional LaTeX `gb4e` Ingestion & Parsing**:
+   - Custom `gb4e` LaTeX parser (`lib/gb4e.ts`) converts multi-sentence linguistic typesetting code into structured AST nodes and exports structured JSON back into compilable `gb4e` LaTeX packages.
+3. **Headless CMS & Git Repository Synchronization**:
+   - Unified GraphQL client integration (`lib/tina-sync.ts` & `lib/tina-config.ts`) enables authenticated users to push pending local browser drafts directly into the Git repository.
+4. **Automated Philological Quality Auditing**:
+   - Pre-build script suite (`pnpm run validate:lemmas`, `pnpm run validate:source`) audits 100% of corpus tokens against canonical Old English dictionary headwords and aligned Leipzig morphemes.
+
+---
+
+## 5. Devpost Learn Skill Pack & Flipped Interaction
+
+Glossy was designed and implemented using the **Devpost Learn Skill Pack** methodology, applying a **flipped interaction model** to turn expert linguistic domain knowledge into executable code and verification artifacts:
+
+### 5.1 Flipped Interaction Workflow
+Rather than prompting AI to generate generic web templates, the project leveraged flipped interaction:
+- **AI as Interviewer**: The AI agent interviewed the user (philologist/developer) to extract core domain requirements: Old English diacritic handling, 42 Leipzig manuscript abbreviations, canonical lemma citation standards (e.g. masculine nominative singulars for adjectives), and local-first draft envelope requirements.
+- **Learner-Led Architecture**: Decisions regarding data models, offline persistence, and LaTeX `gb4e` AST transformations were directed by the human learner and formalized into structured planning documents.
+
+### 5.2 Structured Planning Artifacts
+All architectural and product decisions are recorded under `devpost/`:
+- **Scope (`devpost/scope.md`)**: Outlines the core kernel—linking raw text, interlinear Leipzig glosses, and detailed Wiktionary-compliant morphological explanations in a live 2-way editor.
+- **Product Requirements (`devpost/prd.md`)**: Defines user journeys for students (Reader mode) and editors (Workspace mode), detailing token selection, morpheme chip inspection, and LaTeX export capabilities.
+- **Technical Specification (`devpost/spec.md`)**: Specifies the system architecture, Next.js App Router structure, Zod validation contracts, local storage schemas, and TinaCMS GraphQL mutation endpoints.
+- **Build Checklist (`devpost/checklist.md`)**: Records verified build slices, E2E smoke tests, lemma audit passes, and local draft recovery unit tests.
+
+---
+
+## 6. Directory Structure
 
 ```
 ├── app/                  # Next.js App Router (pages & layout)
@@ -80,7 +133,7 @@ Glossy adheres to International Phonetic Association guidelines for Old English 
 
 ---
 
-## 4. Verification & CLI Scripts
+## 7. Verification & CLI Scripts
 
 | Command | Description |
 | :--- | :--- |
@@ -94,7 +147,7 @@ Glossy adheres to International Phonetic Association guidelines for Old English 
 
 ---
 
-## 5. Release Management & Conventional Commits
+## 8. Release Management & Conventional Commits
 
 Glossy uses [Release Please](https://github.com/googleapis/release-please-action) for automated semantic versioning, changelog generation, and GitHub release tagging based on [Conventional Commits](https://www.conventionalcommits.org/).
 

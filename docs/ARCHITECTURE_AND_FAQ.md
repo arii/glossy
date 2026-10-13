@@ -98,7 +98,40 @@ In standard Old English lexicography (Bosworth-Toller, Sweet, Clark Hall, DOE, W
 
 *For software engineers, developers, and pipeline contributors.*
 
-## A1. Dedicated Authoring Architecture & Persistence Flow
+## A1. Technology Stack & Frameworks
+
+| Layer | Tool / Framework | Purpose |
+| :--- | :--- | :--- |
+| **Language** | TypeScript 5 | Strict typing across corpus models, AST nodes, and editor components. |
+| **Framework** | Next.js 15+ (App Router) | Static export generation (SSG) and dynamic routing for `/read/[slug]` and `/edit/[slug]`. |
+| **UI Rendering** | React 19 | Responsive interlinear pair components, inspector popups, and diff modals. |
+| **Styling & Typography**| Tailwind CSS & Charis SIL | Custom CSS variables for light/dark/sepia themes and proper Old English glyphs. |
+| **Content Management** | TinaCMS | Headless GraphQL schema (`tina/config.ts`) and Git commit synchronization (`lib/tina-sync.ts`). |
+| **Validation** | Zod Schemas | Strict runtime parsing (`lib/schemas/corpus.ts`) validating document structure. |
+| **PDF Compilation** | Typst WebAssembly | WebAssembly PDF generation (`@myriaddreamin/typst.ts`) for downloading interlinear PDFs. |
+| **Cloud Hosting** | Cloudflare Pages | Production edge hosting (`https://glossy.pages.dev`) built via `wrangler.toml`. |
+
+## A2. Fulfillment of Core Technology Requirements
+
+Glossy satisfies all foundational technical requirements for digital humanities interlinear glossing platforms:
+
+1. **Local-First Offline Persistence**:
+   - Versioned local draft envelopes (`glossy:v1:draft:<slug>`) persist full ASTs in `localStorage`.
+   - Hash-based revision divergence tracking (`getDraftDivergenceStatus`) prevents accidental overwrites when syncing upstream changes.
+2. **Bidirectional LaTeX `gb4e` Processing**:
+   - Complete `gb4e` parser (`lib/gb4e.ts`) extracts surface forms, Leipzig morpheme glosses, translations, and footnotes from raw TeX files, and exports back to compilable `.tex` files.
+3. **Headless CMS & Git Sync**:
+   - Authenticated GraphQL mutation pipeline (`lib/tina-sync.ts`) allows committing browser-edited drafts into the source Git repository.
+4. **Automated Philological Quality Audits**:
+   - Automated CLI auditing tools (`pnpm run validate:lemmas`, `pnpm run validate:source`) verify 100% of corpus tokens for canonical dictionary alignment and morpheme balance.
+
+## A3. Devpost Learn Skill Pack & Flipped Interaction
+
+Glossy was developed using the **Devpost Learn Skill Pack** framework and a **flipped interaction model**:
+- **Flipped Interaction**: The AI agent interviewed the learner to uncover Old English philological rules, Leipzig glossing standards, and local-first editor requirements, translating domain expertise into verifiable software.
+- **Planning Artifacts**: Architectural specifications are documented in `devpost/scope.md`, `devpost/prd.md`, `devpost/spec.md`, and `devpost/checklist.md`.
+
+## A4. Dedicated Authoring Architecture & Persistence Flow
 
 Glossy separates client-side authoring from Git-backed publishing:
 
@@ -113,7 +146,7 @@ Glossy separates client-side authoring from Git-backed publishing:
 4. **Data Portability & Compilable Exports**:
    - The editor provides instant client-side downloads for complete **JSON** text documents and compilable **LaTeX (`gb4e`)** packages.
 
-## A2. Automated Quality Verification Suite
+## A5. Automated Quality Verification Suite
 
 | Command | Function & Verification Target |
 |---|---|
