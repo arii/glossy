@@ -1,6 +1,7 @@
 import { spawnSync } from "child_process";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import net from "net";
+import crypto from "crypto";
 
 function printStep(step) {
   console.log(`\n🚀 [BUILD STEP] ${step}...`);
@@ -38,6 +39,12 @@ function runCommand(cmd, args) {
   }
 }
 
+function getFileHash(filepath) {
+  if (!existsSync(filepath)) return null;
+  const buffer = readFileSync(filepath);
+  return crypto.createHash("sha256").update(buffer).digest("hex");
+}
+
 async function main() {
   if (process.argv.includes("--with-content")) {
     printStep("0. Compiling content");
@@ -54,12 +61,27 @@ async function main() {
     (await isPortBusy(9123)) ||
     (await isPortBusy(4001));
 
-  if (busy && hasGeneratedFiles) {
+  const lockFilePath = "tina/tina-lock.json";
+  const cacheDirPath = "node_modules/.cache/tinacms";
+  const hashFilePath = `${cacheDirPath}/lock-hash.txt`;
+
+  const currentHash = getFileHash(lockFilePath);
+  let cachedHash = null;
+  if (existsSync(hashFilePath)) {
+    cachedHash = readFileSync(hashFilePath, "utf8").trim();
+  }
+
+  if (hasGeneratedFiles && currentHash && currentHash === cachedHash) {
+    console.log("ℹ️ tina-lock.json hasn't changed and generated files exist; skipping Tina build.");
+  } else if (busy && hasGeneratedFiles) {
     console.log("ℹ️ Tina dev server port (9000/9123/4001) is currently busy; reusing existing compiled schema.");
   } else {
+    // Add environment variable to increase max old space size specifically for TinaCMS build
+    const env = { ...process.env, NODE_OPTIONS: `${process.env.NODE_OPTIONS || ''} --max-old-space-size=4096`.trim() };
     const tinaBin = existsSync("./node_modules/.bin/tinacms") ? "./node_modules/.bin/tinacms" : "tinacms";
     const res = spawnSync(tinaBin, ["build", "--skip-cloud-checks", "--datalayer-port", "9123"], {
       stdio: "inherit",
+      env: env
     });
     if (res.status !== 0) {
       if (hasGeneratedFiles) {
@@ -67,6 +89,13 @@ async function main() {
       } else {
         console.error(`\n🚨 [BUILD FAILURE] Command failed: ${tinaBin} build`);
         process.exit(res.status ?? 1);
+      }
+    } else {
+      if (currentHash) {
+        if (!existsSync(cacheDirPath)) {
+          mkdirSync(cacheDirPath, { recursive: true });
+        }
+        writeFileSync(hashFilePath, currentHash, "utf8");
       }
     }
   }
