@@ -56,22 +56,42 @@ function computeSimpleHash(input: unknown): string {
 }
 
 export function computeDocumentHash(doc: TextDocument): string {
+  const normTitle = (doc.title || "").trim();
+  const normAuthor = (doc.author || doc.glossedBy || "").trim();
+  const normHistoricalAuthor = (doc.historicalAuthor || "").trim();
+  const normDate = (doc.date || doc.historicalDate || "").trim();
+  const normEdition = (doc.sourceEdition || "").trim();
+
   return computeSimpleHash({
     slug: doc.slug,
-    title: doc.title,
-    author: doc.author,
-    historicalAuthor: doc.historicalAuthor,
-    glossedBy: doc.glossedBy,
-    date: doc.date,
-    sourceEdition: doc.sourceEdition,
+    title: normTitle,
+    author: normAuthor,
+    historicalAuthor: normHistoricalAuthor,
+    date: normDate,
+    sourceEdition: normEdition,
     sentences: (doc.sentences || []).map((s) => ({
-      translation: s.translation,
+      translation: (s.translation || "").trim(),
+      notes: (s.notes || []).map((n) => ({
+        marker: n.marker,
+        type: n.type,
+        text: (n.text || "").trim(),
+        targetWordIndex: n.targetWordIndex,
+      })),
       words: (s.words || []).map((w) => ({
         originalWord: w.originalWord,
         morphologicalGloss: w.morphologicalGloss,
-        lemma: w.analysis?.lemma,
-        pos: w.analysis?.partOfSpeech,
-        definition: w.analysis?.definition,
+        trailingPunctuation: w.trailingPunctuation || undefined,
+        sourceGlossTex: w.sourceGlossTex || undefined,
+        lemma: w.analysis?.lemma || undefined,
+        pos: w.analysis?.partOfSpeech || undefined,
+        definition: (w.analysis?.definition || "").trim() || undefined,
+        features: w.analysis?.features ? Object.fromEntries(
+          Object.entries(w.analysis.features).filter(([, v]) => v != null && String(v) !== "")
+        ) : undefined,
+        morphemes: (w.analysis?.morphemes || []).map((m) => ({
+          form: m.form,
+          gloss: m.gloss,
+        })),
       })),
     })),
   });

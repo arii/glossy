@@ -47,7 +47,7 @@ export function ReadingPage({
   const defaultSlug = initialSlug ?? texts[0]?.slug ?? "";
   const selectedSlug = defaultSlug;
 
-  useEffect(() => {
+  const reloadLocalDraft = useCallback(() => {
     try {
       const hidden = getHiddenSlugs();
       setDeletedSlugs(hidden);
@@ -61,9 +61,23 @@ export function ReadingPage({
         setLocalDraftText(null);
       }
     } catch {}
-
-    setIsClientReady(true);
   }, [selectedSlug]);
+
+  useEffect(() => {
+    reloadLocalDraft();
+    setIsClientReady(true);
+
+    const handleUpdate = () => {
+      reloadLocalDraft();
+    };
+
+    window.addEventListener("glossy:drafts-updated", handleUpdate);
+    window.addEventListener("storage", handleUpdate);
+    return () => {
+      window.removeEventListener("glossy:drafts-updated", handleUpdate);
+      window.removeEventListener("storage", handleUpdate);
+    };
+  }, [reloadLocalDraft]);
 
   const closeGloss = useCallback(() => {
     setSelectedId(null);

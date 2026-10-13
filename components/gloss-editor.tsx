@@ -641,7 +641,8 @@ export function GlossEditor({
     try {
       const fallback = textDocumentToEditorDoc(initialDocument);
       setDocumentState(fallback);
-      setSavedSnapshot(safeJsonStringify(fallback));
+      const fallbackStr = safeJsonStringify(fallback);
+      setSavedSnapshot(fallbackStr);
 
       deleteLocalDraft(currentSlug);
 
