@@ -10,7 +10,7 @@ import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
 import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
 import { safeJsonStringify } from "../lib/safe-json";
 import { isBuiltInSlug } from "../lib/corpus-registry";
-import { areDocumentsIdentical } from "../lib/canonical-json";
+import { areDocumentsIdentical, formatExportJson } from "../lib/canonical-json";
 import {
   computeDocumentHash,
   deleteLocalDraft,
@@ -729,7 +729,7 @@ export function GlossEditor({
   const handleExportJson = () => {
     if (!documentState) return;
     const docToExport = editorDocToTextDocument(documentState);
-    const jsonStr = safeJsonStringify(docToExport, null, 2);
+    const jsonStr = formatExportJson(docToExport);
     const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const anchor = window.document.createElement("a");
