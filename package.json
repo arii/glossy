@@ -12,6 +12,7 @@
     "compile:content": "tsx scripts/compile-tex-to-content.mjs",
     "compile:beowulf": "tsx scripts/compile-beowulf.mjs",
     "compile:presets": "tsx scripts/compile-presets.mjs",
+    "build:indexes": "tsx scripts/build-index.mjs",
     "build": "node scripts/build.js",
     "build:next": "NODE_ENV=production next build",
     "build:tina": "tinacms build --skip-cloud-checks --datalayer-port 9123",
@@ -23,13 +24,14 @@
     "format:check": "prettier --check \"**/*.json\"",
     "lint": "eslint .",
     "audit:deadcode": "knip",
+    "test:indexes": "tsx tests/build-index.test.ts",
     "test:smoke": "node scripts/smoke-test.mjs",
     "test:drafts": "tsx scripts/test-drafts.mjs",
     "typecheck": "tsc --noEmit",
     "validate:lemmas": "tsx scripts/validate-lemmas.mjs",
     "validate:source": "tsx scripts/validate-source.mjs",
     "validate:deploy": "node -e 'const fs=require(\"fs\"); const c=fs.readFileSync(\"wrangler.toml\",\"utf8\"); if(!c.includes(\"pages_build_output_dir\")) throw new Error(\"wrangler.toml must specify pages_build_output_dir\"); console.log(\"wrangler.toml Pages configuration verified.\");'",
-    "audit": "npm run audit:deadcode && npm run lint && npm run typecheck && npm run validate:source && npm run validate:lemmas && npm run test:smoke && npm run validate:deploy"
+    "audit": "npm run audit:deadcode && npm run lint && npm run typecheck && npm run validate:source && npm run validate:lemmas && npm run test:indexes && npm run test:smoke && npm run validate:deploy"
   },
   "dependencies": {
     "@google/genai": "^2.27.0",
