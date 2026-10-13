@@ -165,7 +165,9 @@ export function ReadingPage({
 
   const divergenceStatus = useMemo(
     () => getDraftDivergenceStatus(selectedSlug, baseText),
-    [selectedSlug, baseText]
+    // Re-evaluate divergence when localDraftText transitions (e.g. gets deleted via discard)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedSlug, baseText, localDraftText]
   );
 
   // Memoize heavy object instantiation from getGlossRecords to prevent unnecessary downstream re-renders.
