@@ -27,7 +27,6 @@ import type {
   PartOfSpeech,
   InflectionFeatures,
   NoteItem,
-  NoteType,
   ReviewMetadata,
   PassageBlock,
   LinguisticAnalysis,
@@ -40,13 +39,13 @@ import {
   RefreshCw,
   Save,
   Trash2,
-  FileText,
-  X,
 } from "lucide-react";
 import { DraftDiffModal } from "./draft-diff-modal";
+import { CommitReviewModal } from "./commit-review-modal";
 import { DraftSyncPrompt } from "./draft-sync-prompt";
 import { isTinaAuthenticated } from "../lib/tina-sync";
 import { EditMetadataModal } from "./edit-metadata-modal";
+import { TokenInspector } from "./editor/TokenInspector";
 
 export interface EditorToken {
   id: string;
@@ -64,6 +63,12 @@ export interface EditorToken {
   pronunciationSource?: string;
   historicalNote?: string;
   review?: ReviewMetadata;
+  lemmaRef?: string;
+  contextualOverride?: {
+    definition?: string;
+    pos?: string;
+    notes?: string;
+  };
 }
 
 export interface EditorSentence {
@@ -120,10 +125,12 @@ function stripLatexFootnotes(text: string): string {
 export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number): EditorToken {
   const inflections = w.analysis?.features || {};
   const lex = resolveOldEnglishLexicon(w.originalWord, w.morphologicalGloss || w.originalWord);
-  const resolvedLemma = w.analysis?.lemma || lex.lemma;
-  const resolvedPos = (w.analysis?.partOfSpeech || lex.pos || "noun") as PartOfSpeech;
+  const resolvedLemma = w.lemmaRef || w.analysis?.lemma || lex.lemma;
+  const resolvedPos = (w.contextualOverride?.pos || w.analysis?.partOfSpeech || lex.pos || "noun") as PartOfSpeech;
   const resolvedExpl =
-    w.analysis?.definition !== undefined && w.analysis.definition !== ""
+    w.contextualOverride?.definition !== undefined && w.contextualOverride.definition !== ""
+      ? w.contextualOverride.definition
+      : w.analysis?.definition !== undefined && w.analysis.definition !== ""
       ? w.analysis.definition
       : lex.definition || w.morphologicalGloss || "";
   const resolvedIpa = w.analysis?.phonetic || "";
@@ -156,6 +163,8 @@ export function wordToEditorToken(w: InterlinearWord, sIdx: number, tIdx: number
     pronunciationSource: w.analysis?.pronunciationSource,
     historicalNote: w.analysis?.historicalNote,
     review: w.review,
+    lemmaRef: w.lemmaRef || resolvedLemma,
+    contextualOverride: w.contextualOverride ? { ...w.contextualOverride } : undefined,
   };
 }
 
@@ -273,6 +282,8 @@ export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
           sourceGlossTex: texGlossVal,
           analysis,
           review: tok.review,
+          lemmaRef: tok.lemmaRef || tok.lemma,
+          contextualOverride: tok.contextualOverride ? { ...tok.contextualOverride } : undefined,
         };
         return word;
       }),
@@ -318,6 +329,7 @@ export function GlossEditor({
 
 
   const [diffModalOpen, setDiffModalOpen] = useState(false);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [showSyncPrompt, setShowSyncPrompt] = useState(false);
 
   const [workspaceTexts, setWorkspaceTexts] = useState<WorkspaceTextItem[]>(() =>
@@ -898,11 +910,6 @@ export function GlossEditor({
   }
 
 
-  // Clean, displayable form for the selected token header
-  const cleanHeaderWord = activeToken?.sourceForm
-    ? activeToken.sourceForm.replace(/[.,;:!?]+$/, "")
-    : "";
-
   return (
     <>
       <SiteNav current="edit" slug={initialDocument.slug} />
@@ -1034,6 +1041,23 @@ export function GlossEditor({
 
                   <button
                     type="button"
+                    onClick={() => setReviewModalOpen(true)}
+                    className="workspace-link"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.3rem",
+                      fontWeight: 600,
+                      color: "var(--accent)",
+                    }}
+                    title="Review structured semantic changes before committing"
+                  >
+                    <GitCommit style={{ width: "0.85rem", height: "0.85rem" }} />
+                    Review Changes
+                  </button>
+
+                  <button
+                    type="button"
                     onClick={saveToTina}
                     disabled={isSaving}
                     className="workspace-button workspace-button-primary"
@@ -1146,6 +1170,18 @@ export function GlossEditor({
           }}
           onOpenEditor={() => setDiffModalOpen(false)}
           onExport={handleExportJson}
+        />
+
+        <CommitReviewModal
+          isOpen={reviewModalOpen}
+          onClose={() => setReviewModalOpen(false)}
+          onConfirmCommit={async () => {
+            setReviewModalOpen(false);
+            await saveToTina();
+          }}
+          baseDoc={initialDocument}
+          draftDoc={editorDocToTextDocument(documentState)}
+          isSubmitting={isSaving}
         />
 
         {saveStatus.message && (
@@ -1308,418 +1344,20 @@ export function GlossEditor({
             </div>
           </section>
           {/* Right Column: Selected Token Inspector */}
-          <aside className="editor-inspector-card">
-            <div className="editor-inspector-header">
-              <h2 className="workspace-eyebrow" style={{ margin: 0, fontSize: "0.82rem", fontWeight: 700, color: "var(--accent)", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                Selected Token Inspector
-              </h2>
-            </div>
-
-            {activeToken ? (
-              <div>
-                {/* 1. Source form (raw token) */}
-                <div className="editor-form-group">
-                  <label>Source form (raw token)</label>
-                  <input
-                    type="text"
-                    value={activeToken.sourceForm}
-                    onChange={(e) => handleSourceFormChange(e.target.value)}
-                  />
-                </div>
-
-                {/* 2. Readable Leipzig Gloss */}
-                <div className="editor-form-group">
-                  <label>Readable Leipzig Gloss</label>
-                  <input
-                    type="text"
-                    value={activeToken.sourceGloss}
-                    onChange={(e) => handleSourceGlossChange(e.target.value)}
-                  />
-                </div>
-
-                {/* 3. Literal TeX Gloss */}
-                <div className="editor-form-group">
-                  <label>Literal TeX Gloss</label>
-                  <input
-                    type="text"
-                    style={{ fontFamily: "monospace" }}
-                    value={activeToken.literalTexGloss}
-                    onChange={(e) => updateToken({ literalTexGloss: e.target.value })}
-                  />
-                </div>
-
-                {/* 4. Lemma & Part of Speech */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
-                  <div className="editor-form-group">
-                    <label>Lemma</label>
-                    <input
-                      type="text"
-                      value={activeToken.lemma}
-                      onChange={(e) => updateToken({ lemma: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="editor-form-group">
-                    <label>Part of Speech</label>
-                    <select
-                      value={activeToken.pos}
-                      onChange={(e) =>
-                        updateToken({ pos: e.target.value as PartOfSpeech })
-                      }
-                    >
-                      <option value="noun">Noun</option>
-                      <option value="verb">Verb</option>
-                      <option value="adjective">Adjective</option>
-                      <option value="adverb">Adverb</option>
-                      <option value="pronoun">Pronoun</option>
-                      <option value="determiner">Determiner</option>
-                      <option value="numeral">Numeral</option>
-                      <option value="preposition">Preposition</option>
-                      <option value="conjunction">Conjunction</option>
-                      <option value="interjection">Interjection</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* 5. Explanation */}
-                <div className="editor-form-group">
-                  <label>Explanation</label>
-                  <textarea
-                    rows={2}
-                    value={activeToken.explanation}
-                    onChange={(e) => updateToken({ explanation: e.target.value })}
-                  />
-                </div>
-
-                {/* 6. Inflections & Features */}
-                <fieldset className="editor-fieldset">
-                  <legend>Inflections &amp; Features</legend>
-                  <div className="editor-features-grid">
-                    <div>
-                      <label>Case</label>
-                      <select
-                        value={activeToken.inflections.case || ""}
-                        onChange={(e) =>
-                          updateInflection(
-                            "case",
-                            e.target.value as InflectionFeatures["case"],
-                          )
-                        }
-                      >
-                        <option value="">None</option>
-                        <option value="nominative">Nominative</option>
-                        <option value="accusative">Accusative</option>
-                        <option value="genitive">Genitive</option>
-                        <option value="dative">Dative</option>
-                        <option value="instrumental">Instrumental</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label>Number</label>
-                      <select
-                        value={activeToken.inflections.number || ""}
-                        onChange={(e) =>
-                          updateInflection(
-                            "number",
-                            e.target.value as InflectionFeatures["number"],
-                          )
-                        }
-                      >
-                        <option value="">None</option>
-                        <option value="singular">Singular</option>
-                        <option value="plural">Plural</option>
-                        <option value="dual">Dual</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label>Gender</label>
-                      <select
-                        value={activeToken.inflections.gender || ""}
-                        onChange={(e) =>
-                          updateInflection(
-                            "gender",
-                            e.target.value as InflectionFeatures["gender"],
-                          )
-                        }
-                      >
-                        <option value="">None</option>
-                        <option value="masculine">Masculine</option>
-                        <option value="feminine">Feminine</option>
-                        <option value="neuter">Neuter</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label>Tense</label>
-                      <select
-                        value={activeToken.inflections.tense || ""}
-                        onChange={(e) =>
-                          updateInflection(
-                            "tense",
-                            e.target.value as InflectionFeatures["tense"],
-                          )
-                        }
-                      >
-                        <option value="">None</option>
-                        <option value="present">Present</option>
-                        <option value="past">Past</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label>Mood</label>
-                      <select
-                        value={activeToken.inflections.mood || ""}
-                        onChange={(e) =>
-                          updateInflection(
-                            "mood",
-                            e.target.value as InflectionFeatures["mood"],
-                          )
-                        }
-                      >
-                        <option value="">None</option>
-                        <option value="indicative">Indicative</option>
-                        <option value="subjunctive">Subjunctive</option>
-                        <option value="imperative">Imperative</option>
-                        <option value="infinitive">Infinitive</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label>Person</label>
-                      <select
-                        value={activeToken.inflections.person ? String(activeToken.inflections.person) : ""}
-                        onChange={(e) =>
-                          updateInflection(
-                            "person",
-                            e.target.value ? (parseInt(e.target.value, 10) as 1 | 2 | 3) : undefined,
-                          )
-                        }
-                      >
-                        <option value="">None</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                      </select>
-                    </div>
-                  </div>
-                </fieldset>
-
-                {/* 7. Morphemes Breakdown */}
-                <div className="editor-form-group">
-                  <label>
-                    Morphemes Breakdown {activeToken.morphemes && activeToken.morphemes.length > 1 ? `(${activeToken.morphemes.length})` : ""}
-                  </label>
-                  <div>
-                    {activeToken.morphemes && activeToken.morphemes.length > 1 && (
-                      activeToken.morphemes.map((morpheme, idx) => (
-                        <div key={morpheme.id || idx} style={{ marginBottom: "0.6rem" }}>
-                          <div className="morpheme-row">
-                            <input
-                              type="text"
-                              placeholder="form"
-                              value={morpheme.form}
-                              onChange={(e) => updateMorphemeVal(idx, "form", e.target.value)}
-                            />
-                            <input
-                              type="text"
-                              placeholder="gloss"
-                              value={morpheme.gloss}
-                              onChange={(e) => updateMorphemeVal(idx, "gloss", e.target.value)}
-                            />
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => removeMorpheme(idx)}
-                            className="morpheme-remove-btn"
-                            title="Remove morpheme"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={addMorpheme}
-                    className="add-morpheme-btn"
-                  >
-                    + Add Morpheme
-                  </button>
-                </div>
-
-                {/* 8. IPA Pronunciation */}
-                <div className="editor-form-group">
-                  <label>IPA Pronunciation</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. /ˈoːx.teː.re/"
-                    value={activeToken.ipa}
-                    onChange={(e) => updateToken({ ipa: e.target.value })}
-                  />
-                </div>
-
-                {/* 9. Wiktionary URL */}
-                <div className="editor-form-group">
-                  <label>Wiktionary URL</label>
-                  <input
-                    type="url"
-                    placeholder="https://en.wiktionary.org/wiki/..."
-                    value={activeToken.wiktionaryUrl}
-                    onChange={(e) => updateToken({ wiktionaryUrl: e.target.value })}
-                  />
-                </div>
-
-                {/* 10. Sentence Footnotes / Critical Apparatus */}
-                <fieldset className="editor-fieldset" style={{ marginTop: "1rem" }}>
-                  <legend style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                    <FileText style={{ width: "0.85rem", height: "0.85rem", color: "var(--accent)" }} />
-                    <span>Sentence Footnotes / Critical Apparatus ({activeSentence?.notes?.length || 0})</span>
-                  </legend>
-
-                  <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "0.5rem" }}>
-                    {(activeSentence?.notes || []).map((note, nIdx) => (
-                      <div
-                        key={note.id || nIdx}
-                        style={{
-                          background: "#fbf7ee",
-                          border: "1px solid #dfcfb8",
-                          borderRadius: "0.375rem",
-                          padding: "0.6rem 0.75rem",
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "0.4rem",
-                          position: "relative",
-                        }}
-                      >
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          <div style={{ display: "flex", gap: "0.35rem", alignItems: "center" }}>
-                            <input
-                              type="text"
-                              placeholder="Marker"
-                              value={note.marker || ""}
-                              onChange={(e) =>
-                                activeSentence &&
-                                updateSentenceNote(activeSentence.id, note.id, { marker: e.target.value })
-                              }
-                              style={{ width: "3.2rem", padding: "0.2rem 0.4rem", fontSize: "0.78rem", textAlign: "center" }}
-                            />
-                            <select
-                              value={note.type || "manuscript_variant"}
-                              onChange={(e) =>
-                                activeSentence &&
-                                updateSentenceNote(activeSentence.id, note.id, {
-                                  type: e.target.value as NoteType,
-                                })
-                              }
-                              style={{ padding: "0.2rem 0.4rem", fontSize: "0.78rem" }}
-                            >
-                              <option value="manuscript_variant">manuscript_variant</option>
-                              <option value="grammatical_note">grammatical_note</option>
-                              <option value="source_reference">source_reference</option>
-                              <option value="general">general</option>
-                            </select>
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() => activeSentence && removeSentenceNote(activeSentence.id, note.id)}
-                            style={{ background: "transparent", border: "none", color: "#b91c1c", cursor: "pointer" }}
-                            title="Remove note"
-                          >
-                            <X style={{ width: "0.85rem", height: "0.85rem" }} />
-                          </button>
-                        </div>
-
-                        {activeSentence && (
-                          <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                            <label style={{ fontSize: "0.72rem", color: "var(--muted-ink)" }}>Target Word:</label>
-                            <select
-                              value={note.targetWordIndex != null ? String(note.targetWordIndex) : ""}
-                              onChange={(e) =>
-                                updateSentenceNote(activeSentence.id, note.id, {
-                                  targetWordIndex: e.target.value !== "" ? Number(e.target.value) : undefined,
-                                })
-                              }
-                              style={{ padding: "0.15rem 0.35rem", fontSize: "0.75rem", flex: 1 }}
-                            >
-                              <option value="">Whole Sentence</option>
-                              {activeSentence.tokens.map((tok, tIdx) => (
-                                <option key={tok.id} value={tIdx + 1}>
-                                  Word #{tIdx + 1}: {tok.sourceForm}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        )}
-
-                        <textarea
-                          rows={2}
-                          placeholder="BL Cotton MS Tiberius B i reads 'hlaforde'..."
-                          value={note.text}
-                          onChange={(e) =>
-                            activeSentence &&
-                            updateSentenceNote(activeSentence.id, note.id, { text: e.target.value })
-                          }
-                          style={{ fontSize: "0.82rem", width: "100%" }}
-                        />
-                      </div>
-                    ))}
-
-                  </div>
-                </fieldset>
-
-                {/* 11. Reader Popup Preview */}
-                <div className="editor-preview-card">
-                  <h3>Reader Popup Preview</h3>
-                  <p className="editor-preview-word">
-                    {activeToken.lemma || cleanHeaderWord}
-                    <span className="editor-preview-pos">
-                      ({activeToken.pos || "unclassified"})
-                    </span>
-                  </p>
-
-                  {activeToken.explanation && (
-                    <p style={{ margin: "0.4rem 0", fontSize: "0.95rem", color: "var(--ink)" }}>
-                      {activeToken.explanation}
-                    </p>
-                  )}
-
-                  {activeToken.morphemes && activeToken.morphemes.length > 0 && (
-                    <div className="editor-preview-morphemes">
-                      <strong>Morphemes Breakdown</strong>
-                      <span>
-                        {activeToken.morphemes
-                          .map((m) => `${m.form || "?"} = ${m.gloss || "?"}`)
-                          .join("   ")}
-                      </span>
-                    </div>
-                  )}
-
-                  {activeToken.wiktionaryUrl && (
-                    <div style={{ marginTop: "0.6rem" }}>
-                      <a
-                        href={activeToken.wiktionaryUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="reference-link"
-                        style={{ fontSize: "0.85rem", color: "var(--accent)", fontWeight: 700 }}
-                      >
-                        Open in Wiktionary ↗
-                      </a>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <p style={{ color: "var(--muted-ink)", fontSize: "0.9rem" }}>
-                Select any word in the document feed on the left to inspect its linguistic layers.
-              </p>
-            )}
-          </aside>
+          <TokenInspector
+            activeToken={activeToken || null}
+            activeSentence={activeSentence || null}
+            updateToken={updateToken}
+            updateInflection={updateInflection}
+            handleSourceFormChange={handleSourceFormChange}
+            handleSourceGlossChange={handleSourceGlossChange}
+            addMorpheme={addMorpheme}
+            updateMorphemeVal={updateMorphemeVal}
+            removeMorpheme={removeMorpheme}
+            addNoteToSentence={addNoteToSentence}
+            updateSentenceNote={updateSentenceNote}
+            removeSentenceNote={removeSentenceNote}
+          />
         </div>
       </main>
 

@@ -68,6 +68,12 @@ export type InterlinearWord = {
   sourceGlossTex?: string;
   analysis?: LinguisticAnalysis;
   review?: ReviewMetadata;
+  lemmaRef?: string;
+  contextualOverride?: {
+    definition?: string;
+    pos?: string;
+    notes?: string;
+  };
 };
 
 export type NoteType =
