@@ -1,6 +1,11 @@
 import type { TextDocument } from "./types";
 import { safeJsonStringify } from "./safe-json";
 import {
+  areDocumentsIdentical,
+  stringifyCanonical,
+  findDocumentDifferences,
+} from "./canonical-json";
+import {
   isBuiltInSlug,
   BUILT_IN_CORPUS,
   getBuiltInMetadata,
@@ -45,7 +50,7 @@ export type StorageResult<T = void> =
   | { ok: false; reason: "quota" | "invalid" | "unavailable" | "not_found"; message: string; error?: string };
 
 function computeSimpleHash(input: unknown): string {
-  const str = typeof input === "string" ? input : safeJsonStringify(input);
+  const str = typeof input === "string" ? input : stringifyCanonical(input);
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
@@ -77,22 +82,28 @@ export function computeDocumentHash(doc: TextDocument): string {
         text: (n.text || "").trim(),
         targetWordIndex: n.targetWordIndex,
       })),
-      words: (s.words || []).map((w) => ({
-        originalWord: w.originalWord,
-        morphologicalGloss: w.morphologicalGloss,
-        trailingPunctuation: w.trailingPunctuation || undefined,
-        sourceGlossTex: w.sourceGlossTex || undefined,
-        lemma: w.analysis?.lemma || undefined,
-        pos: w.analysis?.partOfSpeech || undefined,
-        definition: (w.analysis?.definition || "").trim() || undefined,
-        features: w.analysis?.features ? Object.fromEntries(
-          Object.entries(w.analysis.features).filter(([, v]) => v != null && String(v) !== "")
-        ) : undefined,
-        morphemes: (w.analysis?.morphemes || []).map((m) => ({
-          form: m.form,
-          gloss: m.gloss,
-        })),
-      })),
+      words: (s.words || []).map((w) => {
+        const feats = w.analysis?.features
+          ? Object.fromEntries(
+              Object.entries(w.analysis.features).filter(([, v]) => v != null && String(v) !== "")
+            )
+          : undefined;
+        const hasFeats = feats && Object.keys(feats).length > 0;
+        return {
+          originalWord: w.originalWord,
+          morphologicalGloss: w.morphologicalGloss,
+          trailingPunctuation: w.trailingPunctuation || undefined,
+          sourceGlossTex: w.sourceGlossTex || undefined,
+          lemma: w.analysis?.lemma || undefined,
+          pos: w.analysis?.partOfSpeech || undefined,
+          definition: (w.analysis?.definition || "").trim() || undefined,
+          features: hasFeats ? feats : undefined,
+          morphemes: (w.analysis?.morphemes || []).map((m) => ({
+            form: m.form,
+            gloss: m.gloss,
+          })),
+        };
+      }),
     })),
   });
 }
@@ -342,6 +353,18 @@ export function getDraftDivergenceStatus(
     };
   }
 
+  if (repoDoc && areDocumentsIdentical(draft.doc, repoDoc)) {
+    console.debug(`[draft:status:${slug}] Identical to repo. isDiverged=false, isUpstreamModified=false`);
+    return {
+      hasDraft: true,
+      isDiverged: false,
+      isUpstreamModified: false,
+      draftDoc: draft.doc,
+      baseHash: draft.baseHash,
+      updatedAt: draft.updatedAt,
+    };
+  }
+
   const draftHash = computeDocumentHash(draft.doc);
 
   if (repoDoc) {
@@ -352,6 +375,17 @@ export function getDraftDivergenceStatus(
         draft.baseHash !== repoHash &&
         draftHash !== repoHash
     );
+
+    const diffs = findDocumentDifferences(draft.doc, repoDoc);
+    console.info(`[draft:status:${slug}] Divergence evaluated:`, {
+      isDiverged,
+      isUpstreamModified,
+      draftHash,
+      repoHash,
+      baseHash: draft.baseHash,
+      diffsCount: diffs.length,
+      sampleDiffs: diffs.slice(0, 5),
+    });
 
     return {
       hasDraft: true,

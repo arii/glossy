@@ -43,7 +43,7 @@ export type ReviewMetadata = {
 export type LinguisticAnalysis = {
   lemma: string;
   partOfSpeech: PartOfSpeech;
-  features: InflectionFeatures;
+  features?: InflectionFeatures;
   morphemes: Morpheme[];
   definition: string;
   phonetic?: string;

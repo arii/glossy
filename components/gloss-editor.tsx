@@ -10,7 +10,11 @@ import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
 import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
 import { safeJsonStringify } from "../lib/safe-json";
 import { isBuiltInSlug } from "../lib/corpus-registry";
-import { areDocumentsIdentical, formatExportJson } from "../lib/canonical-json";
+import {
+  areDocumentsIdentical,
+  formatExportJson,
+  findDocumentDifferences,
+} from "../lib/canonical-json";
 import {
   computeDocumentHash,
   deleteLocalDraft,
@@ -214,7 +218,7 @@ export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
     shelfmark: doc.shelfmark || undefined,
     dialect: doc.dialect || undefined,
     historicalDate: doc.historicalDate || undefined,
-    date: doc.date,
+    ...(doc.date ? { date: doc.date } : {}),
     title: doc.title,
     source: doc.source || (resolvedAuthor ? `${resolvedAuthor} · ${doc.date}` : doc.date),
     sourceFile: doc.sourceFile,
@@ -249,10 +253,11 @@ export function editorDocToTextDocument(doc: EditorDocument): TextDocument {
             ? punctuationMatch[0]
             : undefined;
 
+        const hasFeatures = tok.inflections && Object.keys(tok.inflections).length > 0;
         const analysis: LinguisticAnalysis = {
           lemma: tok.lemma,
           partOfSpeech: tok.pos,
-          features: { ...tok.inflections },
+          ...(hasFeatures ? { features: { ...tok.inflections } } : {}),
           morphemes: tok.morphemes.map((m) => {
             const res: Morpheme = { form: m.form, gloss: m.gloss };
             if (m.id) res.id = m.id;
@@ -368,6 +373,15 @@ export function GlossEditor({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSlug, initialDocument, autosaveStatus]);
 
+  const hasChanges = useMemo(() => {
+    if (!documentState || !initialDocument) return false;
+    const currentDoc = editorDocToTextDocument(documentState);
+    return !areDocumentsIdentical(currentDoc, initialDocument);
+  }, [documentState, initialDocument]);
+
+  const canDiscard = hasChanges || (isMounted && divergenceStatus.isDiverged);
+  const canSave = hasChanges && !isSaving;
+
   // Restore from initial master document
   const loadFromMasterTex = useCallback(async () => {
     setIsLoading(true);
@@ -398,7 +412,18 @@ export function GlossEditor({
     const stored = readDraft(currentSlug);
 
     if (stored?.doc) {
-      if (areDocumentsIdentical(stored.doc, initialDocument)) {
+      const isIdentical = areDocumentsIdentical(stored.doc, initialDocument);
+      const diffs = findDocumentDifferences(stored.doc, initialDocument);
+      console.log(`[editor:init:${currentSlug}] Stored draft detected:`, {
+        isIdentical,
+        diffsCount: diffs.length,
+        sampleDiffs: diffs.slice(0, 5),
+        baseHash: stored.baseHash,
+        baselineHash,
+      });
+
+      if (isIdentical) {
+        console.log(`[editor:init:${currentSlug}] Stored draft matches repo identically. Purging draft.`);
         deleteLocalDraft(currentSlug);
         const initial = textDocumentToEditorDoc(initialDocument);
         setDocumentState(initial);
@@ -473,8 +498,10 @@ export function GlossEditor({
 
     // Skip autosaving if no edits have actually been made compared to the baseline master edition
     const currentDoc = editorDocToTextDocument(documentState);
+    const isIdentical = areDocumentsIdentical(currentDoc, initialDocument);
 
-    if (areDocumentsIdentical(currentDoc, initialDocument)) {
+    if (isIdentical) {
+      console.debug(`[autosave:${currentSlug}] State is identical to repo. Deleting draft and idling.`);
       deleteLocalDraft(currentSlug);
       setAutosaveStatus("idle");
       return;
@@ -488,7 +515,9 @@ export function GlossEditor({
 
     setAutosaveStatus("saving");
     const timer = window.setTimeout(() => {
-      const res = writeDraft(documentState.slug || currentSlug, currentDoc);
+      const res = writeDraft(documentState.slug || currentSlug, currentDoc, {
+        baseHash: baselineHash,
+      });
       if (!res.ok) {
         if (res.reason === "quota") {
           setSaveStatus({
@@ -684,9 +713,23 @@ export function GlossEditor({
     if (!documentState || isSaving) return;
 
     const textDoc = editorDocToTextDocument(documentState);
+    const isIdentical = areDocumentsIdentical(textDoc, initialDocument);
+    const diffs = findDocumentDifferences(textDoc, initialDocument);
 
-    if (areDocumentsIdentical(textDoc, initialDocument)) {
-      window.alert('Document is identical to published edition. No draft needed.');
+    console.log(`[saveToTina:${currentSlug}] Evaluating manual save:`, {
+      isIdentical,
+      diffsCount: diffs.length,
+      sampleDiffs: diffs.slice(0, 5),
+      currentHash: computeDocumentHash(textDoc),
+      baselineHash,
+    });
+
+    if (isIdentical) {
+      console.log(`[saveToTina:${currentSlug}] Rejecting save: document is identical to published edition.`);
+      setSaveStatus({
+        kind: "success",
+        message: "Document is identical to published edition. No draft needed.",
+      });
       return;
     }
 
@@ -696,7 +739,7 @@ export function GlossEditor({
     const targetSlug = textDoc.slug || currentSlug;
 
     try {
-      const res = writeDraft(targetSlug, textDoc);
+      const res = writeDraft(targetSlug, textDoc, { baseHash: baselineHash });
       if (!res.ok) {
         setSaveStatus({
           kind: "error",
@@ -1013,7 +1056,13 @@ export function GlossEditor({
                         discardChanges();
                       }
                     }}
+                    disabled={!canDiscard}
                     className="workspace-link"
+                    title={
+                      !canDiscard
+                        ? "No local edits to discard"
+                        : "Discard local edits and revert to published edition"
+                    }
                   >
                     Discard edits
                   </button>
@@ -1059,9 +1108,13 @@ export function GlossEditor({
                   <button
                     type="button"
                     onClick={saveToTina}
-                    disabled={isSaving}
+                    disabled={!canSave}
                     className="workspace-button workspace-button-primary"
-                    title="Save working draft to browser storage (and sync to Git if connected)"
+                    title={
+                      !hasChanges
+                        ? "No local changes to save"
+                        : "Save working draft to browser storage (and sync to Git if connected)"
+                    }
                   >
                     <Save style={{ width: "0.9rem", height: "0.9rem", marginRight: "0.35rem" }} />
                     {isSaving ? "Saving..." : "Save draft"}

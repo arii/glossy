@@ -14,7 +14,14 @@ import {
   setActiveSlug,
   clearActiveSlug,
   getTinaAuthToken,
+  getDraftDivergenceStatus,
+  computeDocumentHash,
 } from "../lib/local-drafts.ts";
+import {
+  areDocumentsIdentical,
+  formatExportJson,
+  findDocumentDifferences,
+} from "../lib/canonical-json.ts";
 import { sanitizeDraftForTinaMutation, commitPendingDraft } from "../lib/tina-sync.ts";
 
 console.log("Running Unified TinaCMS Commit Pipeline & Modern Storage Unit Tests...");
@@ -340,6 +347,147 @@ assert.equal(
   ohthereMatches.length,
   1,
   "Ohthere text must not be duplicated in workspace texts",
+);
+
+// Test 15: Deterministic Canonical JSON and Export Formatting
+const docA = {
+  fileName: "the-wanderer",
+  _sys: { filename: "the-wanderer.json" },
+  title: "The Wanderer",
+  slug: "the-wanderer",
+  sentences: [
+    {
+      id: "s1",
+      words: [
+        {
+          id: "w1",
+          originalWord: "Oft",
+          analysis: {
+            lemma: "oft",
+            partOfSpeech: "adverb",
+          },
+        },
+      ],
+    },
+  ],
+};
+
+const docB = {
+  slug: "the-wanderer",
+  title: "The Wanderer",
+  sentences: [
+    {
+      id: "s1",
+      words: [
+        {
+          id: "w1",
+          originalWord: "Oft",
+          analysis: {
+            partOfSpeech: "adverb",
+            lemma: "oft",
+            features: undefined,
+          },
+        },
+      ],
+    },
+  ],
+};
+
+assert.equal(
+  areDocumentsIdentical(docA, docB),
+  true,
+  "Documents differing only by fileName, _sys, undefined values, or key ordering must be identical",
+);
+
+const exportJson = formatExportJson(docA);
+assert.equal(
+  exportJson.includes("fileName"),
+  false,
+  "Exported JSON must omit runtime fileName",
+);
+assert.equal(
+  exportJson.includes("_sys"),
+  false,
+  "Exported JSON must omit runtime _sys",
+);
+const parsedExport = JSON.parse(exportJson);
+assert.deepEqual(
+  Object.keys(parsedExport),
+  ["sentences", "slug", "title"],
+  "Root keys in exported JSON must be alphabetically sorted",
+);
+
+// Test 16: Draft Divergence and Upstream Conflict Evaluation
+mockStore.clear();
+
+const repoDoc = {
+  slug: "the-wanderer",
+  title: "The Wanderer",
+  sentences: [
+    {
+      id: "s1",
+      words: [
+        {
+          id: "w1",
+          originalWord: "Oft",
+          analysis: { lemma: "oft", partOfSpeech: "noun" },
+        },
+      ],
+    },
+  ],
+};
+
+// 16a. Unedited draft written with same content
+const repoHash = computeDocumentHash(repoDoc);
+writeDraft("the-wanderer", repoDoc, { baseHash: repoHash });
+const cleanStatus = getDraftDivergenceStatus("the-wanderer", repoDoc);
+assert.equal(cleanStatus.isDiverged, false, "Identical draft must not be marked diverged");
+assert.equal(cleanStatus.isUpstreamModified, false, "Identical draft must not report upstream conflict");
+
+// 16b. Edited draft with baseHash matching repoHash (clean user edits)
+const editedDoc = {
+  ...repoDoc,
+  sentences: [
+    {
+      id: "s1",
+      words: [
+        {
+          id: "w1",
+          originalWord: "Oft",
+          analysis: { lemma: "oft", partOfSpeech: "adverb" },
+        },
+      ],
+    },
+  ],
+};
+writeDraft("the-wanderer", editedDoc, { baseHash: repoHash });
+const editedStatus = getDraftDivergenceStatus("the-wanderer", repoDoc);
+assert.equal(editedStatus.isDiverged, true, "Edited draft must be marked diverged");
+assert.equal(
+  editedStatus.isUpstreamModified,
+  false,
+  "Draft with baseHash matching current repo must NOT report upstream conflict",
+);
+
+const diffs = findDocumentDifferences(editedDoc, repoDoc);
+assert.equal(diffs.length, 1, "Exactly one difference should be detected");
+assert.equal(
+  diffs[0].path,
+  "sentences[0].words[0].analysis.partOfSpeech",
+  "Path of difference must point to modified partOfSpeech",
+);
+
+// 16c. Upstream modified while user was working on draft
+const upstreamModifiedDoc = {
+  ...repoDoc,
+  title: "The Wanderer (Revised Edition)",
+};
+const upstreamStatus = getDraftDivergenceStatus("the-wanderer", upstreamModifiedDoc);
+assert.equal(upstreamStatus.isDiverged, true, "Draft must be marked diverged");
+assert.equal(
+  upstreamStatus.isUpstreamModified,
+  true,
+  "Draft created against old repo edition must report upstream conflict when repo changes",
 );
 
 // Clean up
