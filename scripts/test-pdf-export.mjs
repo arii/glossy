@@ -65,6 +65,10 @@ async function testPdfExport() {
   }
 
   console.log(`✓ PDF compiled successfully (${pdfBytes.length} bytes). Magic header: ${magicHeader.slice(0, 8)}`);
+
+  fs.writeFileSync('public/test-export.pdf', Buffer.from(pdfBytes));
+  console.log('✓ PDF written to public/test-export.pdf');
+
   console.log('Client-side Typst WASM PDF Export pipeline test PASSED!\n');
 }
 
