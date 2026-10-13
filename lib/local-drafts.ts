@@ -185,6 +185,7 @@ export function deleteLocalDraft(slug: string): boolean {
 
     if (typeof window !== "undefined") {
       window.dispatchEvent(new Event("glossy:drafts-updated"));
+      window.dispatchEvent(new Event("storage"));
     }
     return true;
   } catch {

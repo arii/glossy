@@ -10,6 +10,7 @@ import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
 import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
 import { safeJsonStringify } from "../lib/safe-json";
 import { isBuiltInSlug } from "../lib/corpus-registry";
+import { areDocumentsIdentical } from "../lib/canonical-json";
 import {
   computeDocumentHash,
   deleteLocalDraft,
@@ -397,7 +398,7 @@ export function GlossEditor({
     const stored = readDraft(currentSlug);
 
     if (stored?.doc) {
-      if (computeDocumentHash(stored.doc) === baselineHash) {
+      if (areDocumentsIdentical(stored.doc, initialDocument)) {
         deleteLocalDraft(currentSlug);
         const initial = textDocumentToEditorDoc(initialDocument);
         setDocumentState(initial);
@@ -472,9 +473,8 @@ export function GlossEditor({
 
     // Skip autosaving if no edits have actually been made compared to the baseline master edition
     const currentDoc = editorDocToTextDocument(documentState);
-    const currentHash = computeDocumentHash(currentDoc);
 
-    if (currentHash === baselineHash) {
+    if (areDocumentsIdentical(currentDoc, initialDocument)) {
       deleteLocalDraft(currentSlug);
       setAutosaveStatus("idle");
       return;
@@ -503,7 +503,7 @@ export function GlossEditor({
     }, 300);
 
     return () => window.clearTimeout(timer);
-  }, [documentState, isLoading, currentSlug, savedSnapshot, baselineHash]);
+  }, [documentState, isLoading, currentSlug, savedSnapshot, baselineHash, initialDocument]);
 
   // Find active sentence and active token
   const activeSentence = documentState?.sentences.find((s) => s.id === activeSentenceId);
@@ -684,9 +684,8 @@ export function GlossEditor({
     if (!documentState || isSaving) return;
 
     const textDoc = editorDocToTextDocument(documentState);
-    const docHash = computeDocumentHash(textDoc);
 
-    if (docHash === baselineHash) {
+    if (areDocumentsIdentical(textDoc, initialDocument)) {
       window.alert('Document is identical to published edition. No draft needed.');
       return;
     }
