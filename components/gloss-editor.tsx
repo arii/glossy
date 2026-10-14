@@ -1607,6 +1607,41 @@ export function GlossEditor({
                         <option value="3">3</option>
                       </select>
                     </div>
+
+                    <div>
+                      <label>Comparison</label>
+                      <select
+                        value={activeToken.inflections.degree || ""}
+                        onChange={(e) =>
+                          updateInflection(
+                            "degree",
+                            e.target.value as InflectionFeatures["degree"],
+                          )
+                        }
+                      >
+                        <option value="">None</option>
+                        <option value="positive">Positive</option>
+                        <option value="comparative">Comparative</option>
+                        <option value="superlative">Superlative</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label>Declension</label>
+                      <select
+                        value={activeToken.inflections.declension || ""}
+                        onChange={(e) =>
+                          updateInflection(
+                            "declension",
+                            e.target.value as InflectionFeatures["declension"],
+                          )
+                        }
+                      >
+                        <option value="">None</option>
+                        <option value="strong">Strong</option>
+                        <option value="weak">Weak</option>
+                      </select>
+                    </div>
                   </div>
                 </fieldset>
 
