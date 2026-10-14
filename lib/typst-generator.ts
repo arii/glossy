@@ -83,7 +83,47 @@ export function generateTypstSource(doc: TextDocument): string {
             ),
         }));
 
-  const MAX_WORDS_PER_LINE = 8;
+  // A4 paper printable width: 210mm - 2*25mm = 160mm (~6.3 inches).
+  // At 11pt Charis SIL font size, average character width is ~5-6pt.
+  // 160mm ≈ 453pt printable width.
+  // 453pt / 6pt per char ≈ 75 printable characters max per line.
+  // Allowing a safety margin and accounting for column gutters (~8pt = ~1.5 chars each),
+  // a line character budget of 55 ensures column contents won't exceed page width.
+  const LINE_CHAR_BUDGET = 55;
+  const GUTTER_CHAR_WEIGHT = 2;
+
+  function chunkWordsDynamic(words: InterlinearWord[]): InterlinearWord[][] {
+    const chunks: InterlinearWord[][] = [];
+    let currentChunk: InterlinearWord[] = [];
+    let currentLineWidth = 0;
+
+    for (const w of words) {
+      const form = `${w.originalWord || ""}${w.trailingPunctuation || ""}`;
+      let gloss = w.morphologicalGloss || w.sourceGlossTex || w.originalWord || "";
+      gloss = gloss.replace(/\\textsc\{([^}]+)\}/g, "$1");
+
+      const columnWidth = Math.max(form.length, gloss.length);
+      const effectiveColumnWidth = columnWidth + GUTTER_CHAR_WEIGHT;
+
+      if (
+        currentChunk.length > 0 &&
+        currentLineWidth + effectiveColumnWidth > LINE_CHAR_BUDGET
+      ) {
+        chunks.push(currentChunk);
+        currentChunk = [w];
+        currentLineWidth = columnWidth;
+      } else {
+        currentChunk.push(w);
+        currentLineWidth += effectiveColumnWidth;
+      }
+    }
+
+    if (currentChunk.length > 0) {
+      chunks.push(currentChunk);
+    }
+
+    return chunks;
+  }
 
   for (const [sIdx, sentence] of sentences.entries()) {
     const sNum = sIdx + 1;
@@ -103,8 +143,9 @@ export function generateTypstSource(doc: TextDocument): string {
 
     if (words.length > 0) {
       lines.push(`// Sentence ${sNum}`);
-      for (let i = 0; i < words.length; i += MAX_WORDS_PER_LINE) {
-        const chunk = words.slice(i, i + MAX_WORDS_PER_LINE);
+      const chunks = chunkWordsDynamic(words);
+
+      for (const [cIdx, chunk] of chunks.entries()) {
         const colSpec = Array(chunk.length).fill("auto").join(", ");
 
         const formCells = chunk
@@ -128,7 +169,7 @@ export function generateTypstSource(doc: TextDocument): string {
         lines.push(`  ${formCells},`);
         lines.push(`  ${glossCells}`);
         lines.push(")");
-        if (i + MAX_WORDS_PER_LINE < words.length) {
+        if (cIdx < chunks.length - 1) {
           lines.push("#v(0.4em)");
         }
       }
