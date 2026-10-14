@@ -22,7 +22,13 @@ export function DraftSyncPrompt({
   currentSlug,
 }: DraftSyncPromptProps) {
   const [pendingDrafts, setPendingDrafts] = useState<PendingDraftEntry[]>([]);
-  const [isDismissed, setIsDismissed] = useState(false);
+  const [isDismissed, setIsDismissed] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    const sessionKey = currentSlug
+      ? `glossy:dismissed_sync_prompt:${currentSlug}`
+      : "glossy:dismissed_sync_prompt:global";
+    return sessionStorage.getItem(sessionKey) === "true";
+  });
   const [isCommitting, setIsCommitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [statusKind, setStatusKind] = useState<"idle" | "success" | "error">("idle");
@@ -47,7 +53,6 @@ export function DraftSyncPrompt({
   useEffect(() => {
     const handleStorageChange = () => {
       refreshPendingDrafts();
-      setIsDismissed(false);
     };
     window.addEventListener("storage", handleStorageChange);
     window.addEventListener("glossy:drafts-updated", handleStorageChange);
@@ -62,6 +67,15 @@ export function DraftSyncPrompt({
   }
 
   if (pendingDrafts.length === 0 && !forceShow) {
+    return null;
+  }
+
+  // Do not render floating banner on editor pages unless forceShow is explicitly enabled
+  if (
+    typeof window !== "undefined" &&
+    window.location.pathname.startsWith("/edit/") &&
+    !forceShow
+  ) {
     return null;
   }
 
@@ -82,6 +96,12 @@ export function DraftSyncPrompt({
 
   const handleDismiss = () => {
     setIsDismissed(true);
+    if (typeof window !== "undefined") {
+      const sessionKey = currentSlug
+        ? `glossy:dismissed_sync_prompt:${currentSlug}`
+        : "glossy:dismissed_sync_prompt:global";
+      sessionStorage.setItem(sessionKey, "true");
+    }
     if (onDismiss) {
       onDismiss();
     }
@@ -248,6 +268,8 @@ export function DraftSyncPrompt({
           <div style={{ display: "flex", gap: "0.4rem" }}>
             <a
               href="/admin"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 background: "#7b3f2a",
                 color: "#fff",
