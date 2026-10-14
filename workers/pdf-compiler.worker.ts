@@ -49,23 +49,28 @@ async function getCachedFont(url: string): Promise<Uint8Array> {
 let compilerInstance: ReturnType<typeof createTypstCompiler> | null = null;
 let initPromise: Promise<ReturnType<typeof createTypstCompiler>> | null = null;
 
-async function getCompiler(): Promise<ReturnType<typeof createTypstCompiler>> {
+async function getCompiler(
+  onProgress?: (stage: string, step: number) => void
+): Promise<ReturnType<typeof createTypstCompiler>> {
   if (compilerInstance) return compilerInstance;
   if (initPromise) return initPromise;
 
   initPromise = (async () => {
+    onProgress?.("Fetching fonts...", 1);
+
     // @ts-expect-error types not available
     const { setImportWasmModule } = await import('@myriaddreamin/typst-ts-web-compiler');
     setImportWasmModule(async () => {
-        return '/typst_ts_web_compiler_bg.wasm';
+      return '/typst_ts_web_compiler_bg.wasm';
     });
 
     const fontBuffers = await Promise.all(
       FONT_FILES.map((url) => getCachedFont(url))
     );
 
+    onProgress?.("Initializing Typst compiler...", 2);
+
     const compiler = createTypstCompiler();
-    // Pass fontLoader to beforeBuild during compiler initialization
     await compiler.init({
       beforeBuild: [loadFonts(fontBuffers)],
       getModule: () => '/typst_ts_web_compiler_bg.wasm',
@@ -83,13 +88,28 @@ export interface CompilePdfMessage {
   doc: TextDocument;
 }
 
+export type WorkerPdfResponse =
+  | { type: "PROGRESS"; stage: string; step: number; totalSteps: number }
+  | { type: "SUCCESS"; pdfBytes: Uint8Array; filename: string; title: string }
+  | { type: "ERROR"; error: string };
+
 const ctx: Worker = self as unknown as Worker;
 
 ctx.onmessage = async (e: MessageEvent<CompilePdfMessage>) => {
   if (e.data?.type === "COMPILE_PDF") {
+    const doc = e.data.doc;
+    const reportProgress = (stage: string, step: number) => {
+      ctx.postMessage({ type: "PROGRESS", stage, step, totalSteps: 4 });
+    };
+
     try {
-      const typstSource = generateTypstSource(e.data.doc);
-      const compiler = await getCompiler();
+      const typstSource = generateTypstSource(doc);
+
+      const compiler = await getCompiler((stage, step) => {
+        reportProgress(stage, step);
+      });
+
+      reportProgress("Compiling pages...", 3);
 
       compiler.addSource("/main.typ", typstSource);
 
@@ -117,7 +137,15 @@ ctx.onmessage = async (e: MessageEvent<CompilePdfMessage>) => {
         throw new Error("Typst compilation returned empty output.");
       }
 
-      ctx.postMessage({ type: "SUCCESS", pdfBytes }, [pdfBytes.buffer]);
+      reportProgress("Preparing download...", 4);
+
+      const filename = `${doc.slug || "export"}.pdf`;
+      const title = doc.title || doc.slug || "Document";
+
+      ctx.postMessage(
+        { type: "SUCCESS", pdfBytes, filename, title },
+        [pdfBytes.buffer]
+      );
     } catch (err: unknown) {
       ctx.postMessage({
         type: "ERROR",

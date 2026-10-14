@@ -7,7 +7,7 @@ import { SentenceRow } from "./sentence-row";
 import { PageHero } from "./page-hero";
 import { SiteFooter } from "./site-footer";
 import { exportToGb4eLatex, plainToTexGloss } from "../data/latex-export";
-import { exportToPdf } from "../lib/export-pdf";
+import { usePdfExport } from "../lib/use-pdf-export";
 import { resolveOldEnglishLexicon } from "../lib/old-english-lexicon";
 import { safeJsonStringify } from "../lib/safe-json";
 import { isBuiltInSlug } from "../lib/corpus-registry";
@@ -43,6 +43,7 @@ import {
   BookOpen,
   Edit,
   GitCommit,
+  Loader2,
   RefreshCw,
   Save,
   Trash2,
@@ -323,6 +324,8 @@ export function GlossEditor({
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditingMetadata, setIsEditingMetadata] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+
+  const { isExporting, exportPdf, ToastComponent } = usePdfExport();
 
   useEffect(() => {
     setIsMounted(true);
@@ -1113,13 +1116,21 @@ export function GlossEditor({
                   </button>
                   <button
                     type="button"
+                    disabled={isExporting}
                     onClick={() => {
-                      exportToPdf(editorDocToTextDocument(documentState)).catch(e => console.error("PDF export failed:", e));
+                      exportPdf(editorDocToTextDocument(documentState));
                     }}
                     className="workspace-link workspace-link-latex"
                     title="Download Typst-generated PDF"
                   >
-                    Export PDF
+                    {isExporting ? (
+                      <>
+                        <Loader2 className="animate-spin" style={{ width: "0.85rem", height: "0.85rem", marginRight: "0.35rem", display: "inline-block" }} />
+                        <span>Generating PDF...</span>
+                      </>
+                    ) : (
+                      "Export PDF"
+                    )}
                   </button>
 
 
@@ -1901,6 +1912,7 @@ export function GlossEditor({
         }}
         onDismiss={() => setShowSyncPrompt(false)}
       />
+      {ToastComponent}
       <SiteFooter />
     </>
   );
