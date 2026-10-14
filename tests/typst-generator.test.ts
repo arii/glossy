@@ -146,11 +146,66 @@ function runTests() {
   if (!editorSource.includes("This is a free translation.")) {
     throw new Error("EditorDocument freeTranslation missing in Typst source.");
   }
-  // Check chunking for sentence with 12 words (8 + 4)
-  if (!editorSource.includes("columns: (auto, auto, auto, auto, auto, auto, auto, auto)") || !editorSource.includes("columns: (auto, auto, auto, auto)")) {
-    throw new Error("Sentence with 12 words should be split into 8-col and 4-col grids.");
+  // Check dynamic character-budget chunking for sentence with 12 short tokens (W1..W12 / G1..G12)
+  // Each token effective width is 2 (form Wx) + 2 (gutter) = 4 chars.
+  // 12 tokens * 4 chars = 48 chars, which fits within LINE_CHAR_BUDGET (55) in a single 12-col grid.
+  if (!editorSource.includes("columns: (auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto)")) {
+    throw new Error("Short 12-token sentence should fit within character budget in 12-col grid.");
   }
-  console.log("✓ EditorDocument and long sentence chunking verified.");
+  console.log("✓ EditorDocument and dynamic character-budget chunking verified.");
+
+  // Test 5: Dynamic width-aware chunking with long Leipzig glosses
+  const longGlossDoc: TextDocument = {
+    textId: "long-gloss-test",
+    slug: "long-gloss",
+    language: "Old English",
+    title: "Long Gloss Test",
+    source: "Test Source",
+    sourceFile: "references/test.tex",
+    status: "published",
+    blocks: [],
+    sentences: [
+      {
+        id: "s1",
+        translation: "Test sentence with multi-morpheme long glosses.",
+        words: [
+          {
+            id: "w1",
+            originalWord: "norþ-weard-um",
+            morphologicalGloss: "north-ward-DAT.SG.N.STR",
+          },
+          {
+            id: "w2",
+            originalWord: "wīc-i-að",
+            morphologicalGloss: "camp-THM-PRS.IND.PL",
+          },
+          {
+            id: "w3",
+            originalWord: "þǣm",
+            morphologicalGloss: "DET.DEF.DAT.SG.N.STR",
+          },
+          {
+            id: "w4",
+            originalWord: "bū-d-e",
+            morphologicalGloss: "dwell-PST-SJV.SG",
+          },
+        ],
+      },
+    ],
+  };
+
+  const longGlossSource = generateTypstSource(longGlossDoc);
+  // w1 col width: max(13, 22) + 2 = 24.
+  // w2 col width: max(8, 18) + 2 = 20.
+  // w1 + w2 = 44 <= 55.
+  // w3 col width: max(3, 20) + 2 = 22.
+  // w1 + w2 + w3 = 66 > 55 -> wraps after w2!
+  // Sentence 1 should be split into two grid blocks: 2 columns and 2 columns.
+  const gridMatches = longGlossSource.match(/columns: \((auto, )*auto\)/g) || [];
+  if (gridMatches.length < 2 || !longGlossSource.includes("columns: (auto, auto)")) {
+    throw new Error("Sentence with long Leipzig glosses should wrap dynamically to prevent horizontal collision.");
+  }
+  console.log("✓ Dynamic line wrapping for multi-morpheme Leipzig glosses verified.");
 
   console.log("✓ generateTypstSource interlinear grid generation verified.");
   console.log("All Typst generator unit tests passed successfully!");
