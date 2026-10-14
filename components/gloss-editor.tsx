@@ -1114,7 +1114,7 @@ export function GlossEditor({
                   <button
                     type="button"
                     onClick={() => {
-                      exportToPdf(documentState as unknown as TextDocument).catch(e => console.error("PDF export failed:", e));
+                      exportToPdf(editorDocToTextDocument(documentState)).catch(e => console.error("PDF export failed:", e));
                     }}
                     className="workspace-link workspace-link-latex"
                     title="Download Typst-generated PDF"
