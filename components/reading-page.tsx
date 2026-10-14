@@ -21,8 +21,8 @@ import { AnnotatedPassage } from "./annotated-passage";
 import { GlossPopup } from "./gloss-popup";
 import { AttributionModal } from "./attribution-modal";
 import { DraftDiffModal } from "./draft-diff-modal";
-import { GitCommit, Edit3, Trash2, AlertTriangle } from "lucide-react";
-import { exportToPdf } from "../lib/export-pdf";
+import { GitCommit, Edit3, Trash2, AlertTriangle, Loader2 } from "lucide-react";
+import { usePdfExport } from "../lib/use-pdf-export";
 
 type ReadingPageProps = {
   texts: TextDocument[];
@@ -43,6 +43,8 @@ export function ReadingPage({
   const [attributionOpen, setAttributionOpen] = useState(false);
   const [diffModalOpen, setDiffModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+
+  const { isExporting, exportPdf, ToastComponent } = usePdfExport();
 
   useEffect(() => {
     setIsMounted(true);
@@ -290,8 +292,6 @@ export function ReadingPage({
     lastTriggerId.current = id;
   };
 
-
-
   return (
     <>
       <SiteNav current="read" slug={texts.some((text) => text.slug === selectedSlug) ? selectedSlug : (texts[0]?.slug ?? "ohthere")} />
@@ -302,9 +302,10 @@ export function ReadingPage({
             <div style={{ display: "flex", gap: "0.5rem" }}>
               <button
                 type="button"
+                disabled={isExporting}
                 onClick={() => {
                   if (selectedText) {
-                    exportToPdf(selectedText).catch(e => console.error("PDF export failed:", e));
+                    exportPdf(selectedText);
                   }
                 }}
                 style={{
@@ -318,10 +319,18 @@ export function ReadingPage({
                   fontSize: "0.75rem",
                   fontWeight: 600,
                   color: "var(--accent)",
-                  cursor: "pointer",
+                  cursor: isExporting ? "not-allowed" : "pointer",
+                  opacity: isExporting ? 0.7 : 1,
                 }}
               >
-                Download PDF
+                {isExporting ? (
+                  <>
+                    <Loader2 className="animate-spin" style={{ width: "0.85rem", height: "0.85rem" }} />
+                    <span>Generating PDF...</span>
+                  </>
+                ) : (
+                  <span>Download PDF</span>
+                )}
               </button>
               <button
                 type="button"
@@ -612,6 +621,7 @@ export function ReadingPage({
           </section>
         )}
       </main>
+      {ToastComponent}
       <SiteFooter />
     </>
   );
