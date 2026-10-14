@@ -18,6 +18,14 @@ let compilerPromise: Promise<TypstCompiler> | null = null;
 async function getCompiler() {
   if (!compilerPromise) {
     compilerPromise = (async () => {
+      // Use ts-ignore to bypass the types for setImportWasmModule as it is missing from typings
+      // @ts-expect-error types not available
+      const { setImportWasmModule } = await import('@myriaddreamin/typst-ts-web-compiler');
+
+      setImportWasmModule(async () => {
+          return '/typst_ts_web_compiler_bg.wasm';
+      });
+
       const compiler = createTypstCompiler();
 
       const fontUrls = [
@@ -32,6 +40,7 @@ async function getCompiler() {
 
       await compiler.init({
         beforeBuild: [loadFonts(fontBuffers)],
+        getModule: () => '/typst_ts_web_compiler_bg.wasm',
       });
       return compiler;
     })();
