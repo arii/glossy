@@ -8,7 +8,6 @@ export function escapeTypst(str: string): string {
     .replace(/\[/g, "\\[")
     .replace(/\]/g, "\\]")
     .replace(/\$/g, "\\$")
-    .replace(/\$/g, "\\$")
     .replace(/_/g, "\\_")
     .replace(/\*/g, "\\*")
     .replace(/@/g, "\\@");
@@ -52,8 +51,19 @@ export function generateTypstSource(doc: TextDocument): string {
   interface SentenceLike {
     id?: string;
     words?: InterlinearWord[];
-    tokens?: Array<{ id?: string; text?: string; gloss?: string; originalWord?: string; morphologicalGloss?: string }>;
+    tokens?: Array<{
+      id?: string;
+      text?: string;
+      gloss?: string;
+      originalWord?: string;
+      morphologicalGloss?: string;
+      sourceForm?: string;
+      sourceGloss?: string;
+      literalTexGloss?: string;
+      trailingPunctuation?: string;
+    }>;
     translation?: string;
+    freeTranslation?: string;
   }
 
   const sentences: SentenceLike[] =
@@ -73,47 +83,62 @@ export function generateTypstSource(doc: TextDocument): string {
             ),
         }));
 
+  const MAX_WORDS_PER_LINE = 8;
+
   for (const [sIdx, sentence] of sentences.entries()) {
     const sNum = sIdx + 1;
     const words: InterlinearWord[] =
       sentence.words ||
-      (sentence.tokens || []).map((t) => ({
-        id: t.id || "",
-        originalWord: t.originalWord || t.text || "",
-        morphologicalGloss: t.morphologicalGloss || t.gloss || "",
+      (sentence.tokens || []).map((t, tIdx) => ({
+        id: t.id || `sent-${sNum}-word-${tIdx + 1}`,
+        originalWord: t.originalWord || t.sourceForm || t.text || "",
+        morphologicalGloss:
+          t.morphologicalGloss ||
+          t.sourceGloss ||
+          t.literalTexGloss ||
+          t.gloss ||
+          "",
+        trailingPunctuation: t.originalWord ? (t.trailingPunctuation || "") : "",
       }));
 
     if (words.length > 0) {
-      const numCols = words.length;
-      const colSpec = Array(numCols).fill("auto").join(", ");
-
-      const formCells = words
-        .map((w) => {
-          const form = `${w.originalWord || ""}${w.trailingPunctuation || ""}`;
-          return `[${escapeTypst(form)}]`;
-        })
-        .join(", ");
-
-      const glossCells = words
-        .map((w) => {
-          const gloss = w.morphologicalGloss || w.sourceGlossTex || w.originalWord || "";
-          return `[${escapeTypst(gloss)}]`;
-        })
-        .join(", ");
-
       lines.push(`// Sentence ${sNum}`);
-      lines.push("#grid(");
-      lines.push(`  columns: (${colSpec}),`);
-      lines.push("  gutter: 8pt,");
-      lines.push(`  ${formCells},`);
-      lines.push(`  ${glossCells}`);
-      lines.push(")");
+      for (let i = 0; i < words.length; i += MAX_WORDS_PER_LINE) {
+        const chunk = words.slice(i, i + MAX_WORDS_PER_LINE);
+        const colSpec = Array(chunk.length).fill("auto").join(", ");
+
+        const formCells = chunk
+          .map((w) => {
+            const form = `${w.originalWord || ""}${w.trailingPunctuation || ""}`;
+            return `[${escapeTypst(form)}]`;
+          })
+          .join(", ");
+
+        const glossCells = chunk
+          .map((w) => {
+            let gloss = w.morphologicalGloss || w.sourceGlossTex || w.originalWord || "";
+            gloss = gloss.replace(/\\textsc\{([^}]+)\}/g, "$1");
+            return `[${escapeTypst(gloss)}]`;
+          })
+          .join(", ");
+
+        lines.push("#grid(");
+        lines.push(`  columns: (${colSpec}),`);
+        lines.push("  gutter: 8pt,");
+        lines.push(`  ${formCells},`);
+        lines.push(`  ${glossCells}`);
+        lines.push(")");
+        if (i + MAX_WORDS_PER_LINE < words.length) {
+          lines.push("#v(0.4em)");
+        }
+      }
     }
 
-    if (sentence.translation) {
+    const translationText = sentence.translation || sentence.freeTranslation;
+    if (translationText) {
       lines.push("#v(0.3em)");
       lines.push(
-        `#block(inset: (left: 8pt), stroke: (left: 2pt + rgb("#7b3f2a")))[#text(style: "italic", fill: rgb("#25231f"))[${escapeTypst(sentence.translation)}]]`,
+        `#block(inset: (left: 8pt), stroke: (left: 2pt + rgb("#7b3f2a")))[#text(style: "italic", fill: rgb("#25231f"))[${escapeTypst(translationText)}]]`,
       );
     }
 
