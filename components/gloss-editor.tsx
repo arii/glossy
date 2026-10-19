@@ -1488,12 +1488,31 @@ export function GlossEditor({
                   <div className="editor-form-group">
                     <label>Part of Speech</label>
                     <select
-                      value={activeToken.pos}
-                      onChange={(e) =>
-                        updateToken({ pos: e.target.value as PartOfSpeech })
+                      value={
+                        activeToken.pos === "noun" && activeToken.inflections?.gender
+                          ? `noun-${activeToken.inflections.gender}`
+                          : activeToken.pos
                       }
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val.startsWith("noun-")) {
+                          const gender = val.replace("noun-", "") as InflectionFeatures["gender"];
+                          updateToken({
+                            pos: "noun",
+                            inflections: {
+                              ...activeToken.inflections,
+                              gender,
+                            },
+                          });
+                        } else {
+                          updateToken({ pos: val as PartOfSpeech });
+                        }
+                      }}
                     >
                       <option value="noun">Noun</option>
+                      <option value="noun-masculine">Noun (masculine)</option>
+                      <option value="noun-feminine">Noun (feminine)</option>
+                      <option value="noun-neuter">Noun (neuter)</option>
                       <option value="verb">Verb</option>
                       <option value="adjective">Adjective</option>
                       <option value="adverb">Adverb</option>
