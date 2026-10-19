@@ -43,11 +43,8 @@ import {
   BookOpen,
   Edit,
   GitCommit,
-<<<<<<< HEAD
   Loader2,
-=======
   GitPullRequest,
->>>>>>> 2446811 (fix(ux): eliminate draft sync prompt loops and streamline publishing)
   RefreshCw,
   Save,
   Trash2,
