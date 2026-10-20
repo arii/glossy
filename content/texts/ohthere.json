@@ -17703,7 +17703,7 @@
             },
             "status": "source-checked"
           },
-          "sourceGlossTex": "large.\\textsc{cmp.adv}"
+          "sourceGlossTex": "large.\\textsc{comp}.\\textsc{adv}"
         },
         {
           "analysis": {
@@ -23287,7 +23287,7 @@
             },
             "status": "source-checked"
           },
-          "sourceGlossTex": "narrow-\\textsc{cmp}-\\textsc{nom.sg.n.wk}",
+          "sourceGlossTex": "narrow-\\textsc{comp}-\\textsc{nom.sg.n.wk}",
           "trailingPunctuation": "."
         }
       ]
@@ -23626,7 +23626,7 @@
             },
             "status": "source-checked"
           },
-          "sourceGlossTex": "broad-\\textsc{cmp}-\\textsc{nom.sg.n.wk}",
+          "sourceGlossTex": "broad-\\textsc{comp}-\\textsc{nom.sg.n.wk}",
           "trailingPunctuation": ";"
         },
         {
@@ -23788,7 +23788,7 @@
             },
             "status": "source-checked"
           },
-          "sourceGlossTex": "broad-\\textsc{cmp}-\\textsc{nom.sg.n.wk}",
+          "sourceGlossTex": "broad-\\textsc{comp}-\\textsc{nom.sg.n.wk}",
           "trailingPunctuation": "."
         }
       ]
@@ -31731,7 +31731,7 @@
             },
             "status": "source-checked"
           },
-          "sourceGlossTex": "broad-\\textsc{cmp}-\\textsc{nom.sg.f.wk}"
+          "sourceGlossTex": "broad-\\textsc{comp}-\\textsc{nom.sg.f.wk}"
         },
         {
           "analysis": {
@@ -47814,7 +47814,7 @@
             },
             "status": "source-checked"
           },
-          "sourceGlossTex": "large.\\textsc{cmp.adv}",
+          "sourceGlossTex": "large.\\textsc{comp}.\\textsc{adv}",
           "trailingPunctuation": ","
         },
         {
