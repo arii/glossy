@@ -4561,8 +4561,8 @@
           "morphologicalGloss": "then",
           "sourceGlossTex": "then",
           "analysis": {
-            "lemma": "sē",
-            "partOfSpeech": "determiner",
+            "lemma": "þā",
+            "partOfSpeech": "adverb",
             "morphemes": [
               {
                 "id": "paragraph-2-sentence-5-word-1-morpheme-1",
@@ -4571,7 +4571,7 @@
               }
             ],
             "definition": "then",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/se#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%BEa#Adverb"
           },
           "review": {
             "status": "source-checked",
@@ -4626,7 +4626,7 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "feminine"
+              "gender": "neuter"
             },
             "morphemes": [
               {
@@ -4733,7 +4733,7 @@
               }
             ],
             "definition": "east-right-ADV",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/eastryhte#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/eastrihte#Old_English"
           },
           "review": {
             "status": "source-checked",
@@ -4814,7 +4814,7 @@
             "features": {
               "case": "nominative",
               "number": "singular",
-              "gender": "neuter"
+              "gender": "feminine"
             },
             "morphemes": [
               {
@@ -4842,7 +4842,7 @@
           "sourceGlossTex": "in",
           "analysis": {
             "lemma": "in",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "adverb",
             "morphemes": [
               {
                 "id": "paragraph-2-sentence-5-word-10-morpheme-1",
@@ -4900,7 +4900,7 @@
             "features": {
               "case": "accusative",
               "number": "singular",
-              "gender": "feminine"
+              "gender": "neuter"
             },
             "morphemes": [
               {
@@ -4932,7 +4932,8 @@
             "partOfSpeech": "noun",
             "features": {
               "case": "accusative",
-              "number": "singular"
+              "number": "singular",
+              "gender": "neuter"
             },
             "morphemes": [
               {
@@ -5037,7 +5038,7 @@
           "sourceGlossTex": "whether",
           "analysis": {
             "lemma": "hwæðer",
-            "partOfSpeech": "conjunction",
+            "partOfSpeech": "pronoun",
             "morphemes": [
               {
                 "id": "paragraph-2-sentence-5-word-16-morpheme-1",
@@ -5046,7 +5047,7 @@
               }
             ],
             "definition": "whether",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/hw%C3%A6%C3%B0er#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/hw%C3%A6%C3%BEer"
           },
           "review": {
             "status": "source-checked",
@@ -5064,7 +5065,7 @@
           "sourceGlossTex": "except",
           "analysis": {
             "lemma": "būton",
-            "partOfSpeech": "preposition",
+            "partOfSpeech": "conjunction",
             "morphemes": [
               {
                 "id": "paragraph-2-sentence-5-word-17-morpheme-1",
@@ -5161,7 +5162,7 @@
           "morphologicalGloss": "COMP",
           "sourceGlossTex": "\\textsc{comp}",
           "analysis": {
-            "lemma": "sē",
+            "lemma": "þæt",
             "partOfSpeech": "conjunction",
             "morphemes": [
               {
@@ -5171,7 +5172,7 @@
               }
             ],
             "definition": "that (complementizer)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/se#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%BE%C3%A6t#Conjunction"
           },
           "review": {
             "status": "source-checked",
@@ -5281,13 +5282,12 @@
           "morphologicalGloss": "west-from-wind-GEN.SG",
           "sourceGlossTex": "west-from-wind-\\textsc{gen.sg}",
           "analysis": {
-            "lemma": "westanwindesan",
-            "partOfSpeech": "verb",
+            "lemma": "westanwind",
+            "partOfSpeech": "noun",
             "features": {
               "case": "genitive",
               "number": "singular",
-              "gender": "feminine",
-              "mood": "indicative"
+              "gender": "masculine"
             },
             "morphemes": [
               {
@@ -5312,7 +5312,7 @@
               }
             ],
             "definition": "west-from-wind-GEN.SG",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/westanwindesan#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/westwind"
           },
           "review": {
             "status": "source-checked",
@@ -5384,10 +5384,7 @@
           "sourceGlossTex": "north-from",
           "analysis": {
             "lemma": "norþan",
-            "partOfSpeech": "noun",
-            "features": {
-              "gender": "feminine"
-            },
+            "partOfSpeech": "adverb",
             "morphemes": [
               {
                 "id": "paragraph-2-sentence-5-word-27-morpheme-1",
@@ -5445,7 +5442,7 @@
           "morphologicalGloss": "sail-PST-IND.3SG",
           "sourceGlossTex": "sail-\\textsc{pst}-\\textsc{ind.3sg}",
           "analysis": {
-            "lemma": "seġlian",
+            "lemma": "siġlan",
             "partOfSpeech": "verb",
             "features": {
               "number": "singular",
@@ -5471,7 +5468,7 @@
               }
             ],
             "definition": "sail-PST-IND.3SG",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/seglian#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/siglan#Old_English"
           },
           "review": {
             "status": "source-checked",
@@ -5488,8 +5485,8 @@
           "morphologicalGloss": "then",
           "sourceGlossTex": "then",
           "analysis": {
-            "lemma": "sē",
-            "partOfSpeech": "determiner",
+            "lemma": "þā",
+            "partOfSpeech": "adverb",
             "morphemes": [
               {
                 "id": "paragraph-2-sentence-5-word-30-morpheme-1",
@@ -5498,7 +5495,7 @@
               }
             ],
             "definition": "then",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/se#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%BEa#Adverb"
           },
           "review": {
             "status": "source-checked",
@@ -5573,7 +5570,8 @@
             "partOfSpeech": "noun",
             "features": {
               "case": "dative",
-              "number": "singular"
+              "number": "singular",
+              "gender": "neuter"
             },
             "morphemes": [
               {
@@ -5793,7 +5791,8 @@
             "partOfSpeech": "noun",
             "features": {
               "case": "dative",
-              "number": "plural"
+              "number": "plural",
+              "gender": "masculine"
             },
             "morphemes": [
               {
@@ -5826,7 +5825,7 @@
           "trailingPunctuation": ".",
           "sourceGlossTex": "\\textsc{pfx}-sail-\\textsc{inf}",
           "analysis": {
-            "lemma": "geseġlian",
+            "lemma": "gesiġlan",
             "partOfSpeech": "verb",
             "features": {
               "mood": "infinitive"
@@ -5849,7 +5848,7 @@
               }
             ],
             "definition": "PFX-sail-INF",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/geseglian#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/siglan#Old_English"
           },
           "review": {
             "status": "source-checked",
