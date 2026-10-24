@@ -61,7 +61,7 @@ async function getCompiler(
     // @ts-expect-error types not available
     const { setImportWasmModule } = await import('@myriaddreamin/typst-ts-web-compiler');
     setImportWasmModule(async () => {
-      return '/typst_ts_web_compiler_bg.wasm';
+      return 'https://unpkg.com/@myriaddreamin/typst-ts-web-compiler@0.7.0/pkg/typst_ts_web_compiler_bg.wasm';
     });
 
     const fontBuffers = await Promise.all(
@@ -73,7 +73,7 @@ async function getCompiler(
     const compiler = createTypstCompiler();
     await compiler.init({
       beforeBuild: [loadFonts(fontBuffers)],
-      getModule: () => '/typst_ts_web_compiler_bg.wasm',
+      getModule: () => 'https://unpkg.com/@myriaddreamin/typst-ts-web-compiler@0.7.0/pkg/typst_ts_web_compiler_bg.wasm',
     } as unknown as Parameters<typeof compiler.init>[0]);
 
     compilerInstance = compiler;
