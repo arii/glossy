@@ -32,7 +32,7 @@ async function getCompiler(onProgress?: ProgressCallback): Promise<TypstCompiler
       const { setImportWasmModule } = await import('@myriaddreamin/typst-ts-web-compiler');
 
       setImportWasmModule(async () => {
-        return '/typst_ts_web_compiler_bg.wasm';
+        return 'https://unpkg.com/@myriaddreamin/typst-ts-web-compiler@0.7.0/pkg/typst_ts_web_compiler_bg.wasm';
       });
 
       const fontUrls = [
@@ -50,7 +50,7 @@ async function getCompiler(onProgress?: ProgressCallback): Promise<TypstCompiler
 
       await compiler.init({
         beforeBuild: [loadFonts(fontBuffers)],
-        getModule: () => '/typst_ts_web_compiler_bg.wasm',
+        getModule: () => 'https://unpkg.com/@myriaddreamin/typst-ts-web-compiler@0.7.0/pkg/typst_ts_web_compiler_bg.wasm',
       });
       return compiler;
     })();
