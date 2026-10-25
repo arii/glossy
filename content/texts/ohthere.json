@@ -5871,8 +5871,8 @@
           "morphologicalGloss": "then",
           "sourceGlossTex": "then",
           "analysis": {
-            "lemma": "sē",
-            "partOfSpeech": "determiner",
+            "lemma": "þā",
+            "partOfSpeech": "adverb",
             "morphemes": [
               {
                 "id": "paragraph-2-sentence-6-word-1-morpheme-1",
@@ -5881,7 +5881,7 @@
               }
             ],
             "definition": "then",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/se#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%BEa#Adverb"
           },
           "review": {
             "status": "source-checked",
