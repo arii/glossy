@@ -17,7 +17,7 @@
   "sentences": [
     {
       "id": "sent-1",
-      "translation": "Now we must praise the Guardian of the heavenly kingdom, the Maker's might and His mind's thought, the work of the Father of Glory, as He, the eternal Lord, established the beginning of each wonder.",
+      "translation": "Now (we) must praise the Guardian of the kingdom of heaven, the Maker's might and His mind's plan, the work of the Father of Glory, as He, the eternal Lord, established the beginning of every wonder.",
       "words": [
         {
           "id": "token-1-1",
@@ -33,117 +33,180 @@
                 "gloss": "nū"
               }
             ],
-            "definition": "noun (nū)",
+            "definition": "now",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/nu#Old_English"
           }
         },
         {
           "id": "token-1-2",
-          "originalWord": "sculon",
-          "morphologicalGloss": "sculan",
-          "sourceGlossTex": "sculan",
+          "originalWord": "sċul-on",
+          "morphologicalGloss": "sculan-have.to.PRS-IND.PL",
+          "sourceGlossTex": "sculan-have\\textsc{.}to\\textsc{.prs}-\\textsc{ind.pl}",
           "analysis": {
             "lemma": "sculan",
             "partOfSpeech": "verb",
+            "features": {
+              "number": "plural",
+              "tense": "present",
+              "mood": "indicative"
+            },
             "morphemes": [
               {
-                "form": "sculon",
+                "id": "token-1-2-morpheme-1",
+                "form": "sċul",
                 "gloss": "sculan"
+              },
+              {
+                "id": "token-1-2-morpheme-2",
+                "form": "on",
+                "gloss": "have.to.PRS-IND.PL"
               }
             ],
-            "definition": "verb (sculan)",
+            "definition": "have.to.PRS-IND.PL",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/sculan#Old_English"
           }
         },
         {
           "id": "token-1-3",
-          "originalWord": "herigean",
-          "morphologicalGloss": "herigean",
-          "sourceGlossTex": "herigean",
+          "originalWord": "heriġe-an",
+          "morphologicalGloss": "praise-INF",
+          "sourceGlossTex": "praise-\\textsc{inf}",
           "analysis": {
-            "lemma": "herigean",
-            "partOfSpeech": "noun",
+            "lemma": "heriġean",
+            "partOfSpeech": "verb",
+            "features": {
+              "mood": "infinitive"
+            },
             "morphemes": [
               {
-                "form": "herigean",
-                "gloss": "herigean"
+                "id": "token-1-3-morpheme-1",
+                "form": "heriġe",
+                "gloss": "praise"
+              },
+              {
+                "id": "token-1-3-morpheme-2",
+                "form": "an",
+                "gloss": "INF"
               }
             ],
-            "definition": "noun (herigean)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/herigean#Old_English"
+            "definition": "praise-INF",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/herian"
           }
         },
         {
           "id": "token-1-4",
-          "originalWord": "heofonrīces",
-          "morphologicalGloss": "heofonrīces",
-          "sourceGlossTex": "heofonrīces",
+          "originalWord": "heofon-rīċ-es",
+          "morphologicalGloss": "heaven-kingdom-GEN.SG",
+          "sourceGlossTex": "heaven-kingdom-\\textsc{gen.sg}",
           "analysis": {
-            "lemma": "heofonrīces",
+            "lemma": "heofonrīċe",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "genitive",
+              "number": "singular",
+              "gender": "neuter"
+            },
             "morphemes": [
               {
-                "form": "heofonrīces",
-                "gloss": "heofonrīces"
+                "id": "token-1-4-morpheme-1",
+                "form": "heofon",
+                "gloss": "heaven"
+              },
+              {
+                "id": "token-1-4-morpheme-2",
+                "form": "rīċ",
+                "gloss": "kingdom"
+              },
+              {
+                "id": "token-1-4-morpheme-3",
+                "form": "es",
+                "gloss": "GEN.SG"
               }
             ],
-            "definition": "noun (heofonrīces)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/heofonrices#Old_English"
+            "definition": "heaven-kingdom-GEN.SG",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/heofonrice#Old_English"
           }
         },
         {
           "id": "token-1-5",
           "originalWord": "Weard",
-          "morphologicalGloss": "weard",
+          "morphologicalGloss": "ward.ACC.SG",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "weard",
+          "sourceGlossTex": "ward\\textsc{.acc.sg}",
           "analysis": {
             "lemma": "weard",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "accusative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
                 "form": "Weard,",
                 "gloss": "weard"
               }
             ],
-            "definition": "noun (weard)",
+            "definition": "ward.ACC.SG",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/weard#Old_English"
           }
         },
         {
           "id": "token-1-6",
-          "originalWord": "Meotodes",
-          "morphologicalGloss": "meotodes",
-          "sourceGlossTex": "meotodes",
+          "originalWord": "Meotod-es",
+          "morphologicalGloss": "maker-GEN.SG",
+          "sourceGlossTex": "maker-\\textsc{gen.sg}",
           "analysis": {
-            "lemma": "meotodes",
+            "lemma": "meotod",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "genitive",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
-                "form": "Meotodes",
-                "gloss": "meotodes"
+                "id": "token-1-6-morpheme-1",
+                "form": "Meotod",
+                "gloss": "maker"
+              },
+              {
+                "id": "token-1-6-morpheme-2",
+                "form": "es",
+                "gloss": "GEN.SG"
               }
             ],
-            "definition": "noun (meotodes)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/meotodes#Old_English"
+            "definition": "maker-GEN.SG",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/meotod#Old_English"
           }
         },
         {
           "id": "token-1-7",
-          "originalWord": "meahte",
-          "morphologicalGloss": "magan",
-          "sourceGlossTex": "magan",
+          "originalWord": "meaht-e",
+          "morphologicalGloss": "might-ACC.SG",
+          "sourceGlossTex": "might-\\textsc{acc.sg}",
           "analysis": {
-            "lemma": "magan",
-            "partOfSpeech": "verb",
+            "lemma": "meaht",
+            "partOfSpeech": "noun",
+            "features": {
+              "case": "accusative",
+              "number": "singular",
+              "gender": "feminine"
+            },
             "morphemes": [
               {
-                "form": "meahte",
-                "gloss": "magan"
+                "id": "token-1-7-morpheme-1",
+                "form": "meaht",
+                "gloss": "might"
+              },
+              {
+                "id": "token-1-7-morpheme-2",
+                "form": "e",
+                "gloss": "ACC.SG"
               }
             ],
-            "definition": "verb (magan)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/magan#Old_English"
+            "definition": "might-ACC.SG",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/meaht#Old_English"
           }
         },
         {
@@ -152,7 +215,7 @@
           "morphologicalGloss": "and",
           "sourceGlossTex": "and",
           "analysis": {
-            "lemma": "and",
+            "lemma": "ond",
             "partOfSpeech": "conjunction",
             "morphemes": [
               {
@@ -161,88 +224,126 @@
               }
             ],
             "definition": "conjunction (and)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/and#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/ond#Old_English"
           }
         },
         {
           "id": "token-1-9",
           "originalWord": "his",
-          "morphologicalGloss": "hē",
-          "sourceGlossTex": "hē",
+          "morphologicalGloss": "3SG.M.GEN",
+          "sourceGlossTex": "\\textsc{3sg.m.gen}",
           "analysis": {
             "lemma": "hē",
             "partOfSpeech": "pronoun",
+            "features": {
+              "case": "genitive",
+              "number": "singular",
+              "gender": "masculine",
+              "person": 3
+            },
             "morphemes": [
               {
                 "form": "his",
                 "gloss": "hē"
               }
             ],
-            "definition": "pronoun (hē)",
+            "definition": "3SG.M.GEN",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
           }
         },
         {
           "id": "token-1-10",
-          "originalWord": "mōdġeþanc",
-          "morphologicalGloss": "mōdġeþanc",
+          "originalWord": "mōd-ġe-þanc",
+          "morphologicalGloss": "mind-PFX-thought.ACC.SG",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "mōdġeþanc",
+          "sourceGlossTex": "mind-\\textsc{pfx}-thought\\textsc{.acc.sg}",
           "analysis": {
             "lemma": "mōdġeþanc",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "accusative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
-                "form": "mōdġeþanc,",
-                "gloss": "mōdġeþanc"
+                "id": "token-1-10-morpheme-1",
+                "form": "mōd",
+                "gloss": "mind"
+              },
+              {
+                "id": "token-1-10-morpheme-2",
+                "form": "ġe",
+                "gloss": "PFX"
+              },
+              {
+                "id": "token-1-10-morpheme-3",
+                "form": "þanc",
+                "gloss": "thought.ACC.SG"
               }
             ],
-            "definition": "noun (mōdġeþanc)",
+            "definition": "mind-PFX-thought.ACC.SG",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/modge%C3%BEanc#Old_English"
           }
         },
         {
           "id": "token-1-11",
           "originalWord": "weorc",
-          "morphologicalGloss": "weorc",
-          "sourceGlossTex": "weorc",
+          "morphologicalGloss": "work.ACC.SG",
+          "sourceGlossTex": "work\\textsc{.acc.sg}",
           "analysis": {
             "lemma": "weorc",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "accusative",
+              "number": "singular",
+              "gender": "neuter"
+            },
             "morphemes": [
               {
                 "form": "weorc",
                 "gloss": "weorc"
               }
             ],
-            "definition": "noun (weorc)",
+            "definition": "work\\textsc{.acc.sg}",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/weorc#Old_English"
           }
         },
         {
           "id": "token-1-12",
-          "originalWord": "Wuldorfæder",
-          "morphologicalGloss": "wuldorfæder",
+          "originalWord": "Wuldor-fæder",
+          "morphologicalGloss": "glory-father.GEN.SG",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "wuldorfæder",
+          "sourceGlossTex": "glory-father\\textsc{.gen.sg}",
           "analysis": {
             "lemma": "wuldorfæder",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "genitive",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
-                "form": "Wuldorfæder,",
-                "gloss": "wuldorfæder"
+                "id": "token-1-12-morpheme-1",
+                "form": "Wuldor",
+                "gloss": "glory"
+              },
+              {
+                "id": "token-1-12-morpheme-2",
+                "form": "fæder",
+                "gloss": "father.GEN.SG"
               }
             ],
-            "definition": "noun (wuldorfæder)",
+            "definition": "glory-father.GEN.SG",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/wuldorf%C3%A6der#Old_English"
           }
         },
         {
           "id": "token-1-13",
           "originalWord": "swā",
-          "morphologicalGloss": "swā",
-          "sourceGlossTex": "swā",
+          "morphologicalGloss": "as",
+          "sourceGlossTex": "as",
           "analysis": {
             "lemma": "swā",
             "partOfSpeech": "adverb",
@@ -252,137 +353,209 @@
                 "gloss": "swā"
               }
             ],
-            "definition": "adverb (swā)",
+            "definition": "as",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/swa#Old_English"
           }
         },
         {
           "id": "token-1-14",
           "originalWord": "hē",
-          "morphologicalGloss": "hē",
-          "sourceGlossTex": "hē",
+          "morphologicalGloss": "3SG.M.NOM",
+          "sourceGlossTex": "\\textsc{3sg.m.nom}",
           "analysis": {
             "lemma": "hē",
             "partOfSpeech": "pronoun",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine",
+              "person": 3
+            },
             "morphemes": [
               {
                 "form": "hē",
                 "gloss": "hē"
               }
             ],
-            "definition": "pronoun (hē)",
+            "definition": "3SG.M.NOM",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
           }
         },
         {
           "id": "token-1-15",
-          "originalWord": "wundra",
-          "morphologicalGloss": "wundra",
-          "sourceGlossTex": "wundra",
+          "originalWord": "wundr-a",
+          "morphologicalGloss": "wonder-GEN.PL",
+          "sourceGlossTex": "wonder-\\textsc{gen.pl}",
           "analysis": {
-            "lemma": "wundra",
+            "lemma": "wundor",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "genitive",
+              "number": "plural",
+              "gender": "neuter"
+            },
             "morphemes": [
               {
-                "form": "wundra",
-                "gloss": "wundra"
+                "id": "token-1-15-morpheme-1",
+                "form": "wundr",
+                "gloss": "wonder"
+              },
+              {
+                "id": "token-1-15-morpheme-2",
+                "form": "a",
+                "gloss": "GEN.PL"
               }
             ],
-            "definition": "noun (wundra)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/wundra#Old_English"
+            "definition": "wonder-GEN.PL",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/wundor#Old_English"
           }
         },
         {
           "id": "token-1-16",
-          "originalWord": "ġehwæs",
-          "morphologicalGloss": "ġehwæs",
+          "originalWord": "ġe-hwæs",
+          "morphologicalGloss": "PFX-who.GEN",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "ġehwæs",
+          "sourceGlossTex": "\\textsc{pfx}-who\\textsc{.gen}",
           "analysis": {
-            "lemma": "ġehwæs",
-            "partOfSpeech": "noun",
+            "lemma": "ġehwā",
+            "partOfSpeech": "pronoun",
+            "features": {
+              "case": "genitive",
+              "number": "singular",
+              "gender": "neuter"
+            },
             "morphemes": [
               {
-                "form": "ġehwæs,",
-                "gloss": "ġehwæs"
+                "id": "token-1-16-morpheme-1",
+                "form": "ġe",
+                "gloss": "PFX"
+              },
+              {
+                "id": "token-1-16-morpheme-2",
+                "form": "hwæs",
+                "gloss": "who.GEN"
               }
             ],
-            "definition": "noun (ġehwæs)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/gehw%C3%A6s#Old_English"
+            "definition": "PFX-who.GEN",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/gehwa"
           }
         },
         {
           "id": "token-1-17",
-          "originalWord": "ēce",
-          "morphologicalGloss": "ēce",
-          "sourceGlossTex": "ēce",
+          "originalWord": "ēċ-e",
+          "morphologicalGloss": "eternal-NOM.SG.M.STR",
+          "sourceGlossTex": "eternal-\\textsc{nom.sg.m.str}",
           "analysis": {
-            "lemma": "ēce",
-            "partOfSpeech": "noun",
+            "lemma": "ēċe",
+            "partOfSpeech": "adjective",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine",
+              "declension": "strong"
+            },
             "morphemes": [
               {
-                "form": "ēce",
-                "gloss": "ēce"
+                "id": "token-1-17-morpheme-1",
+                "form": "ēċ",
+                "gloss": "eternal"
+              },
+              {
+                "id": "token-1-17-morpheme-2",
+                "form": "e",
+                "gloss": "NOM.SG.M.STR"
               }
             ],
-            "definition": "noun (ēce)",
+            "definition": "eternal-\\textsc{nom.sg.m.str}",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/ece#Old_English"
           }
         },
         {
           "id": "token-1-18",
           "originalWord": "Drihten",
-          "morphologicalGloss": "drihten",
+          "morphologicalGloss": "lord.NOM.SG",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "drihten",
+          "sourceGlossTex": "lord\\textsc{.nom.sg}",
           "analysis": {
             "lemma": "drihten",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
                 "form": "Drihten,",
                 "gloss": "drihten"
               }
             ],
-            "definition": "noun (drihten)",
+            "definition": "lord.NOM.SG",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/drihten#Old_English"
           }
         },
         {
           "id": "token-1-19",
           "originalWord": "ōr",
-          "morphologicalGloss": "ōr",
-          "sourceGlossTex": "ōr",
+          "morphologicalGloss": "origin.ACC.SG",
+          "sourceGlossTex": "origin\\textsc{.acc.sg}",
           "analysis": {
             "lemma": "ōr",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "accusative",
+              "number": "singular",
+              "gender": "neuter"
+            },
             "morphemes": [
               {
                 "form": "ōr",
                 "gloss": "ōr"
               }
             ],
-            "definition": "noun (ōr)",
+            "definition": "origin.ACC.SG",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/or#Old_English"
           }
         },
         {
           "id": "token-1-20",
-          "originalWord": "onstealde",
-          "morphologicalGloss": "onstealde",
+          "originalWord": "on-steal-d-e",
+          "morphologicalGloss": "in-place-PST-IND.3SG",
           "trailingPunctuation": ".",
-          "sourceGlossTex": "onstealde",
+          "sourceGlossTex": "in-place-\\textsc{pst}-\\textsc{ind.3sg}",
           "analysis": {
-            "lemma": "onstealde",
-            "partOfSpeech": "noun",
+            "lemma": "onstellan",
+            "partOfSpeech": "verb",
+            "features": {
+              "number": "singular",
+              "person": 3,
+              "tense": "past",
+              "mood": "indicative"
+            },
             "morphemes": [
               {
-                "form": "onstealde.",
-                "gloss": "onstealde"
+                "id": "token-1-20-morpheme-1",
+                "form": "on",
+                "gloss": "in"
+              },
+              {
+                "id": "token-1-20-morpheme-2",
+                "form": "steal",
+                "gloss": "place"
+              },
+              {
+                "id": "token-1-20-morpheme-3",
+                "form": "d",
+                "gloss": "PST"
+              },
+              {
+                "id": "token-1-20-morpheme-4",
+                "form": "e",
+                "gloss": "IND.3SG"
               }
             ],
-            "definition": "noun (onstealde)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/onstealde#Old_English"
+            "definition": "in-place-PST-IND.3SG",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/onstellan#Old_English"
           }
         }
       ]
