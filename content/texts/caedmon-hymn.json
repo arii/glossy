@@ -562,7 +562,7 @@
     },
     {
       "id": "sent-2",
-      "translation": "He first created heaven as a roof for the children of earth, holy Creator; then the Guardian of mankind, the eternal Lord, Almighty Ruler, afterwards adorned the middle-earth, the world for men.",
+      "translation": "He first created heaven as a roof for the earth's children, holy Creator; then middle-earth, mankind's Guardian, the eternal Lord, afterwards provided the people the earth, Lord Almighty.",
       "words": [
         {
           "id": "token-2-1",
@@ -1107,8 +1107,8 @@
         {
           "id": "token-2-21",
           "originalWord": "Frēa",
-          "morphologicalGloss": "lord-NOM.SG",
-          "sourceGlossTex": "lord-\\textsc{nom.sg}",
+          "morphologicalGloss": "lord.NOM.SG",
+          "sourceGlossTex": "lord\\textsc{.nom.sg}",
           "analysis": {
             "lemma": "frēa",
             "partOfSpeech": "noun",
@@ -1124,7 +1124,7 @@
                 "gloss": "fēa"
               }
             ],
-            "definition": "lord-NOM.SG",
+            "definition": "lord.NOM.SG",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/frea#Old_English"
           }
         },
