@@ -40,8 +40,8 @@
         {
           "id": "token-1-2",
           "originalWord": "sċul-on",
-          "morphologicalGloss": "sculan-have.to.PRS-IND.PL",
-          "sourceGlossTex": "sculan-have\\textsc{.}to\\textsc{.prs}-\\textsc{ind.pl}",
+          "morphologicalGloss": "have.to.PRS-IND.PL",
+          "sourceGlossTex": "have\\textsc{.}to\\textsc{.prs}-\\textsc{ind.pl}",
           "analysis": {
             "lemma": "sculan",
             "partOfSpeech": "verb",
@@ -54,12 +54,12 @@
               {
                 "id": "token-1-2-morpheme-1",
                 "form": "sċul",
-                "gloss": "sculan"
+                "gloss": "have.to.PRS"
               },
               {
                 "id": "token-1-2-morpheme-2",
                 "form": "on",
-                "gloss": "have.to.PRS-IND.PL"
+                "gloss": "IND.PL"
               }
             ],
             "definition": "have.to.PRS-IND.PL",
@@ -305,7 +305,7 @@
                 "gloss": "weorc"
               }
             ],
-            "definition": "work\\textsc{.acc.sg}",
+            "definition": "work.ACC.SG",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/weorc#Old_English"
           }
         },
@@ -466,7 +466,7 @@
                 "gloss": "NOM.SG.M.STR"
               }
             ],
-            "definition": "eternal-\\textsc{nom.sg.m.str}",
+            "definition": "eternal-NOM.SG.M.STR",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/ece#Old_English"
           }
         },
@@ -567,116 +567,164 @@
         {
           "id": "token-2-1",
           "originalWord": "Hē",
-          "morphologicalGloss": "hē",
-          "sourceGlossTex": "hē",
+          "morphologicalGloss": "3SG.M.NOM",
+          "sourceGlossTex": "\\textsc{3sg.m.nom}",
           "analysis": {
             "lemma": "hē",
             "partOfSpeech": "pronoun",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine",
+              "person": 3
+            },
             "morphemes": [
               {
                 "form": "Hē",
                 "gloss": "hē"
               }
             ],
-            "definition": "pronoun (hē)",
+            "definition": "3SG.M.NOM",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/he#Old_English"
           }
         },
         {
           "id": "token-2-2",
-          "originalWord": "ǣrest",
-          "morphologicalGloss": "ǣrest",
-          "sourceGlossTex": "ǣrest",
+          "originalWord": "ǣr-est",
+          "morphologicalGloss": "before-SUP.ADV",
+          "sourceGlossTex": "before-\\textsc{sup.adv}",
           "analysis": {
-            "lemma": "ǣrest",
-            "partOfSpeech": "noun",
+            "lemma": "ǣr",
+            "partOfSpeech": "adverb",
+            "features": {
+              "degree": "superlative"
+            },
             "morphemes": [
               {
-                "form": "ǣrest",
-                "gloss": "ǣrest"
+                "id": "token-2-2-morpheme-1",
+                "form": "ǣr",
+                "gloss": "before"
+              },
+              {
+                "id": "token-2-2-morpheme-2",
+                "form": "est",
+                "gloss": "SUP.ADV"
               }
             ],
-            "definition": "noun (ǣrest)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%A6rest#Old_English"
+            "definition": "before-SUP.ADV",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%A6r#Old_English"
           }
         },
         {
           "id": "token-2-3",
-          "originalWord": "sceōp",
-          "morphologicalGloss": "sceōp",
-          "sourceGlossTex": "sceōp",
+          "originalWord": "sċẹōp",
+          "morphologicalGloss": "shape.PST.IND.3SG",
+          "sourceGlossTex": "shape\\textsc{.pst.ind.3sg}",
           "analysis": {
-            "lemma": "sceōp",
-            "partOfSpeech": "noun",
+            "lemma": "sċyppan",
+            "partOfSpeech": "verb",
+            "features": {
+              "number": "singular",
+              "person": 3,
+              "tense": "past",
+              "mood": "indicative"
+            },
             "morphemes": [
               {
-                "form": "sceōp",
+                "form": "sċẹōp",
                 "gloss": "sceōp"
               }
             ],
-            "definition": "noun (sceōp)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/sceop#Old_English"
+            "definition": "shape.PST.IND.3SG",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/scyppan#Old_English"
           }
         },
         {
           "id": "token-2-4",
-          "originalWord": "eorðan",
-          "morphologicalGloss": "eorðan",
-          "sourceGlossTex": "eorðan",
+          "originalWord": "eorð-an",
+          "morphologicalGloss": "ground-GEN.SG",
+          "sourceGlossTex": "ground-\\textsc{gen.sg}",
           "analysis": {
-            "lemma": "eorðan",
+            "lemma": "eorþe",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "genitive",
+              "number": "singular",
+              "gender": "feminine"
+            },
             "morphemes": [
               {
-                "form": "eorðan",
-                "gloss": "eorðan"
+                "id": "token-2-4-morpheme-1",
+                "form": "eorð",
+                "gloss": "ground"
+              },
+              {
+                "id": "token-2-4-morpheme-2",
+                "form": "an",
+                "gloss": "GEN.SG"
               }
             ],
-            "definition": "noun (eorðan)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/eor%C3%B0an#Old_English"
+            "definition": "ground-GEN.SG",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/eor%C3%BEe#Old_English"
           }
         },
         {
           "id": "token-2-5",
-          "originalWord": "bearnum",
-          "morphologicalGloss": "bearnum",
-          "sourceGlossTex": "bearnum",
+          "originalWord": "bearn-um",
+          "morphologicalGloss": "child-DAT.PL",
+          "sourceGlossTex": "child-\\textsc{dat.pl}",
           "analysis": {
-            "lemma": "bearnum",
+            "lemma": "bearn",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "dative",
+              "number": "plural",
+              "gender": "neuter"
+            },
             "morphemes": [
               {
-                "form": "bearnum",
-                "gloss": "bearnum"
+                "id": "token-2-5-morpheme-1",
+                "form": "bearn",
+                "gloss": "child"
+              },
+              {
+                "id": "token-2-5-morpheme-2",
+                "form": "um",
+                "gloss": "DAT.PL"
               }
             ],
-            "definition": "noun (bearnum)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/bearnum#Old_English"
+            "definition": "child-DAT.PL",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/bearn#Old_English"
           }
         },
         {
           "id": "token-2-6",
           "originalWord": "heofon",
-          "morphologicalGloss": "heofon",
-          "sourceGlossTex": "heofon",
+          "morphologicalGloss": "heaven.ACC.SG",
+          "sourceGlossTex": "heaven\\textsc{.acc.sg}",
           "analysis": {
             "lemma": "heofon",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "accusative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
                 "form": "heofon",
                 "gloss": "heofon"
               }
             ],
-            "definition": "noun (heofon)",
+            "definition": "heaven.ACC.SG",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/heofon#Old_English"
           }
         },
         {
           "id": "token-2-7",
           "originalWord": "tō",
-          "morphologicalGloss": "tō",
-          "sourceGlossTex": "tō",
+          "morphologicalGloss": "to",
+          "sourceGlossTex": "to",
           "analysis": {
             "lemma": "tō",
             "partOfSpeech": "preposition",
@@ -686,283 +734,433 @@
                 "gloss": "tō"
               }
             ],
-            "definition": "preposition (tō)",
+            "definition": "to",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/to#Old_English"
           }
         },
         {
           "id": "token-2-8",
-          "originalWord": "hrōfe",
-          "morphologicalGloss": "hrōfe",
+          "originalWord": "hrōf-e",
+          "morphologicalGloss": "roof-DAT.SG",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "hrōfe",
+          "sourceGlossTex": "roof-\\textsc{dat.sg}",
           "analysis": {
-            "lemma": "hrōfe",
+            "lemma": "hrōf",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "dative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
-                "form": "hrōfe,",
-                "gloss": "hrōfe"
+                "id": "token-2-8-morpheme-1",
+                "form": "hrōf",
+                "gloss": "roof"
+              },
+              {
+                "id": "token-2-8-morpheme-2",
+                "form": "e",
+                "gloss": "DAT.SG"
               }
             ],
-            "definition": "noun (hrōfe)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/hrofe#Old_English"
+            "definition": "roof-DAT.SG",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/hrof#Old_English"
           }
         },
         {
           "id": "token-2-9",
-          "originalWord": "hālig",
-          "morphologicalGloss": "hālig",
-          "sourceGlossTex": "hālig",
+          "originalWord": "hāl-iġ",
+          "morphologicalGloss": "whole-ADJ.NOM.SG.M.STR",
+          "sourceGlossTex": "whole-\\textsc{adj.nom.sg.m.str}",
           "analysis": {
-            "lemma": "hālig",
-            "partOfSpeech": "noun",
+            "lemma": "hāliġ",
+            "partOfSpeech": "adjective",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine",
+              "declension": "strong"
+            },
             "morphemes": [
               {
-                "form": "hālig",
-                "gloss": "hālig"
+                "id": "token-2-9-morpheme-1",
+                "form": "hāl",
+                "gloss": "whole"
+              },
+              {
+                "id": "token-2-9-morpheme-2",
+                "form": "iġ",
+                "gloss": "ADJ.NOM.SG.M.STR"
               }
             ],
-            "definition": "noun (hālig)",
+            "definition": "whole-ADJ.NOM.SG.M.STR",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/halig#Old_English"
           }
         },
         {
           "id": "token-2-10",
-          "originalWord": "Scyppend",
-          "morphologicalGloss": "scyppend",
+          "originalWord": "Sċypp-end",
+          "morphologicalGloss": "shape-AGT.NOM.SG",
           "trailingPunctuation": ";",
-          "sourceGlossTex": "scyppend",
+          "sourceGlossTex": "shape-\\textsc{agt.nom.sg}",
           "analysis": {
-            "lemma": "scyppend",
+            "lemma": "sċyppend",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
-                "form": "Scyppend;",
-                "gloss": "scyppend"
+                "id": "token-2-10-morpheme-1",
+                "form": "Sċypp",
+                "gloss": "shape"
+              },
+              {
+                "id": "token-2-10-morpheme-2",
+                "form": "end",
+                "gloss": "AGT.NOM.SG"
               }
             ],
-            "definition": "noun (scyppend)",
+            "definition": "shape-AGT.NOM.SG",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/scyppend#Old_English"
           }
         },
         {
           "id": "token-2-11",
           "originalWord": "þā",
-          "morphologicalGloss": "sē",
-          "sourceGlossTex": "sē",
+          "morphologicalGloss": "then",
+          "sourceGlossTex": "then",
           "analysis": {
-            "lemma": "sē",
-            "partOfSpeech": "determiner",
+            "lemma": "þā",
+            "partOfSpeech": "adverb",
             "morphemes": [
               {
                 "form": "þā",
                 "gloss": "sē"
               }
             ],
-            "definition": "determiner (sē)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/se#Old_English"
+            "definition": "then",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%BEa#Adverb"
           }
         },
         {
           "id": "token-2-12",
-          "originalWord": "middanġeard",
-          "morphologicalGloss": "middanġeard",
-          "sourceGlossTex": "middanġeard",
+          "originalWord": "midd-an-ġeard",
+          "morphologicalGloss": "middle-???-yard.ACC.SG",
+          "sourceGlossTex": "middle-???-yard\\textsc{.acc.sg}",
           "analysis": {
             "lemma": "middanġeard",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "accusative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
-                "form": "middanġeard",
-                "gloss": "middanġeard"
+                "id": "token-2-12-morpheme-1",
+                "form": "midd",
+                "gloss": "middle"
+              },
+              {
+                "id": "token-2-12-morpheme-2",
+                "form": "an",
+                "gloss": "???"
+              },
+              {
+                "id": "token-2-12-morpheme-3",
+                "form": "ġeard",
+                "gloss": "yard.ACC.SG"
               }
             ],
-            "definition": "noun (middanġeard)",
+            "definition": "middle-???-yard",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/middangeard#Old_English"
           }
         },
         {
           "id": "token-2-13",
-          "originalWord": "moncynnes",
-          "morphologicalGloss": "moncynnes",
-          "sourceGlossTex": "moncynnes",
+          "originalWord": "mon-cynn-es",
+          "morphologicalGloss": "man-kind-GEN.SG",
+          "sourceGlossTex": "man-kind-\\textsc{gen.sg}",
           "analysis": {
-            "lemma": "moncynnes",
+            "lemma": "moncynn",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "genitive",
+              "number": "singular",
+              "gender": "neuter"
+            },
             "morphemes": [
               {
-                "form": "moncynnes",
-                "gloss": "moncynnes"
+                "id": "token-2-13-morpheme-1",
+                "form": "mon",
+                "gloss": "man"
+              },
+              {
+                "id": "token-2-13-morpheme-2",
+                "form": "cynn",
+                "gloss": "kind"
+              },
+              {
+                "id": "token-2-13-morpheme-3",
+                "form": "es",
+                "gloss": "GEN.SG"
               }
             ],
-            "definition": "noun (moncynnes)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/moncynnes#Old_English"
+            "definition": "man-kind-GEN.SG",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/moncynn#Old_English"
           }
         },
         {
           "id": "token-2-14",
           "originalWord": "Weard",
-          "morphologicalGloss": "weard",
+          "morphologicalGloss": "ward.NOM.SG",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "weard",
+          "sourceGlossTex": "ward\\textsc{.nom.sg}",
           "analysis": {
             "lemma": "weard",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
                 "form": "Weard,",
                 "gloss": "weard"
               }
             ],
-            "definition": "noun (weard)",
+            "definition": "ward.NOM.SG",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/weard#Old_English"
           }
         },
         {
           "id": "token-2-15",
-          "originalWord": "ēce",
-          "morphologicalGloss": "ēce",
-          "sourceGlossTex": "ēce",
+          "originalWord": "ēċ-e",
+          "morphologicalGloss": "eternal-NOM.SG.M.STR",
+          "sourceGlossTex": "eternal-\\textsc{nom.sg.m.str}",
           "analysis": {
-            "lemma": "ēce",
-            "partOfSpeech": "noun",
+            "lemma": "ēċe",
+            "partOfSpeech": "adjective",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine",
+              "declension": "strong"
+            },
             "morphemes": [
               {
-                "form": "ēce",
-                "gloss": "ēce"
+                "id": "token-2-15-morpheme-1",
+                "form": "ēċ",
+                "gloss": "eternal"
+              },
+              {
+                "id": "token-2-15-morpheme-2",
+                "form": "e",
+                "gloss": "NOM.SG.M.STR"
               }
             ],
-            "definition": "noun (ēce)",
+            "definition": "eternal-NOM.SG.M.STR",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/ece#Old_English"
           }
         },
         {
           "id": "token-2-16",
           "originalWord": "Drihten",
-          "morphologicalGloss": "drihten",
+          "morphologicalGloss": "lord.NOM.SG",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "drihten",
+          "sourceGlossTex": "lord\\textsc{.nom.sg}",
           "analysis": {
             "lemma": "drihten",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
                 "form": "Drihten,",
                 "gloss": "drihten"
               }
             ],
-            "definition": "noun (drihten)",
+            "definition": "lord.NOM.SG",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/drihten#Old_English"
           }
         },
         {
           "id": "token-2-17",
           "originalWord": "æfter",
-          "morphologicalGloss": "æfter",
-          "sourceGlossTex": "æfter",
+          "morphologicalGloss": "after",
+          "sourceGlossTex": "after",
           "analysis": {
             "lemma": "æfter",
-            "partOfSpeech": "noun",
+            "partOfSpeech": "adverb",
             "morphemes": [
               {
                 "form": "æfter",
                 "gloss": "æfter"
               }
             ],
-            "definition": "noun (æfter)",
+            "definition": "after",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%A6fter#Old_English"
           }
         },
         {
           "id": "token-2-18",
-          "originalWord": "tēode",
-          "morphologicalGloss": "tēode",
-          "sourceGlossTex": "tēode",
+          "originalWord": "tēo-d-e",
+          "morphologicalGloss": "furnish-PST-IND.3SG",
+          "sourceGlossTex": "furnish-\\textsc{pst}-\\textsc{ind.3sg}",
           "analysis": {
-            "lemma": "tēode",
-            "partOfSpeech": "noun",
+            "lemma": "tēon",
+            "partOfSpeech": "verb",
+            "features": {
+              "number": "singular",
+              "person": 3,
+              "tense": "past",
+              "mood": "indicative"
+            },
             "morphemes": [
               {
-                "form": "tēode",
-                "gloss": "tēode"
+                "id": "token-2-18-morpheme-1",
+                "form": "tēo",
+                "gloss": "furnish"
+              },
+              {
+                "id": "token-2-18-morpheme-2",
+                "form": "d",
+                "gloss": "PST"
+              },
+              {
+                "id": "token-2-18-morpheme-3",
+                "form": "e",
+                "gloss": "IND.3SG"
               }
             ],
-            "definition": "noun (tēode)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/teode#Old_English"
+            "definition": "furnish-PST-IND.3SG",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/teon#Etymology_2"
           }
         },
         {
           "id": "token-2-19",
-          "originalWord": "fīrum",
-          "morphologicalGloss": "fīrum",
-          "sourceGlossTex": "fīrum",
+          "originalWord": "fīr-um",
+          "morphologicalGloss": "people-DAT.PL",
+          "sourceGlossTex": "people-\\textsc{dat.pl}",
           "analysis": {
-            "lemma": "fīrum",
+            "lemma": "fīras",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "dative",
+              "number": "plural",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
-                "form": "fīrum",
-                "gloss": "fīrum"
+                "id": "token-2-19-morpheme-1",
+                "form": "fīr",
+                "gloss": "people"
+              },
+              {
+                "id": "token-2-19-morpheme-2",
+                "form": "um",
+                "gloss": "DAT.PL"
               }
             ],
-            "definition": "noun (fīrum)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/firum#Old_English"
+            "definition": "people-DAT.PL",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/firas#Old_English"
           }
         },
         {
           "id": "token-2-20",
-          "originalWord": "foldan",
-          "morphologicalGloss": "foldan",
+          "originalWord": "fold-an",
+          "morphologicalGloss": "earth-ACC.SG",
           "trailingPunctuation": ",",
-          "sourceGlossTex": "foldan",
+          "sourceGlossTex": "earth-\\textsc{acc.sg}",
           "analysis": {
-            "lemma": "foldan",
+            "lemma": "folde",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "accusative",
+              "number": "singular",
+              "gender": "feminine"
+            },
             "morphemes": [
               {
-                "form": "foldan,",
-                "gloss": "foldan"
+                "id": "token-2-20-morpheme-1",
+                "form": "fold",
+                "gloss": "earth"
+              },
+              {
+                "id": "token-2-20-morpheme-2",
+                "form": "an",
+                "gloss": "ACC.SG"
               }
             ],
             "definition": "noun (foldan)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/foldan#Old_English"
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/folde#Old_English"
           }
         },
         {
           "id": "token-2-21",
-          "originalWord": "Fēa",
-          "morphologicalGloss": "fēa",
-          "sourceGlossTex": "fēa",
+          "originalWord": "Frēa",
+          "morphologicalGloss": "lord-NOM.SG",
+          "sourceGlossTex": "lord-\\textsc{nom.sg}",
           "analysis": {
-            "lemma": "fēa",
+            "lemma": "frēa",
             "partOfSpeech": "noun",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine"
+            },
             "morphemes": [
               {
-                "form": "Fēa",
+                "id": "token-2-21-morpheme-2",
+                "form": "Frēa",
                 "gloss": "fēa"
               }
             ],
-            "definition": "noun (fēa)",
-            "wiktionaryUrl": "https://en.wiktionary.org/wiki/fea#Old_English"
+            "definition": "lord-NOM.SG",
+            "wiktionaryUrl": "https://en.wiktionary.org/wiki/frea#Old_English"
           }
         },
         {
           "id": "token-2-22",
-          "originalWord": "ælmihtig",
-          "morphologicalGloss": "ælmihtig",
+          "originalWord": "æl-miht-iġ",
+          "morphologicalGloss": "all-might-ADJ.NOM.SG.M.STR",
           "trailingPunctuation": ".",
-          "sourceGlossTex": "ælmihtig",
+          "sourceGlossTex": "all-might-\\textsc{adj.nom.sg.m.str}",
           "analysis": {
-            "lemma": "ælmihtig",
-            "partOfSpeech": "noun",
+            "lemma": "ælmihtiġ",
+            "partOfSpeech": "adjective",
+            "features": {
+              "case": "nominative",
+              "number": "singular",
+              "gender": "masculine",
+              "declension": "strong"
+            },
             "morphemes": [
               {
-                "form": "ælmihtig.",
-                "gloss": "ælmihtig"
+                "id": "token-2-22-morpheme-1",
+                "form": "æl",
+                "gloss": "all"
+              },
+              {
+                "id": "token-2-22-morpheme-2",
+                "form": "miht",
+                "gloss": "might"
+              },
+              {
+                "id": "token-2-22-morpheme-3",
+                "form": "iġ",
+                "gloss": "ADJ.NOM.SG.M.STR"
               }
             ],
-            "definition": "noun (ælmihtig)",
+            "definition": "all-might-ADJ.NOM.SG.M.STR",
             "wiktionaryUrl": "https://en.wiktionary.org/wiki/%C3%A6lmihtig#Old_English"
           }
         }
