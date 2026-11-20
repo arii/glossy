@@ -44,6 +44,7 @@ import {
   Edit,
   GitCommit,
   Loader2,
+  GitPullRequest,
   RefreshCw,
   Save,
   Trash2,
@@ -51,7 +52,7 @@ import {
   X,
 } from "lucide-react";
 import { DraftDiffModal } from "./draft-diff-modal";
-import { DraftSyncPrompt } from "./draft-sync-prompt";
+import { RepoSyncModal } from "./repo-sync-modal";
 import { isTinaAuthenticated } from "../lib/tina-sync";
 import { EditMetadataModal } from "./edit-metadata-modal";
 
@@ -333,7 +334,7 @@ export function GlossEditor({
 
 
   const [diffModalOpen, setDiffModalOpen] = useState(false);
-  const [showSyncPrompt, setShowSyncPrompt] = useState(false);
+  const [syncModalOpen, setSyncModalOpen] = useState(false);
 
   const [workspaceTexts, setWorkspaceTexts] = useState<WorkspaceTextItem[]>(() =>
     getWorkspaceTexts({
@@ -760,13 +761,13 @@ export function GlossEditor({
       } else {
         const serialized = safeJsonStringify(documentState);
         setSavedSnapshot(serialized);
-        setShowSyncPrompt(true);
+        setSyncModalOpen(true);
         setSaveStatus({
           kind: "success",
           message: `Saved working draft to browser storage. ${
             isTinaAuthenticated()
-              ? 'Click "Commit Draft to Git" in the prompt below to publish your changes.'
-              : "Sign in to Tina Admin to commit your changes to Git."
+              ? 'Click "Uncommitted Draft" in the header to publish your changes.'
+              : "Sign in to Tina Admin or click Uncommitted Draft to export PR package."
           }`,
         });
       }
@@ -1072,6 +1073,30 @@ export function GlossEditor({
               )}
 
               <div className="workspace-actions" style={{ marginLeft: "auto" }}>
+                {(autosaveStatus === "saved" || autosaveStatus === "saving" || hasChanges || (isMounted && divergenceStatus.isDiverged)) && (
+                  <button
+                    type="button"
+                    onClick={() => setSyncModalOpen(true)}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.35rem",
+                      padding: "0.25rem 0.6rem",
+                      borderRadius: "0.375rem",
+                      background: "#fef3c7",
+                      border: "1px solid #fde68a",
+                      color: "#92400e",
+                      fontSize: "0.78rem",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                    }}
+                    title="Open Repository Sync & Publishing options"
+                  >
+                    <GitPullRequest style={{ width: "0.85rem", height: "0.85rem", color: "#d97706" }} />
+                    <span>Uncommitted Draft</span>
+                  </button>
+                )}
+
                 {(autosaveStatus === "saved" || autosaveStatus === "saving") && (
                   <span className={`editor-dirty ${autosaveStatus === "saved" ? "is-clean" : "is-dirty"}`}>
                     {autosaveStatus === "saved" ? "✓ Draft saved" : "Autosaving..."}
@@ -1919,17 +1944,19 @@ export function GlossEditor({
         />
       )}
 
-      <DraftSyncPrompt
-        forceShow={showSyncPrompt}
-        currentSlug={documentState.slug}
+      <RepoSyncModal
+        isOpen={syncModalOpen}
+        onClose={() => setSyncModalOpen(false)}
+        slug={documentState.slug || currentSlug}
+        currentDocument={editorDocToTextDocument(documentState)}
+        onOpenDiffModal={() => setDiffModalOpen(true)}
         onSynced={() => {
           setSaveStatus({
             kind: "success",
             message: "Successfully committed working draft to Git repository!",
           });
-          setShowSyncPrompt(false);
+          setSyncModalOpen(false);
         }}
-        onDismiss={() => setShowSyncPrompt(false)}
       />
       {ToastComponent}
       <SiteFooter />
